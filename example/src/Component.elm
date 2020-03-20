@@ -91,7 +91,7 @@ update msg model =
 
 filterSelect : FilterSelect.Model -> Element Msg
 filterSelect model =
-    Element.column (Grid.simple ++ Card.small) <|
+    Element.column (Grid.simple ++ Card.large) <|
         [ Element.el Heading.h3 <| Element.text "Filter Select"
         , case model.selected of
             Just selected ->
@@ -129,7 +129,7 @@ filterSelect model =
 
 validatedInput : ValidatedInput.Model () ( ( String, String )) -> Element Msg
 validatedInput model =
-    Element.column (Grid.simple ++ Card.small) <|
+    Element.column (Grid.simple ++ Card.large) <|
         [ Element.el Heading.h3 <| Element.text "Validated Input"
         , ValidatedInput.view Input.simple
             model
@@ -160,7 +160,7 @@ scrollingNavCard  =
         |> List.singleton
         |> Element.paragraph []
     ]
-    |> Element.column (Grid.simple ++ Card.small)
+    |> Element.column (Grid.simple ++ Card.large)
 
 view : Model -> Element Msg
 view model =

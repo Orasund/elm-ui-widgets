@@ -130,19 +130,16 @@ view model =
                                         Nothing
                         , label = Element.text 
                         , msgMapper = ScrollingNavSpecific
+                        , attributes = \selected -> Button.simple
+                            ++ Group.center
+                            ++ (if selected then
+                                    Color.primary
+
+                                else
+                                    Color.dark
+                                )
                         }
                     |> Widget.select
-                    |> List.map (\(config,selected) ->
-                    Input.button (Button.simple
-                                        ++ Group.center
-                                         ++ (if selected then
-                                                Color.primary
-
-                                            else
-                                                Color.dark
-                                           ))
-                                           config
-                    )
                     |> Element.row
                         (Color.dark ++ Grid.compact)
                     |> Element.el
@@ -260,7 +257,7 @@ subscriptions model=
     Sub.batch
     [ScrollingNav.subscriptions
         |> Sub.map ScrollingNavSpecific
-    , Time.every 500 (always ( TimePassed 500))
+    , Time.every 50 (always ( TimePassed 50))
     ]
 
 

@@ -1,4 +1,7 @@
-module Widget exposing (select, multiSelect, collapsable, carousel, dialog)
+module Widget exposing
+    ( select, multiSelect, collapsable, carousel, dialog
+    , tab
+    )
 
 {-| This module contains functions for displaying data.
 
@@ -7,7 +10,7 @@ module Widget exposing (select, multiSelect, collapsable, carousel, dialog)
 -}
 
 import Array exposing (Array)
-import Element exposing (Element)
+import Element exposing (Attribute, Element)
 import Element.Background as Background
 import Element.Events as Events
 import Element.Input as Input
@@ -15,92 +18,45 @@ import Set exposing (Set)
 
 
 {-| Selects one out of multiple options. This can be used for radio buttons or Menus.
-
-```
-    Widget.select
-        { selected = model.selected
-        , options = [ 1, 2, 42 ]
-        , label = String.fromInt >> Element.text
-        , onChange = ChangedSelected
-        }
-        |> List.map (\(config,selected)->
-            Input.button (if selected then [Font.bold] else []) config
-          )
-        |> Element.row []
-```
-
 -}
 select :
     { selected : Maybe a
     , options : List a
     , label : a -> Element msg
     , onChange : a -> msg
+    , attributes : Bool -> List (Attribute msg)
     }
-    ->
-        List
-            ( { label : Element msg
-              , onPress : Maybe msg
-              }
-            , Bool
-            )
-select { selected, options, label, onChange } =
+    -> List (Element msg)
+select { selected, options, label, onChange, attributes } =
     options
         |> List.map
             (\a ->
-                ( { onPress = a |> onChange |> Just
-                  , label = label a
-                  }
-                , selected == Just a
-                )
+                Input.button (attributes (selected == Just a))
+                    { onPress = a |> onChange |> Just
+                    , label = label a
+                    }
             )
 
 
 {-| Selects multible options. This can be used for checkboxes.
-
-```
-    Widget.multiSelect
-        { selected = model.multiSelected
-        , options = [ 1, 2, 42 ]
-        , label = String.fromInt >> Element.text
-        , onChange = ChangedMultiSelected
-        }
-        |> List.map (\(config,selected)->
-            Input.button
-                (if selected then
-                    [Font.bold]
-
-                else
-                    []
-                )
-                config
-        )
-        |> Element.row []
-```
-
 -}
 multiSelect :
     { selected : Set comparable
     , options : List comparable
     , label : comparable -> Element msg
     , onChange : comparable -> msg
+    , attributes : Bool -> List (Attribute msg)
     }
-    ->
-        List
-            ( { label : Element msg
-              , onPress : Maybe msg
-              }
-            , Bool
-            )
-multiSelect { selected, options, label, onChange } =
+    -> List (Element msg)
+multiSelect { selected, options, label, onChange, attributes } =
     options
         |> List.map
             (\a ->
-                ( { onPress = a |> onChange |> Just
-                  , label =
+                Input.button (attributes (selected |> Set.member a))
+                    { onPress = a |> onChange |> Just
+                    , label =
                         label a
-                  }
-                , selected |> Set.member a
-                )
+                    }
             )
 
 
@@ -143,6 +99,31 @@ collapsable { onToggle, isCollapsed, label, content } =
                 else
                     [ content ]
                )
+
+
+tab :
+    List (Attribute msg)
+    ->
+        { selected : a
+        , options : List a
+        , onChange : a -> msg
+        , label : a -> Element msg
+        , content : a -> Element msg
+        , attributes : Bool -> List (Attribute msg)
+        }
+    -> Element msg
+tab atts { selected, options, onChange, label, content, attributes } =
+    [ select
+        { selected = Just selected
+        , options = options
+        , label = label
+        , onChange = onChange
+        , attributes = attributes
+        }
+        |> Element.row atts
+    , content selected
+    ]
+        |> Element.column []
 
 
 {-| A dialog element displaying important information.

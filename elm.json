@@ -8,7 +8,9 @@
         "View",
         "View.FilterSelect",
         "View.ValidatedInput",
-        "View.WrappedColumn"
+        "View.ScrollingNav",
+        "View.Snackbar",
+        "View.SortTable"
     ],
     "elm-version": "0.19.0 <= v < 0.20.0",
     "dependencies": {

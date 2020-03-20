@@ -19,7 +19,7 @@ the page. Clicking on a navigation button will scroll directly to that section.
 -}
 
 import Browser.Dom as Dom
-import Element exposing (Element)
+import Element exposing (Attribute, Element)
 import Framework.Grid as Grid
 import Html.Attributes as Attributes
 import IntDict exposing (IntDict)
@@ -147,6 +147,7 @@ viewSections :
     { label : String -> Element msg
     , fromString : String -> Maybe elem
     , msgMapper : Msg elem -> msg
+    , attributes : Bool -> List (Attribute msg)
     }
     -> Model elem
     ->
@@ -154,8 +155,9 @@ viewSections :
         , options : List elem
         , label : elem -> Element msg
         , onChange : elem -> msg
+        , attributes : Bool -> List (Attribute msg)
         }
-viewSections { label, fromString, msgMapper } { arrangement, scrollPos, labels, positions } =
+viewSections { label, fromString, msgMapper, attributes } { arrangement, scrollPos, labels, positions } =
     let
         current =
             positions
@@ -169,6 +171,7 @@ viewSections { label, fromString, msgMapper } { arrangement, scrollPos, labels, 
     , options = arrangement
     , label = \elem -> label (elem |> labels)
     , onChange = JumpTo >> msgMapper
+    , attributes = attributes
     }
 
 

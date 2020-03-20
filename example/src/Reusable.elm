@@ -59,7 +59,7 @@ snackbar addSnackbar =
             |> Element.paragraph []
         }
     ]
-    |> Element.column (Grid.simple ++ Card.small)
+    |> Element.column (Grid.simple ++ Card.large)
 
 sortTable : SortTable.Model -> Element Msg
 sortTable model =
@@ -124,7 +124,7 @@ sortTable model =
             })
         |> Element.table Grid.simple
     ]
-    |> Element.column (Grid.simple ++ Card.small)
+    |> Element.column (Grid.simple ++ Card.large)
 
 view : { addSnackbar : String -> msg
     , msgMapper : Msg -> msg

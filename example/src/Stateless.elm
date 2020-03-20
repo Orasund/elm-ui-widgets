@@ -3,6 +3,7 @@ module Stateless exposing (Model,Msg,init,update,view)
 import Element exposing (Element)
 import Element.Input as Input
 import Element.Background as Background
+import Element.Border as Border
 import Set exposing (Set)
 import Framework.Grid as Grid
 import Framework.Button as Button
@@ -23,12 +24,14 @@ type alias Model =
     , multiSelected : Set Int
     , isCollapsed : Bool
     , carousel : Int
+    , tab : Int
     }
 
 type Msg =
     ChangedSelected Int
     | ChangedMultiSelected Int
     | ToggleCollapsable Bool
+    | ChangedTab Int
     | SetCarousel Int
 
 init : Model
@@ -37,6 +40,7 @@ init =
     , multiSelected = Set.empty
     , isCollapsed = False
     , carousel = 0
+    , tab = 1
     }
 
 update : Msg -> Model -> (Model,Cmd Msg)
@@ -75,6 +79,9 @@ update msg model =
                 }
             , Cmd.none
             )
+        
+        ChangedTab int ->
+            ( {model | tab = int }, Cmd.none )
 
 select : Model -> Element Msg
 select model =
@@ -84,28 +91,19 @@ select model =
         , options = [ 1, 2, 42 ]
         , label = String.fromInt >> Element.text
         , onChange = ChangedSelected
-        }
-        |> List.indexedMap (\i (config,selected)->
-            Input.button 
-            (Button.simple
-            ++ (if i == 0 then
-                    Group.left
-                else if i == 2 then
-                    Group.right
-                else
-                    Group.center)
+        , attributes = \selected ->
+            Button.simple
+            ++ Group.center
             ++ (if selected then
-                                Color.primary
+                Color.primary
 
-                            else
-                                []
-                           )
+            else
+                []
             )
-            config
-        )
-        |> Element.row Grid.compact
+        }
+        |> Element.row (Grid.compact)
     ]
-        |> Element.column (Grid.simple ++ Card.small)
+        |> Element.column (Grid.simple ++ Card.large)
 
 multiSelect : Model -> Element Msg
 multiSelect model =
@@ -115,28 +113,19 @@ multiSelect model =
         , options = [ 1, 2, 42 ]
         , label = String.fromInt >> Element.text
         , onChange = ChangedMultiSelected
-        }
-        |> List.indexedMap (\i (config,selected)->
-            Input.button 
+        , attributes = \selected ->
             (Button.simple
-            ++ (if i == 0 then
-                    Group.left
-                else if i == 2 then
-                    Group.right
-                else
-                    Group.center)
-            ++ (if selected then
-                                Color.primary
+            ++ Group.center
+            ++ if selected then
+                Color.primary
 
-                            else
-                                []
-                           )
+            else
+                []
             )
-            config
-        )
+        }
         |> Element.row Grid.compact
     ]
-        |> Element.column (Grid.simple ++ Card.small)
+        |> Element.column (Grid.simple ++ Card.large)
     
 
 collapsable : Model -> Element Msg
@@ -156,7 +145,41 @@ collapsable model =
         ,content = Element.text <| "Hello World"
         }
     ]
-    |> Element.column (Grid.simple ++ Card.small)
+    |> Element.column (Grid.simple ++ Card.large)
+
+tab : Model -> Element Msg
+tab model =
+    [Element.el Heading.h3 <| Element.text "Tab"
+    ,Widget.tab Grid.simple
+        { selected = model.tab
+        , options = [1,2,3]
+        , onChange = ChangedTab
+        , label = \int -> "Tab " ++ String.fromInt int |> Element.text
+        , content = \selected ->
+            (case selected of
+                1 ->
+                    "This is Tab 1"
+                2 ->
+                    "This is the second tab"
+                3 ->
+                    "The thrid and last tab"
+                _ ->
+                    "Please select a tab"
+                )
+            |>Element.text
+            |> Element.el (Card.small ++ Group.bottom)
+        , attributes = \selected -> 
+            (Button.simple 
+              ++ Group.top
+              ++ if selected then
+                    Color.primary
+                 else
+                    []
+            )
+        }
+    ]
+    |> Element.column (Grid.simple ++ Card.large)
+
 
 dialog : msg -> Model -> Element msg
 dialog showDialog model =
@@ -166,7 +189,7 @@ dialog showDialog model =
         , label = Element.text <| "Show Dialog"
         }
     ]
-    |> Element.column (Grid.simple ++ Card.small)
+    |> Element.column (Grid.simple ++ Card.large)
 
 carousel : Model -> Element Msg
 carousel model =
@@ -196,7 +219,7 @@ carousel model =
                 |> Element.row (Grid.simple ++ [Element.centerX, Element.width<| Element.shrink])
             }
     ]
-    |> Element.column (Grid.simple ++ Card.small)
+    |> Element.column (Grid.simple ++ Card.large)
     
 
 view : { msgMapper : Msg -> msg, showDialog : msg} -> Model -> Element msg
@@ -215,5 +238,6 @@ view {msgMapper,showDialog} model =
             , collapsable model |> Element.map msgMapper
             , dialog showDialog model
             , carousel model |> Element.map msgMapper
+            , tab model |> Element.map msgMapper
             ]
         ]
