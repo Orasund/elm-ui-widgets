@@ -1,6 +1,6 @@
 # Elm-Ui-Widgets
 
-Usefull Widgets written in for Elm-ui.
+Usefull Widgets written for Elm-ui.
 These include:
 
 * Select
@@ -13,3 +13,5 @@ These include:
 * Filter Select
 * Validated Input
 * Scrolling Nav
+
+Check out the [examples](https://orasund.github.io/elm-ui-widgets/)

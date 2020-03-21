@@ -5414,7 +5414,7 @@ var $author$project$Component$init = {
 var $author$project$Widget$SortTable$sortBy = $elm$core$Basics$identity;
 var $author$project$Reusable$init = $author$project$Widget$SortTable$sortBy(
 	{asc: true, title: 'Name'});
-var $author$project$Stateless$init = {carousel: 0, isCollapsed: false, multiSelected: $elm$core$Set$empty, selected: $elm$core$Maybe$Nothing};
+var $author$project$Stateless$init = {carousel: 0, isCollapsed: false, multiSelected: $elm$core$Set$empty, selected: $elm$core$Maybe$Nothing, tab: 1};
 var $elm_community$intdict$IntDict$Empty = {$: 'Empty'};
 var $elm_community$intdict$IntDict$empty = $elm_community$intdict$IntDict$Empty;
 var $author$project$Widget$ScrollingNav$GotHeaderPos = F2(
@@ -5840,9 +5840,9 @@ var $author$project$Example$subscriptions = function (model) {
 				A2($elm$core$Platform$Sub$map, $author$project$Example$ScrollingNavSpecific, $author$project$Widget$ScrollingNav$subscriptions),
 				A2(
 				$elm$time$Time$every,
-				500,
+				50,
 				$elm$core$Basics$always(
-					$author$project$Example$TimePassed(500)))
+					$author$project$Example$TimePassed(50)))
 			]));
 };
 var $author$project$Example$ComponentSpecific = function (a) {
@@ -6477,12 +6477,19 @@ var $author$project$Stateless$update = F2(
 						model,
 						{isCollapsed: bool}),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'SetCarousel':
 				var _int = msg.a;
 				return _Utils_Tuple2(
 					((_int < 0) || (_int > 3)) ? model : _Utils_update(
 						model,
 						{carousel: _int}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				var _int = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{tab: _int}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -13140,18 +13147,21 @@ var $author$project$Widget$select = function (_v0) {
 	var options = _v0.options;
 	var label = _v0.label;
 	var onChange = _v0.onChange;
+	var attributes = _v0.attributes;
 	return A2(
 		$elm$core$List$map,
 		function (a) {
-			return _Utils_Tuple2(
+			return A2(
+				$mdgriffith$elm_ui$Element$Input$button,
+				attributes(
+					_Utils_eq(
+						selected,
+						$elm$core$Maybe$Just(a))),
 				{
 					label: label(a),
 					onPress: $elm$core$Maybe$Just(
 						onChange(a))
-				},
-				_Utils_eq(
-					selected,
-					$elm$core$Maybe$Just(a)));
+				});
 		},
 		options);
 };
@@ -13332,7 +13342,6 @@ var $Orasund$elm_ui_framework$Framework$Input$simple = _List_fromArray(
 		$mdgriffith$elm_ui$Element$Background$color($Orasund$elm_ui_framework$Framework$Color$lighterGrey),
 		$mdgriffith$elm_ui$Element$Font$color($Orasund$elm_ui_framework$Framework$Color$darkerGrey)
 	]);
-var $Orasund$elm_ui_framework$Framework$Card$small = $Orasund$elm_ui_framework$Framework$Card$withSize(240);
 var $author$project$Widget$FilterSelect$ChangedRaw = function (a) {
 	return {$: 'ChangedRaw', a: a};
 };
@@ -14403,7 +14412,7 @@ var $jasonliang512$elm_heroicons$Heroicons$Solid$x = function (attrs) {
 var $author$project$Component$filterSelect = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$small),
+		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
 		_List_fromArray(
 			[
 				A2(
@@ -14488,7 +14497,7 @@ var $author$project$Component$filterSelect = function (model) {
 var $Orasund$elm_ui_framework$Framework$Heading$h2 = $Orasund$elm_ui_framework$Framework$Heading$h(2);
 var $author$project$Component$scrollingNavCard = A2(
 	$mdgriffith$elm_ui$Element$column,
-	_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$small),
+	_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
 	_List_fromArray(
 		[
 			A2(
@@ -14615,7 +14624,7 @@ var $author$project$Widget$ValidatedInput$view = F3(
 var $author$project$Component$validatedInput = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$small),
+		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
 		_List_fromArray(
 			[
 				A2(
@@ -14696,7 +14705,7 @@ var $author$project$Component$view = function (model) {
 var $author$project$Reusable$snackbar = function (addSnackbar) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$small),
+		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
 		_List_fromArray(
 			[
 				A2(
@@ -15104,7 +15113,7 @@ var $author$project$Widget$SortTable$view = function (_v0) {
 var $author$project$Reusable$sortTable = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$small),
+		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
 		_List_fromArray(
 			[
 				A2(
@@ -15394,7 +15403,7 @@ var $Orasund$elm_ui_framework$Framework$Color$yellow = A3($mdgriffith$elm_ui$Ele
 var $author$project$Stateless$carousel = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$small),
+		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
 		_List_fromArray(
 			[
 				A2(
@@ -15497,7 +15506,7 @@ var $Orasund$elm_ui_framework$Framework$Heading$h4 = $Orasund$elm_ui_framework$F
 var $author$project$Stateless$collapsable = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$small),
+		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
 		_List_fromArray(
 			[
 				A2(
@@ -15536,7 +15545,7 @@ var $author$project$Stateless$dialog = F2(
 	function (showDialog, model) {
 		return A2(
 			$mdgriffith$elm_ui$Element$column,
-			_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$small),
+			_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
 			_List_fromArray(
 				[
 					A2(
@@ -15560,23 +15569,26 @@ var $author$project$Widget$multiSelect = function (_v0) {
 	var options = _v0.options;
 	var label = _v0.label;
 	var onChange = _v0.onChange;
+	var attributes = _v0.attributes;
 	return A2(
 		$elm$core$List$map,
 		function (a) {
-			return _Utils_Tuple2(
+			return A2(
+				$mdgriffith$elm_ui$Element$Input$button,
+				attributes(
+					A2($elm$core$Set$member, a, selected)),
 				{
 					label: label(a),
 					onPress: $elm$core$Maybe$Just(
 						onChange(a))
-				},
-				A2($elm$core$Set$member, a, selected));
+				});
 		},
 		options);
 };
 var $author$project$Stateless$multiSelect = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$small),
+		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
 		_List_fromArray(
 			[
 				A2(
@@ -15588,21 +15600,30 @@ var $author$project$Stateless$multiSelect = function (model) {
 				$Orasund$elm_ui_framework$Framework$Grid$compact,
 				A2(
 					$elm$core$List$indexedMap,
-					F2(
-						function (i, _v0) {
-							var config = _v0.a;
-							var selected = _v0.b;
-							return A2(
-								$mdgriffith$elm_ui$Element$Input$button,
+					function (i) {
+						return $mdgriffith$elm_ui$Element$el(
+							_Utils_ap(
+								$Orasund$elm_ui_framework$Framework$Button$simple,
 								_Utils_ap(
-									$Orasund$elm_ui_framework$Framework$Button$simple,
-									_Utils_ap(
-										(!i) ? $Orasund$elm_ui_framework$Framework$Group$left : ((i === 2) ? $Orasund$elm_ui_framework$Framework$Group$right : $Orasund$elm_ui_framework$Framework$Group$center),
-										selected ? $Orasund$elm_ui_framework$Framework$Color$primary : _List_Nil)),
-								config);
-						}),
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$padding(0)
+										]),
+									(!i) ? $Orasund$elm_ui_framework$Framework$Group$left : ((i === 2) ? $Orasund$elm_ui_framework$Framework$Group$right : $Orasund$elm_ui_framework$Framework$Group$center))));
+					},
 					$author$project$Widget$multiSelect(
 						{
+							attributes: function (selected) {
+								return _Utils_ap(
+									$Orasund$elm_ui_framework$Framework$Button$simple,
+									_Utils_ap(
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$Border$width(0),
+												$mdgriffith$elm_ui$Element$Border$rounded(0)
+											]),
+										selected ? $Orasund$elm_ui_framework$Framework$Color$primary : _List_Nil));
+							},
 							label: A2($elm$core$Basics$composeR, $elm$core$String$fromInt, $mdgriffith$elm_ui$Element$text),
 							onChange: $author$project$Stateless$ChangedMultiSelected,
 							options: _List_fromArray(
@@ -15617,7 +15638,7 @@ var $author$project$Stateless$ChangedSelected = function (a) {
 var $author$project$Stateless$select = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$small),
+		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
 		_List_fromArray(
 			[
 				A2(
@@ -15629,27 +15650,127 @@ var $author$project$Stateless$select = function (model) {
 				$Orasund$elm_ui_framework$Framework$Grid$compact,
 				A2(
 					$elm$core$List$indexedMap,
-					F2(
-						function (i, _v0) {
-							var config = _v0.a;
-							var selected = _v0.b;
-							return A2(
-								$mdgriffith$elm_ui$Element$Input$button,
+					function (i) {
+						return $mdgriffith$elm_ui$Element$el(
+							_Utils_ap(
+								$Orasund$elm_ui_framework$Framework$Button$simple,
 								_Utils_ap(
-									$Orasund$elm_ui_framework$Framework$Button$simple,
-									_Utils_ap(
-										(!i) ? $Orasund$elm_ui_framework$Framework$Group$left : ((i === 2) ? $Orasund$elm_ui_framework$Framework$Group$right : $Orasund$elm_ui_framework$Framework$Group$center),
-										selected ? $Orasund$elm_ui_framework$Framework$Color$primary : _List_Nil)),
-								config);
-						}),
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$padding(0)
+										]),
+									(!i) ? $Orasund$elm_ui_framework$Framework$Group$left : ((i === 2) ? $Orasund$elm_ui_framework$Framework$Group$right : $Orasund$elm_ui_framework$Framework$Group$center))));
+					},
 					$author$project$Widget$select(
 						{
+							attributes: function (selected) {
+								return _Utils_ap(
+									$Orasund$elm_ui_framework$Framework$Button$simple,
+									_Utils_ap(
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$Border$width(0),
+												$mdgriffith$elm_ui$Element$Border$rounded(0)
+											]),
+										selected ? $Orasund$elm_ui_framework$Framework$Color$primary : _List_Nil));
+							},
 							label: A2($elm$core$Basics$composeR, $elm$core$String$fromInt, $mdgriffith$elm_ui$Element$text),
 							onChange: $author$project$Stateless$ChangedSelected,
 							options: _List_fromArray(
 								[1, 2, 42]),
 							selected: model.selected
 						})))
+			]));
+};
+var $author$project$Stateless$ChangedTab = function (a) {
+	return {$: 'ChangedTab', a: a};
+};
+var $Orasund$elm_ui_framework$Framework$Group$bottom = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Border$roundEach(
+		{bottomLeft: 4, bottomRight: 4, topLeft: 0, topRight: 0})
+	]);
+var $Orasund$elm_ui_framework$Framework$Card$small = $Orasund$elm_ui_framework$Framework$Card$withSize(240);
+var $author$project$Widget$tab = F2(
+	function (atts, _v0) {
+		var selected = _v0.selected;
+		var options = _v0.options;
+		var onChange = _v0.onChange;
+		var label = _v0.label;
+		var content = _v0.content;
+		var attributes = _v0.attributes;
+		return A2(
+			$mdgriffith$elm_ui$Element$column,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					atts,
+					$author$project$Widget$select(
+						{
+							attributes: attributes,
+							label: label,
+							onChange: onChange,
+							options: options,
+							selected: $elm$core$Maybe$Just(selected)
+						})),
+					content(selected)
+				]));
+	});
+var $Orasund$elm_ui_framework$Framework$Group$top = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Border$roundEach(
+		{bottomLeft: 0, bottomRight: 0, topLeft: 4, topRight: 4})
+	]);
+var $author$project$Stateless$tab = function (model) {
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
+		_List_fromArray(
+			[
+				A2(
+				$mdgriffith$elm_ui$Element$el,
+				$Orasund$elm_ui_framework$Framework$Heading$h3,
+				$mdgriffith$elm_ui$Element$text('Tab')),
+				A2(
+				$author$project$Widget$tab,
+				$Orasund$elm_ui_framework$Framework$Grid$simple,
+				{
+					attributes: function (selected) {
+						return _Utils_ap(
+							$Orasund$elm_ui_framework$Framework$Button$simple,
+							_Utils_ap(
+								$Orasund$elm_ui_framework$Framework$Group$top,
+								selected ? $Orasund$elm_ui_framework$Framework$Color$primary : _List_Nil));
+					},
+					content: function (selected) {
+						return A2(
+							$mdgriffith$elm_ui$Element$el,
+							_Utils_ap($Orasund$elm_ui_framework$Framework$Card$small, $Orasund$elm_ui_framework$Framework$Group$bottom),
+							$mdgriffith$elm_ui$Element$text(
+								function () {
+									switch (selected) {
+										case 1:
+											return 'This is Tab 1';
+										case 2:
+											return 'This is the second tab';
+										case 3:
+											return 'The thrid and last tab';
+										default:
+											return 'Please select a tab';
+									}
+								}()));
+					},
+					label: function (_int) {
+						return $mdgriffith$elm_ui$Element$text(
+							'Tab ' + $elm$core$String$fromInt(_int));
+					},
+					onChange: $author$project$Stateless$ChangedTab,
+					options: _List_fromArray(
+						[1, 2, 3]),
+					selected: model.tab
+				})
 			]));
 };
 var $author$project$Stateless$view = F2(
@@ -15691,7 +15812,11 @@ var $author$project$Stateless$view = F2(
 							A2(
 							$mdgriffith$elm_ui$Element$map,
 							msgMapper,
-							$author$project$Stateless$carousel(model))
+							$author$project$Stateless$carousel(model)),
+							A2(
+							$mdgriffith$elm_ui$Element$map,
+							msgMapper,
+							$author$project$Stateless$tab(model))
 						]))
 				]));
 	});
@@ -15846,6 +15971,7 @@ var $author$project$Widget$ScrollingNav$viewSections = F2(
 		var label = _v0.label;
 		var fromString = _v0.fromString;
 		var msgMapper = _v0.msgMapper;
+		var attributes = _v0.attributes;
 		var arrangement = _v1.arrangement;
 		var scrollPos = _v1.scrollPos;
 		var labels = _v1.labels;
@@ -15864,6 +15990,7 @@ var $author$project$Widget$ScrollingNav$viewSections = F2(
 						$elm$core$Maybe$Just,
 						A2($elm_community$intdict$IntDict$before, scrollPos + 1, positions)))));
 		return {
+			attributes: attributes,
 			label: function (elem) {
 				return label(
 					labels(elem));
@@ -15902,40 +16029,33 @@ var $author$project$Example$view = function (model) {
 						A2(
 							$mdgriffith$elm_ui$Element$row,
 							_Utils_ap($Orasund$elm_ui_framework$Framework$Color$dark, $Orasund$elm_ui_framework$Framework$Grid$compact),
-							A2(
-								$elm$core$List$map,
-								function (_v2) {
-									var config = _v2.a;
-									var selected = _v2.b;
-									return A2(
-										$mdgriffith$elm_ui$Element$Input$button,
-										_Utils_ap(
-											$Orasund$elm_ui_framework$Framework$Button$simple,
-											_Utils_ap(
-												$Orasund$elm_ui_framework$Framework$Group$center,
-												selected ? $Orasund$elm_ui_framework$Framework$Color$primary : $Orasund$elm_ui_framework$Framework$Color$dark)),
-										config);
-								},
-								$author$project$Widget$select(
-									A2(
-										$author$project$Widget$ScrollingNav$viewSections,
-										{
-											fromString: function (string) {
-												switch (string) {
-													case 'Component Views':
-														return $elm$core$Maybe$Just($author$project$Example$ComponentViews);
-													case 'Reusable Views':
-														return $elm$core$Maybe$Just($author$project$Example$ReusableViews);
-													case 'Stateless Views':
-														return $elm$core$Maybe$Just($author$project$Example$StatelessViews);
-													default:
-														return $elm$core$Maybe$Nothing;
-												}
-											},
-											label: $mdgriffith$elm_ui$Element$text,
-											msgMapper: $author$project$Example$ScrollingNavSpecific
+							$author$project$Widget$select(
+								A2(
+									$author$project$Widget$ScrollingNav$viewSections,
+									{
+										attributes: function (selected) {
+											return _Utils_ap(
+												$Orasund$elm_ui_framework$Framework$Button$simple,
+												_Utils_ap(
+													$Orasund$elm_ui_framework$Framework$Group$center,
+													selected ? $Orasund$elm_ui_framework$Framework$Color$primary : $Orasund$elm_ui_framework$Framework$Color$dark));
 										},
-										model.scrollingNav))))))),
+										fromString: function (string) {
+											switch (string) {
+												case 'Component Views':
+													return $elm$core$Maybe$Just($author$project$Example$ComponentViews);
+												case 'Reusable Views':
+													return $elm$core$Maybe$Just($author$project$Example$ReusableViews);
+												case 'Stateless Views':
+													return $elm$core$Maybe$Just($author$project$Example$StatelessViews);
+												default:
+													return $elm$core$Maybe$Nothing;
+											}
+										},
+										label: $mdgriffith$elm_ui$Element$text,
+										msgMapper: $author$project$Example$ScrollingNavSpecific
+									},
+									model.scrollingNav)))))),
 				$mdgriffith$elm_ui$Element$inFront(
 				A2(
 					$elm$core$Maybe$withDefault,
