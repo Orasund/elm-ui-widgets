@@ -5,12 +5,12 @@
     "license": "BSD-3-Clause",
     "version": "1.0.0",
     "exposed-modules": [
-        "View",
-        "View.FilterSelect",
-        "View.ValidatedInput",
-        "View.ScrollingNav",
-        "View.Snackbar",
-        "View.SortTable"
+        "Widget",
+        "Widget.FilterSelect",
+        "Widget.ValidatedInput",
+        "Widget.ScrollingNav",
+        "Widget.Snackbar",
+        "Widget.SortTable"
     ],
     "elm-version": "0.19.0 <= v < 0.20.0",
     "dependencies": {

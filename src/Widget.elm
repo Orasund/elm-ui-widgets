@@ -1,11 +1,8 @@
-module Widget exposing
-    ( select, multiSelect, collapsable, carousel, dialog
-    , tab
-    )
+module Widget exposing (select, multiSelect, collapsable, carousel, dialog, tab)
 
 {-| This module contains functions for displaying data.
 
-@docs select, multiSelect, collapsable, carousel, dialog
+@docs select, multiSelect, collapsable, carousel, dialog, tab
 
 -}
 
@@ -101,6 +98,8 @@ collapsable { onToggle, isCollapsed, label, content } =
                )
 
 
+{-| Displayes a list of contents in a tab
+-}
 tab :
     List (Attribute msg)
     ->
