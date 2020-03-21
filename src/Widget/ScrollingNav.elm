@@ -28,29 +28,30 @@ import Time
 
 
 {-| -}
-type alias Model elem =
-    { labels : elem -> String
+type alias Model section =
+    { labels : section -> String
     , positions : IntDict String
-    , arrangement : List elem
+    , arrangement : List section
     , scrollPos : Int
     }
 
 
 {-| -}
-type Msg elem
-    = GotHeaderPos elem (Result Dom.Error Int)
+type Msg section
+    = GotHeaderPos section (Result Dom.Error Int)
     | ChangedViewport (Result Dom.Error ())
     | SyncPosition Int
-    | JumpTo elem
+    | JumpTo section
     | TimePassed
 
 
-{-| -}
+{-| The intial state include the labels and the arrangement of the sections
+-}
 init :
-    { labels : elem -> String
-    , arrangement : List elem
+    { labels : section -> String
+    , arrangement : List section
     }
-    -> ( Model elem, Cmd (Msg elem) )
+    -> ( Model section, Cmd (Msg section) )
 init { labels, arrangement } =
     { labels = labels
     , positions = IntDict.empty
@@ -65,7 +66,7 @@ init { labels, arrangement } =
 
 
 {-| -}
-update : Msg elem -> Model elem -> ( Model elem, Cmd (Msg elem) )
+update : Msg section -> Model section -> ( Model section, Cmd (Msg section) )
 update msg model =
     case msg of
         GotHeaderPos label result ->
@@ -113,8 +114,9 @@ subscriptions =
     Time.every 1000 (always TimePassed)
 
 
-{-| -}
-jumpTo : elem -> Model elem -> Cmd (Msg msg)
+{-| scrolls the screen to the respective section
+-}
+jumpTo : section -> Model section -> Cmd (Msg msg)
 jumpTo section { labels } =
     Dom.getElement (section |> labels)
         |> Task.andThen
@@ -125,7 +127,7 @@ jumpTo section { labels } =
 
 
 {-| -}
-syncPositions : Model elem -> Cmd (Msg elem)
+syncPositions : Model section -> Cmd (Msg section)
 syncPositions { labels, arrangement } =
     arrangement
         |> List.map
@@ -145,16 +147,16 @@ syncPositions { labels, arrangement } =
 {-| -}
 viewSections :
     { label : String -> Element msg
-    , fromString : String -> Maybe elem
-    , msgMapper : Msg elem -> msg
+    , fromString : String -> Maybe section
+    , msgMapper : Msg section -> msg
     , attributes : Bool -> List (Attribute msg)
     }
-    -> Model elem
+    -> Model section
     ->
-        { selected : Maybe elem
-        , options : List elem
-        , label : elem -> Element msg
-        , onChange : elem -> msg
+        { selected : Maybe section
+        , options : List section
+        , label : section -> Element msg
+        , onChange : section -> msg
         , attributes : Bool -> List (Attribute msg)
         }
 viewSections { label, fromString, msgMapper, attributes } { arrangement, scrollPos, labels, positions } =
@@ -177,8 +179,8 @@ viewSections { label, fromString, msgMapper, attributes } { arrangement, scrollP
 
 {-| -}
 view :
-    (elem -> Element msg)
-    -> Model elem
+    (section -> Element msg)
+    -> Model section
     -> Element msg
 view asElement { labels, arrangement } =
     arrangement

@@ -1,6 +1,7 @@
 module Example exposing (main)
 
 import Browser
+import Component
 import Element exposing (Element)
 import Element.Input as Input
 import Framework
@@ -14,21 +15,22 @@ import Framework.Input as Input
 import Framework.Tag as Tag
 import Html exposing (Html)
 import Html.Attributes as Attributes
+import Reusable
 import Set exposing (Set)
+import Stateless
+import Time
 import Widget
 import Widget.FilterSelect as FilterSelect
 import Widget.ScrollingNav as ScrollingNav
-import Widget.ValidatedInput as ValidatedInput
 import Widget.Snackbar as Snackbar
-import Stateless
-import Reusable
-import Component
-import Time
+import Widget.ValidatedInput as ValidatedInput
+
 
 type Section
     = ComponentViews
     | ReusableViews
     | StatelessViews
+
 
 type alias Model =
     { component : Component.Model
@@ -38,6 +40,7 @@ type alias Model =
     , snackbar : Snackbar.Model String
     , displayDialog : Bool
     }
+
 
 type Msg
     = StatelessSpecific Stateless.Msg
@@ -59,6 +62,7 @@ init () =
                         case section of
                             ComponentViews ->
                                 "Component Views"
+
                             ReusableViews ->
                                 "Reusable Views"
 
@@ -67,39 +71,37 @@ init () =
                 , arrangement = [ StatelessViews, ReusableViews, ComponentViews ]
                 }
     in
-    ({ component = Component.init
+    ( { component = Component.init
       , stateless = Stateless.init
       , reusable = Reusable.init
       , scrollingNav = scrollingNav
       , snackbar = Snackbar.init
       , displayDialog = False
       }
-    
     , cmd |> Cmd.map ScrollingNavSpecific
     )
-
-
 
 
 view : Model -> Html Msg
 view model =
     [ Element.el [ Element.height <| Element.px <| 42 ] <| Element.none
     , [ Element.el Heading.h1 <| Element.text "Elm-Ui-Widgets"
-        , model.scrollingNav
+      , model.scrollingNav
             |> ScrollingNav.view
                 (\section ->
                     case section of
                         ComponentViews ->
                             model.component
-                            |> Component.view
-                            |> Element.map ComponentSpecific
+                                |> Component.view
+                                |> Element.map ComponentSpecific
+
                         ReusableViews ->
-                            Reusable.view 
-                                {addSnackbar = AddSnackbar
-                                ,model = model.reusable 
-                                ,msgMapper = ReusableSpecific
+                            Reusable.view
+                                { addSnackbar = AddSnackbar
+                                , model = model.reusable
+                                , msgMapper = ReusableSpecific
                                 }
-                                
+
                         StatelessViews ->
                             Stateless.view
                                 { msgMapper = StatelessSpecific
@@ -107,7 +109,7 @@ view model =
                                 }
                                 model.stateless
                 )
-        ]
+      ]
         |> Element.column Framework.container
     ]
         |> Element.column Grid.compact
@@ -120,6 +122,7 @@ view model =
                                 case string of
                                     "Component Views" ->
                                         Just ComponentViews
+
                                     "Reusable Views" ->
                                         Just ReusableViews
 
@@ -128,16 +131,18 @@ view model =
 
                                     _ ->
                                         Nothing
-                        , label = Element.text 
+                        , label = Element.text
                         , msgMapper = ScrollingNavSpecific
-                        , attributes = \selected -> Button.simple
-                            ++ Group.center
-                            ++ (if selected then
-                                    Color.primary
+                        , attributes =
+                            \selected ->
+                                Button.simple
+                                    ++ Group.center
+                                    ++ (if selected then
+                                            Color.primary
 
-                                else
-                                    Color.dark
-                                )
+                                        else
+                                            Color.dark
+                                       )
                         }
                     |> Widget.select
                     |> Element.row
@@ -157,38 +162,41 @@ view model =
                         )
                 )
             , Element.inFront <|
-                ( model.snackbar
+                (model.snackbar
                     |> Snackbar.current
                     |> Maybe.map
-                        (Element.text >>
-                            List.singleton >>
-                            Element.paragraph (Card.simple ++ Color.dark)
-                            >> Element.el [Element.padding 8,Element.alignBottom
-                            , Element.alignRight]
-
-
+                        (Element.text
+                            >> List.singleton
+                            >> Element.paragraph (Card.simple ++ Color.dark)
+                            >> Element.el
+                                [ Element.padding 8
+                                , Element.alignBottom
+                                , Element.alignRight
+                                ]
                         )
                     |> Maybe.withDefault Element.none
                 )
             , Element.inFront <|
                 if model.displayDialog then
-                    Widget.dialog {
-                        onDismiss = Just <| ToggleDialog False
-                        ,content =
+                    Widget.dialog
+                        { onDismiss = Just <| ToggleDialog False
+                        , content =
                             [ Element.el Heading.h3 <| Element.text "Dialog"
                             , "This is a dialog window"
-                            |> Element.text 
-                            |> List.singleton
-                            |> Element.paragraph []
-                            , Input.button (Button.simple ++ [Element.alignRight])
-                                {onPress = Just <| ToggleDialog False
+                                |> Element.text
+                                |> List.singleton
+                                |> Element.paragraph []
+                            , Input.button (Button.simple ++ [ Element.alignRight ])
+                                { onPress = Just <| ToggleDialog False
                                 , label = Element.text "Ok"
                                 }
                             ]
-                            |>Element.column (Grid.simple ++ Card.large)
-             } else Element.none
+                                |> Element.column (Grid.simple ++ Card.large)
+                        }
+
+                else
+                    Element.none
             ]
-        
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -206,14 +214,16 @@ update msg model =
                     (Cmd.map ComponentSpecific)
 
         ReusableSpecific m ->
-            (model.reusable
+            ( model.reusable
                 |> Reusable.update m
                 |> (\reusable ->
                         { model
                             | reusable = reusable
                         }
-                    ),Cmd.none)
-        
+                   )
+            , Cmd.none
+            )
+
         StatelessSpecific m ->
             model.stateless
                 |> Stateless.update m
@@ -224,7 +234,6 @@ update msg model =
                         }
                     )
                     (Cmd.map StatelessSpecific)
-        
 
         ScrollingNavSpecific m ->
             model.scrollingNav
@@ -236,29 +245,32 @@ update msg model =
                         }
                     )
                     (Cmd.map ScrollingNavSpecific)
-    
+
         TimePassed int ->
-            ({ model
-            | snackbar = model.snackbar |> Snackbar.timePassed int
-            },Cmd.none)
-        
-        AddSnackbar string ->
-            ( { model | snackbar = model.snackbar |> Snackbar.insert string}
+            ( { model
+                | snackbar = model.snackbar |> Snackbar.timePassed int
+              }
             , Cmd.none
             )
-        
-        ToggleDialog bool ->
-            ( { model | displayDialog = bool }
-            , Cmd.none 
+
+        AddSnackbar string ->
+            ( { model | snackbar = model.snackbar |> Snackbar.insert string }
+            , Cmd.none
             )
 
+        ToggleDialog bool ->
+            ( { model | displayDialog = bool }
+            , Cmd.none
+            )
+
+
 subscriptions : Model -> Sub Msg
-subscriptions model=
+subscriptions model =
     Sub.batch
-    [ScrollingNav.subscriptions
-        |> Sub.map ScrollingNavSpecific
-    , Time.every 50 (always ( TimePassed 50))
-    ]
+        [ ScrollingNav.subscriptions
+            |> Sub.map ScrollingNavSpecific
+        , Time.every 50 (always (TimePassed 50))
+        ]
 
 
 main : Program () Model Msg

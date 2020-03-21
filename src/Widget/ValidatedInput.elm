@@ -34,7 +34,8 @@ type Model err a
         }
 
 
-{-| -}
+{-| returns the raw value (the value that the user currently sees)
+-}
 getRaw : Model err a -> String
 getRaw (Model { raw, value, toString }) =
     case raw of
@@ -45,13 +46,15 @@ getRaw (Model { raw, value, toString }) =
             value |> toString
 
 
-{-| -}
+{-| returns the value (the value that has been last successfully validated)
+-}
 getValue : Model err a -> a
 getValue (Model { value }) =
     value
 
 
-{-| -}
+{-| returns the error (if one exists)
+-}
 getError : Model err a -> Maybe err
 getError (Model { err }) =
     err
@@ -64,7 +67,13 @@ type Msg
     | StartEditing
 
 
-{-| -}
+{-| The initial state contains
+
+  - `value`: starting value
+  - `validator`: a vaidation function (a decoder)
+  - `toString`: a function that returns a string representation
+
+-}
 init : { value : a, validator : String -> Result err a, toString : a -> String } -> Model err a
 init { validator, toString, value } =
     Model
@@ -116,7 +125,15 @@ update msg (Model model) =
                     Model model
 
 
-{-| -}
+{-| the view function, the parameters include
+
+  - `msgMapper`: A function wrapping the `Msg` into a `msg`
+  - `placeholder`: See Element.text for more information
+  - `label`: The (hidden) label of the input (needed for screen readers)
+  - `readOnly`: a representation of the validated value
+    (clicking on the element will turn on edit mode)
+
+-}
 view :
     List (Attribute msg)
     -> Model err a

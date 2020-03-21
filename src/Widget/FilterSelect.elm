@@ -11,7 +11,7 @@ import Element.Input as Input exposing (Placeholder)
 import Set exposing (Set)
 
 
-{-| The Model
+{-| The Model containing the raw value, the selected value and all the possible options.
 -}
 type alias Model =
     { raw : String
