@@ -1,6 +1,7 @@
 module Widget.ScrollingNav exposing
     ( Model, Msg, init, update, subscriptions, view, viewSections, current
     , jumpTo, syncPositions
+    , jumpToWithOffset
     )
 
 {-| The Scrolling Nav is a navigation bar thats updates while you scroll through
@@ -111,7 +112,7 @@ update msg model =
 {-| -}
 subscriptions : Sub (Msg msg)
 subscriptions =
-    Time.every 1000 (always TimePassed)
+    Time.every 100 (always TimePassed)
 
 
 {-| scrolls the screen to the respective section
@@ -121,10 +122,20 @@ jumpTo section { labels } =
     Dom.getElement (section |> labels)
         |> Task.andThen
             (\{ element } ->
-                Dom.setViewport 0 element.y
+                Dom.setViewport 0 (element.y)
             )
         |> Task.attempt ChangedViewport
 
+{-| scrolls the screen to the respective section with some offset
+-}
+jumpToWithOffset : Float -> section -> Model section -> Cmd (Msg msg)
+jumpToWithOffset offset section { labels } =
+    Dom.getElement (section |> labels)
+        |> Task.andThen
+            (\{ element } ->
+                Dom.setViewport 0 (element.y - offset)
+            )
+        |> Task.attempt ChangedViewport
 
 {-| -}
 syncPositions : Model section -> Cmd (Msg section)

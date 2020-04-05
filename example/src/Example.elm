@@ -33,44 +33,7 @@ import Widget.FilterSelect as FilterSelect
 import Widget.ScrollingNav as ScrollingNav
 import Widget.Snackbar as Snackbar
 import Widget.ValidatedInput as ValidatedInput
-
-
-type Section
-    = ComponentViews
-    | ReusableViews
-    | StatelessViews
-
-sectionList : List Section
-sectionList =
-    [ StatelessViews, ReusableViews, ComponentViews ]
-
-sectionToString : Section -> String
-sectionToString section =
-    case section of
-        ComponentViews ->
-            "Component"
-
-        ReusableViews ->
-            "Reusable"
-
-        StatelessViews ->
-            "Stateless"
-
-stringToSection : String -> Maybe Section
-stringToSection string =
-    case string of
-        "Component" ->
-            Just ComponentViews
-
-        "Reusable" ->
-            Just ReusableViews
-
-        "Stateless" ->
-            Just StatelessViews
-
-        _ ->
-            Nothing
-
+import Data.Section as Section exposing (Section(..))
 
 type alias LoadedModel =
     { component : Component.Model
@@ -154,8 +117,8 @@ initialModel { viewport } =
     let
         ( scrollingNav, cmd ) =
             ScrollingNav.init
-                { labels = sectionToString
-                , arrangement = sectionList
+                { labels = Section.toString
+                , arrangement = Section.asList
                 }
     in
     ( { component = Component.init
@@ -250,12 +213,12 @@ view model =
                     , deviceClass = m.deviceClass
                     , menu =
                         { selected = 
-                            sectionList
+                            Section.asList
                             |> List.indexedMap (\i s -> (i,s))
                             |> List.filterMap
                                 ( \(i,s) ->
                                     if  m.scrollingNav
-                                        |> ScrollingNav.current stringToSection
+                                        |> ScrollingNav.current Section.fromString
                                         |> (==) (Just s)
                                     then
                                         Just i
@@ -265,11 +228,11 @@ view model =
                             |> List.head
                             |> Maybe.withDefault 0
                         , items =
-                            sectionList
+                            Section.asList
                             |> List.map
                                 (\label ->
                                     { icon = Element.none
-                                    , label = label |> sectionToString
+                                    , label = label |> Section.toString
                                     , onPress = Just <| JumpTo <| label
                                     }
                                 )
@@ -297,7 +260,15 @@ view model =
                           }
                         ]
                     , onChangedSidebar = ChangedSidebar
-                    , title = "Elm-Ui-Widgets"
+                    , title = 
+                        (if m.deviceClass == Phone || m.deviceClass == Tablet then
+                            m.scrollingNav
+                            |> ScrollingNav.current Section.fromString
+                            |> Maybe.map Section.toString
+                            |> Maybe.withDefault "Elm-Ui-Widgets"
+                        else
+                            "Elm-Ui-Widgets"
+                        )
                         |> Element.text 
                         |> Element.el Heading.h1
                     }

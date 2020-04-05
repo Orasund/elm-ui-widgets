@@ -5241,18 +5241,77 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Example$ComponentViews = {$: 'ComponentViews'};
-var $author$project$Example$ReusableViews = {$: 'ReusableViews'};
+var $author$project$Example$GotViewport = function (a) {
+	return {$: 'GotViewport', a: a};
+};
+var $author$project$Example$Loading = {$: 'Loading'};
+var $elm$browser$Browser$Dom$getViewport = _Browser_withWindow(_Browser_getViewport);
+var $author$project$Example$init = function (_v0) {
+	return _Utils_Tuple2(
+		$author$project$Example$Loading,
+		A2($elm$core$Task$perform, $author$project$Example$GotViewport, $elm$browser$Browser$Dom$getViewport));
+};
+var $author$project$Example$LoadedSpecific = function (a) {
+	return {$: 'LoadedSpecific', a: a};
+};
+var $author$project$Example$Resized = function (a) {
+	return {$: 'Resized', a: a};
+};
 var $author$project$Example$ScrollingNavSpecific = function (a) {
 	return {$: 'ScrollingNavSpecific', a: a};
 };
-var $author$project$Example$StatelessViews = {$: 'StatelessViews'};
-var $elm$core$Set$Set_elm_builtin = function (a) {
-	return {$: 'Set_elm_builtin', a: a};
+var $author$project$Example$TimePassed = function (a) {
+	return {$: 'TimePassed', a: a};
 };
+var $elm$core$Basics$always = F2(
+	function (a, _v0) {
+		return a;
+	});
+var $elm$core$Platform$Sub$batch = _Platform_batch;
+var $elm$time$Time$Every = F2(
+	function (a, b) {
+		return {$: 'Every', a: a, b: b};
+	});
+var $elm$time$Time$State = F2(
+	function (taggers, processes) {
+		return {processes: processes, taggers: taggers};
+	});
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
-var $elm$core$Set$empty = $elm$core$Set$Set_elm_builtin($elm$core$Dict$empty);
+var $elm$time$Time$init = $elm$core$Task$succeed(
+	A2($elm$time$Time$State, $elm$core$Dict$empty, $elm$core$Dict$empty));
+var $elm$core$Basics$compare = _Utils_compare;
+var $elm$core$Dict$get = F2(
+	function (targetKey, dict) {
+		get:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
+				switch (_v1.$) {
+					case 'LT':
+						var $temp$targetKey = targetKey,
+							$temp$dict = left;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+					case 'EQ':
+						return $elm$core$Maybe$Just(value);
+					default:
+						var $temp$targetKey = targetKey,
+							$temp$dict = right;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+				}
+			}
+		}
+	});
 var $elm$core$Dict$Black = {$: 'Black'};
 var $elm$core$Dict$RBNode_elm_builtin = F5(
 	function (a, b, c, d, e) {
@@ -5313,7 +5372,6 @@ var $elm$core$Dict$balance = F5(
 			}
 		}
 	});
-var $elm$core$Basics$compare = _Utils_compare;
 var $elm$core$Dict$insertHelp = F3(
 	function (key, value, dict) {
 		if (dict.$ === 'RBEmpty_elm_builtin') {
@@ -5360,213 +5418,6 @@ var $elm$core$Dict$insert = F3(
 		} else {
 			var x = _v0;
 			return x;
-		}
-	});
-var $elm$core$Set$insert = F2(
-	function (key, _v0) {
-		var dict = _v0.a;
-		return $elm$core$Set$Set_elm_builtin(
-			A3($elm$core$Dict$insert, key, _Utils_Tuple0, dict));
-	});
-var $elm$core$Set$fromList = function (list) {
-	return A3($elm$core$List$foldl, $elm$core$Set$insert, $elm$core$Set$empty, list);
-};
-var $author$project$Widget$FilterSelect$init = function (options) {
-	return {options: options, raw: '', selected: $elm$core$Maybe$Nothing};
-};
-var $author$project$Widget$ValidatedInput$Model = function (a) {
-	return {$: 'Model', a: a};
-};
-var $author$project$Widget$ValidatedInput$init = function (_v0) {
-	var validator = _v0.validator;
-	var toString = _v0.toString;
-	var value = _v0.value;
-	return $author$project$Widget$ValidatedInput$Model(
-		{err: $elm$core$Maybe$Nothing, raw: $elm$core$Maybe$Nothing, toString: toString, validator: validator, value: value});
-};
-var $author$project$Component$init = {
-	filterSelect: $author$project$Widget$FilterSelect$init(
-		$elm$core$Set$fromList(
-			_List_fromArray(
-				['Apple', 'Kiwi', 'Strawberry', 'Pineapple', 'Mango', 'Grapes', 'Watermelon', 'Orange', 'Lemon', 'Blueberry', 'Grapefruit', 'Coconut', 'Cherry', 'Banana']))),
-	validatedInput: $author$project$Widget$ValidatedInput$init(
-		{
-			toString: function (_v0) {
-				var first = _v0.a;
-				var second = _v0.b;
-				return first + (' ' + second);
-			},
-			validator: function (string) {
-				var _v1 = A2($elm$core$String$split, ' ', string);
-				if ((_v1.b && _v1.b.b) && (!_v1.b.b.b)) {
-					var first = _v1.a;
-					var _v2 = _v1.b;
-					var second = _v2.a;
-					return $elm$core$Result$Ok(
-						_Utils_Tuple2(first, second));
-				} else {
-					return $elm$core$Result$Err(_Utils_Tuple0);
-				}
-			},
-			value: _Utils_Tuple2('John', 'Doe')
-		})
-};
-var $author$project$Widget$SortTable$sortBy = $elm$core$Basics$identity;
-var $author$project$Reusable$init = $author$project$Widget$SortTable$sortBy(
-	{asc: true, title: 'Name'});
-var $author$project$Stateless$init = {carousel: 0, isCollapsed: false, multiSelected: $elm$core$Set$empty, selected: $elm$core$Maybe$Nothing, tab: 1};
-var $elm_community$intdict$IntDict$Empty = {$: 'Empty'};
-var $elm_community$intdict$IntDict$empty = $elm_community$intdict$IntDict$Empty;
-var $author$project$Widget$ScrollingNav$GotHeaderPos = F2(
-	function (a, b) {
-		return {$: 'GotHeaderPos', a: a, b: b};
-	});
-var $elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
-	});
-var $elm$core$Task$onError = _Scheduler_onError;
-var $elm$core$Task$attempt = F2(
-	function (resultToMessage, task) {
-		return $elm$core$Task$command(
-			$elm$core$Task$Perform(
-				A2(
-					$elm$core$Task$onError,
-					A2(
-						$elm$core$Basics$composeL,
-						A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
-						$elm$core$Result$Err),
-					A2(
-						$elm$core$Task$andThen,
-						A2(
-							$elm$core$Basics$composeL,
-							A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
-							$elm$core$Result$Ok),
-						task))));
-	});
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
-	});
-var $elm$browser$Browser$Dom$getElement = _Browser_getElement;
-var $elm$core$Basics$round = _Basics_round;
-var $author$project$Widget$ScrollingNav$syncPositions = function (_v0) {
-	var labels = _v0.labels;
-	var arrangement = _v0.arrangement;
-	return $elm$core$Platform$Cmd$batch(
-		A2(
-			$elm$core$List$map,
-			function (label) {
-				return A2(
-					$elm$core$Task$attempt,
-					$author$project$Widget$ScrollingNav$GotHeaderPos(label),
-					A2(
-						$elm$core$Task$map,
-						A2(
-							$elm$core$Basics$composeR,
-							function ($) {
-								return $.element;
-							},
-							A2(
-								$elm$core$Basics$composeR,
-								function ($) {
-									return $.y;
-								},
-								$elm$core$Basics$round)),
-						$elm$browser$Browser$Dom$getElement(
-							labels(label))));
-			},
-			arrangement));
-};
-var $author$project$Widget$ScrollingNav$init = function (_v0) {
-	var labels = _v0.labels;
-	var arrangement = _v0.arrangement;
-	return function (a) {
-		return _Utils_Tuple2(
-			a,
-			$author$project$Widget$ScrollingNav$syncPositions(a));
-	}(
-		{arrangement: arrangement, labels: labels, positions: $elm_community$intdict$IntDict$empty, scrollPos: 0});
-};
-var $turboMaCk$queue$Queue$Queue = F2(
-	function (a, b) {
-		return {$: 'Queue', a: a, b: b};
-	});
-var $turboMaCk$queue$Queue$empty = A2($turboMaCk$queue$Queue$Queue, _List_Nil, _List_Nil);
-var $author$project$Widget$Snackbar$init = {current: $elm$core$Maybe$Nothing, queue: $turboMaCk$queue$Queue$empty};
-var $elm$core$Platform$Cmd$map = _Platform_map;
-var $author$project$Example$init = function (_v0) {
-	var _v1 = $author$project$Widget$ScrollingNav$init(
-		{
-			arrangement: _List_fromArray(
-				[$author$project$Example$StatelessViews, $author$project$Example$ReusableViews, $author$project$Example$ComponentViews]),
-			labels: function (section) {
-				switch (section.$) {
-					case 'ComponentViews':
-						return 'Component Views';
-					case 'ReusableViews':
-						return 'Reusable Views';
-					default:
-						return 'Stateless Views';
-				}
-			}
-		});
-	var scrollingNav = _v1.a;
-	var cmd = _v1.b;
-	return _Utils_Tuple2(
-		{component: $author$project$Component$init, displayDialog: false, reusable: $author$project$Reusable$init, scrollingNav: scrollingNav, snackbar: $author$project$Widget$Snackbar$init, stateless: $author$project$Stateless$init},
-		A2($elm$core$Platform$Cmd$map, $author$project$Example$ScrollingNavSpecific, cmd));
-};
-var $author$project$Example$TimePassed = function (a) {
-	return {$: 'TimePassed', a: a};
-};
-var $elm$core$Basics$always = F2(
-	function (a, _v0) {
-		return a;
-	});
-var $elm$core$Platform$Sub$batch = _Platform_batch;
-var $elm$time$Time$Every = F2(
-	function (a, b) {
-		return {$: 'Every', a: a, b: b};
-	});
-var $elm$time$Time$State = F2(
-	function (taggers, processes) {
-		return {processes: processes, taggers: taggers};
-	});
-var $elm$time$Time$init = $elm$core$Task$succeed(
-	A2($elm$time$Time$State, $elm$core$Dict$empty, $elm$core$Dict$empty));
-var $elm$core$Dict$get = F2(
-	function (targetKey, dict) {
-		get:
-		while (true) {
-			if (dict.$ === 'RBEmpty_elm_builtin') {
-				return $elm$core$Maybe$Nothing;
-			} else {
-				var key = dict.b;
-				var value = dict.c;
-				var left = dict.d;
-				var right = dict.e;
-				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
-				switch (_v1.$) {
-					case 'LT':
-						var $temp$targetKey = targetKey,
-							$temp$dict = left;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-					case 'EQ':
-						return $elm$core$Maybe$Just(value);
-					default:
-						var $temp$targetKey = targetKey,
-							$temp$dict = right;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-				}
-			}
 		}
 	});
 var $elm$time$Time$addMySub = F2(
@@ -5811,6 +5662,11 @@ var $elm$time$Time$onSelfMsg = F3(
 				A2($elm$core$Task$andThen, tellTaggers, $elm$time$Time$now));
 		}
 	});
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
 var $elm$time$Time$subMap = F2(
 	function (f, _v0) {
 		var interval = _v0.a;
@@ -5828,29 +5684,480 @@ var $elm$time$Time$every = F2(
 			A2($elm$time$Time$Every, interval, tagger));
 	});
 var $elm$core$Platform$Sub$map = _Platform_map;
+var $elm$browser$Browser$Events$Window = {$: 'Window'};
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$int = _Json_decodeInt;
+var $elm$browser$Browser$Events$MySub = F3(
+	function (a, b, c) {
+		return {$: 'MySub', a: a, b: b, c: c};
+	});
+var $elm$browser$Browser$Events$State = F2(
+	function (subs, pids) {
+		return {pids: pids, subs: subs};
+	});
+var $elm$browser$Browser$Events$init = $elm$core$Task$succeed(
+	A2($elm$browser$Browser$Events$State, _List_Nil, $elm$core$Dict$empty));
+var $elm$browser$Browser$Events$nodeToKey = function (node) {
+	if (node.$ === 'Document') {
+		return 'd_';
+	} else {
+		return 'w_';
+	}
+};
+var $elm$browser$Browser$Events$addKey = function (sub) {
+	var node = sub.a;
+	var name = sub.b;
+	return _Utils_Tuple2(
+		_Utils_ap(
+			$elm$browser$Browser$Events$nodeToKey(node),
+			name),
+		sub);
+};
+var $elm$core$Dict$fromList = function (assocs) {
+	return A3(
+		$elm$core$List$foldl,
+		F2(
+			function (_v0, dict) {
+				var key = _v0.a;
+				var value = _v0.b;
+				return A3($elm$core$Dict$insert, key, value, dict);
+			}),
+		$elm$core$Dict$empty,
+		assocs);
+};
+var $elm$browser$Browser$Events$Event = F2(
+	function (key, event) {
+		return {event: event, key: key};
+	});
+var $elm$browser$Browser$Events$spawn = F3(
+	function (router, key, _v0) {
+		var node = _v0.a;
+		var name = _v0.b;
+		var actualNode = function () {
+			if (node.$ === 'Document') {
+				return _Browser_doc;
+			} else {
+				return _Browser_window;
+			}
+		}();
+		return A2(
+			$elm$core$Task$map,
+			function (value) {
+				return _Utils_Tuple2(key, value);
+			},
+			A3(
+				_Browser_on,
+				actualNode,
+				name,
+				function (event) {
+					return A2(
+						$elm$core$Platform$sendToSelf,
+						router,
+						A2($elm$browser$Browser$Events$Event, key, event));
+				}));
+	});
+var $elm$core$Dict$union = F2(
+	function (t1, t2) {
+		return A3($elm$core$Dict$foldl, $elm$core$Dict$insert, t2, t1);
+	});
+var $elm$browser$Browser$Events$onEffects = F3(
+	function (router, subs, state) {
+		var stepRight = F3(
+			function (key, sub, _v6) {
+				var deads = _v6.a;
+				var lives = _v6.b;
+				var news = _v6.c;
+				return _Utils_Tuple3(
+					deads,
+					lives,
+					A2(
+						$elm$core$List$cons,
+						A3($elm$browser$Browser$Events$spawn, router, key, sub),
+						news));
+			});
+		var stepLeft = F3(
+			function (_v4, pid, _v5) {
+				var deads = _v5.a;
+				var lives = _v5.b;
+				var news = _v5.c;
+				return _Utils_Tuple3(
+					A2($elm$core$List$cons, pid, deads),
+					lives,
+					news);
+			});
+		var stepBoth = F4(
+			function (key, pid, _v2, _v3) {
+				var deads = _v3.a;
+				var lives = _v3.b;
+				var news = _v3.c;
+				return _Utils_Tuple3(
+					deads,
+					A3($elm$core$Dict$insert, key, pid, lives),
+					news);
+			});
+		var newSubs = A2($elm$core$List$map, $elm$browser$Browser$Events$addKey, subs);
+		var _v0 = A6(
+			$elm$core$Dict$merge,
+			stepLeft,
+			stepBoth,
+			stepRight,
+			state.pids,
+			$elm$core$Dict$fromList(newSubs),
+			_Utils_Tuple3(_List_Nil, $elm$core$Dict$empty, _List_Nil));
+		var deadPids = _v0.a;
+		var livePids = _v0.b;
+		var makeNewPids = _v0.c;
+		return A2(
+			$elm$core$Task$andThen,
+			function (pids) {
+				return $elm$core$Task$succeed(
+					A2(
+						$elm$browser$Browser$Events$State,
+						newSubs,
+						A2(
+							$elm$core$Dict$union,
+							livePids,
+							$elm$core$Dict$fromList(pids))));
+			},
+			A2(
+				$elm$core$Task$andThen,
+				function (_v1) {
+					return $elm$core$Task$sequence(makeNewPids);
+				},
+				$elm$core$Task$sequence(
+					A2($elm$core$List$map, $elm$core$Process$kill, deadPids))));
+	});
+var $elm$core$List$maybeCons = F3(
+	function (f, mx, xs) {
+		var _v0 = f(mx);
+		if (_v0.$ === 'Just') {
+			var x = _v0.a;
+			return A2($elm$core$List$cons, x, xs);
+		} else {
+			return xs;
+		}
+	});
+var $elm$core$List$filterMap = F2(
+	function (f, xs) {
+		return A3(
+			$elm$core$List$foldr,
+			$elm$core$List$maybeCons(f),
+			_List_Nil,
+			xs);
+	});
+var $elm$browser$Browser$Events$onSelfMsg = F3(
+	function (router, _v0, state) {
+		var key = _v0.key;
+		var event = _v0.event;
+		var toMessage = function (_v2) {
+			var subKey = _v2.a;
+			var _v3 = _v2.b;
+			var node = _v3.a;
+			var name = _v3.b;
+			var decoder = _v3.c;
+			return _Utils_eq(subKey, key) ? A2(_Browser_decodeEvent, decoder, event) : $elm$core$Maybe$Nothing;
+		};
+		var messages = A2($elm$core$List$filterMap, toMessage, state.subs);
+		return A2(
+			$elm$core$Task$andThen,
+			function (_v1) {
+				return $elm$core$Task$succeed(state);
+			},
+			$elm$core$Task$sequence(
+				A2(
+					$elm$core$List$map,
+					$elm$core$Platform$sendToApp(router),
+					messages)));
+	});
+var $elm$browser$Browser$Events$subMap = F2(
+	function (func, _v0) {
+		var node = _v0.a;
+		var name = _v0.b;
+		var decoder = _v0.c;
+		return A3(
+			$elm$browser$Browser$Events$MySub,
+			node,
+			name,
+			A2($elm$json$Json$Decode$map, func, decoder));
+	});
+_Platform_effectManagers['Browser.Events'] = _Platform_createManager($elm$browser$Browser$Events$init, $elm$browser$Browser$Events$onEffects, $elm$browser$Browser$Events$onSelfMsg, 0, $elm$browser$Browser$Events$subMap);
+var $elm$browser$Browser$Events$subscription = _Platform_leaf('Browser.Events');
+var $elm$browser$Browser$Events$on = F3(
+	function (node, name, decoder) {
+		return $elm$browser$Browser$Events$subscription(
+			A3($elm$browser$Browser$Events$MySub, node, name, decoder));
+	});
+var $elm$browser$Browser$Events$onResize = function (func) {
+	return A3(
+		$elm$browser$Browser$Events$on,
+		$elm$browser$Browser$Events$Window,
+		'resize',
+		A2(
+			$elm$json$Json$Decode$field,
+			'target',
+			A3(
+				$elm$json$Json$Decode$map2,
+				func,
+				A2($elm$json$Json$Decode$field, 'innerWidth', $elm$json$Json$Decode$int),
+				A2($elm$json$Json$Decode$field, 'innerHeight', $elm$json$Json$Decode$int))));
+};
 var $author$project$Widget$ScrollingNav$TimePassed = {$: 'TimePassed'};
 var $author$project$Widget$ScrollingNav$subscriptions = A2(
 	$elm$time$Time$every,
-	1000,
+	100,
 	$elm$core$Basics$always($author$project$Widget$ScrollingNav$TimePassed));
 var $author$project$Example$subscriptions = function (model) {
-	return $elm$core$Platform$Sub$batch(
-		_List_fromArray(
-			[
-				A2($elm$core$Platform$Sub$map, $author$project$Example$ScrollingNavSpecific, $author$project$Widget$ScrollingNav$subscriptions),
-				A2(
-				$elm$time$Time$every,
-				50,
-				$elm$core$Basics$always(
-					$author$project$Example$TimePassed(50)))
-			]));
+	return A2(
+		$elm$core$Platform$Sub$map,
+		$author$project$Example$LoadedSpecific,
+		$elm$core$Platform$Sub$batch(
+			_List_fromArray(
+				[
+					A2($elm$core$Platform$Sub$map, $author$project$Example$ScrollingNavSpecific, $author$project$Widget$ScrollingNav$subscriptions),
+					A2(
+					$elm$time$Time$every,
+					50,
+					$elm$core$Basics$always(
+						$author$project$Example$TimePassed(50))),
+					$elm$browser$Browser$Events$onResize(
+					F2(
+						function (h, w) {
+							return $author$project$Example$Resized(
+								{height: h, width: w});
+						}))
+				])));
 };
+var $author$project$Example$Loaded = function (a) {
+	return {$: 'Loaded', a: a};
+};
+var $author$project$Data$Section$ComponentViews = {$: 'ComponentViews'};
+var $author$project$Data$Section$ReusableViews = {$: 'ReusableViews'};
+var $author$project$Data$Section$StatelessViews = {$: 'StatelessViews'};
+var $author$project$Data$Section$asList = _List_fromArray(
+	[$author$project$Data$Section$StatelessViews, $author$project$Data$Section$ReusableViews, $author$project$Data$Section$ComponentViews]);
+var $mdgriffith$elm_ui$Element$BigDesktop = {$: 'BigDesktop'};
+var $mdgriffith$elm_ui$Element$Desktop = {$: 'Desktop'};
+var $mdgriffith$elm_ui$Element$Landscape = {$: 'Landscape'};
+var $mdgriffith$elm_ui$Element$Phone = {$: 'Phone'};
+var $mdgriffith$elm_ui$Element$Portrait = {$: 'Portrait'};
+var $mdgriffith$elm_ui$Element$Tablet = {$: 'Tablet'};
+var $elm$core$Basics$min = F2(
+	function (x, y) {
+		return (_Utils_cmp(x, y) < 0) ? x : y;
+	});
+var $mdgriffith$elm_ui$Element$classifyDevice = function (window) {
+	return {
+		_class: function () {
+			var shortSide = A2($elm$core$Basics$min, window.width, window.height);
+			var longSide = A2($elm$core$Basics$max, window.width, window.height);
+			return (shortSide < 600) ? $mdgriffith$elm_ui$Element$Phone : ((longSide <= 1200) ? $mdgriffith$elm_ui$Element$Tablet : (((longSide > 1200) && (longSide <= 1920)) ? $mdgriffith$elm_ui$Element$Desktop : $mdgriffith$elm_ui$Element$BigDesktop));
+		}(),
+		orientation: (_Utils_cmp(window.width, window.height) < 0) ? $mdgriffith$elm_ui$Element$Portrait : $mdgriffith$elm_ui$Element$Landscape
+	};
+};
+var $elm$core$Set$Set_elm_builtin = function (a) {
+	return {$: 'Set_elm_builtin', a: a};
+};
+var $elm$core$Set$empty = $elm$core$Set$Set_elm_builtin($elm$core$Dict$empty);
+var $elm$core$Set$insert = F2(
+	function (key, _v0) {
+		var dict = _v0.a;
+		return $elm$core$Set$Set_elm_builtin(
+			A3($elm$core$Dict$insert, key, _Utils_Tuple0, dict));
+	});
+var $elm$core$Set$fromList = function (list) {
+	return A3($elm$core$List$foldl, $elm$core$Set$insert, $elm$core$Set$empty, list);
+};
+var $author$project$Widget$FilterSelect$init = function (options) {
+	return {options: options, raw: '', selected: $elm$core$Maybe$Nothing};
+};
+var $author$project$Widget$ValidatedInput$Model = function (a) {
+	return {$: 'Model', a: a};
+};
+var $author$project$Widget$ValidatedInput$init = function (_v0) {
+	var validator = _v0.validator;
+	var toString = _v0.toString;
+	var value = _v0.value;
+	return $author$project$Widget$ValidatedInput$Model(
+		{err: $elm$core$Maybe$Nothing, raw: $elm$core$Maybe$Nothing, toString: toString, validator: validator, value: value});
+};
+var $author$project$Component$init = {
+	filterSelect: $author$project$Widget$FilterSelect$init(
+		$elm$core$Set$fromList(
+			_List_fromArray(
+				['Apple', 'Kiwi', 'Strawberry', 'Pineapple', 'Mango', 'Grapes', 'Watermelon', 'Orange', 'Lemon', 'Blueberry', 'Grapefruit', 'Coconut', 'Cherry', 'Banana']))),
+	validatedInput: $author$project$Widget$ValidatedInput$init(
+		{
+			toString: function (_v0) {
+				var first = _v0.a;
+				var second = _v0.b;
+				return first + (' ' + second);
+			},
+			validator: function (string) {
+				var _v1 = A2($elm$core$String$split, ' ', string);
+				if ((_v1.b && _v1.b.b) && (!_v1.b.b.b)) {
+					var first = _v1.a;
+					var _v2 = _v1.b;
+					var second = _v2.a;
+					return $elm$core$Result$Ok(
+						_Utils_Tuple2(first, second));
+				} else {
+					return $elm$core$Result$Err(_Utils_Tuple0);
+				}
+			},
+			value: _Utils_Tuple2('John', 'Doe')
+		})
+};
+var $turboMaCk$queue$Queue$Queue = F2(
+	function (a, b) {
+		return {$: 'Queue', a: a, b: b};
+	});
+var $turboMaCk$queue$Queue$empty = A2($turboMaCk$queue$Queue$Queue, _List_Nil, _List_Nil);
+var $author$project$Widget$Snackbar$init = {current: $elm$core$Maybe$Nothing, queue: $turboMaCk$queue$Queue$empty};
+var $author$project$Layout$init = {sheet: $elm$core$Maybe$Nothing, snackbar: $author$project$Widget$Snackbar$init};
+var $author$project$Widget$SortTable$sortBy = $elm$core$Basics$identity;
+var $author$project$Reusable$init = $author$project$Widget$SortTable$sortBy(
+	{asc: true, title: 'Name'});
+var $author$project$Stateless$init = {carousel: 0, isCollapsed: false, multiSelected: $elm$core$Set$empty, selected: $elm$core$Maybe$Nothing, tab: 1};
+var $elm_community$intdict$IntDict$Empty = {$: 'Empty'};
+var $elm_community$intdict$IntDict$empty = $elm_community$intdict$IntDict$Empty;
+var $author$project$Widget$ScrollingNav$GotHeaderPos = F2(
+	function (a, b) {
+		return {$: 'GotHeaderPos', a: a, b: b};
+	});
+var $elm$core$Task$onError = _Scheduler_onError;
+var $elm$core$Task$attempt = F2(
+	function (resultToMessage, task) {
+		return $elm$core$Task$command(
+			$elm$core$Task$Perform(
+				A2(
+					$elm$core$Task$onError,
+					A2(
+						$elm$core$Basics$composeL,
+						A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+						$elm$core$Result$Err),
+					A2(
+						$elm$core$Task$andThen,
+						A2(
+							$elm$core$Basics$composeL,
+							A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+							$elm$core$Result$Ok),
+						task))));
+	});
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
+var $elm$browser$Browser$Dom$getElement = _Browser_getElement;
+var $elm$core$Basics$round = _Basics_round;
+var $author$project$Widget$ScrollingNav$syncPositions = function (_v0) {
+	var labels = _v0.labels;
+	var arrangement = _v0.arrangement;
+	return $elm$core$Platform$Cmd$batch(
+		A2(
+			$elm$core$List$map,
+			function (label) {
+				return A2(
+					$elm$core$Task$attempt,
+					$author$project$Widget$ScrollingNav$GotHeaderPos(label),
+					A2(
+						$elm$core$Task$map,
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.element;
+							},
+							A2(
+								$elm$core$Basics$composeR,
+								function ($) {
+									return $.y;
+								},
+								$elm$core$Basics$round)),
+						$elm$browser$Browser$Dom$getElement(
+							labels(label))));
+			},
+			arrangement));
+};
+var $author$project$Widget$ScrollingNav$init = function (_v0) {
+	var labels = _v0.labels;
+	var arrangement = _v0.arrangement;
+	return function (a) {
+		return _Utils_Tuple2(
+			a,
+			$author$project$Widget$ScrollingNav$syncPositions(a));
+	}(
+		{arrangement: arrangement, labels: labels, positions: $elm_community$intdict$IntDict$empty, scrollPos: 0});
+};
+var $elm$core$Platform$Cmd$map = _Platform_map;
+var $author$project$Data$Section$toString = function (section) {
+	switch (section.$) {
+		case 'ComponentViews':
+			return 'Component';
+		case 'ReusableViews':
+			return 'Reusable';
+		default:
+			return 'Stateless';
+	}
+};
+var $author$project$Example$initialModel = function (_v0) {
+	var viewport = _v0.viewport;
+	var _v1 = $author$project$Widget$ScrollingNav$init(
+		{arrangement: $author$project$Data$Section$asList, labels: $author$project$Data$Section$toString});
+	var scrollingNav = _v1.a;
+	var cmd = _v1.b;
+	return _Utils_Tuple2(
+		{
+			component: $author$project$Component$init,
+			deviceClass: $mdgriffith$elm_ui$Element$classifyDevice(
+				{
+					height: $elm$core$Basics$round(viewport.height),
+					width: $elm$core$Basics$round(viewport.width)
+				})._class,
+			displayDialog: false,
+			layout: $author$project$Layout$init,
+			reusable: $author$project$Reusable$init,
+			scrollingNav: scrollingNav,
+			stateless: $author$project$Stateless$init
+		},
+		A2($elm$core$Platform$Cmd$map, $author$project$Example$ScrollingNavSpecific, cmd));
+};
+var $elm$core$Tuple$mapBoth = F3(
+	function (funcA, funcB, _v0) {
+		var x = _v0.a;
+		var y = _v0.b;
+		return _Utils_Tuple2(
+			funcA(x),
+			funcB(y));
+	});
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Example$ComponentSpecific = function (a) {
 	return {$: 'ComponentSpecific', a: a};
 };
 var $author$project$Example$StatelessSpecific = function (a) {
 	return {$: 'StatelessSpecific', a: a};
 };
+var $author$project$Widget$ScrollingNav$ChangedViewport = function (a) {
+	return {$: 'ChangedViewport', a: a};
+};
+var $elm$browser$Browser$Dom$setViewport = _Browser_setViewport;
+var $author$project$Widget$ScrollingNav$jumpTo = F2(
+	function (section, _v0) {
+		var labels = _v0.labels;
+		return A2(
+			$elm$core$Task$attempt,
+			$author$project$Widget$ScrollingNav$ChangedViewport,
+			A2(
+				$elm$core$Task$andThen,
+				function (_v1) {
+					var element = _v1.element;
+					return A2($elm$browser$Browser$Dom$setViewport, 0, element.y);
+				},
+				$elm$browser$Browser$Dom$getElement(
+					labels(section))));
+	});
+var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $turboMaCk$queue$Queue$queue = F2(
 	function (fl, rl) {
 		if (!fl.b) {
@@ -5893,15 +6200,20 @@ var $author$project$Widget$Snackbar$insertFor = F3(
 		}
 	});
 var $author$project$Widget$Snackbar$insert = $author$project$Widget$Snackbar$insertFor(10000);
-var $elm$core$Tuple$mapBoth = F3(
-	function (funcA, funcB, _v0) {
-		var x = _v0.a;
-		var y = _v0.b;
-		return _Utils_Tuple2(
-			funcA(x),
-			funcB(y));
+var $author$project$Layout$queueMessage = F2(
+	function (message, layout) {
+		return _Utils_update(
+			layout,
+			{
+				snackbar: A2($author$project$Widget$Snackbar$insert, message, layout.snackbar)
+			});
 	});
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $author$project$Layout$setSidebar = F2(
+	function (direction, layout) {
+		return _Utils_update(
+			layout,
+			{sheet: direction});
+	});
 var $turboMaCk$queue$Queue$dequeue = function (_v0) {
 	var fl = _v0.a;
 	var rl = _v0.b;
@@ -5965,6 +6277,19 @@ var $author$project$Widget$Snackbar$timePassed = F2(
 							$elm$core$Basics$add(-ms)),
 						model.current)
 				});
+		}
+	});
+var $author$project$Layout$timePassed = F2(
+	function (sec, layout) {
+		var _v0 = layout.sheet;
+		if (_v0.$ === 'Nothing') {
+			return _Utils_update(
+				layout,
+				{
+					snackbar: A2($author$project$Widget$Snackbar$timePassed, sec, layout.snackbar)
+				});
+		} else {
+			return layout;
 		}
 	});
 var $author$project$Widget$FilterSelect$update = F2(
@@ -6496,7 +6821,6 @@ var $author$project$Stateless$update = F2(
 var $author$project$Widget$ScrollingNav$SyncPosition = function (a) {
 	return {$: 'SyncPosition', a: a};
 };
-var $elm$browser$Browser$Dom$getViewport = _Browser_withWindow(_Browser_getViewport);
 var $elm_community$intdict$IntDict$Inner = function (a) {
 	return {$: 'Inner', a: a};
 };
@@ -6643,25 +6967,6 @@ var $elm_community$intdict$IntDict$insert = F3(
 				$elm$core$Maybe$Just(value)),
 			dict);
 	});
-var $author$project$Widget$ScrollingNav$ChangedViewport = function (a) {
-	return {$: 'ChangedViewport', a: a};
-};
-var $elm$browser$Browser$Dom$setViewport = _Browser_setViewport;
-var $author$project$Widget$ScrollingNav$jumpTo = F2(
-	function (section, _v0) {
-		var labels = _v0.labels;
-		return A2(
-			$elm$core$Task$attempt,
-			$author$project$Widget$ScrollingNav$ChangedViewport,
-			A2(
-				$elm$core$Task$andThen,
-				function (_v1) {
-					var element = _v1.element;
-					return A2($elm$browser$Browser$Dom$setViewport, 0, element.y);
-				},
-				$elm$browser$Browser$Dom$getElement(
-					labels(section))));
-	});
 var $author$project$Widget$ScrollingNav$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -6722,7 +7027,7 @@ var $author$project$Widget$ScrollingNav$update = F2(
 					A2($author$project$Widget$ScrollingNav$jumpTo, elem, model));
 		}
 	});
-var $author$project$Example$update = F2(
+var $author$project$Example$updateLoaded = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'ComponentSpecific':
@@ -6774,7 +7079,7 @@ var $author$project$Example$update = F2(
 					_Utils_update(
 						model,
 						{
-							snackbar: A2($author$project$Widget$Snackbar$timePassed, _int, model.snackbar)
+							layout: A2($author$project$Layout$timePassed, _int, model.layout)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'AddSnackbar':
@@ -6783,20 +7088,93 @@ var $author$project$Example$update = F2(
 					_Utils_update(
 						model,
 						{
-							snackbar: A2($author$project$Widget$Snackbar$insert, string, model.snackbar)
+							layout: A2($author$project$Layout$queueMessage, string, model.layout)
 						}),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'ToggleDialog':
 				var bool = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{displayDialog: bool}),
 					$elm$core$Platform$Cmd$none);
+			case 'Resized':
+				var screen = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							deviceClass: $mdgriffith$elm_ui$Element$classifyDevice(screen)._class
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'ChangedSidebar':
+				var sidebar = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							layout: A2($author$project$Layout$setSidebar, sidebar, model.layout)
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'Load':
+				var string = msg.a;
+				return _Utils_Tuple2(
+					model,
+					$elm$browser$Browser$Navigation$load(string));
+			default:
+				var section = msg.a;
+				return _Utils_Tuple2(
+					model,
+					A2(
+						$elm$core$Platform$Cmd$map,
+						$author$project$Example$ScrollingNavSpecific,
+						A2($author$project$Widget$ScrollingNav$jumpTo, section, model.scrollingNav)));
 		}
+	});
+var $author$project$Example$update = F2(
+	function (msg, model) {
+		var _v0 = _Utils_Tuple2(model, msg);
+		_v0$2:
+		while (true) {
+			if (_v0.a.$ === 'Loading') {
+				if (_v0.b.$ === 'GotViewport') {
+					var _v1 = _v0.a;
+					var viewport = _v0.b.a;
+					return A3(
+						$elm$core$Tuple$mapBoth,
+						$author$project$Example$Loaded,
+						$elm$core$Platform$Cmd$map($author$project$Example$LoadedSpecific),
+						$author$project$Example$initialModel(viewport));
+				} else {
+					break _v0$2;
+				}
+			} else {
+				if (_v0.b.$ === 'LoadedSpecific') {
+					var state = _v0.a.a;
+					var m = _v0.b.a;
+					return A3(
+						$elm$core$Tuple$mapBoth,
+						$author$project$Example$Loaded,
+						$elm$core$Platform$Cmd$map($author$project$Example$LoadedSpecific),
+						A2($author$project$Example$updateLoaded, m, state));
+				} else {
+					break _v0$2;
+				}
+			}
+		}
+		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	});
 var $author$project$Example$AddSnackbar = function (a) {
 	return {$: 'AddSnackbar', a: a};
+};
+var $author$project$Example$ChangedSidebar = function (a) {
+	return {$: 'ChangedSidebar', a: a};
+};
+var $author$project$Example$JumpTo = function (a) {
+	return {$: 'JumpTo', a: a};
+};
+var $author$project$Example$Load = function (a) {
+	return {$: 'Load', a: a};
 };
 var $author$project$Example$ReusableSpecific = function (a) {
 	return {$: 'ReusableSpecific', a: a};
@@ -6804,18 +7182,59 @@ var $author$project$Example$ReusableSpecific = function (a) {
 var $author$project$Example$ToggleDialog = function (a) {
 	return {$: 'ToggleDialog', a: a};
 };
-var $mdgriffith$elm_ui$Internal$Model$AlignY = function (a) {
-	return {$: 'AlignY', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Model$Bottom = {$: 'Bottom'};
-var $mdgriffith$elm_ui$Element$alignBottom = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Bottom);
 var $mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
 	return {$: 'AlignX', a: a};
 };
 var $mdgriffith$elm_ui$Internal$Model$Right = {$: 'Right'};
 var $mdgriffith$elm_ui$Element$alignRight = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Right);
-var $mdgriffith$elm_ui$Internal$Model$Top = {$: 'Top'};
-var $mdgriffith$elm_ui$Element$alignTop = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Top);
+var $elm$svg$Svg$Attributes$d = _VirtualDom_attribute('d');
+var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
+var $elm$svg$Svg$path = $elm$svg$Svg$trustedNode('path');
+var $elm$svg$Svg$Attributes$class = _VirtualDom_attribute('class');
+var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
+var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
+var $elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
+var $elm$svg$Svg$Attributes$strokeLinecap = _VirtualDom_attribute('stroke-linecap');
+var $elm$svg$Svg$Attributes$strokeLinejoin = _VirtualDom_attribute('stroke-linejoin');
+var $elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
+var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
+var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
+var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
+var $author$project$Icons$svgFeatherIcon = function (className) {
+	return $elm$svg$Svg$svg(
+		_List_fromArray(
+			[
+				$elm$svg$Svg$Attributes$class('feather feather-' + className),
+				$elm$svg$Svg$Attributes$fill('none'),
+				$elm$svg$Svg$Attributes$height('16'),
+				$elm$svg$Svg$Attributes$stroke('currentColor'),
+				$elm$svg$Svg$Attributes$strokeLinecap('round'),
+				$elm$svg$Svg$Attributes$strokeLinejoin('round'),
+				$elm$svg$Svg$Attributes$strokeWidth('2'),
+				$elm$svg$Svg$Attributes$viewBox('0 0 24 24'),
+				$elm$svg$Svg$Attributes$width('16')
+			]));
+};
+var $author$project$Icons$book = A2(
+	$author$project$Icons$svgFeatherIcon,
+	'book',
+	_List_fromArray(
+		[
+			A2(
+			$elm$svg$Svg$path,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$d('M4 19.5A2.5 2.5 0 0 1 6.5 17H20')
+				]),
+			_List_Nil),
+			A2(
+			$elm$svg$Svg$path,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$d('M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z')
+				]),
+			_List_Nil)
+		]));
 var $mdgriffith$elm_ui$Internal$Model$Attr = function (a) {
 	return {$: 'Attr', a: a};
 };
@@ -7140,24 +7559,6 @@ var $mdgriffith$elm_ui$Internal$Model$Style = F2(
 var $mdgriffith$elm_ui$Internal$Style$dot = function (c) {
 	return '.' + c;
 };
-var $elm$core$List$maybeCons = F3(
-	function (f, mx, xs) {
-		var _v0 = f(mx);
-		if (_v0.$ === 'Just') {
-			var x = _v0.a;
-			return A2($elm$core$List$cons, x, xs);
-		} else {
-			return xs;
-		}
-	});
-var $elm$core$List$filterMap = F2(
-	function (f, xs) {
-		return A3(
-			$elm$core$List$foldr,
-			$elm$core$List$maybeCons(f),
-			_List_Nil,
-			xs);
-	});
 var $elm$core$String$fromFloat = _String_fromNumber;
 var $mdgriffith$elm_ui$Internal$Model$formatColor = function (_v0) {
 	var red = _v0.a;
@@ -9402,10 +9803,6 @@ var $mdgriffith$elm_ui$Internal$Model$hasSmallCaps = function (typeface) {
 		return false;
 	}
 };
-var $elm$core$Basics$min = F2(
-	function (x, y) {
-		return (_Utils_cmp(x, y) < 0) ? x : y;
-	});
 var $mdgriffith$elm_ui$Internal$Model$renderProps = F3(
 	function (force, _v0, existing) {
 		var key = _v0.a;
@@ -12224,7 +12621,6 @@ var $mdgriffith$elm_ui$Element$Events$onClick = A2($elm$core$Basics$composeL, $m
 var $mdgriffith$elm_ui$Element$Input$enter = 'Enter';
 var $elm$json$Json$Decode$andThen = _Json_andThen;
 var $elm$json$Json$Decode$fail = _Json_fail;
-var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
 	return {$: 'MayPreventDefault', a: a};
 };
@@ -12329,27 +12725,32 @@ var $mdgriffith$elm_ui$Element$Input$button = F2(
 				_List_fromArray(
 					[label])));
 	});
-var $mdgriffith$elm_ui$Internal$Model$StyleClass = F2(
-	function (a, b) {
-		return {$: 'StyleClass', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$borderRound = $mdgriffith$elm_ui$Internal$Flag$flag(17);
-var $mdgriffith$elm_ui$Element$Border$rounded = function (radius) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$borderRound,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Single,
-			'br-' + $elm$core$String$fromInt(radius),
-			'border-radius',
-			$elm$core$String$fromInt(radius) + 'px'));
-};
-var $Orasund$elm_ui_framework$Framework$Group$center = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$Border$rounded(0)
-	]);
 var $mdgriffith$elm_ui$Internal$Model$CenterX = {$: 'CenterX'};
 var $mdgriffith$elm_ui$Element$centerX = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$CenterX);
+var $mdgriffith$elm_ui$Internal$Model$AlignY = function (a) {
+	return {$: 'AlignY', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$CenterY = {$: 'CenterY'};
+var $mdgriffith$elm_ui$Element$centerY = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$CenterY);
+var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
+var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
+var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var $author$project$Icons$circle = A2(
+	$author$project$Icons$svgFeatherIcon,
+	'circle',
+	_List_fromArray(
+		[
+			A2(
+			$elm$svg$Svg$circle,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$cx('12'),
+					$elm$svg$Svg$Attributes$cy('12'),
+					$elm$svg$Svg$Attributes$r('10')
+				]),
+			_List_Nil)
+		]));
 var $mdgriffith$elm_ui$Internal$Model$AsColumn = {$: 'AsColumn'};
 var $mdgriffith$elm_ui$Internal$Model$asColumn = $mdgriffith$elm_ui$Internal$Model$AsColumn;
 var $mdgriffith$elm_ui$Element$column = F2(
@@ -12370,6 +12771,8 @@ var $mdgriffith$elm_ui$Element$column = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
+var $mdgriffith$elm_ui$Internal$Model$Top = {$: 'Top'};
+var $mdgriffith$elm_ui$Element$alignTop = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Top);
 var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
 	return {$: 'Fill', a: a};
 };
@@ -12379,11 +12782,13 @@ var $Orasund$elm_ui_framework$Framework$Grid$compact = _List_fromArray(
 		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
 		$mdgriffith$elm_ui$Element$alignTop
 	]);
-var $mdgriffith$elm_ui$Internal$Model$CenterY = {$: 'CenterY'};
-var $mdgriffith$elm_ui$Element$centerY = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$CenterY);
 var $mdgriffith$elm_ui$Internal$Model$Colored = F3(
 	function (a, b, c) {
 		return {$: 'Colored', a: a, b: b, c: c};
+	});
+var $mdgriffith$elm_ui$Internal$Model$StyleClass = F2(
+	function (a, b) {
+		return {$: 'StyleClass', a: a, b: b};
 	});
 var $mdgriffith$elm_ui$Internal$Flag$bgColor = $mdgriffith$elm_ui$Internal$Flag$flag(8);
 var $mdgriffith$elm_ui$Internal$Model$formatColorClass = function (_v0) {
@@ -12449,39 +12854,143 @@ var $Orasund$elm_ui_framework$Framework$container = _List_fromArray(
 		$mdgriffith$elm_ui$Element$Background$color(
 		A3($mdgriffith$elm_ui$Element$rgb255, 255, 255, 255))
 	]);
-var $author$project$Widget$Snackbar$current = function (model) {
-	return A2($elm$core$Maybe$map, $elm$core$Tuple$first, model.current);
+var $elm_community$intdict$IntDict$findMin = function (dict) {
+	findMin:
+	while (true) {
+		switch (dict.$) {
+			case 'Empty':
+				return $elm$core$Maybe$Nothing;
+			case 'Leaf':
+				var l = dict.a;
+				return $elm$core$Maybe$Just(
+					_Utils_Tuple2(l.key, l.value));
+			default:
+				var i = dict.a;
+				var $temp$dict = i.left;
+				dict = $temp$dict;
+				continue findMin;
+		}
+	}
 };
-var $mdgriffith$elm_ui$Internal$Flag$borderColor = $mdgriffith$elm_ui$Internal$Flag$flag(28);
-var $mdgriffith$elm_ui$Element$Border$color = function (clr) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$borderColor,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'bc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
-			'border-color',
-			clr));
+var $elm_community$intdict$IntDict$after = F2(
+	function (key, dict) {
+		var go = F2(
+			function (def, currentDict) {
+				go:
+				while (true) {
+					switch (currentDict.$) {
+						case 'Empty':
+							return $elm_community$intdict$IntDict$findMin(def);
+						case 'Leaf':
+							var l = currentDict.a;
+							return (_Utils_cmp(l.key, key) < 1) ? $elm_community$intdict$IntDict$findMin(def) : $elm$core$Maybe$Just(
+								_Utils_Tuple2(l.key, l.value));
+						default:
+							var i = currentDict.a;
+							if (!A2($elm_community$intdict$IntDict$prefixMatches, i.prefix, key)) {
+								return (_Utils_cmp(i.prefix.prefixBits, key) < 0) ? $elm_community$intdict$IntDict$findMin(def) : $elm_community$intdict$IntDict$findMin(i.left);
+							} else {
+								if (A2($elm_community$intdict$IntDict$isBranchingBitSet, i.prefix, key)) {
+									var $temp$def = def,
+										$temp$currentDict = i.right;
+									def = $temp$def;
+									currentDict = $temp$currentDict;
+									continue go;
+								} else {
+									var $temp$def = i.right,
+										$temp$currentDict = i.left;
+									def = $temp$def;
+									currentDict = $temp$currentDict;
+									continue go;
+								}
+							}
+					}
+				}
+			});
+		return A2(go, $elm_community$intdict$IntDict$Empty, dict);
+	});
+var $elm$core$Maybe$andThen = F2(
+	function (callback, maybeValue) {
+		if (maybeValue.$ === 'Just') {
+			var value = maybeValue.a;
+			return callback(value);
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm_community$intdict$IntDict$findMax = function (dict) {
+	findMax:
+	while (true) {
+		switch (dict.$) {
+			case 'Empty':
+				return $elm$core$Maybe$Nothing;
+			case 'Leaf':
+				var l = dict.a;
+				return $elm$core$Maybe$Just(
+					_Utils_Tuple2(l.key, l.value));
+			default:
+				var i = dict.a;
+				var $temp$dict = i.right;
+				dict = $temp$dict;
+				continue findMax;
+		}
+	}
 };
-var $mdgriffith$elm_ui$Internal$Flag$fontColor = $mdgriffith$elm_ui$Internal$Flag$flag(14);
-var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$fontColor,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'fc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(fontColor),
-			'color',
-			fontColor));
-};
-var $Orasund$elm_ui_framework$Framework$Color$darkerGrey = A3($mdgriffith$elm_ui$Element$rgb255, 18, 18, 18);
-var $Orasund$elm_ui_framework$Framework$Color$lighterGrey = A3($mdgriffith$elm_ui$Element$rgb255, 245, 245, 245);
-var $Orasund$elm_ui_framework$Framework$Color$dark = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$Background$color($Orasund$elm_ui_framework$Framework$Color$darkerGrey),
-		$mdgriffith$elm_ui$Element$Border$color($Orasund$elm_ui_framework$Framework$Color$darkerGrey),
-		$mdgriffith$elm_ui$Element$Font$color($Orasund$elm_ui_framework$Framework$Color$lighterGrey)
-	]);
+var $elm_community$intdict$IntDict$before = F2(
+	function (key, dict) {
+		var go = F2(
+			function (def, currentDict) {
+				go:
+				while (true) {
+					switch (currentDict.$) {
+						case 'Empty':
+							return $elm_community$intdict$IntDict$findMax(def);
+						case 'Leaf':
+							var l = currentDict.a;
+							return (_Utils_cmp(l.key, key) > -1) ? $elm_community$intdict$IntDict$findMax(def) : $elm$core$Maybe$Just(
+								_Utils_Tuple2(l.key, l.value));
+						default:
+							var i = currentDict.a;
+							if (!A2($elm_community$intdict$IntDict$prefixMatches, i.prefix, key)) {
+								return (_Utils_cmp(i.prefix.prefixBits, key) > 0) ? $elm_community$intdict$IntDict$findMax(def) : $elm_community$intdict$IntDict$findMax(i.right);
+							} else {
+								if (A2($elm_community$intdict$IntDict$isBranchingBitSet, i.prefix, key)) {
+									var $temp$def = i.left,
+										$temp$currentDict = i.right;
+									def = $temp$def;
+									currentDict = $temp$currentDict;
+									continue go;
+								} else {
+									var $temp$def = def,
+										$temp$currentDict = i.left;
+									def = $temp$def;
+									currentDict = $temp$currentDict;
+									continue go;
+								}
+							}
+					}
+				}
+			});
+		return A2(go, $elm_community$intdict$IntDict$Empty, dict);
+	});
+var $author$project$Widget$ScrollingNav$current = F2(
+	function (fromString, _v0) {
+		var positions = _v0.positions;
+		var scrollPos = _v0.scrollPos;
+		return A2(
+			$elm$core$Maybe$andThen,
+			fromString,
+			A2(
+				$elm$core$Maybe$map,
+				$elm$core$Tuple$second,
+				A2(
+					$elm$core$Maybe$withDefault,
+					A2($elm_community$intdict$IntDict$after, scrollPos + 1, positions),
+					A2(
+						$elm$core$Maybe$map,
+						$elm$core$Maybe$Just,
+						A2($elm_community$intdict$IntDict$before, scrollPos + 1, positions)))));
+	});
 var $mdgriffith$elm_ui$Element$el = F2(
 	function (attrs, child) {
 		return A4(
@@ -12499,40 +13008,31 @@ var $mdgriffith$elm_ui$Element$el = F2(
 				_List_fromArray(
 					[child])));
 	});
-var $mdgriffith$elm_ui$Element$rgba255 = F4(
-	function (red, green, blue, a) {
-		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, red / 255, green / 255, blue / 255, a);
-	});
-var $elm$core$List$singleton = function (value) {
-	return _List_fromArray(
-		[value]);
+var $author$project$Data$Section$fromString = function (string) {
+	switch (string) {
+		case 'Component':
+			return $elm$core$Maybe$Just($author$project$Data$Section$ComponentViews);
+		case 'Reusable':
+			return $elm$core$Maybe$Just($author$project$Data$Section$ReusableViews);
+		case 'Stateless':
+			return $elm$core$Maybe$Just($author$project$Data$Section$StatelessViews);
+		default:
+			return $elm$core$Maybe$Nothing;
+	}
 };
-var $author$project$Widget$dialog = function (_v0) {
-	var onDismiss = _v0.onDismiss;
-	var content = _v0.content;
-	return A2(
-		$mdgriffith$elm_ui$Element$el,
-		_Utils_ap(
+var $author$project$Icons$github = A2(
+	$author$project$Icons$svgFeatherIcon,
+	'github',
+	_List_fromArray(
+		[
+			A2(
+			$elm$svg$Svg$path,
 			_List_fromArray(
 				[
-					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-					$mdgriffith$elm_ui$Element$Background$color(
-					A4($mdgriffith$elm_ui$Element$rgba255, 0, 0, 0, 0.5))
+					$elm$svg$Svg$Attributes$d('M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22')
 				]),
-			A2(
-				$elm$core$Maybe$withDefault,
-				_List_Nil,
-				A2(
-					$elm$core$Maybe$map,
-					A2($elm$core$Basics$composeR, $mdgriffith$elm_ui$Element$Events$onClick, $elm$core$List$singleton),
-					onDismiss))),
-		A2(
-			$mdgriffith$elm_ui$Element$el,
-			_List_fromArray(
-				[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-			content));
-};
+			_List_Nil)
+		]));
 var $mdgriffith$elm_ui$Internal$Model$Left = {$: 'Left'};
 var $mdgriffith$elm_ui$Element$alignLeft = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Left);
 var $mdgriffith$elm_ui$Internal$Flag$fontWeight = $mdgriffith$elm_ui$Internal$Flag$flag(13);
@@ -12599,22 +13099,17 @@ var $Orasund$elm_ui_framework$Framework$Heading$h = function (inputLevel) {
 };
 var $Orasund$elm_ui_framework$Framework$Heading$h1 = $Orasund$elm_ui_framework$Framework$Heading$h(1);
 var $Orasund$elm_ui_framework$Framework$Heading$h3 = $Orasund$elm_ui_framework$Framework$Heading$h(3);
-var $mdgriffith$elm_ui$Internal$Model$InFront = {$: 'InFront'};
-var $mdgriffith$elm_ui$Internal$Model$Nearby = F2(
-	function (a, b) {
-		return {$: 'Nearby', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Element$createNearby = F2(
-	function (loc, element) {
-		if (element.$ === 'Empty') {
-			return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
-		} else {
-			return A2($mdgriffith$elm_ui$Internal$Model$Nearby, loc, element);
-		}
-	});
-var $mdgriffith$elm_ui$Element$inFront = function (element) {
-	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$InFront, element);
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
 };
+var $mdgriffith$elm_ui$Internal$Model$unstyled = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Unstyled, $elm$core$Basics$always);
+var $mdgriffith$elm_ui$Element$html = $mdgriffith$elm_ui$Internal$Model$unstyled;
 var $mdgriffith$elm_ui$Internal$Model$Min = F2(
 	function (a, b) {
 		return {$: 'Min', a: a, b: b};
@@ -12623,6 +13118,18 @@ var $mdgriffith$elm_ui$Element$minimum = F2(
 	function (i, l) {
 		return A2($mdgriffith$elm_ui$Internal$Model$Min, i, l);
 	});
+var $mdgriffith$elm_ui$Internal$Flag$borderColor = $mdgriffith$elm_ui$Internal$Flag$flag(28);
+var $mdgriffith$elm_ui$Element$Border$color = function (clr) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$borderColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'bc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
+			'border-color',
+			clr));
+};
+var $Orasund$elm_ui_framework$Framework$Color$lighterGrey = A3($mdgriffith$elm_ui$Element$rgb255, 245, 245, 245);
 var $Orasund$elm_ui_framework$Framework$Color$light = _List_fromArray(
 	[
 		$mdgriffith$elm_ui$Element$Background$color($Orasund$elm_ui_framework$Framework$Color$lighterGrey),
@@ -12676,6 +13183,17 @@ var $mdgriffith$elm_ui$Element$paddingXY = F2(
 				y,
 				x));
 	});
+var $mdgriffith$elm_ui$Internal$Flag$borderRound = $mdgriffith$elm_ui$Internal$Flag$flag(17);
+var $mdgriffith$elm_ui$Element$Border$rounded = function (radius) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$borderRound,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Single,
+			'br-' + $elm$core$String$fromInt(radius),
+			'border-radius',
+			$elm$core$String$fromInt(radius) + 'px'));
+};
 var $Orasund$elm_ui_framework$Framework$Color$simple = _List_fromArray(
 	[
 		$mdgriffith$elm_ui$Element$Background$color($Orasund$elm_ui_framework$Framework$Color$lightGrey),
@@ -12772,6 +13290,7 @@ var $mdgriffith$elm_ui$Internal$Model$map = F2(
 		}
 	});
 var $mdgriffith$elm_ui$Element$map = $mdgriffith$elm_ui$Internal$Model$map;
+var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
 var $mdgriffith$elm_ui$Element$none = $mdgriffith$elm_ui$Internal$Model$Empty;
 var $mdgriffith$elm_ui$Internal$Model$Paragraph = {$: 'Paragraph'};
 var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
@@ -12811,17 +13330,23 @@ var $mdgriffith$elm_ui$Element$paragraph = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
-var $Orasund$elm_ui_framework$Framework$Color$turquoise = A3($mdgriffith$elm_ui$Element$rgb255, 0, 209, 178);
-var $Orasund$elm_ui_framework$Framework$Color$primary = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$Background$color($Orasund$elm_ui_framework$Framework$Color$turquoise),
-		$mdgriffith$elm_ui$Element$Border$color($Orasund$elm_ui_framework$Framework$Color$turquoise)
-	]);
 var $mdgriffith$elm_ui$Internal$Model$Px = function (a) {
 	return {$: 'Px', a: a};
 };
 var $mdgriffith$elm_ui$Element$px = $mdgriffith$elm_ui$Internal$Model$Px;
 var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
+var $mdgriffith$elm_ui$Internal$Flag$fontColor = $mdgriffith$elm_ui$Internal$Flag$flag(14);
+var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$fontColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'fc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(fontColor),
+			'color',
+			fontColor));
+};
+var $Orasund$elm_ui_framework$Framework$Color$darkerGrey = A3($mdgriffith$elm_ui$Element$rgb255, 18, 18, 18);
 var $Orasund$elm_ui_framework$Framework$layoutAttributes = _Utils_ap(
 	_List_fromArray(
 		[
@@ -12833,6 +13358,11 @@ var $mdgriffith$elm_ui$Internal$Model$FocusStyleOption = function (a) {
 	return {$: 'FocusStyleOption', a: a};
 };
 var $mdgriffith$elm_ui$Element$focusStyle = $mdgriffith$elm_ui$Internal$Model$FocusStyleOption;
+var $elm$core$List$singleton = function (value) {
+	return _List_fromArray(
+		[value]);
+};
+var $Orasund$elm_ui_framework$Framework$Color$turquoise = A3($mdgriffith$elm_ui$Element$rgb255, 0, 209, 178);
 var $Orasund$elm_ui_framework$Framework$layoutOptions = $elm$core$List$singleton(
 	$mdgriffith$elm_ui$Element$focusStyle(
 		{
@@ -13122,49 +13652,6 @@ var $Orasund$elm_ui_framework$Framework$responsiveLayout = F2(
 					A2($Orasund$elm_ui_framework$Framework$layout, attributes, view)
 				]));
 	});
-var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
-var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
-var $mdgriffith$elm_ui$Element$row = F2(
-	function (attrs, children) {
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asRow,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentLeft + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentCenterY)),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-					A2(
-						$elm$core$List$cons,
-						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-						attrs))),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
-	});
-var $author$project$Widget$select = function (_v0) {
-	var selected = _v0.selected;
-	var options = _v0.options;
-	var label = _v0.label;
-	var onChange = _v0.onChange;
-	var attributes = _v0.attributes;
-	return A2(
-		$elm$core$List$map,
-		function (a) {
-			return A2(
-				$mdgriffith$elm_ui$Element$Input$button,
-				attributes(
-					_Utils_eq(
-						selected,
-						$elm$core$Maybe$Just(a))),
-				{
-					label: label(a),
-					onPress: $elm$core$Maybe$Just(
-						onChange(a))
-				});
-		},
-		options);
-};
 var $mdgriffith$elm_ui$Internal$Flag$fontAlignment = $mdgriffith$elm_ui$Internal$Flag$flag(12);
 var $mdgriffith$elm_ui$Element$Font$center = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textCenter);
 var $Orasund$elm_ui_framework$Framework$Color$grey = A3($mdgriffith$elm_ui$Element$rgb255, 122, 122, 122);
@@ -13174,6 +13661,10 @@ var $mdgriffith$elm_ui$Internal$Model$PseudoSelector = F2(
 		return {$: 'PseudoSelector', a: a, b: b};
 	});
 var $mdgriffith$elm_ui$Internal$Flag$hover = $mdgriffith$elm_ui$Internal$Flag$flag(33);
+var $mdgriffith$elm_ui$Internal$Model$Nearby = F2(
+	function (a, b) {
+		return {$: 'Nearby', a: a, b: b};
+	});
 var $mdgriffith$elm_ui$Internal$Model$TransformComponent = F2(
 	function (a, b) {
 		return {$: 'TransformComponent', a: a, b: b};
@@ -13290,9 +13781,224 @@ var $Orasund$elm_ui_framework$Framework$Grid$simple = _List_fromArray(
 		$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
 		$mdgriffith$elm_ui$Element$alignTop
 	]);
+var $elm$svg$Svg$rect = $elm$svg$Svg$trustedNode('rect');
+var $elm$svg$Svg$Attributes$rx = _VirtualDom_attribute('rx');
+var $elm$svg$Svg$Attributes$ry = _VirtualDom_attribute('ry');
+var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
+var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
+var $author$project$Icons$square = A2(
+	$author$project$Icons$svgFeatherIcon,
+	'square',
+	_List_fromArray(
+		[
+			A2(
+			$elm$svg$Svg$rect,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$x('3'),
+					$elm$svg$Svg$Attributes$y('3'),
+					$elm$svg$Svg$Attributes$width('18'),
+					$elm$svg$Svg$Attributes$height('18'),
+					$elm$svg$Svg$Attributes$rx('2'),
+					$elm$svg$Svg$Attributes$ry('2')
+				]),
+			_List_Nil)
+		]));
+var $mdgriffith$elm_ui$Element$Font$alignLeft = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textLeft);
+var $Orasund$elm_ui_framework$Framework$Group$center = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Border$rounded(0)
+	]);
+var $Orasund$elm_ui_framework$Framework$Color$dark = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Background$color($Orasund$elm_ui_framework$Framework$Color$darkerGrey),
+		$mdgriffith$elm_ui$Element$Border$color($Orasund$elm_ui_framework$Framework$Color$darkerGrey),
+		$mdgriffith$elm_ui$Element$Font$color($Orasund$elm_ui_framework$Framework$Color$lighterGrey)
+	]);
+var $Orasund$elm_ui_framework$Framework$Button$fill = _Utils_ap(
+	$Orasund$elm_ui_framework$Framework$Button$simple,
+	_List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+		]));
+var $elm$svg$Svg$line = $elm$svg$Svg$trustedNode('line');
+var $elm$svg$Svg$Attributes$x1 = _VirtualDom_attribute('x1');
+var $elm$svg$Svg$Attributes$x2 = _VirtualDom_attribute('x2');
+var $elm$svg$Svg$Attributes$y1 = _VirtualDom_attribute('y1');
+var $elm$svg$Svg$Attributes$y2 = _VirtualDom_attribute('y2');
+var $author$project$Icons$menu = A2(
+	$author$project$Icons$svgFeatherIcon,
+	'menu',
+	_List_fromArray(
+		[
+			A2(
+			$elm$svg$Svg$line,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$x1('3'),
+					$elm$svg$Svg$Attributes$y1('12'),
+					$elm$svg$Svg$Attributes$x2('21'),
+					$elm$svg$Svg$Attributes$y2('12')
+				]),
+			_List_Nil),
+			A2(
+			$elm$svg$Svg$line,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$x1('3'),
+					$elm$svg$Svg$Attributes$y1('6'),
+					$elm$svg$Svg$Attributes$x2('21'),
+					$elm$svg$Svg$Attributes$y2('6')
+				]),
+			_List_Nil),
+			A2(
+			$elm$svg$Svg$line,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$x1('3'),
+					$elm$svg$Svg$Attributes$y1('18'),
+					$elm$svg$Svg$Attributes$x2('21'),
+					$elm$svg$Svg$Attributes$y2('18')
+				]),
+			_List_Nil)
+		]));
+var $author$project$Icons$moreVertical = A2(
+	$author$project$Icons$svgFeatherIcon,
+	'more-vertical',
+	_List_fromArray(
+		[
+			A2(
+			$elm$svg$Svg$circle,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$cx('12'),
+					$elm$svg$Svg$Attributes$cy('12'),
+					$elm$svg$Svg$Attributes$r('1')
+				]),
+			_List_Nil),
+			A2(
+			$elm$svg$Svg$circle,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$cx('12'),
+					$elm$svg$Svg$Attributes$cy('5'),
+					$elm$svg$Svg$Attributes$r('1')
+				]),
+			_List_Nil),
+			A2(
+			$elm$svg$Svg$circle,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$cx('12'),
+					$elm$svg$Svg$Attributes$cy('19'),
+					$elm$svg$Svg$Attributes$r('1')
+				]),
+			_List_Nil)
+		]));
+var $Orasund$elm_ui_framework$Framework$Color$primary = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Background$color($Orasund$elm_ui_framework$Framework$Color$turquoise),
+		$mdgriffith$elm_ui$Element$Border$color($Orasund$elm_ui_framework$Framework$Color$turquoise)
+	]);
+var $mdgriffith$elm_ui$Element$Border$widthXY = F2(
+	function (x, y) {
+		return A2(
+			$mdgriffith$elm_ui$Internal$Model$StyleClass,
+			$mdgriffith$elm_ui$Internal$Flag$borderWidth,
+			A5(
+				$mdgriffith$elm_ui$Internal$Model$BorderWidth,
+				'b-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y))),
+				y,
+				x,
+				y,
+				x));
+	});
+var $mdgriffith$elm_ui$Element$Border$widthEach = function (_v0) {
+	var bottom = _v0.bottom;
+	var top = _v0.top;
+	var left = _v0.left;
+	var right = _v0.right;
+	return (_Utils_eq(top, bottom) && _Utils_eq(left, right)) ? (_Utils_eq(top, right) ? $mdgriffith$elm_ui$Element$Border$width(top) : A2($mdgriffith$elm_ui$Element$Border$widthXY, left, top)) : A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$borderWidth,
+		A5(
+			$mdgriffith$elm_ui$Internal$Model$BorderWidth,
+			'b-' + ($elm$core$String$fromInt(top) + ('-' + ($elm$core$String$fromInt(right) + ('-' + ($elm$core$String$fromInt(bottom) + ('-' + $elm$core$String$fromInt(left))))))),
+			top,
+			right,
+			bottom,
+			left));
+};
+var $author$project$Example$style = {
+	header: _Utils_ap(
+		$Orasund$elm_ui_framework$Framework$container,
+		_Utils_ap(
+			$Orasund$elm_ui_framework$Framework$Color$dark,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$padding(0),
+					$mdgriffith$elm_ui$Element$height(
+					$mdgriffith$elm_ui$Element$px(42))
+				]))),
+	layout: $Orasund$elm_ui_framework$Framework$responsiveLayout,
+	menuButton: _Utils_ap(
+		$Orasund$elm_ui_framework$Framework$Button$simple,
+		_Utils_ap($Orasund$elm_ui_framework$Framework$Group$center, $Orasund$elm_ui_framework$Framework$Color$dark)),
+	menuButtonSelected: $Orasund$elm_ui_framework$Framework$Color$primary,
+	menuIcon: A2(
+		$mdgriffith$elm_ui$Element$el,
+		_List_Nil,
+		$mdgriffith$elm_ui$Element$html($author$project$Icons$menu)),
+	moreVerticalIcon: A2(
+		$mdgriffith$elm_ui$Element$el,
+		_List_Nil,
+		$mdgriffith$elm_ui$Element$html($author$project$Icons$moreVertical)),
+	sheet: _Utils_ap(
+		$Orasund$elm_ui_framework$Framework$Color$light,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$width(
+				A2($mdgriffith$elm_ui$Element$maximum, 256, $mdgriffith$elm_ui$Element$fill))
+			])),
+	sheetButton: _Utils_ap(
+		$Orasund$elm_ui_framework$Framework$Button$fill,
+		_Utils_ap(
+			$Orasund$elm_ui_framework$Framework$Group$center,
+			_Utils_ap(
+				$Orasund$elm_ui_framework$Framework$Color$light,
+				_List_fromArray(
+					[$mdgriffith$elm_ui$Element$Font$alignLeft])))),
+	sheetButtonSelected: $Orasund$elm_ui_framework$Framework$Color$primary,
+	snackbar: _Utils_ap($Orasund$elm_ui_framework$Framework$Card$simple, $Orasund$elm_ui_framework$Framework$Color$dark),
+	spacing: 8,
+	tabButton: _List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$height(
+			$mdgriffith$elm_ui$Element$px(42)),
+			$mdgriffith$elm_ui$Element$Border$widthEach(
+			{bottom: 8, left: 0, right: 0, top: 0})
+		]),
+	tabButtonSelected: _List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$Border$color($Orasund$elm_ui_framework$Framework$Color$turquoise)
+		])
+};
 var $mdgriffith$elm_ui$Element$text = function (content) {
 	return $mdgriffith$elm_ui$Internal$Model$Text(content);
 };
+var $author$project$Icons$triangle = A2(
+	$author$project$Icons$svgFeatherIcon,
+	'triangle',
+	_List_fromArray(
+		[
+			A2(
+			$elm$svg$Svg$path,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$d('M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z')
+				]),
+			_List_Nil)
+		]));
 var $author$project$Component$FilterSelectSpecific = function (a) {
 	return {$: 'FilterSelectSpecific', a: a};
 };
@@ -13306,8 +14012,6 @@ var $Orasund$elm_ui_framework$Framework$Color$danger = _List_fromArray(
 		$mdgriffith$elm_ui$Element$Border$color($Orasund$elm_ui_framework$Framework$Color$red),
 		$mdgriffith$elm_ui$Element$Font$color($Orasund$elm_ui_framework$Framework$Color$lighterGrey)
 	]);
-var $mdgriffith$elm_ui$Internal$Model$unstyled = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Unstyled, $elm$core$Basics$always);
-var $mdgriffith$elm_ui$Element$html = $mdgriffith$elm_ui$Internal$Model$unstyled;
 var $mdgriffith$elm_ui$Element$Border$roundEach = function (_v0) {
 	var topLeft = _v0.topLeft;
 	var topRight = _v0.topRight;
@@ -13337,6 +14041,26 @@ var $Orasund$elm_ui_framework$Framework$Group$right = _List_fromArray(
 		$mdgriffith$elm_ui$Element$Border$roundEach(
 		{bottomLeft: 0, bottomRight: 4, topLeft: 0, topRight: 4})
 	]);
+var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
+var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
+var $mdgriffith$elm_ui$Element$row = F2(
+	function (attrs, children) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asRow,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentLeft + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentCenterY)),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+						attrs))),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
+	});
 var $Orasund$elm_ui_framework$Framework$Input$simple = _List_fromArray(
 	[
 		$mdgriffith$elm_ui$Element$Background$color($Orasund$elm_ui_framework$Framework$Color$lighterGrey),
@@ -13424,6 +14148,14 @@ var $mdgriffith$elm_ui$Element$Input$autofill = A2(
 	$mdgriffith$elm_ui$Internal$Model$Attr,
 	$elm$html$Html$Attributes$attribute('autocomplete'));
 var $mdgriffith$elm_ui$Internal$Model$Behind = {$: 'Behind'};
+var $mdgriffith$elm_ui$Element$createNearby = F2(
+	function (loc, element) {
+		if (element.$ === 'Empty') {
+			return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
+		} else {
+			return A2($mdgriffith$elm_ui$Internal$Model$Nearby, loc, element);
+		}
+	});
 var $mdgriffith$elm_ui$Element$behindContent = function (element) {
 	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$Behind, element);
 };
@@ -13490,15 +14222,6 @@ var $mdgriffith$elm_ui$Element$Input$getHeight = function (attr) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
 var $mdgriffith$elm_ui$Internal$Model$Label = function (a) {
 	return {$: 'Label', a: a};
 };
@@ -13510,6 +14233,10 @@ var $mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute = function (label) {
 	} else {
 		return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
 	}
+};
+var $mdgriffith$elm_ui$Internal$Model$InFront = {$: 'InFront'};
+var $mdgriffith$elm_ui$Element$inFront = function (element) {
+	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$InFront, element);
 };
 var $mdgriffith$elm_ui$Element$Input$isConstrained = function (len) {
 	isConstrained:
@@ -14379,13 +15106,7 @@ var $mdgriffith$elm_ui$Element$wrappedRow = F2(
 		}
 	});
 var $elm$svg$Svg$Attributes$clipRule = _VirtualDom_attribute('clip-rule');
-var $elm$svg$Svg$Attributes$d = _VirtualDom_attribute('d');
-var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
 var $elm$svg$Svg$Attributes$fillRule = _VirtualDom_attribute('fill-rule');
-var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
-var $elm$svg$Svg$path = $elm$svg$Svg$trustedNode('path');
-var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
-var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
 var $jasonliang512$elm_heroicons$Heroicons$Solid$x = function (attrs) {
 	return A2(
 		$elm$svg$Svg$svg,
@@ -14412,7 +15133,14 @@ var $jasonliang512$elm_heroicons$Heroicons$Solid$x = function (attrs) {
 var $author$project$Component$filterSelect = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
+		_Utils_ap(
+			$Orasund$elm_ui_framework$Framework$Grid$simple,
+			_Utils_ap(
+				$Orasund$elm_ui_framework$Framework$Card$large,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+					]))),
 		_List_fromArray(
 			[
 				A2(
@@ -14497,7 +15225,14 @@ var $author$project$Component$filterSelect = function (model) {
 var $Orasund$elm_ui_framework$Framework$Heading$h2 = $Orasund$elm_ui_framework$Framework$Heading$h(2);
 var $author$project$Component$scrollingNavCard = A2(
 	$mdgriffith$elm_ui$Element$column,
-	_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
+	_Utils_ap(
+		$Orasund$elm_ui_framework$Framework$Grid$simple,
+		_Utils_ap(
+			$Orasund$elm_ui_framework$Framework$Card$large,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+				]))),
 	_List_fromArray(
 		[
 			A2(
@@ -14508,37 +15243,8 @@ var $author$project$Component$scrollingNavCard = A2(
 			$mdgriffith$elm_ui$Element$paragraph,
 			_List_Nil,
 			$elm$core$List$singleton(
-				$mdgriffith$elm_ui$Element$text('Resize the screen and use the scrollbar to see the scrolling navigation in action.')))
+				$mdgriffith$elm_ui$Element$text('Resize the screen and open the side-menu. Then start scrolling to see the scrolling navigation in action.')))
 		]));
-var $mdgriffith$elm_ui$Element$Border$widthXY = F2(
-	function (x, y) {
-		return A2(
-			$mdgriffith$elm_ui$Internal$Model$StyleClass,
-			$mdgriffith$elm_ui$Internal$Flag$borderWidth,
-			A5(
-				$mdgriffith$elm_ui$Internal$Model$BorderWidth,
-				'b-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y))),
-				y,
-				x,
-				y,
-				x));
-	});
-var $mdgriffith$elm_ui$Element$Border$widthEach = function (_v0) {
-	var bottom = _v0.bottom;
-	var top = _v0.top;
-	var left = _v0.left;
-	var right = _v0.right;
-	return (_Utils_eq(top, bottom) && _Utils_eq(left, right)) ? (_Utils_eq(top, right) ? $mdgriffith$elm_ui$Element$Border$width(top) : A2($mdgriffith$elm_ui$Element$Border$widthXY, left, top)) : A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$borderWidth,
-		A5(
-			$mdgriffith$elm_ui$Internal$Model$BorderWidth,
-			'b-' + ($elm$core$String$fromInt(top) + ('-' + ($elm$core$String$fromInt(right) + ('-' + ($elm$core$String$fromInt(bottom) + ('-' + $elm$core$String$fromInt(left))))))),
-			top,
-			right,
-			bottom,
-			left));
-};
 var $Orasund$elm_ui_framework$Framework$Grid$section = _Utils_ap(
 	$Orasund$elm_ui_framework$Framework$Grid$simple,
 	_List_fromArray(
@@ -14624,7 +15330,14 @@ var $author$project$Widget$ValidatedInput$view = F3(
 var $author$project$Component$validatedInput = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
+		_Utils_ap(
+			$Orasund$elm_ui_framework$Framework$Grid$simple,
+			_Utils_ap(
+				$Orasund$elm_ui_framework$Framework$Card$large,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+					]))),
 		_List_fromArray(
 			[
 				A2(
@@ -14693,7 +15406,9 @@ var $author$project$Component$view = function (model) {
 				_Utils_ap(
 					$Orasund$elm_ui_framework$Framework$Grid$simple,
 					_List_fromArray(
-						[$mdgriffith$elm_ui$Element$centerX])),
+						[
+							$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
+						])),
 				_List_fromArray(
 					[
 						$author$project$Component$filterSelect(model.filterSelect),
@@ -14702,10 +15417,541 @@ var $author$project$Component$view = function (model) {
 					]))
 			]));
 };
+var $author$project$Layout$Left = {$: 'Left'};
+var $author$project$Layout$Right = {$: 'Right'};
+var $mdgriffith$elm_ui$Internal$Model$Bottom = {$: 'Bottom'};
+var $mdgriffith$elm_ui$Element$alignBottom = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Bottom);
+var $author$project$Widget$Snackbar$current = function (model) {
+	return A2($elm$core$Maybe$map, $elm$core$Tuple$first, model.current);
+};
+var $elm$core$List$drop = F2(
+	function (n, list) {
+		drop:
+		while (true) {
+			if (n <= 0) {
+				return list;
+			} else {
+				if (!list.b) {
+					return list;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs;
+					n = $temp$n;
+					list = $temp$list;
+					continue drop;
+				}
+			}
+		}
+	});
+var $author$project$Core$Style$menuButton = F2(
+	function (config, _v0) {
+		var label = _v0.label;
+		var icon = _v0.icon;
+		var onPress = _v0.onPress;
+		return A2(
+			$mdgriffith$elm_ui$Element$Input$button,
+			config.menuButton,
+			{
+				label: A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$spacing(8)
+						]),
+					_List_fromArray(
+						[
+							A2($mdgriffith$elm_ui$Element$map, $elm$core$Basics$never, icon),
+							$mdgriffith$elm_ui$Element$text(label)
+						])),
+				onPress: onPress
+			});
+	});
+var $author$project$Core$Style$menuIconButton = F2(
+	function (config, _v0) {
+		var label = _v0.label;
+		var icon = _v0.icon;
+		var onPress = _v0.onPress;
+		return A2(
+			$mdgriffith$elm_ui$Element$Input$button,
+			config.menuButton,
+			{
+				label: A2($mdgriffith$elm_ui$Element$map, $elm$core$Basics$never, icon),
+				onPress: onPress
+			});
+	});
+var $author$project$Core$Style$menuTabButton = F2(
+	function (config, _v0) {
+		var label = _v0.label;
+		var icon = _v0.icon;
+		var onPress = _v0.onPress;
+		return A2(
+			$mdgriffith$elm_ui$Element$Input$button,
+			_Utils_ap(config.menuButton, config.tabButton),
+			{
+				label: A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$spacing(8)
+						]),
+					_List_fromArray(
+						[
+							A2($mdgriffith$elm_ui$Element$map, $elm$core$Basics$never, icon),
+							$mdgriffith$elm_ui$Element$text(label)
+						])),
+				onPress: onPress
+			});
+	});
+var $author$project$Core$Style$menuTabButtonSelected = F2(
+	function (config, _v0) {
+		var label = _v0.label;
+		var icon = _v0.icon;
+		var onPress = _v0.onPress;
+		return A2(
+			$mdgriffith$elm_ui$Element$Input$button,
+			_Utils_ap(
+				config.menuButton,
+				_Utils_ap(config.tabButton, config.tabButtonSelected)),
+			{
+				label: A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$spacing(8)
+						]),
+					_List_fromArray(
+						[
+							A2($mdgriffith$elm_ui$Element$map, $elm$core$Basics$never, icon),
+							$mdgriffith$elm_ui$Element$text(label)
+						])),
+				onPress: onPress
+			});
+	});
+var $mdgriffith$elm_ui$Element$rgba255 = F4(
+	function (red, green, blue, a) {
+		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, red / 255, green / 255, blue / 255, a);
+	});
+var $author$project$Widget$scrim = function (_v0) {
+	var onDismiss = _v0.onDismiss;
+	var content = _v0.content;
+	return $elm$core$List$singleton(
+		$mdgriffith$elm_ui$Element$inFront(
+			A2(
+				$mdgriffith$elm_ui$Element$el,
+				_Utils_ap(
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Element$Background$color(
+							A4($mdgriffith$elm_ui$Element$rgba255, 0, 0, 0, 0.5))
+						]),
+					A2(
+						$elm$core$Maybe$withDefault,
+						_List_Nil,
+						A2(
+							$elm$core$Maybe$map,
+							A2($elm$core$Basics$composeR, $mdgriffith$elm_ui$Element$Events$onClick, $elm$core$List$singleton),
+							onDismiss))),
+				content)));
+};
+var $author$project$Core$Style$sheetButton = F2(
+	function (config, _v0) {
+		var label = _v0.label;
+		var icon = _v0.icon;
+		var onPress = _v0.onPress;
+		return A2(
+			$mdgriffith$elm_ui$Element$Input$button,
+			config.sheetButton,
+			{
+				label: A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$spacing(8)
+						]),
+					_List_fromArray(
+						[
+							A2($mdgriffith$elm_ui$Element$map, $elm$core$Basics$never, icon),
+							$mdgriffith$elm_ui$Element$text(label)
+						])),
+				onPress: onPress
+			});
+	});
+var $author$project$Core$Style$sheetButtonSelected = F2(
+	function (config, _v0) {
+		var label = _v0.label;
+		var icon = _v0.icon;
+		var onPress = _v0.onPress;
+		return A2(
+			$mdgriffith$elm_ui$Element$Input$button,
+			_Utils_ap(config.sheetButton, config.sheetButtonSelected),
+			{
+				label: A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$spacing(8)
+						]),
+					_List_fromArray(
+						[
+							A2($mdgriffith$elm_ui$Element$map, $elm$core$Basics$never, icon),
+							$mdgriffith$elm_ui$Element$text(label)
+						])),
+				onPress: onPress
+			});
+	});
+var $mdgriffith$elm_ui$Element$spaceEvenly = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$spacing, $mdgriffith$elm_ui$Internal$Style$classes.spaceEvenly);
+var $elm$core$List$takeReverse = F3(
+	function (n, list, kept) {
+		takeReverse:
+		while (true) {
+			if (n <= 0) {
+				return kept;
+			} else {
+				if (!list.b) {
+					return kept;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs,
+						$temp$kept = A2($elm$core$List$cons, x, kept);
+					n = $temp$n;
+					list = $temp$list;
+					kept = $temp$kept;
+					continue takeReverse;
+				}
+			}
+		}
+	});
+var $elm$core$List$takeTailRec = F2(
+	function (n, list) {
+		return $elm$core$List$reverse(
+			A3($elm$core$List$takeReverse, n, list, _List_Nil));
+	});
+var $elm$core$List$takeFast = F3(
+	function (ctr, n, list) {
+		if (n <= 0) {
+			return _List_Nil;
+		} else {
+			var _v0 = _Utils_Tuple2(n, list);
+			_v0$1:
+			while (true) {
+				_v0$5:
+				while (true) {
+					if (!_v0.b.b) {
+						return list;
+					} else {
+						if (_v0.b.b.b) {
+							switch (_v0.a) {
+								case 1:
+									break _v0$1;
+								case 2:
+									var _v2 = _v0.b;
+									var x = _v2.a;
+									var _v3 = _v2.b;
+									var y = _v3.a;
+									return _List_fromArray(
+										[x, y]);
+								case 3:
+									if (_v0.b.b.b.b) {
+										var _v4 = _v0.b;
+										var x = _v4.a;
+										var _v5 = _v4.b;
+										var y = _v5.a;
+										var _v6 = _v5.b;
+										var z = _v6.a;
+										return _List_fromArray(
+											[x, y, z]);
+									} else {
+										break _v0$5;
+									}
+								default:
+									if (_v0.b.b.b.b && _v0.b.b.b.b.b) {
+										var _v7 = _v0.b;
+										var x = _v7.a;
+										var _v8 = _v7.b;
+										var y = _v8.a;
+										var _v9 = _v8.b;
+										var z = _v9.a;
+										var _v10 = _v9.b;
+										var w = _v10.a;
+										var tl = _v10.b;
+										return (ctr > 1000) ? A2(
+											$elm$core$List$cons,
+											x,
+											A2(
+												$elm$core$List$cons,
+												y,
+												A2(
+													$elm$core$List$cons,
+													z,
+													A2(
+														$elm$core$List$cons,
+														w,
+														A2($elm$core$List$takeTailRec, n - 4, tl))))) : A2(
+											$elm$core$List$cons,
+											x,
+											A2(
+												$elm$core$List$cons,
+												y,
+												A2(
+													$elm$core$List$cons,
+													z,
+													A2(
+														$elm$core$List$cons,
+														w,
+														A3($elm$core$List$takeFast, ctr + 1, n - 4, tl)))));
+									} else {
+										break _v0$5;
+									}
+							}
+						} else {
+							if (_v0.a === 1) {
+								break _v0$1;
+							} else {
+								break _v0$5;
+							}
+						}
+					}
+				}
+				return list;
+			}
+			var _v1 = _v0.b;
+			var x = _v1.a;
+			return _List_fromArray(
+				[x]);
+		}
+	});
+var $elm$core$List$take = F2(
+	function (n, list) {
+		return A3($elm$core$List$takeFast, 0, n, list);
+	});
+var $author$project$Layout$view = F2(
+	function (attributes, _v0) {
+		var title = _v0.title;
+		var onChangedSidebar = _v0.onChangedSidebar;
+		var menu = _v0.menu;
+		var actions = _v0.actions;
+		var deviceClass = _v0.deviceClass;
+		var dialog = _v0.dialog;
+		var content = _v0.content;
+		var style = _v0.style;
+		var layout = _v0.layout;
+		var snackbar = A2(
+			$elm$core$Maybe$withDefault,
+			$mdgriffith$elm_ui$Element$none,
+			A2(
+				$elm$core$Maybe$map,
+				A2(
+					$elm$core$Basics$composeR,
+					$mdgriffith$elm_ui$Element$text,
+					A2(
+						$elm$core$Basics$composeR,
+						$elm$core$List$singleton,
+						A2(
+							$elm$core$Basics$composeR,
+							$mdgriffith$elm_ui$Element$paragraph(style.snackbar),
+							$mdgriffith$elm_ui$Element$el(
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$padding(8),
+										$mdgriffith$elm_ui$Element$alignBottom,
+										$mdgriffith$elm_ui$Element$alignRight
+									]))))),
+				$author$project$Widget$Snackbar$current(layout.snackbar)));
+		var _v1 = _Utils_Tuple2(
+			($elm$core$List$length(actions) > 4) ? A2($elm$core$List$take, 2, actions) : (($elm$core$List$length(actions) === 4) ? A2($elm$core$List$take, 1, actions) : (($elm$core$List$length(actions) === 3) ? _List_Nil : A2($elm$core$List$take, 2, actions))),
+			($elm$core$List$length(actions) > 4) ? A2($elm$core$List$drop, 2, actions) : (($elm$core$List$length(actions) === 4) ? A2($elm$core$List$drop, 1, actions) : (($elm$core$List$length(actions) === 3) ? actions : A2($elm$core$List$drop, 2, actions))));
+		var primaryActions = _v1.a;
+		var moreActions = _v1.b;
+		var sheet = function () {
+			var _v4 = layout.sheet;
+			if (_v4.$ === 'Just') {
+				if (_v4.a.$ === 'Left') {
+					var _v5 = _v4.a;
+					return A2(
+						$mdgriffith$elm_ui$Element$el,
+						_Utils_ap(
+							style.sheet,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+									$mdgriffith$elm_ui$Element$alignLeft
+								])),
+						A2(
+							$mdgriffith$elm_ui$Element$column,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+								]),
+							A2(
+								$elm$core$List$indexedMap,
+								function (i) {
+									return _Utils_eq(i, menu.selected) ? $author$project$Core$Style$sheetButtonSelected(style) : $author$project$Core$Style$sheetButton(style);
+								},
+								menu.items)));
+				} else {
+					var _v6 = _v4.a;
+					return A2(
+						$mdgriffith$elm_ui$Element$el,
+						_Utils_ap(
+							style.sheet,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+									$mdgriffith$elm_ui$Element$alignRight
+								])),
+						A2(
+							$mdgriffith$elm_ui$Element$column,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+								]),
+							A2(
+								$elm$core$List$map,
+								$author$project$Core$Style$sheetButton(style),
+								moreActions)));
+				}
+			} else {
+				return $mdgriffith$elm_ui$Element$none;
+			}
+		}();
+		var nav = A2(
+			$mdgriffith$elm_ui$Element$row,
+			_Utils_ap(
+				style.header,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$padding(0),
+						$mdgriffith$elm_ui$Element$centerX,
+						$mdgriffith$elm_ui$Element$spaceEvenly,
+						$mdgriffith$elm_ui$Element$alignTop,
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+					])),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+							$mdgriffith$elm_ui$Element$spacing(8)
+						]),
+					(_Utils_eq(deviceClass, $mdgriffith$elm_ui$Element$Phone) || (_Utils_eq(deviceClass, $mdgriffith$elm_ui$Element$Tablet) || ($elm$core$List$length(menu.items) > 5))) ? _List_fromArray(
+						[
+							A2(
+							$mdgriffith$elm_ui$Element$Input$button,
+							style.menuButton,
+							{
+								label: A2($mdgriffith$elm_ui$Element$map, $elm$core$Basics$never, style.menuIcon),
+								onPress: $elm$core$Maybe$Just(
+									onChangedSidebar(
+										$elm$core$Maybe$Just($author$project$Layout$Left)))
+							}),
+							title
+						]) : _List_fromArray(
+						[
+							title,
+							A2(
+							$mdgriffith$elm_ui$Element$row,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink)
+								]),
+							A2(
+								$elm$core$List$indexedMap,
+								function (i) {
+									return _Utils_eq(i, menu.selected) ? $author$project$Core$Style$menuTabButtonSelected(style) : $author$project$Core$Style$menuTabButton(style);
+								},
+								menu.items))
+						])),
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+							$mdgriffith$elm_ui$Element$alignRight
+						]),
+					$elm$core$List$concat(
+						_List_fromArray(
+							[
+								A2(
+								$elm$core$List$map,
+								_Utils_eq(deviceClass, $mdgriffith$elm_ui$Element$Phone) ? $author$project$Core$Style$menuIconButton(style) : $author$project$Core$Style$menuButton(style),
+								primaryActions),
+								$elm$core$List$isEmpty(moreActions) ? _List_Nil : _List_fromArray(
+								[
+									A2(
+									$author$project$Core$Style$menuButton,
+									style,
+									{
+										icon: style.moreVerticalIcon,
+										label: '',
+										onPress: $elm$core$Maybe$Just(
+											onChangedSidebar(
+												$elm$core$Maybe$Just($author$project$Layout$Right)))
+									})
+								])
+							])))
+				]));
+		return A2(
+			style.layout,
+			$elm$core$List$concat(
+				_List_fromArray(
+					[
+						attributes,
+						_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$inFront(nav),
+							$mdgriffith$elm_ui$Element$inFront(snackbar)
+						]),
+						((!_Utils_eq(layout.sheet, $elm$core$Maybe$Nothing)) || (!_Utils_eq(dialog, $elm$core$Maybe$Nothing))) ? $author$project$Widget$scrim(
+						{
+							content: $mdgriffith$elm_ui$Element$none,
+							onDismiss: $elm$core$Maybe$Just(
+								function () {
+									if (dialog.$ === 'Just') {
+										var onDismiss = dialog.a.onDismiss;
+										return A2(
+											$elm$core$Maybe$withDefault,
+											onChangedSidebar($elm$core$Maybe$Nothing),
+											onDismiss);
+									} else {
+										return onChangedSidebar($elm$core$Maybe$Nothing);
+									}
+								}())
+						}) : _List_Nil,
+						_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$inFront(sheet),
+							$mdgriffith$elm_ui$Element$inFront(
+							function () {
+								if (dialog.$ === 'Just') {
+									var element = dialog.a;
+									return element.content;
+								} else {
+									return $mdgriffith$elm_ui$Element$none;
+								}
+							}())
+						])
+					])),
+			content);
+	});
 var $author$project$Reusable$snackbar = function (addSnackbar) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
+		_Utils_ap(
+			$Orasund$elm_ui_framework$Framework$Grid$simple,
+			_Utils_ap(
+				$Orasund$elm_ui_framework$Framework$Card$large,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+					]))),
 		_List_fromArray(
 			[
 				A2(
@@ -15113,7 +16359,14 @@ var $author$project$Widget$SortTable$view = function (_v0) {
 var $author$project$Reusable$sortTable = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
+		_Utils_ap(
+			$Orasund$elm_ui_framework$Framework$Grid$simple,
+			_Utils_ap(
+				$Orasund$elm_ui_framework$Framework$Card$large,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+					]))),
 		_List_fromArray(
 			[
 				A2(
@@ -15239,7 +16492,9 @@ var $author$project$Reusable$view = function (_v0) {
 				_Utils_ap(
 					$Orasund$elm_ui_framework$Framework$Grid$simple,
 					_List_fromArray(
-						[$mdgriffith$elm_ui$Element$centerX])),
+						[
+							$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
+						])),
 				_List_fromArray(
 					[
 						$author$project$Reusable$snackbar(addSnackbar),
@@ -15403,7 +16658,14 @@ var $Orasund$elm_ui_framework$Framework$Color$yellow = A3($mdgriffith$elm_ui$Ele
 var $author$project$Stateless$carousel = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
+		_Utils_ap(
+			$Orasund$elm_ui_framework$Framework$Grid$simple,
+			_Utils_ap(
+				$Orasund$elm_ui_framework$Framework$Card$large,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+					]))),
 		_List_fromArray(
 			[
 				A2(
@@ -15506,7 +16768,14 @@ var $Orasund$elm_ui_framework$Framework$Heading$h4 = $Orasund$elm_ui_framework$F
 var $author$project$Stateless$collapsable = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
+		_Utils_ap(
+			$Orasund$elm_ui_framework$Framework$Grid$simple,
+			_Utils_ap(
+				$Orasund$elm_ui_framework$Framework$Card$large,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+					]))),
 		_List_fromArray(
 			[
 				A2(
@@ -15541,26 +16810,6 @@ var $author$project$Stateless$collapsable = function (model) {
 				})
 			]));
 };
-var $author$project$Stateless$dialog = F2(
-	function (showDialog, model) {
-		return A2(
-			$mdgriffith$elm_ui$Element$column,
-			_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
-			_List_fromArray(
-				[
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					$Orasund$elm_ui_framework$Framework$Heading$h3,
-					$mdgriffith$elm_ui$Element$text('Dialog')),
-					A2(
-					$mdgriffith$elm_ui$Element$Input$button,
-					$Orasund$elm_ui_framework$Framework$Button$simple,
-					{
-						label: $mdgriffith$elm_ui$Element$text('Show Dialog'),
-						onPress: $elm$core$Maybe$Just(showDialog)
-					})
-				]));
-	});
 var $author$project$Stateless$ChangedMultiSelected = function (a) {
 	return {$: 'ChangedMultiSelected', a: a};
 };
@@ -15588,7 +16837,14 @@ var $author$project$Widget$multiSelect = function (_v0) {
 var $author$project$Stateless$multiSelect = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
+		_Utils_ap(
+			$Orasund$elm_ui_framework$Framework$Grid$simple,
+			_Utils_ap(
+				$Orasund$elm_ui_framework$Framework$Card$large,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+					]))),
 		_List_fromArray(
 			[
 				A2(
@@ -15632,13 +16888,90 @@ var $author$project$Stateless$multiSelect = function (model) {
 						})))
 			]));
 };
+var $author$project$Stateless$scrim = F2(
+	function (_v0, model) {
+		var showDialog = _v0.showDialog;
+		var changedSheet = _v0.changedSheet;
+		return A2(
+			$mdgriffith$elm_ui$Element$column,
+			_Utils_ap(
+				$Orasund$elm_ui_framework$Framework$Grid$simple,
+				_Utils_ap(
+					$Orasund$elm_ui_framework$Framework$Card$large,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+						]))),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					$Orasund$elm_ui_framework$Framework$Heading$h3,
+					$mdgriffith$elm_ui$Element$text('Scrim')),
+					A2(
+					$mdgriffith$elm_ui$Element$Input$button,
+					$Orasund$elm_ui_framework$Framework$Button$simple,
+					{
+						label: $mdgriffith$elm_ui$Element$text('Show dialog'),
+						onPress: $elm$core$Maybe$Just(showDialog)
+					}),
+					A2(
+					$mdgriffith$elm_ui$Element$Input$button,
+					$Orasund$elm_ui_framework$Framework$Button$simple,
+					{
+						label: $mdgriffith$elm_ui$Element$text('show left sheet'),
+						onPress: $elm$core$Maybe$Just(
+							changedSheet(
+								$elm$core$Maybe$Just($author$project$Layout$Left)))
+					}),
+					A2(
+					$mdgriffith$elm_ui$Element$Input$button,
+					$Orasund$elm_ui_framework$Framework$Button$simple,
+					{
+						label: $mdgriffith$elm_ui$Element$text('show right sheet'),
+						onPress: $elm$core$Maybe$Just(
+							changedSheet(
+								$elm$core$Maybe$Just($author$project$Layout$Right)))
+					})
+				]));
+	});
 var $author$project$Stateless$ChangedSelected = function (a) {
 	return {$: 'ChangedSelected', a: a};
+};
+var $author$project$Widget$select = function (_v0) {
+	var selected = _v0.selected;
+	var options = _v0.options;
+	var label = _v0.label;
+	var onChange = _v0.onChange;
+	var attributes = _v0.attributes;
+	return A2(
+		$elm$core$List$map,
+		function (a) {
+			return A2(
+				$mdgriffith$elm_ui$Element$Input$button,
+				attributes(
+					_Utils_eq(
+						selected,
+						$elm$core$Maybe$Just(a))),
+				{
+					label: label(a),
+					onPress: $elm$core$Maybe$Just(
+						onChange(a))
+				});
+		},
+		options);
 };
 var $author$project$Stateless$select = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
+		_Utils_ap(
+			$Orasund$elm_ui_framework$Framework$Grid$simple,
+			_Utils_ap(
+				$Orasund$elm_ui_framework$Framework$Card$large,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+					]))),
 		_List_fromArray(
 			[
 				A2(
@@ -15726,7 +17059,14 @@ var $Orasund$elm_ui_framework$Framework$Group$top = _List_fromArray(
 var $author$project$Stateless$tab = function (model) {
 	return A2(
 		$mdgriffith$elm_ui$Element$column,
-		_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
+		_Utils_ap(
+			$Orasund$elm_ui_framework$Framework$Grid$simple,
+			_Utils_ap(
+				$Orasund$elm_ui_framework$Framework$Card$large,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+					]))),
 		_List_fromArray(
 			[
 				A2(
@@ -15777,6 +17117,7 @@ var $author$project$Stateless$view = F2(
 	function (_v0, model) {
 		var msgMapper = _v0.msgMapper;
 		var showDialog = _v0.showDialog;
+		var changedSheet = _v0.changedSheet;
 		return A2(
 			$mdgriffith$elm_ui$Element$column,
 			$Orasund$elm_ui_framework$Framework$Grid$section,
@@ -15793,7 +17134,12 @@ var $author$project$Stateless$view = F2(
 						$mdgriffith$elm_ui$Element$text('Stateless views are simple functions that view some content. No wiring required.'))),
 					A2(
 					$mdgriffith$elm_ui$Element$wrappedRow,
-					$Orasund$elm_ui_framework$Framework$Grid$simple,
+					_Utils_ap(
+						$Orasund$elm_ui_framework$Framework$Grid$simple,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
+							])),
 					_List_fromArray(
 						[
 							A2(
@@ -15808,7 +17154,10 @@ var $author$project$Stateless$view = F2(
 							$mdgriffith$elm_ui$Element$map,
 							msgMapper,
 							$author$project$Stateless$collapsable(model)),
-							A2($author$project$Stateless$dialog, showDialog, model),
+							A2(
+							$author$project$Stateless$scrim,
+							{changedSheet: changedSheet, showDialog: showDialog},
+							model),
 							A2(
 							$mdgriffith$elm_ui$Element$map,
 							msgMapper,
@@ -15844,322 +17193,193 @@ var $author$project$Widget$ScrollingNav$view = F2(
 				},
 				arrangement));
 	});
-var $author$project$Widget$ScrollingNav$JumpTo = function (a) {
-	return {$: 'JumpTo', a: a};
-};
-var $elm_community$intdict$IntDict$findMin = function (dict) {
-	findMin:
-	while (true) {
-		switch (dict.$) {
-			case 'Empty':
-				return $elm$core$Maybe$Nothing;
-			case 'Leaf':
-				var l = dict.a;
-				return $elm$core$Maybe$Just(
-					_Utils_Tuple2(l.key, l.value));
-			default:
-				var i = dict.a;
-				var $temp$dict = i.left;
-				dict = $temp$dict;
-				continue findMin;
-		}
-	}
-};
-var $elm_community$intdict$IntDict$after = F2(
-	function (key, dict) {
-		var go = F2(
-			function (def, currentDict) {
-				go:
-				while (true) {
-					switch (currentDict.$) {
-						case 'Empty':
-							return $elm_community$intdict$IntDict$findMin(def);
-						case 'Leaf':
-							var l = currentDict.a;
-							return (_Utils_cmp(l.key, key) < 1) ? $elm_community$intdict$IntDict$findMin(def) : $elm$core$Maybe$Just(
-								_Utils_Tuple2(l.key, l.value));
-						default:
-							var i = currentDict.a;
-							if (!A2($elm_community$intdict$IntDict$prefixMatches, i.prefix, key)) {
-								return (_Utils_cmp(i.prefix.prefixBits, key) < 0) ? $elm_community$intdict$IntDict$findMin(def) : $elm_community$intdict$IntDict$findMin(i.left);
-							} else {
-								if (A2($elm_community$intdict$IntDict$isBranchingBitSet, i.prefix, key)) {
-									var $temp$def = def,
-										$temp$currentDict = i.right;
-									def = $temp$def;
-									currentDict = $temp$currentDict;
-									continue go;
-								} else {
-									var $temp$def = i.right,
-										$temp$currentDict = i.left;
-									def = $temp$def;
-									currentDict = $temp$currentDict;
-									continue go;
-								}
-							}
-					}
-				}
-			});
-		return A2(go, $elm_community$intdict$IntDict$Empty, dict);
-	});
-var $elm$core$Maybe$andThen = F2(
-	function (callback, maybeValue) {
-		if (maybeValue.$ === 'Just') {
-			var value = maybeValue.a;
-			return callback(value);
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $elm_community$intdict$IntDict$findMax = function (dict) {
-	findMax:
-	while (true) {
-		switch (dict.$) {
-			case 'Empty':
-				return $elm$core$Maybe$Nothing;
-			case 'Leaf':
-				var l = dict.a;
-				return $elm$core$Maybe$Just(
-					_Utils_Tuple2(l.key, l.value));
-			default:
-				var i = dict.a;
-				var $temp$dict = i.right;
-				dict = $temp$dict;
-				continue findMax;
-		}
-	}
-};
-var $elm_community$intdict$IntDict$before = F2(
-	function (key, dict) {
-		var go = F2(
-			function (def, currentDict) {
-				go:
-				while (true) {
-					switch (currentDict.$) {
-						case 'Empty':
-							return $elm_community$intdict$IntDict$findMax(def);
-						case 'Leaf':
-							var l = currentDict.a;
-							return (_Utils_cmp(l.key, key) > -1) ? $elm_community$intdict$IntDict$findMax(def) : $elm$core$Maybe$Just(
-								_Utils_Tuple2(l.key, l.value));
-						default:
-							var i = currentDict.a;
-							if (!A2($elm_community$intdict$IntDict$prefixMatches, i.prefix, key)) {
-								return (_Utils_cmp(i.prefix.prefixBits, key) > 0) ? $elm_community$intdict$IntDict$findMax(def) : $elm_community$intdict$IntDict$findMax(i.right);
-							} else {
-								if (A2($elm_community$intdict$IntDict$isBranchingBitSet, i.prefix, key)) {
-									var $temp$def = i.left,
-										$temp$currentDict = i.right;
-									def = $temp$def;
-									currentDict = $temp$currentDict;
-									continue go;
-								} else {
-									var $temp$def = def,
-										$temp$currentDict = i.left;
-									def = $temp$def;
-									currentDict = $temp$currentDict;
-									continue go;
-								}
-							}
-					}
-				}
-			});
-		return A2(go, $elm_community$intdict$IntDict$Empty, dict);
-	});
-var $author$project$Widget$ScrollingNav$viewSections = F2(
-	function (_v0, _v1) {
-		var label = _v0.label;
-		var fromString = _v0.fromString;
-		var msgMapper = _v0.msgMapper;
-		var attributes = _v0.attributes;
-		var arrangement = _v1.arrangement;
-		var scrollPos = _v1.scrollPos;
-		var labels = _v1.labels;
-		var positions = _v1.positions;
-		var current = A2(
-			$elm$core$Maybe$andThen,
-			fromString,
-			A2(
-				$elm$core$Maybe$map,
-				$elm$core$Tuple$second,
-				A2(
-					$elm$core$Maybe$withDefault,
-					A2($elm_community$intdict$IntDict$after, scrollPos + 1, positions),
-					A2(
-						$elm$core$Maybe$map,
-						$elm$core$Maybe$Just,
-						A2($elm_community$intdict$IntDict$before, scrollPos + 1, positions)))));
-		return {
-			attributes: attributes,
-			label: function (elem) {
-				return label(
-					labels(elem));
-			},
-			onChange: A2($elm$core$Basics$composeR, $author$project$Widget$ScrollingNav$JumpTo, msgMapper),
-			options: arrangement,
-			selected: current
-		};
-	});
 var $author$project$Example$view = function (model) {
-	return A2(
-		$Orasund$elm_ui_framework$Framework$responsiveLayout,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$inFront(
-				A2(
-					$mdgriffith$elm_ui$Element$el,
-					_Utils_ap(
-						$Orasund$elm_ui_framework$Framework$Color$dark,
+	if (model.$ === 'Loading') {
+		return A2($Orasund$elm_ui_framework$Framework$responsiveLayout, _List_Nil, $mdgriffith$elm_ui$Element$none);
+	} else {
+		var m = model.a;
+		return A2(
+			$elm$html$Html$map,
+			$author$project$Example$LoadedSpecific,
+			A2(
+				$author$project$Layout$view,
+				_List_Nil,
+				{
+					actions: _List_fromArray(
+						[
+							{
+							icon: A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_Nil,
+								$mdgriffith$elm_ui$Element$html($author$project$Icons$book)),
+							label: 'Docs',
+							onPress: $elm$core$Maybe$Just(
+								$author$project$Example$Load('https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/'))
+						},
+							{
+							icon: A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_Nil,
+								$mdgriffith$elm_ui$Element$html($author$project$Icons$github)),
+							label: 'Github',
+							onPress: $elm$core$Maybe$Just(
+								$author$project$Example$Load('https://github.com/Orasund/elm-ui-widgets'))
+						},
+							{
+							icon: A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_Nil,
+								$mdgriffith$elm_ui$Element$html($author$project$Icons$circle)),
+							label: 'Placeholder',
+							onPress: $elm$core$Maybe$Nothing
+						},
+							{
+							icon: A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_Nil,
+								$mdgriffith$elm_ui$Element$html($author$project$Icons$triangle)),
+							label: 'Placeholder',
+							onPress: $elm$core$Maybe$Nothing
+						},
+							{
+							icon: A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_Nil,
+								$mdgriffith$elm_ui$Element$html($author$project$Icons$square)),
+							label: 'Placeholder',
+							onPress: $elm$core$Maybe$Nothing
+						}
+						]),
+					content: A2(
+						$mdgriffith$elm_ui$Element$column,
+						$Orasund$elm_ui_framework$Framework$Grid$compact,
 						_List_fromArray(
 							[
-								$mdgriffith$elm_ui$Element$alignTop,
-								$mdgriffith$elm_ui$Element$height(
-								$mdgriffith$elm_ui$Element$px(42)),
-								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-							])),
-					A2(
-						$mdgriffith$elm_ui$Element$el,
-						_Utils_ap(
-							$Orasund$elm_ui_framework$Framework$container,
-							_List_fromArray(
-								[
-									$mdgriffith$elm_ui$Element$padding(0),
-									$mdgriffith$elm_ui$Element$centerX
-								])),
-						A2(
-							$mdgriffith$elm_ui$Element$row,
-							_Utils_ap($Orasund$elm_ui_framework$Framework$Color$dark, $Orasund$elm_ui_framework$Framework$Grid$compact),
-							$author$project$Widget$select(
 								A2(
-									$author$project$Widget$ScrollingNav$viewSections,
-									{
-										attributes: function (selected) {
-											return _Utils_ap(
-												$Orasund$elm_ui_framework$Framework$Button$simple,
-												_Utils_ap(
-													$Orasund$elm_ui_framework$Framework$Group$center,
-													selected ? $Orasund$elm_ui_framework$Framework$Color$primary : $Orasund$elm_ui_framework$Framework$Color$dark));
-										},
-										fromString: function (string) {
-											switch (string) {
-												case 'Component Views':
-													return $elm$core$Maybe$Just($author$project$Example$ComponentViews);
-												case 'Reusable Views':
-													return $elm$core$Maybe$Just($author$project$Example$ReusableViews);
-												case 'Stateless Views':
-													return $elm$core$Maybe$Just($author$project$Example$StatelessViews);
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$height(
+										$mdgriffith$elm_ui$Element$px(42))
+									]),
+								$mdgriffith$elm_ui$Element$none),
+								A2(
+								$mdgriffith$elm_ui$Element$column,
+								$Orasund$elm_ui_framework$Framework$container,
+								_List_fromArray(
+									[
+										A2(
+										$author$project$Widget$ScrollingNav$view,
+										function (section) {
+											switch (section.$) {
+												case 'ComponentViews':
+													return A2(
+														$mdgriffith$elm_ui$Element$map,
+														$author$project$Example$ComponentSpecific,
+														$author$project$Component$view(m.component));
+												case 'ReusableViews':
+													return $author$project$Reusable$view(
+														{addSnackbar: $author$project$Example$AddSnackbar, model: m.reusable, msgMapper: $author$project$Example$ReusableSpecific});
 												default:
-													return $elm$core$Maybe$Nothing;
+													return A2(
+														$author$project$Stateless$view,
+														{
+															changedSheet: $author$project$Example$ChangedSidebar,
+															msgMapper: $author$project$Example$StatelessSpecific,
+															showDialog: $author$project$Example$ToggleDialog(true)
+														},
+														m.stateless);
 											}
 										},
-										label: $mdgriffith$elm_ui$Element$text,
-										msgMapper: $author$project$Example$ScrollingNavSpecific
-									},
-									model.scrollingNav)))))),
-				$mdgriffith$elm_ui$Element$inFront(
-				A2(
-					$elm$core$Maybe$withDefault,
-					$mdgriffith$elm_ui$Element$none,
-					A2(
-						$elm$core$Maybe$map,
-						A2(
-							$elm$core$Basics$composeR,
-							$mdgriffith$elm_ui$Element$text,
-							A2(
-								$elm$core$Basics$composeR,
-								$elm$core$List$singleton,
-								A2(
-									$elm$core$Basics$composeR,
-									$mdgriffith$elm_ui$Element$paragraph(
-										_Utils_ap($Orasund$elm_ui_framework$Framework$Card$simple, $Orasund$elm_ui_framework$Framework$Color$dark)),
-									$mdgriffith$elm_ui$Element$el(
-										_List_fromArray(
-											[
-												$mdgriffith$elm_ui$Element$padding(8),
-												$mdgriffith$elm_ui$Element$alignBottom,
-												$mdgriffith$elm_ui$Element$alignRight
-											]))))),
-						$author$project$Widget$Snackbar$current(model.snackbar)))),
-				$mdgriffith$elm_ui$Element$inFront(
-				model.displayDialog ? $author$project$Widget$dialog(
-					{
-						content: A2(
-							$mdgriffith$elm_ui$Element$column,
-							_Utils_ap($Orasund$elm_ui_framework$Framework$Grid$simple, $Orasund$elm_ui_framework$Framework$Card$large),
-							_List_fromArray(
-								[
-									A2(
-									$mdgriffith$elm_ui$Element$el,
-									$Orasund$elm_ui_framework$Framework$Heading$h3,
-									$mdgriffith$elm_ui$Element$text('Dialog')),
-									A2(
-									$mdgriffith$elm_ui$Element$paragraph,
-									_List_Nil,
-									$elm$core$List$singleton(
-										$mdgriffith$elm_ui$Element$text('This is a dialog window'))),
-									A2(
-									$mdgriffith$elm_ui$Element$Input$button,
+										m.scrollingNav)
+									]))
+							])),
+					deviceClass: m.deviceClass,
+					dialog: m.displayDialog ? $elm$core$Maybe$Just(
+						{
+							content: A2(
+								$mdgriffith$elm_ui$Element$column,
+								_Utils_ap(
+									$Orasund$elm_ui_framework$Framework$Grid$simple,
 									_Utils_ap(
-										$Orasund$elm_ui_framework$Framework$Button$simple,
+										$Orasund$elm_ui_framework$Framework$Card$large,
 										_List_fromArray(
-											[$mdgriffith$elm_ui$Element$alignRight])),
-									{
-										label: $mdgriffith$elm_ui$Element$text('Ok'),
-										onPress: $elm$core$Maybe$Just(
-											$author$project$Example$ToggleDialog(false))
-									})
-								])),
-						onDismiss: $elm$core$Maybe$Just(
-							$author$project$Example$ToggleDialog(false))
-					}) : $mdgriffith$elm_ui$Element$none)
-			]),
-		A2(
-			$mdgriffith$elm_ui$Element$column,
-			$Orasund$elm_ui_framework$Framework$Grid$compact,
-			_List_fromArray(
-				[
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$height(
-							$mdgriffith$elm_ui$Element$px(42))
-						]),
-					$mdgriffith$elm_ui$Element$none),
-					A2(
-					$mdgriffith$elm_ui$Element$column,
-					$Orasund$elm_ui_framework$Framework$container,
-					_List_fromArray(
-						[
-							A2(
-							$mdgriffith$elm_ui$Element$el,
-							$Orasund$elm_ui_framework$Framework$Heading$h1,
-							$mdgriffith$elm_ui$Element$text('Elm-Ui-Widgets')),
-							A2(
-							$author$project$Widget$ScrollingNav$view,
-							function (section) {
-								switch (section.$) {
-									case 'ComponentViews':
-										return A2(
-											$mdgriffith$elm_ui$Element$map,
-											$author$project$Example$ComponentSpecific,
-											$author$project$Component$view(model.component));
-									case 'ReusableViews':
-										return $author$project$Reusable$view(
-											{addSnackbar: $author$project$Example$AddSnackbar, model: model.reusable, msgMapper: $author$project$Example$ReusableSpecific});
-									default:
-										return A2(
-											$author$project$Stateless$view,
-											{
-												msgMapper: $author$project$Example$StatelessSpecific,
-												showDialog: $author$project$Example$ToggleDialog(true)
-											},
-											model.stateless);
-								}
+											[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]))),
+								_List_fromArray(
+									[
+										A2(
+										$mdgriffith$elm_ui$Element$el,
+										$Orasund$elm_ui_framework$Framework$Heading$h3,
+										$mdgriffith$elm_ui$Element$text('Dialog')),
+										A2(
+										$mdgriffith$elm_ui$Element$paragraph,
+										_List_Nil,
+										$elm$core$List$singleton(
+											$mdgriffith$elm_ui$Element$text('This is a dialog window'))),
+										A2(
+										$mdgriffith$elm_ui$Element$Input$button,
+										_Utils_ap(
+											$Orasund$elm_ui_framework$Framework$Button$simple,
+											_List_fromArray(
+												[$mdgriffith$elm_ui$Element$alignRight])),
+										{
+											label: $mdgriffith$elm_ui$Element$text('Ok'),
+											onPress: $elm$core$Maybe$Just(
+												$author$project$Example$ToggleDialog(false))
+										})
+									])),
+							onDismiss: $elm$core$Maybe$Just(
+								$author$project$Example$ToggleDialog(false))
+						}) : $elm$core$Maybe$Nothing,
+					layout: m.layout,
+					menu: {
+						items: A2(
+							$elm$core$List$map,
+							function (label) {
+								return {
+									icon: $mdgriffith$elm_ui$Element$none,
+									label: $author$project$Data$Section$toString(label),
+									onPress: $elm$core$Maybe$Just(
+										$author$project$Example$JumpTo(label))
+								};
 							},
-							model.scrollingNav)
-						]))
-				])));
+							$author$project$Data$Section$asList),
+						selected: A2(
+							$elm$core$Maybe$withDefault,
+							0,
+							$elm$core$List$head(
+								A2(
+									$elm$core$List$filterMap,
+									function (_v2) {
+										var i = _v2.a;
+										var s = _v2.b;
+										return _Utils_eq(
+											$elm$core$Maybe$Just(s),
+											A2($author$project$Widget$ScrollingNav$current, $author$project$Data$Section$fromString, m.scrollingNav)) ? $elm$core$Maybe$Just(i) : $elm$core$Maybe$Nothing;
+									},
+									A2(
+										$elm$core$List$indexedMap,
+										F2(
+											function (i, s) {
+												return _Utils_Tuple2(i, s);
+											}),
+										$author$project$Data$Section$asList))))
+					},
+					onChangedSidebar: $author$project$Example$ChangedSidebar,
+					style: $author$project$Example$style,
+					title: A2(
+						$mdgriffith$elm_ui$Element$el,
+						$Orasund$elm_ui_framework$Framework$Heading$h1,
+						$mdgriffith$elm_ui$Element$text(
+							(_Utils_eq(m.deviceClass, $mdgriffith$elm_ui$Element$Phone) || _Utils_eq(m.deviceClass, $mdgriffith$elm_ui$Element$Tablet)) ? A2(
+								$elm$core$Maybe$withDefault,
+								'Elm-Ui-Widgets',
+								A2(
+									$elm$core$Maybe$map,
+									$author$project$Data$Section$toString,
+									A2($author$project$Widget$ScrollingNav$current, $author$project$Data$Section$fromString, m.scrollingNav))) : 'Elm-Ui-Widgets'))
+				}));
+	}
 };
 var $author$project$Example$main = $elm$browser$Browser$element(
 	{init: $author$project$Example$init, subscriptions: $author$project$Example$subscriptions, update: $author$project$Example$update, view: $author$project$Example$view});

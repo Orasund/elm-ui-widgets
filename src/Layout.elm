@@ -169,25 +169,19 @@ view attributes { title, onChangedSidebar, menu, actions, deviceClass, dialog, c
                     )
 
         snackbar =
-            case layout.sheet of
-                Nothing ->
-                    layout.snackbar
-                        |> Snackbar.current
-                        |> Maybe.map
-                            (Element.text
-                                >> List.singleton
-                                >> Element.paragraph style.snackbar
-                                >> Element.el
-                                    [ Element.padding 8
-                                    , Element.alignBottom
-                                    , Element.alignRight
-                                    ]
-                            )
-                        |> Maybe.withDefault Element.none
-
-                _ ->
-                    Element.none
-
+            layout.snackbar
+                |> Snackbar.current
+                |> Maybe.map
+                    (Element.text
+                        >> List.singleton
+                        >> Element.paragraph style.snackbar
+                        >> Element.el
+                            [ Element.padding 8
+                            , Element.alignBottom
+                            , Element.alignRight
+                            ]
+                    )
+                |> Maybe.withDefault Element.none
         sheet =
             case layout.sheet of
                 Just Left ->
