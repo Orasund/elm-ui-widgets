@@ -66,7 +66,7 @@ snackbar addSnackbar =
                 |> Element.paragraph []
         }
     ]
-        |> Element.column (Grid.simple ++ Card.large)
+        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
 
 
 sortTable : SortTable.Model -> Element Msg
@@ -140,7 +140,7 @@ sortTable model =
            )
         |> Element.table Grid.simple
     ]
-        |> Element.column (Grid.simple ++ Card.large)
+        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
 
 
 view :
@@ -156,7 +156,7 @@ view { addSnackbar, msgMapper, model } =
             |> Element.text
             |> List.singleton
             |> Element.paragraph []
-        , Element.wrappedRow (Grid.simple ++ [ Element.centerX ]) <|
+        , Element.wrappedRow (Grid.simple ++ [Element.height <| Element.shrink]) <|
             [ snackbar addSnackbar
             , sortTable model |> Element.map msgMapper
             ]

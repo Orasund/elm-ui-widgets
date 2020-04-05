@@ -18,6 +18,7 @@ import Html exposing (Html)
 import Html.Attributes as Attributes
 import Set exposing (Set)
 import Widget
+import Layout exposing (Direction(..))
 
 
 type alias Model =
@@ -132,7 +133,7 @@ select model =
             )
         |> Element.row Grid.compact
     ]
-        |> Element.column (Grid.simple ++ Card.large)
+        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
 
 
 multiSelect : Model -> Element Msg
@@ -174,7 +175,7 @@ multiSelect model =
             )
         |> Element.row Grid.compact
     ]
-        |> Element.column (Grid.simple ++ Card.large)
+        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
 
 
 collapsable : Model -> Element Msg
@@ -196,7 +197,7 @@ collapsable model =
         , content = Element.text <| "Hello World"
         }
     ]
-        |> Element.column (Grid.simple ++ Card.large)
+        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
 
 
 tab : Model -> Element Msg
@@ -236,18 +237,29 @@ tab model =
                        )
         }
     ]
-        |> Element.column (Grid.simple ++ Card.large)
+        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
 
 
-dialog : msg -> Model -> Element msg
-dialog showDialog model =
-    [ Element.el Heading.h3 <| Element.text "Dialog"
+scrim :
+    { showDialog : msg
+    , changedSheet : Maybe Direction -> msg
+    } -> Model -> Element msg
+scrim {showDialog,changedSheet} model =
+    [ Element.el Heading.h3 <| Element.text "Scrim"
     , Input.button Button.simple
         { onPress = Just showDialog
-        , label = Element.text <| "Show Dialog"
+        , label = Element.text <| "Show dialog"
+        }
+    , Input.button Button.simple
+        { onPress = Just <| changedSheet <| Just Left
+        , label = Element.text <| "show left sheet"
+        }
+    ,  Input.button Button.simple
+        { onPress = Just <| changedSheet <| Just Right
+        , label = Element.text <| "show right sheet"
         }
     ]
-        |> Element.column (Grid.simple ++ Card.large)
+        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
 
 
 carousel : Model -> Element Msg
@@ -283,24 +295,31 @@ carousel model =
                     |> Element.row (Grid.simple ++ [ Element.centerX, Element.width <| Element.shrink ])
         }
     ]
-        |> Element.column (Grid.simple ++ Card.large)
+        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
 
 
-view : { msgMapper : Msg -> msg, showDialog : msg } -> Model -> Element msg
-view { msgMapper, showDialog } model =
-    Element.column Grid.section
+view : 
+    { msgMapper : Msg -> msg
+    , showDialog : msg
+    , changedSheet : Maybe Direction -> msg
+    } -> Model -> Element msg
+view { msgMapper, showDialog, changedSheet } model =
+    Element.column (Grid.section )
         [ Element.el Heading.h2 <| Element.text "Stateless Views"
         , "Stateless views are simple functions that view some content. No wiring required."
             |> Element.text
             |> List.singleton
             |> Element.paragraph []
         , Element.wrappedRow
-            Grid.simple
+            (Grid.simple ++ [Element.height <| Element.shrink])
           <|
             [ select model |> Element.map msgMapper
             , multiSelect model |> Element.map msgMapper
             , collapsable model |> Element.map msgMapper
-            , dialog showDialog model
+            , scrim
+                { showDialog = showDialog
+                , changedSheet = changedSheet
+                } model
             , carousel model |> Element.map msgMapper
             , tab model |> Element.map msgMapper
             ]

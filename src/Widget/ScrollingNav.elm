@@ -1,5 +1,5 @@
 module Widget.ScrollingNav exposing
-    ( Model, Msg, init, update, subscriptions, view, viewSections
+    ( Model, Msg, init, update, subscriptions, view, viewSections, current
     , jumpTo, syncPositions
     )
 
@@ -9,7 +9,7 @@ the page. Clicking on a navigation button will scroll directly to that section.
 
 # Basics
 
-@docs Model, Msg, init, update, subscriptions, view, viewSections
+@docs Model, Msg, init, update, subscriptions, view, viewSections, current
 
 
 # Operations
@@ -145,6 +145,17 @@ syncPositions { labels, arrangement } =
 
 
 {-| -}
+current : (String -> Maybe section) -> Model section -> Maybe section
+current fromString { positions, scrollPos } =
+    positions
+        |> IntDict.before (scrollPos + 1)
+        |> Maybe.map Just
+        |> Maybe.withDefault (positions |> IntDict.after (scrollPos + 1))
+        |> Maybe.map Tuple.second
+        |> Maybe.andThen fromString
+
+
+{-| -}
 viewSections :
     { label : String -> Element msg
     , fromString : String -> Maybe section
@@ -159,17 +170,8 @@ viewSections :
         , onChange : section -> msg
         , attributes : Bool -> List (Attribute msg)
         }
-viewSections { label, fromString, msgMapper, attributes } { arrangement, scrollPos, labels, positions } =
-    let
-        current =
-            positions
-                |> IntDict.before (scrollPos + 1)
-                |> Maybe.map Just
-                |> Maybe.withDefault (positions |> IntDict.after (scrollPos + 1))
-                |> Maybe.map Tuple.second
-                |> Maybe.andThen fromString
-    in
-    { selected = current
+viewSections { label, fromString, msgMapper, attributes } ({ arrangement, scrollPos, labels, positions } as model) =
+    { selected = model |> current fromString
     , options = arrangement
     , label = \elem -> label (elem |> labels)
     , onChange = JumpTo >> msgMapper

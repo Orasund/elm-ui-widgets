@@ -5,69 +5,67 @@ module Widget.SortTable exposing
 
 {-| A Sortable list allows you to sort coulmn.
 
-```
-    SortTable.view
-        { content =
-            [ {id = 1, name = "Antonio", rating = 2.456}
-            , {id = 2, name = "Ana", rating = 1.34}
-            , {id = 3, name = "Alfred", rating = 4.22}
-            , {id = 4, name = "Thomas", rating = 3 }
-            ]
-        , columns =
-            [ SortTable.intColumn
-                { title = "Id"
-                , value = .id
-                , toString = \int -> "#" ++ String.fromInt int
-                }
-            , SortTable.stringColumn
-                { title = "Name"
-                , value = .name
-                , toString = identity
-                }
-            , SortTable.floatColumn
-                { title = "rating"
-                , value = .rating
-                , toString = String.fromFloat
-                }
-            ]
-        , model = model
-        }
-        |> (\{data,columns} ->
-            {data = data
-            ,columns = columns
-                |> List.map (\config->
-                        { header =
-                            Input.button [Font.bold]
-                                { onPress =
-                                    { title = config.header
-                                    , asc =
-                                        if config.header == model.title then
-                                            not model.asc
-                                        else
-                                            True
-                                    }
-                                        |> SortBy
-                                        |> Just
-                                , label =
-                                    if config.header == model.title then
-                                        [ config.header |> Element.text
-                                        , Element.text <|
-                                            if model.asc then
-                                                "/\"
+        SortTable.view
+            { content =
+                [ {id = 1, name = "Antonio", rating = 2.456}
+                , {id = 2, name = "Ana", rating = 1.34}
+                , {id = 3, name = "Alfred", rating = 4.22}
+                , {id = 4, name = "Thomas", rating = 3 }
+                ]
+            , columns =
+                [ SortTable.intColumn
+                    { title = "Id"
+                    , value = .id
+                    , toString = \int -> "#" ++ String.fromInt int
+                    }
+                , SortTable.stringColumn
+                    { title = "Name"
+                    , value = .name
+                    , toString = identity
+                    }
+                , SortTable.floatColumn
+                    { title = "rating"
+                    , value = .rating
+                    , toString = String.fromFloat
+                    }
+                ]
+            , model = model
+            }
+            |> (\{data,columns} ->
+                {data = data
+                ,columns = columns
+                    |> List.map (\config->
+                            { header =
+                                Input.button [Font.bold]
+                                    { onPress =
+                                        { title = config.header
+                                        , asc =
+                                            if config.header == model.title then
+                                                not model.asc
                                             else
-                                                "\/"
-                                        ]
-                                            |> Element.row [Font.bold]
-                                    else
-                                        config.header  |> Element.text
-                                }
-                        , view = config.view >> Element.text
-                        , width = Element.fill
-                        }
-                    )
-            })
-        |> Element.table []
-```
+                                                True
+                                        }
+                                            |> SortBy
+                                            |> Just
+                                    , label =
+                                        if config.header == model.title then
+                                            [ config.header |> Element.text
+                                            , Element.text <|
+                                                if model.asc then
+                                                    "/\"
+                                                else
+                                                    "\/"
+                                            ]
+                                                |> Element.row [Font.bold]
+                                        else
+                                            config.header  |> Element.text
+                                    }
+                            , view = config.view >> Element.text
+                            , width = Element.fill
+                            }
+                        )
+                })
+            |> Element.table []
 
 
 # Basics
@@ -138,10 +136,8 @@ stringColumn { title, value, toString } =
 
 {-| Change the sorting criteras.
 
-```
-    sortBy =
-        identity
-```
+        sortBy =
+            identity
 
 -}
 sortBy : { title : String, asc : Bool } -> Model

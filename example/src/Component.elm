@@ -93,7 +93,7 @@ update msg model =
 
 filterSelect : FilterSelect.Model -> Element Msg
 filterSelect model =
-    Element.column (Grid.simple ++ Card.large) <|
+    Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill]) <|
         [ Element.el Heading.h3 <| Element.text "Filter Select"
         , case model.selected of
             Just selected ->
@@ -133,7 +133,7 @@ filterSelect model =
 
 validatedInput : ValidatedInput.Model () ( String, String ) -> Element Msg
 validatedInput model =
-    Element.column (Grid.simple ++ Card.large) <|
+    Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill]) <|
         [ Element.el Heading.h3 <| Element.text "Validated Input"
         , ValidatedInput.view Input.simple
             model
@@ -158,11 +158,11 @@ validatedInput model =
 scrollingNavCard : Element msg
 scrollingNavCard =
     [ Element.el Heading.h3 <| Element.text "Scrolling Nav"
-    , Element.text "Resize the screen and use the scrollbar to see the scrolling navigation in action."
+    , Element.text "Resize the screen and open the side-menu. Then start scrolling to see the scrolling navigation in action."
         |> List.singleton
         |> Element.paragraph []
     ]
-        |> Element.column (Grid.simple ++ Card.large)
+        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
 
 
 view : Model -> Element Msg
@@ -173,7 +173,7 @@ view model =
             |> Element.text
             |> List.singleton
             |> Element.paragraph []
-        , Element.wrappedRow (Grid.simple ++ [ Element.centerX ]) <|
+        , Element.wrappedRow (Grid.simple ++ [Element.height <| Element.shrink]) <|
             [ filterSelect model.filterSelect
             , validatedInput model.validatedInput
             , scrollingNavCard
