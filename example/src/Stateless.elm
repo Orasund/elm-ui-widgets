@@ -18,7 +18,7 @@ import Html exposing (Html)
 import Html.Attributes as Attributes
 import Set exposing (Set)
 import Widget
-import Layout exposing (Direction(..))
+import Layout exposing (Part(..))
 
 
 type alias Model =
@@ -242,7 +242,7 @@ tab model =
 
 scrim :
     { showDialog : msg
-    , changedSheet : Maybe Direction -> msg
+    , changedSheet : Maybe Part -> msg
     } -> Model -> Element msg
 scrim {showDialog,changedSheet} model =
     [ Element.el Heading.h3 <| Element.text "Scrim"
@@ -251,11 +251,11 @@ scrim {showDialog,changedSheet} model =
         , label = Element.text <| "Show dialog"
         }
     , Input.button Button.simple
-        { onPress = Just <| changedSheet <| Just Left
+        { onPress = Just <| changedSheet <| Just LeftSheet
         , label = Element.text <| "show left sheet"
         }
     ,  Input.button Button.simple
-        { onPress = Just <| changedSheet <| Just Right
+        { onPress = Just <| changedSheet <| Just RightSheet
         , label = Element.text <| "show right sheet"
         }
     ]
@@ -301,7 +301,7 @@ carousel model =
 view : 
     { msgMapper : Msg -> msg
     , showDialog : msg
-    , changedSheet : Maybe Direction -> msg
+    , changedSheet : Maybe Part -> msg
     } -> Model -> Element msg
 view { msgMapper, showDialog, changedSheet } model =
     Element.column (Grid.section )

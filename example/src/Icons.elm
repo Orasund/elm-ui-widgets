@@ -6,6 +6,7 @@ module Icons exposing
     , circle
     , triangle
     , square
+    , search
     )
 
 import Html exposing (Html)
@@ -75,4 +76,11 @@ square : Html msg
 square =
     svgFeatherIcon "square"
         [ Svg.rect [ Svg.Attributes.x "3", y "3", width "18", height "18", rx "2", ry "2" ] []
+        ]
+
+search : Html msg
+search =
+    svgFeatherIcon "search"
+        [ Svg.circle [ cx "11", cy "11", r "8" ] []
+        , Svg.line [ x1 "21", y1 "21", x2 "16.65", y2 "16.65" ] []
         ]

@@ -1,7 +1,7 @@
 module Widget.ScrollingNav exposing
-    ( Model, Msg, init, update, subscriptions, view, viewSections, current
+    ( Model, init, view, viewSections, current
     , jumpTo, syncPositions
-    , jumpToWithOffset
+    , getPos, jumpToWithOffset, setPos
     )
 
 {-| The Scrolling Nav is a navigation bar thats updates while you scroll through
@@ -24,8 +24,7 @@ import Element exposing (Attribute, Element)
 import Framework.Grid as Grid
 import Html.Attributes as Attributes
 import IntDict exposing (IntDict)
-import Task
-import Time
+import Task exposing (Task)
 
 
 {-| -}
@@ -37,23 +36,15 @@ type alias Model section =
     }
 
 
-{-| -}
-type Msg section
-    = GotHeaderPos section (Result Dom.Error Int)
-    | ChangedViewport (Result Dom.Error ())
-    | SyncPosition Int
-    | JumpTo section
-    | TimePassed
-
-
 {-| The intial state include the labels and the arrangement of the sections
 -}
 init :
     { labels : section -> String
     , arrangement : List section
+    , toMsg : Result Dom.Error (Model section -> Model section) -> msg
     }
-    -> ( Model section, Cmd (Msg section) )
-init { labels, arrangement } =
+    -> ( Model section, Cmd msg )
+init { labels, arrangement, toMsg } =
     { labels = labels
     , positions = IntDict.empty
     , arrangement = arrangement
@@ -62,97 +53,91 @@ init { labels, arrangement } =
         |> (\a ->
                 ( a
                 , syncPositions a
+                    |> Task.attempt toMsg
                 )
            )
 
 
-{-| -}
-update : Msg section -> Model section -> ( Model section, Cmd (Msg section) )
-update msg model =
-    case msg of
-        GotHeaderPos label result ->
-            ( case result of
-                Ok pos ->
-                    { model
-                        | positions =
-                            model.positions
-                                |> IntDict.insert pos
-                                    (label |> model.labels)
-                    }
-
-                Err _ ->
-                    model
-            , Cmd.none
-            )
-
-        ChangedViewport _ ->
-            ( model, Cmd.none )
-
-        SyncPosition pos ->
-            ( { model
-                | scrollPos = pos
-              }
-            , Cmd.none
-            )
-
-        TimePassed ->
-            ( model
-            , Dom.getViewport
-                |> Task.map (.viewport >> .y >> round)
-                |> Task.perform SyncPosition
-            )
-
-        JumpTo elem ->
-            ( model
-            , model
-                |> jumpTo elem
+getPos : Task x (Model selection -> Model selection)
+getPos =
+    Dom.getViewport
+        |> Task.map
+            (\int model ->
+                { model
+                    | scrollPos = int.viewport.y |> round
+                }
             )
 
 
-{-| -}
-subscriptions : Sub (Msg msg)
-subscriptions =
-    Time.every 100 (always TimePassed)
+setPos : Int -> Model section -> Model section
+setPos pos model =
+    { model | scrollPos = pos }
 
 
 {-| scrolls the screen to the respective section
 -}
-jumpTo : section -> Model section -> Cmd (Msg msg)
-jumpTo section { labels } =
+jumpTo :
+    { section : section
+    , onChange : Result Dom.Error () -> msg
+    }
+    -> Model section
+    -> Cmd msg
+jumpTo { section, onChange } { labels } =
     Dom.getElement (section |> labels)
         |> Task.andThen
             (\{ element } ->
-                Dom.setViewport 0 (element.y)
+                Dom.setViewport 0 element.y
             )
-        |> Task.attempt ChangedViewport
+        |> Task.attempt onChange
+
 
 {-| scrolls the screen to the respective section with some offset
 -}
-jumpToWithOffset : Float -> section -> Model section -> Cmd (Msg msg)
-jumpToWithOffset offset section { labels } =
+jumpToWithOffset :
+    { offset : Float
+    , section : section
+    , onChange : Result Dom.Error () -> msg
+    }
+    -> Model section
+    -> Cmd msg
+jumpToWithOffset { offset, section, onChange } { labels } =
     Dom.getElement (section |> labels)
         |> Task.andThen
             (\{ element } ->
                 Dom.setViewport 0 (element.y - offset)
             )
-        |> Task.attempt ChangedViewport
+        |> Task.attempt onChange
+
 
 {-| -}
-syncPositions : Model section -> Cmd (Msg section)
+syncPositions : Model section -> Task Dom.Error (Model section -> Model section)
 syncPositions { labels, arrangement } =
     arrangement
         |> List.map
             (\label ->
                 Dom.getElement (labels label)
                     |> Task.map
-                        (.element
-                            >> .y
-                            >> round
+                        (\x ->
+                            ( x.element.y |> round
+                            , label
+                            )
                         )
-                    |> Task.attempt
-                        (GotHeaderPos label)
             )
-        |> Cmd.batch
+        |> Task.sequence
+        |> Task.map
+            (\list m ->
+                list
+                    |> List.foldl
+                        (\( pos, label ) model ->
+                            { model
+                                | positions =
+                                    model.positions
+                                        |> IntDict.insert pos
+                                            (label |> model.labels)
+                            }
+                        )
+                        m
+            )
 
 
 {-| -}
@@ -170,7 +155,7 @@ current fromString { positions, scrollPos } =
 viewSections :
     { label : String -> Element msg
     , fromString : String -> Maybe section
-    , msgMapper : Msg section -> msg
+    , onSelect : section -> msg
     , attributes : Bool -> List (Attribute msg)
     }
     -> Model section
@@ -181,11 +166,11 @@ viewSections :
         , onChange : section -> msg
         , attributes : Bool -> List (Attribute msg)
         }
-viewSections { label, fromString, msgMapper, attributes } ({ arrangement, scrollPos, labels, positions } as model) =
+viewSections { label, fromString, onSelect, attributes } ({ arrangement, labels } as model) =
     { selected = model |> current fromString
     , options = arrangement
     , label = \elem -> label (elem |> labels)
-    , onChange = JumpTo >> msgMapper
+    , onChange = onSelect
     , attributes = attributes
     }
 

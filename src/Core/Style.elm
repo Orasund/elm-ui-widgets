@@ -1,4 +1,4 @@
-module Core.Style exposing (Style,menuTabButtonSelected,menuTabButton, menuButton, menuButtonSelected, menuIconButton, sheetButton, sheetButtonSelected)
+module Core.Style exposing (Style, menuButton, menuButtonSelected, menuIconButton, menuTabButton, menuTabButtonSelected, sheetButton, sheetButtonSelected)
 
 import Element exposing (Attribute, Element)
 import Element.Input as Input
@@ -19,10 +19,20 @@ type alias Style msg =
     , menuIcon : Element Never
     , moreVerticalIcon : Element Never
     , spacing : Int
+    , title : List (Attribute msg)
+    , searchIcon : Element Never
+    , search : List (Attribute msg)
     }
 
 
-menuButtonSelected : Style msg -> { label : String, icon : Element Never, onPress : Maybe msg } -> Element msg
+type alias ButtonInfo msg =
+    { label : String
+    , icon : Element Never
+    , onPress : Maybe msg
+    }
+
+
+menuButtonSelected : Style msg -> ButtonInfo msg -> Element msg
 menuButtonSelected config { label, icon, onPress } =
     Input.button (config.menuButton ++ config.menuButtonSelected)
         { onPress = onPress
@@ -34,7 +44,7 @@ menuButtonSelected config { label, icon, onPress } =
         }
 
 
-menuButton : Style msg -> { label : String, icon : Element Never, onPress : Maybe msg } -> Element msg
+menuButton : Style msg -> ButtonInfo msg -> Element msg
 menuButton config { label, icon, onPress } =
     Input.button config.menuButton
         { onPress = onPress
@@ -46,7 +56,7 @@ menuButton config { label, icon, onPress } =
         }
 
 
-menuIconButton : Style msg -> { label : String, icon : Element Never, onPress : Maybe msg } -> Element msg
+menuIconButton : Style msg -> ButtonInfo msg -> Element msg
 menuIconButton config { label, icon, onPress } =
     Input.button config.menuButton
         { onPress = onPress
@@ -54,7 +64,7 @@ menuIconButton config { label, icon, onPress } =
         }
 
 
-sheetButton : Style msg -> { label : String, icon : Element Never, onPress : Maybe msg } -> Element msg
+sheetButton : Style msg -> ButtonInfo msg -> Element msg
 sheetButton config { label, icon, onPress } =
     Input.button config.sheetButton
         { onPress = onPress
@@ -66,7 +76,7 @@ sheetButton config { label, icon, onPress } =
         }
 
 
-sheetButtonSelected : Style msg -> { label : String, icon : Element Never, onPress : Maybe msg } -> Element msg
+sheetButtonSelected : Style msg -> ButtonInfo msg -> Element msg
 sheetButtonSelected config { label, icon, onPress } =
     Input.button (config.sheetButton ++ config.sheetButtonSelected)
         { onPress = onPress
@@ -77,7 +87,8 @@ sheetButtonSelected config { label, icon, onPress } =
                 ]
         }
 
-menuTabButton : Style msg -> { label : String, icon : Element Never, onPress : Maybe msg } -> Element msg
+
+menuTabButton : Style msg -> ButtonInfo msg -> Element msg
 menuTabButton config { label, icon, onPress } =
     Input.button (config.menuButton ++ config.tabButton)
         { onPress = onPress
@@ -88,7 +99,8 @@ menuTabButton config { label, icon, onPress } =
                 ]
         }
 
-menuTabButtonSelected : Style msg -> { label : String, icon : Element Never, onPress : Maybe msg } -> Element msg
+
+menuTabButtonSelected : Style msg -> ButtonInfo msg -> Element msg
 menuTabButtonSelected config { label, icon, onPress } =
     Input.button (config.menuButton ++ config.tabButton ++ config.tabButtonSelected)
         { onPress = onPress

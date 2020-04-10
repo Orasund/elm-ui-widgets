@@ -154,17 +154,6 @@ validatedInput model =
             }
         ]
 
-
-scrollingNavCard : Element msg
-scrollingNavCard =
-    [ Element.el Heading.h3 <| Element.text "Scrolling Nav"
-    , Element.text "Resize the screen and open the side-menu. Then start scrolling to see the scrolling navigation in action."
-        |> List.singleton
-        |> Element.paragraph []
-    ]
-        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
-
-
 view : Model -> Element Msg
 view model =
     Element.column (Grid.section ++ [ Element.centerX ])
@@ -176,6 +165,6 @@ view model =
         , Element.wrappedRow (Grid.simple ++ [Element.height <| Element.shrink]) <|
             [ filterSelect model.filterSelect
             , validatedInput model.validatedInput
-            , scrollingNavCard
+            
             ]
         ]

@@ -21,7 +21,7 @@ import Framework.Tag as Tag
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Icons
-import Layout exposing (Direction, Layout)
+import Layout exposing (Part, Layout)
 import Core.Style exposing (Style)
 import Reusable
 import Set exposing (Set)
@@ -43,6 +43,7 @@ type alias LoadedModel =
     , layout : Layout
     , displayDialog : Bool
     , deviceClass : DeviceClass
+    , search : String
     }
 
 
@@ -55,14 +56,16 @@ type LoadedMsg
     = StatelessSpecific Stateless.Msg
     | ReusableSpecific Reusable.Msg
     | ComponentSpecific Component.Msg
-    | ScrollingNavSpecific (ScrollingNav.Msg Section)
+    | UpdateScrollingNav (ScrollingNav.Model Section -> ScrollingNav.Model Section)
     | TimePassed Int
     | AddSnackbar String
     | ToggleDialog Bool
-    | ChangedSidebar (Maybe Direction)
+    | ChangedSidebar (Maybe Part)
     | Resized { width : Int, height : Int }
     | Load String
     | JumpTo Section
+    | ChangedSearch String
+    | Idle
 
 
 type Msg
@@ -109,6 +112,11 @@ style =
     , moreVerticalIcon =
         Icons.moreVertical |> Element.html |> Element.el []
     , spacing = 8
+    , title = Heading.h2
+    , searchIcon =
+        Icons.search |> Element.html |> Element.el []
+    , search =
+        Color.simple ++ [Font.color <| Element.rgb255 0 0 0 ]
     }
 
 
@@ -119,6 +127,12 @@ initialModel { viewport } =
             ScrollingNav.init
                 { labels = Section.toString
                 , arrangement = Section.asList
+                , toMsg = \result ->
+                    case result of
+                        Ok fun ->
+                            UpdateScrollingNav fun
+                        Err _ ->
+                            Idle
                 }
     in
     ( { component = Component.init
@@ -133,8 +147,9 @@ initialModel { viewport } =
             }
                 |> Element.classifyDevice
                 |> .class
+      , search = ""
       }
-    , cmd |> Cmd.map ScrollingNavSpecific
+    , cmd
     )
 
 
@@ -261,16 +276,15 @@ view model =
                         ]
                     , onChangedSidebar = ChangedSidebar
                     , title = 
-                        (if m.deviceClass == Phone || m.deviceClass == Tablet then
-                            m.scrollingNav
-                            |> ScrollingNav.current Section.fromString
-                            |> Maybe.map Section.toString
-                            |> Maybe.withDefault "Elm-Ui-Widgets"
-                        else
-                            "Elm-Ui-Widgets"
-                        )
+                        "Elm-Ui-Widgets"
                         |> Element.text 
                         |> Element.el Heading.h1
+                    , search =
+                        Just
+                            { text = m.search
+                            , onChange = ChangedSearch
+                            , label = "Search"
+                            }
                     }
 
 
@@ -309,23 +323,18 @@ updateLoaded msg model =
                         }
                     )
                     (Cmd.map StatelessSpecific)
-
-        ScrollingNavSpecific m ->
-            model.scrollingNav
-                |> ScrollingNav.update m
-                |> Tuple.mapBoth
-                    (\scrollingNav ->
-                        { model
-                            | scrollingNav = scrollingNav
-                        }
-                    )
-                    (Cmd.map ScrollingNavSpecific)
+        
+        UpdateScrollingNav fun ->
+            ( { model | scrollingNav = model.scrollingNav |> fun}
+            , Cmd.none
+            )
 
         TimePassed int ->
             ( { model
                 | layout = model.layout |> Layout.timePassed int
               }
-            , Cmd.none
+            , ScrollingNav.getPos
+                |> Task.perform UpdateScrollingNav
             )
 
         AddSnackbar string ->
@@ -344,7 +353,7 @@ updateLoaded msg model =
             )
 
         ChangedSidebar sidebar ->
-            ( { model | layout = model.layout |> Layout.setSidebar sidebar }
+            ( { model | layout = model.layout |> Layout.activate sidebar }
             , Cmd.none
             )
         
@@ -354,9 +363,17 @@ updateLoaded msg model =
         JumpTo section ->
             ( model
             , model.scrollingNav
-                |> ScrollingNav.jumpTo section
-                |> Cmd.map ScrollingNavSpecific
+                |> ScrollingNav.jumpTo 
+                    { section = section
+                    , onChange = always Idle
+                    }
             )
+        
+        ChangedSearch string ->
+            ( { model | search = string},Cmd.none)
+        
+        Idle ->
+            ( model , Cmd.none)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -377,9 +394,7 @@ update msg model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ ScrollingNav.subscriptions
-            |> Sub.map ScrollingNavSpecific
-        , Time.every 50 (always (TimePassed 50))
+        [ Time.every 50 (always (TimePassed 50))
         , Events.onResize (\h w -> Resized { height = h, width = w })
         ]
         |> Sub.map LoadedSpecific
