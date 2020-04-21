@@ -1,7 +1,7 @@
 module Widget.ScrollingNav exposing
-    ( Model, init, view, viewSections, current
+    ( Model, init, view, current
     , jumpTo, syncPositions
-    , getPos, jumpToWithOffset, setPos
+    , getPos, jumpToWithOffset, setPos, toSelect
     )
 
 {-| The Scrolling Nav is a navigation bar thats updates while you scroll through
@@ -20,16 +20,18 @@ the page. Clicking on a navigation button will scroll directly to that section.
 -}
 
 import Browser.Dom as Dom
-import Element exposing (Attribute, Element)
+import Element exposing (Element)
 import Framework.Grid as Grid
 import Html.Attributes as Attributes
 import IntDict exposing (IntDict)
 import Task exposing (Task)
+import Widget exposing (Select)
 
 
 {-| -}
 type alias Model section =
-    { labels : section -> String
+    { toString : section -> String
+    , fromString : String -> Maybe section
     , positions : IntDict String
     , arrangement : List section
     , scrollPos : Int
@@ -39,13 +41,15 @@ type alias Model section =
 {-| The intial state include the labels and the arrangement of the sections
 -}
 init :
-    { labels : section -> String
+    { toString : section -> String
+    , fromString : String -> Maybe section
     , arrangement : List section
     , toMsg : Result Dom.Error (Model section -> Model section) -> msg
     }
     -> ( Model section, Cmd msg )
-init { labels, arrangement, toMsg } =
-    { labels = labels
+init { toString, fromString, arrangement, toMsg } =
+    { toString = toString
+    , fromString = fromString
     , positions = IntDict.empty
     , arrangement = arrangement
     , scrollPos = 0
@@ -82,8 +86,8 @@ jumpTo :
     }
     -> Model section
     -> Cmd msg
-jumpTo { section, onChange } { labels } =
-    Dom.getElement (section |> labels)
+jumpTo { section, onChange } { toString } =
+    Dom.getElement (section |> toString)
         |> Task.andThen
             (\{ element } ->
                 Dom.setViewport 0 element.y
@@ -100,8 +104,8 @@ jumpToWithOffset :
     }
     -> Model section
     -> Cmd msg
-jumpToWithOffset { offset, section, onChange } { labels } =
-    Dom.getElement (section |> labels)
+jumpToWithOffset { offset, section, onChange } { toString } =
+    Dom.getElement (section |> toString)
         |> Task.andThen
             (\{ element } ->
                 Dom.setViewport 0 (element.y - offset)
@@ -111,11 +115,11 @@ jumpToWithOffset { offset, section, onChange } { labels } =
 
 {-| -}
 syncPositions : Model section -> Task Dom.Error (Model section -> Model section)
-syncPositions { labels, arrangement } =
+syncPositions { toString, arrangement } =
     arrangement
         |> List.map
             (\label ->
-                Dom.getElement (labels label)
+                Dom.getElement (toString label)
                     |> Task.map
                         (\x ->
                             ( x.element.y |> round
@@ -133,7 +137,7 @@ syncPositions { labels, arrangement } =
                                 | positions =
                                     model.positions
                                         |> IntDict.insert pos
-                                            (label |> model.labels)
+                                            (label |> model.toString)
                             }
                         )
                         m
@@ -151,27 +155,29 @@ current fromString { positions, scrollPos } =
         |> Maybe.andThen fromString
 
 
-{-| -}
-viewSections :
-    { label : String -> Element msg
-    , fromString : String -> Maybe section
-    , onSelect : section -> msg
-    , attributes : Bool -> List (Attribute msg)
-    }
-    -> Model section
-    ->
-        { selected : Maybe section
-        , options : List section
-        , label : section -> Element msg
-        , onChange : section -> msg
-        , attributes : Bool -> List (Attribute msg)
-        }
-viewSections { label, fromString, onSelect, attributes } ({ arrangement, labels } as model) =
-    { selected = model |> current fromString
-    , options = arrangement
-    , label = \elem -> label (elem |> labels)
-    , onChange = onSelect
-    , attributes = attributes
+toSelect : (Int -> Maybe msg) -> Model section -> Select msg
+toSelect onSelect ({ arrangement, toString, fromString } as model) =
+    { selected =
+        arrangement
+            |> List.indexedMap (\i s -> ( i, s ))
+            |> List.filterMap
+                (\( i, s ) ->
+                    if Just s == current fromString model then
+                        Just i
+
+                    else
+                        Nothing
+                )
+            |> List.head
+    , options =
+        arrangement
+            |> List.map
+                (\s ->
+                    { text = toString s
+                    , icon = Element.none
+                    }
+                )
+    , onSelect = onSelect
     }
 
 
@@ -180,13 +186,13 @@ view :
     (section -> Element msg)
     -> Model section
     -> Element msg
-view asElement { labels, arrangement } =
+view asElement { toString, arrangement } =
     arrangement
         |> List.map
             (\header ->
                 Element.el
                     [ header
-                        |> labels
+                        |> toString
                         |> Attributes.id
                         |> Element.htmlAttribute
                     , Element.width <| Element.fill

@@ -17,16 +17,34 @@ import Heroicons.Solid as Heroicons
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Set exposing (Set)
-import Widget
+import Widget.Button as Button exposing (ButtonStyle)
 import Layout exposing (Part(..))
+import Icons
+import Widget
 
+buttonStyle : ButtonStyle msg
+buttonStyle =
+    { label = [ Element.spacing 8]
+    , container = Button.simple
+    , disabled = Color.disabled
+    , active = Color.primary
+    }
+
+tabButtonStyle :ButtonStyle msg
+tabButtonStyle=
+    { label = [ Element.spacing 8]
+    , container = Button.simple ++ Group.top
+    , disabled = Color.disabled
+    , active = Color.primary
+    }
 
 type alias Model =
     { selected : Maybe Int
     , multiSelected : Set Int
     , isCollapsed : Bool
     , carousel : Int
-    , tab : Int
+    , tab : Maybe Int
+    , button : Bool
     }
 
 
@@ -36,6 +54,7 @@ type Msg
     | ToggleCollapsable Bool
     | ChangedTab Int
     | SetCarousel Int
+    | ToggleButton Bool
 
 
 init : Model
@@ -44,7 +63,8 @@ init =
     , multiSelected = Set.empty
     , isCollapsed = False
     , carousel = 0
-    , tab = 1
+    , tab = Just 1
+    , button = True
     }
 
 
@@ -91,35 +111,31 @@ update msg model =
             )
 
         ChangedTab int ->
-            ( { model | tab = int }, Cmd.none )
+            ( { model | tab = Just int }, Cmd.none )
+        
+        ToggleButton bool ->
+            ( { model | button = bool }, Cmd.none )
 
 
-select : Model -> Element Msg
+select : Model -> (String,Element Msg)
 select model =
-    [ Element.el Heading.h3 <| Element.text "Select"
-    , Widget.select
-        { selected = model.selected
-        , options = [ 1, 2, 42 ]
-        , label = String.fromInt >> Element.text
-        , onChange = ChangedSelected
-        , attributes =
-            \selected ->
-                Button.simple
-                    ++ [ Border.width 0
-                       , Border.rounded 0
-                       ]
-                    ++ (if selected then
-                            Color.primary
-
-                        else
-                            []
-                       )
-        }
+    ( "Select"
+    , { selected = model.selected
+      , options = 
+        [ 1, 2, 42 ]
+        |> List.map (\int ->
+            { text = String.fromInt int
+            , icon = Element.none
+            }
+        )
+      , onSelect = ChangedSelected >> Just
+      }
+        |> Widget.select
         |> List.indexedMap
             (\i ->
-                Element.el
-                    (Button.simple
-                        ++ [ Element.padding <| 0 ]
+                Widget.selectButton
+                    { buttonStyle
+                    | container = buttonStyle.container
                         ++ (if i == 0 then
                                 Group.left
 
@@ -129,39 +145,31 @@ select model =
                             else
                                 Group.center
                            )
-                    )
+                    }
             )
+        
         |> Element.row Grid.compact
-    ]
-        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
+    )
 
 
-multiSelect : Model -> Element Msg
+multiSelect : Model -> (String,Element Msg)
 multiSelect model =
-    [ Element.el Heading.h3 <| Element.text "Multi Select"
-    , Widget.multiSelect
-        { selected = model.multiSelected
-        , options = [ 1, 2, 42 ]
-        , label = String.fromInt >> Element.text
-        , onChange = ChangedMultiSelected
-        , attributes =
-            \selected ->
-                Button.simple
-                    ++ [ Border.width 0
-                       , Border.rounded 0
-                       ]
-                    ++ (if selected then
-                            Color.primary
-
-                        else
-                            []
-                       )
-        }
+    ( "Multi Select"
+    , { selected = model.multiSelected
+      , options = 
+        [ 1, 2, 42 ]
+        |> List.map (\int -> 
+            { text = String.fromInt int
+            , icon = Element.none
+            })
+      , onSelect = ChangedMultiSelected >> Just
+      }
+        |> Widget.multiSelect
         |> List.indexedMap
             (\i ->
-                Element.el
-                    (Button.simple
-                        ++ [ Element.padding <| 0 ]
+                Widget.selectButton
+                    { buttonStyle
+                    | container = buttonStyle.container
                         ++ (if i == 0 then
                                 Group.left
 
@@ -171,16 +179,14 @@ multiSelect model =
                             else
                                 Group.center
                            )
-                    )
+                    }
             )
         |> Element.row Grid.compact
-    ]
-        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
+    )
 
-
-collapsable : Model -> Element Msg
+collapsable : Model -> (String,Element Msg)
 collapsable model =
-    [ Element.el Heading.h3 <| Element.text "Collapsable"
+    ( "Collapsable"
     , Widget.collapsable
         { onToggle = ToggleCollapsable
         , isCollapsed = model.isCollapsed
@@ -196,28 +202,33 @@ collapsable model =
                 ]
         , content = Element.text <| "Hello World"
         }
-    ]
-        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
+    )
 
-
-tab : Model -> Element Msg
+tab : Model -> (String,Element Msg)
 tab model =
-    [ Element.el Heading.h3 <| Element.text "Tab"
-    , Widget.tab Grid.simple
-        { selected = model.tab
-        , options = [ 1, 2, 3 ]
-        , onChange = ChangedTab
-        , label = \int -> "Tab " ++ String.fromInt int |> Element.text
-        , content =
-            \selected ->
+    ( "Tab"
+    , Widget.tab 
+            { tabButton = tabButtonStyle
+            , tabRow = Grid.simple
+            } 
+            { selected = model.tab
+            , options = [ 1, 2, 3 ]
+                |> List.map (\int ->
+                    { text = "Tab " ++ (int |> String.fromInt)
+                    , icon = Element.none
+                    }
+                )
+            , onSelect = ChangedTab >> Just
+            } <|
+            (\selected ->
                 (case selected of
-                    1 ->
+                    Just 0 ->
                         "This is Tab 1"
 
-                    2 ->
+                    Just 1 ->
                         "This is the second tab"
 
-                    3 ->
+                    Just 2 ->
                         "The thrid and last tab"
 
                     _ ->
@@ -225,46 +236,35 @@ tab model =
                 )
                     |> Element.text
                     |> Element.el (Card.small ++ Group.bottom)
-        , attributes =
-            \selected ->
-                Button.simple
-                    ++ Group.top
-                    ++ (if selected then
-                            Color.primary
+            )
+    )
 
-                        else
-                            []
-                       )
-        }
-    ]
-        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
-
-
-scrim :
-    { showDialog : msg
-    , changedSheet : Maybe Part -> msg
-    } -> Model -> Element msg
-scrim {showDialog,changedSheet} model =
-    [ Element.el Heading.h3 <| Element.text "Scrim"
+modal : (Maybe Part -> msg) -> Model -> (String,Element msg)
+modal changedSheet model =
+    ( "Modal"
+    ,   [ Input.button Button.simple
+            { onPress = Just <| changedSheet <| Just LeftSheet
+            , label = Element.text <| "show left sheet"
+            }
+        ,  Input.button Button.simple
+            { onPress = Just <| changedSheet <| Just RightSheet
+            , label = Element.text <| "show right sheet"
+            }
+        ] |> Element.column Grid.simple
+    )
+    
+dialog : msg -> Model -> (String,Element msg)
+dialog showDialog model =
+    ( "Dialog"
     , Input.button Button.simple
         { onPress = Just showDialog
         , label = Element.text <| "Show dialog"
         }
-    , Input.button Button.simple
-        { onPress = Just <| changedSheet <| Just LeftSheet
-        , label = Element.text <| "show left sheet"
-        }
-    ,  Input.button Button.simple
-        { onPress = Just <| changedSheet <| Just RightSheet
-        , label = Element.text <| "show right sheet"
-        }
-    ]
-        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
+    )
 
-
-carousel : Model -> Element Msg
+carousel : Model -> (String,Element Msg)
 carousel model =
-    [ Element.el Heading.h3 <| Element.text "Carousel"
+    ( "Carousel"
     , Widget.carousel
         { content = ( Color.cyan, [ Color.yellow, Color.green, Color.red ] |> Array.fromList )
         , current = model.carousel
@@ -294,33 +294,47 @@ carousel model =
                 ]
                     |> Element.row (Grid.simple ++ [ Element.centerX, Element.width <| Element.shrink ])
         }
-    ]
-        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
+    )
 
+iconButton : Model -> (String,Element Msg)
+iconButton model =
+    ( "Icon Button"
+    , [Button.view buttonStyle
+        { text = "disable me"
+        , icon = Icons.slash |> Element.html |> Element.el []        , onPress =
+            if model.button then
+                Just <| ToggleButton False
+            else
+                Nothing
+        }
+    , Button.view buttonStyle
+        { text = "reset button"
+        , icon = Element.none       
+        , onPress =  Just <| ToggleButton True
+        }
+    ] |> Element.column Grid.simple
+    )
 
 view : 
     { msgMapper : Msg -> msg
     , showDialog : msg
     , changedSheet : Maybe Part -> msg
-    } -> Model -> Element msg
+    } -> Model 
+     -> { title : String
+        , description : String
+        , items : List (String,Element msg)
+        }
 view { msgMapper, showDialog, changedSheet } model =
-    Element.column (Grid.section )
-        [ Element.el Heading.h2 <| Element.text "Stateless Views"
-        , "Stateless views are simple functions that view some content. No wiring required."
-            |> Element.text
-            |> List.singleton
-            |> Element.paragraph []
-        , Element.wrappedRow
-            (Grid.simple ++ [Element.height <| Element.shrink])
-          <|
-            [ select model |> Element.map msgMapper
-            , multiSelect model |> Element.map msgMapper
-            , collapsable model |> Element.map msgMapper
-            , scrim
-                { showDialog = showDialog
-                , changedSheet = changedSheet
-                } model
-            , carousel model |> Element.map msgMapper
-            , tab model |> Element.map msgMapper
-            ]
+    { title = "Stateless Views"
+    , description = "Stateless views are simple functions that view some content. No wiring required."
+    , items =
+        [ iconButton model  |> Tuple.mapSecond (Element.map msgMapper)
+        , select model |> Tuple.mapSecond (Element.map msgMapper)
+        , multiSelect model |> Tuple.mapSecond (Element.map msgMapper)
+        , collapsable model |> Tuple.mapSecond (Element.map msgMapper)
+        , modal changedSheet model
+        , carousel model |> Tuple.mapSecond (Element.map msgMapper)
+        , tab model |> Tuple.mapSecond (Element.map msgMapper)
+        , dialog showDialog model
         ]
+    }

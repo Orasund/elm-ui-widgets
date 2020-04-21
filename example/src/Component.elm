@@ -91,10 +91,9 @@ update msg model =
             )
 
 
-filterSelect : FilterSelect.Model -> Element Msg
+filterSelect : FilterSelect.Model -> (String,Element Msg)
 filterSelect model =
-    Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill]) <|
-        [ Element.el Heading.h3 <| Element.text "Filter Select"
+    ( "Filter Select"
         , case model.selected of
             Just selected ->
                 Element.row Grid.compact
@@ -128,13 +127,12 @@ filterSelect model =
                             )
                         |> Element.wrappedRow [ Element.spacing 10 ]
                     ]
-        ]
+    )
 
 
-validatedInput : ValidatedInput.Model () ( String, String ) -> Element Msg
+validatedInput : ValidatedInput.Model () ( String, String ) -> (String,Element Msg)
 validatedInput model =
-    Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill]) <|
-        [ Element.el Heading.h3 <| Element.text "Validated Input"
+    ( "Validated Input"
         , ValidatedInput.view Input.simple
             model
             { label = "First Name, Sir Name"
@@ -152,19 +150,19 @@ validatedInput model =
                             |> Element.el (Tag.simple ++ Group.right ++ Color.primary)
                         ]
             }
-        ]
+    )
 
-view : Model -> Element Msg
-view model =
-    Element.column (Grid.section ++ [ Element.centerX ])
-        [ Element.el Heading.h2 <| Element.text "Components"
-        , "Components have a Model, an Update- and sometimes even a Subscription-function. It takes some time to set them up correctly."
-            |> Element.text
-            |> List.singleton
-            |> Element.paragraph []
-        , Element.wrappedRow (Grid.simple ++ [Element.height <| Element.shrink]) <|
-            [ filterSelect model.filterSelect
-            , validatedInput model.validatedInput
-            
-            ]
+view : (Msg -> msg) -> Model -> 
+    { title : String
+    , description : String
+    , items : List (String,Element msg)
+    }
+view msgMapper model =
+    { title = "Components"
+    , description = "Components have a Model, an Update- and sometimes even a Subscription-function. It takes some time to set them up correctly."
+    , items =
+        [ filterSelect model.filterSelect
+        , validatedInput model.validatedInput 
         ]
+            |> List.map (Tuple.mapSecond (Element.map msgMapper) )
+    }

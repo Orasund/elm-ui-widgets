@@ -54,24 +54,37 @@ init =
     SortTable.sortBy { title = "Name", asc = True }
 
 
-snackbar : (String -> msg) -> Element msg
+snackbar : ((String,Bool) -> msg) -> (String,Element msg)
 snackbar addSnackbar =
-    [ Element.el Heading.h3 <| Element.text "Snackbar"
-    , Input.button Button.simple
-        { onPress = Just <| addSnackbar "This is a notification. It will disappear after 10 seconds."
+    ( "Snackbar"
+    , [Input.button Button.simple
+        { onPress = Just <| addSnackbar <|
+            ("This is a notification. It will disappear after 10 seconds."
+            , False
+            )
         , label =
             "Add Notification"
                 |> Element.text
                 |> List.singleton
                 |> Element.paragraph []
         }
-    ]
-        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
+    ,  Input.button Button.simple
+        { onPress = Just <| addSnackbar <|
+            ("You can add another notification if you want."
+            , True
+            )
+        , label =
+            "Add Notification with Action"
+                |> Element.text
+                |> List.singleton
+                |> Element.paragraph []
+        }
+    ] |> Element.column Grid.simple
+    )
 
-
-sortTable : SortTable.Model -> Element Msg
+sortTable : SortTable.Model -> (String,Element Msg)
 sortTable model =
-    [ Element.el Heading.h3 <| Element.text "Sort Table"
+    ( "Sort Table"
     , SortTable.view
         { content =
             [ { id = 1, name = "Antonio", rating = 2.456 }
@@ -139,35 +152,31 @@ sortTable model =
                 }
            )
         |> Element.table Grid.simple
-    ]
-        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
+    )
 
-scrollingNavCard : Element msg
+scrollingNavCard : (String , Element msg )
 scrollingNavCard =
-    [ Element.el Heading.h3 <| Element.text "Scrolling Nav"
+    ("Scrolling Nav"
     , Element.text "Resize the screen and open the side-menu. Then start scrolling to see the scrolling navigation in action."
         |> List.singleton
         |> Element.paragraph []
-    ]
-        |> Element.column (Grid.simple ++ Card.large ++ [Element.height <| Element.fill])
-
+    )
 
 view :
-    { addSnackbar : String -> msg
+    { addSnackbar : (String,Bool) -> msg
     , msgMapper : Msg -> msg
     , model : Model
     }
-    -> Element msg
+    -> { title : String
+        , description : String
+        , items : List (String,Element msg)
+        }
 view { addSnackbar, msgMapper, model } =
-    Element.column (Grid.section ++ [ Element.centerX ])
-        [ Element.el Heading.h2 <| Element.text "Reusable Views"
-        , "Reusable views have an internal state but no update function. You will need to do some wiring, but nothing complicated."
-            |> Element.text
-            |> List.singleton
-            |> Element.paragraph []
-        , Element.wrappedRow (Grid.simple ++ [Element.height <| Element.shrink]) <|
-            [ snackbar addSnackbar
-            , sortTable model |> Element.map msgMapper
-            , scrollingNavCard
-            ]
+    { title = "Reusable Views"
+    , description = "Reusable views have an internal state but no update function. You will need to do some wiring, but nothing complicated."
+    , items =
+        [ snackbar addSnackbar
+        , sortTable model |> Tuple.mapSecond (Element.map msgMapper)
+        , scrollingNavCard
         ]
+    }

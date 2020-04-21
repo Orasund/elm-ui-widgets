@@ -7,6 +7,7 @@ module Icons exposing
     , triangle
     , square
     , search
+    , slash
     )
 
 import Html exposing (Html)
@@ -64,6 +65,13 @@ circle : Html msg
 circle =
     svgFeatherIcon "circle"
         [ Svg.circle [ cx "12", cy "12", r "10" ] []
+        ]
+
+slash : Html msg
+slash =
+    svgFeatherIcon "slash"
+        [ Svg.circle [ cx "12", cy "12", r "10" ] []
+        , Svg.line [ x1 "4.93", y1 "4.93", x2 "19.07", y2 "19.07" ] []
         ]
 
 triangle : Html msg

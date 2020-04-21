@@ -1,11 +1,11 @@
 module Widget exposing
-    ( select, multiSelect, collapsable, carousel, scrim, tab
-    , dialog
+    ( select, multiSelect, collapsable, carousel, modal, tab, dialog
+    , Dialog, MultiSelect, Select, selectButton
     )
 
 {-| This module contains functions for displaying data.
 
-@docs select, multiSelect, collapsable, carousel, scrim, tab
+@docs select, multiSelect, collapsable, carousel, modal, tab, dialog
 
 
 # DEPRECATED
@@ -20,67 +20,97 @@ import Element.Background as Background
 import Element.Events as Events
 import Element.Input as Input
 import Set exposing (Set)
+import Widget.Button as Button exposing (Button, ButtonStyle, TextButton)
+
+
+type alias Select msg =
+    { selected : Maybe Int
+    , options :
+        List
+            { text : String
+            , icon : Element Never
+            }
+    , onSelect : Int -> Maybe msg
+    }
+
+
+type alias MultiSelect msg =
+    { selected : Set Int
+    , options :
+        List
+            { text : String
+            , icon : Element Never
+            }
+    , onSelect : Int -> Maybe msg
+    }
+
+
+type alias Dialog msg =
+    { title : Maybe String
+    , body : Element msg
+    , accept : Maybe (TextButton msg)
+    , dismiss : Maybe (TextButton msg)
+    }
+
+
+{-| A simple button
+-}
+selectButton :
+    ButtonStyle msg
+    -> ( Bool, Button msg )
+    -> Element msg
+selectButton style ( selected, b ) =
+    b
+        |> Button.view
+            { style
+                | container =
+                    style.container
+                        ++ (if selected then
+                                style.active
+
+                            else
+                                []
+                           )
+            }
 
 
 {-| Selects one out of multiple options. This can be used for radio buttons or Menus.
 -}
 select :
-    { selected : Maybe a
-    , options : List a
-    , label : a -> Element msg
-    , onChange : a -> msg
-    , attributes : Bool -> List (Attribute msg)
-    }
-    -> List (Element msg)
-select { selected, options, label, onChange, attributes } =
+    Select msg
+    -> List ( Bool, Button msg )
+select { selected, options, onSelect } =
     options
-        |> List.map
-            (\a ->
-                Input.button (attributes (selected == Just a))
-                    { onPress = a |> onChange |> Just
-                    , label = label a
-                    }
+        |> List.indexedMap
+            (\i a ->
+                ( selected == Just i
+                , { onPress = i |> onSelect
+                  , text = a.text
+                  , icon = a.icon
+                  }
+                )
             )
 
 
 {-| Selects multible options. This can be used for checkboxes.
 -}
 multiSelect :
-    { selected : Set comparable
-    , options : List comparable
-    , label : comparable -> Element msg
-    , onChange : comparable -> msg
-    , attributes : Bool -> List (Attribute msg)
-    }
-    -> List (Element msg)
-multiSelect { selected, options, label, onChange, attributes } =
+    MultiSelect msg
+    -> List ( Bool, Button msg )
+multiSelect { selected, options, onSelect } =
     options
-        |> List.map
-            (\a ->
-                Input.button (attributes (selected |> Set.member a))
-                    { onPress = a |> onChange |> Just
-                    , label =
-                        label a
-                    }
+        |> List.indexedMap
+            (\i a ->
+                ( selected |> Set.member i
+                , { onPress = i |> onSelect
+                  , text = a.text
+                  , icon = a.icon
+                  }
+                )
             )
 
 
 {-| Some collapsable content.
-
-        Widget.collapsable
-            {onToggle = ToggleCollapsable
-            ,isCollapsed = model.isCollapsed
-            ,label = Element.row Grid.compact
-                [ Element.html <|
-                    if model.isCollapsed then
-                        Heroicons.cheveronRight  [ Attributes.width 20]
-                    else
-                        Heroicons.cheveronDown [ Attributes.width 20]
-                , Element.el Heading.h4 <|Element.text <| "Title"
-                ]
-            ,content = Element.text <| "Hello World"
-            }
-
 -}
 collapsable :
     { onToggle : Bool -> msg
@@ -107,81 +137,92 @@ collapsable { onToggle, isCollapsed, label, content } =
 {-| Displayes a list of contents in a tab
 -}
 tab :
-    List (Attribute msg)
-    ->
-        { selected : a
-        , options : List a
-        , onChange : a -> msg
-        , label : a -> Element msg
-        , content : a -> Element msg
-        , attributes : Bool -> List (Attribute msg)
-        }
+    { style
+        | tabButton : ButtonStyle msg
+        , tabRow : List (Attribute msg)
+    }
+    -> Select msg
+    -> (Maybe Int -> Element msg)
     -> Element msg
-tab atts { selected, options, onChange, label, content, attributes } =
-    [ select
-        { selected = Just selected
-        , options = options
-        , label = label
-        , onChange = onChange
-        , attributes = attributes
-        }
-        |> Element.row atts
-    , content selected
+tab style options content =
+    [ options
+        |> select
+        |> List.map (selectButton style.tabButton)
+        |> Element.row style.tabRow
+    , options.selected
+        |> content
     ]
         |> Element.column []
 
 
-{-| DEPRECATED. Use scrim instead.
--}
 dialog :
-    { onDismiss : Maybe msg
-    , content : Element msg
+    { containerColumn : List (Attribute msg)
+    , title : List (Attribute msg)
+    , buttonRow : List (Attribute msg)
+    , accept : ButtonStyle msg
+    , dismiss : ButtonStyle msg
     }
-    -> Element msg
-dialog { onDismiss, content } =
-    content
-        |> Element.el
-            [ Element.centerX
-            , Element.centerY
-            ]
-        |> Element.el
-            ([ Element.width <| Element.fill
-             , Element.height <| Element.fill
-             , Background.color <| Element.rgba255 0 0 0 0.5
-             ]
-                ++ (onDismiss
-                        |> Maybe.map (Events.onClick >> List.singleton)
-                        |> Maybe.withDefault []
-                   )
+    -> Dialog msg
+    -> { onDismiss : Maybe msg, content : Element msg }
+dialog style { title, body, accept, dismiss } =
+    { onDismiss =
+        case ( accept, dismiss ) of
+            ( Nothing, Nothing ) ->
+                Nothing
+
+            ( Nothing, Just { onPress } ) ->
+                onPress
+
+            ( Just _, _ ) ->
+                Nothing
+    , content =
+        Element.column
+            (style.containerColumn
+                ++ [ Element.centerX
+                   , Element.centerY
+                   ]
             )
+            [ title
+                |> Maybe.map
+                    (Element.text
+                        >> Element.el style.title
+                    )
+                |> Maybe.withDefault Element.none
+            , body
+            , Element.row
+                (style.buttonRow
+                    ++ [ Element.alignRight
+                       , Element.width <| Element.shrink
+                       ]
+                )
+                (case ( accept, dismiss ) of
+                    ( Just acceptButton, Nothing ) ->
+                        acceptButton
+                            |> Button.viewTextOnly style.accept
+                            |> List.singleton
 
-
-{-| A scrim to block the interaction with the site. Usefull for modals and side panels
-
-If the scrim is clicked a message may be send. Also one can place an element infront.
-
-        Framework.Layout
-            [ Wiget.scrim
-                { onDismiss = Just <| ToggleDialog False
-                , content =
-                    [ "This is a dialog window"
-                        |> Element.text
-                    , Input.button []
-                        {onPress = Just <| ToggleDialog False
-                        , label = Element.text "Ok"
-                        }
-                    ]
-                    |> Element.column
-                        [ Element.centerX
-                        , Element.centerY
+                    ( Just acceptButton, Just dismissButton ) ->
+                        [ dismissButton
+                            |> Button.viewTextOnly style.dismiss
+                        , acceptButton
+                            |> Button.viewTextOnly style.accept
                         ]
-                }
+
+                    _ ->
+                        []
+                )
             ]
+    }
+
+
+{-| A modal.
+
+NOTE: to stop the screen from scrolling, just set the height of the layout to the height of the screen.
 
 -}
-scrim : { onDismiss : Maybe msg, content : Element msg } -> List (Attribute msg)
-scrim { onDismiss, content } =
-    Element.el
+modal : { onDismiss : Maybe msg, content : Element msg } -> List (Attribute msg)
+modal { onDismiss, content } =
+    [ Element.el
         ([ Element.width <| Element.fill
          , Element.height <| Element.fill
          , Background.color <| Element.rgba255 0 0 0 0.5
@@ -193,7 +234,8 @@ scrim { onDismiss, content } =
         )
         content
         |> Element.inFront
-        |> List.singleton
+    , Element.clip
+    ]
 
 
 {-| A Carousel circles through a non empty list of contents.

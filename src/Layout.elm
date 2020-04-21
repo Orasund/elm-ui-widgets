@@ -1,16 +1,13 @@
 module Layout exposing (Layout, Part(..), activate, init, queueMessage, timePassed, view)
 
 import Array
-import Browser.Dom exposing (Viewport)
 import Core.Style as Style exposing (Style)
 import Element exposing (Attribute, DeviceClass(..), Element)
-import Element.Background as Background
-import Element.Events as Events
 import Element.Input as Input
 import Html exposing (Html)
-import Html.Attributes as Attributes
-import Widget
-import Widget.Snackbar as Snackbar
+import Widget exposing (Select)
+import Widget.Button as Button exposing (Button)
+import Widget.Snackbar as Snackbar exposing (Message)
 
 
 type Part
@@ -19,34 +16,34 @@ type Part
     | Search
 
 
-type alias Layout =
-    { snackbar : Snackbar.Model String
+type alias Layout msg =
+    { snackbar : Snackbar.Model (Message msg)
     , active : Maybe Part
     }
 
 
-init : Layout
+init : Layout msg
 init =
     { snackbar = Snackbar.init
     , active = Nothing
     }
 
 
-queueMessage : String -> Layout -> Layout
+queueMessage : Message msg -> Layout msg -> Layout msg
 queueMessage message layout =
     { layout
         | snackbar = layout.snackbar |> Snackbar.insert message
     }
 
 
-activate : Maybe Part -> Layout -> Layout
+activate : Maybe Part -> Layout msg -> Layout msg
 activate part layout =
     { layout
         | active = part
     }
 
 
-timePassed : Int -> Layout -> Layout
+timePassed : Int -> Layout msg -> Layout msg
 timePassed sec layout =
     case layout.active of
         Just LeftSheet ->
@@ -64,28 +61,31 @@ timePassed sec layout =
 view :
     List (Attribute msg)
     ->
-        { deviceClass : DeviceClass
+        { window : { height : Int, width : Int }
         , dialog : Maybe { onDismiss : Maybe msg, content : Element msg }
         , content : Element msg
-        , layout : Layout
+        , layout : Layout msg
         , title : Element msg
-        , menu :
-            { selected : Int
-            , items : List { label : String, icon : Element Never, onPress : Maybe msg }
-            }
+        , menu : Select msg
         , search :
             Maybe
                 { onChange : String -> msg
                 , text : String
                 , label : String
                 }
-        , actions : List { label : String, icon : Element Never, onPress : Maybe msg }
+        , actions : List (Button msg)
         , onChangedSidebar : Maybe Part -> msg
-        , style : Style msg
+        , style : Style style msg
         }
     -> Html msg
-view attributes { search, title, onChangedSidebar, menu, actions, deviceClass, dialog, content, style, layout } =
+view attributes { search, title, onChangedSidebar, menu, actions, window, dialog, content, style, layout } =
     let
+        deviceClass : DeviceClass
+        deviceClass =
+            window
+                |> Element.classifyDevice
+                |> .class
+
         ( primaryActions, moreActions ) =
             ( if (actions |> List.length) > 4 then
                 actions |> List.take 2
@@ -115,30 +115,29 @@ view attributes { search, title, onChangedSidebar, menu, actions, deviceClass, d
             [ (if
                 (deviceClass == Phone)
                     || (deviceClass == Tablet)
-                    || ((menu.items |> List.length) > 5)
+                    || ((menu.options |> List.length) > 5)
                then
-                [ Input.button style.menuButton
+                [ Button.viewIconOnly style.menuButton
                     { onPress = Just <| onChangedSidebar <| Just LeftSheet
-                    , label = style.menuIcon |> Element.map never
+                    , icon = style.menuIcon |> Element.map never
+                    , text = "Menu"
                     }
-                , menu.items
-                    |> Array.fromList
-                    |> Array.get menu.selected
-                    |> Maybe.map (.label >> Element.text >> Element.el style.title)
+                , menu.selected
+                    |> Maybe.andThen
+                        (\option ->
+                            menu.options
+                                |> Array.fromList
+                                |> Array.get option
+                        )
+                    |> Maybe.map (.text >> Element.text >> Element.el style.title)
                     |> Maybe.withDefault title
                 ]
 
                else
                 [ title
-                , menu.items
-                    |> List.indexedMap
-                        (\i ->
-                            if i == menu.selected then
-                                Style.menuTabButtonSelected style
-
-                            else
-                                Style.menuTabButton style
-                        )
+                , menu
+                    |> Widget.select
+                    |> List.map (Style.menuTabButton style)
                     |> Element.row
                         [ Element.width <| Element.shrink
                         ]
@@ -146,9 +145,9 @@ view attributes { search, title, onChangedSidebar, menu, actions, deviceClass, d
               )
                 |> Element.row
                     [ Element.width <| Element.shrink
-                    , Element.spacing 8
+                    , Element.spacing style.spacing
                     ]
-            , if deviceClass == Phone then
+            , if deviceClass == Phone || deviceClass == Tablet then
                 Element.none
 
               else
@@ -166,37 +165,45 @@ view attributes { search, title, onChangedSidebar, menu, actions, deviceClass, d
                                 }
                         )
                     |> Maybe.withDefault Element.none
-            , [ if deviceClass == Phone then
-                    search
-                        |> Maybe.map
-                            (\{ label } ->
-                                [ Style.menuButton style
+            , [ search
+                    |> Maybe.map
+                        (\{ label } ->
+                            if deviceClass == Tablet then
+                                [ Button.view style.menuButton
                                     { onPress = Just <| onChangedSidebar <| Just Search
                                     , icon = style.searchIcon
-                                    , label = label
+                                    , text = label
                                     }
                                 ]
-                            )
-                        |> Maybe.withDefault []
 
-                else
-                    []
+                            else if deviceClass == Phone then
+                                [ Style.menuIconButton style
+                                    { onPress = Just <| onChangedSidebar <| Just Search
+                                    , icon = style.searchIcon
+                                    , text = label
+                                    }
+                                ]
+
+                            else
+                                []
+                        )
+                    |> Maybe.withDefault []
               , primaryActions
                     |> List.map
                         (if deviceClass == Phone then
                             Style.menuIconButton style
 
                          else
-                            Style.menuButton style
+                            Button.view style.menuButton
                         )
               , if moreActions |> List.isEmpty then
                     []
 
                 else
-                    [ Style.menuButton style
+                    [ Button.viewIconOnly style.menuButton
                         { onPress = Just <| onChangedSidebar <| Just RightSheet
                         , icon = style.moreVerticalIcon
-                        , label = ""
+                        , text = "More"
                         }
                     ]
               ]
@@ -210,7 +217,7 @@ view attributes { search, title, onChangedSidebar, menu, actions, deviceClass, d
                     (style.header
                         ++ [ Element.padding 0
                            , Element.centerX
-                           , Element.spaceEvenly
+                           , Element.spacing style.spacing
                            , Element.alignTop
                            , Element.width <| Element.fill
                            ]
@@ -218,16 +225,13 @@ view attributes { search, title, onChangedSidebar, menu, actions, deviceClass, d
 
         snackbar =
             layout.snackbar
-                |> Snackbar.current
+                |> Snackbar.view style.snackbar identity
                 |> Maybe.map
-                    (Element.text
-                        >> List.singleton
-                        >> Element.paragraph style.snackbar
-                        >> Element.el
-                            [ Element.padding 8
-                            , Element.alignBottom
-                            , Element.alignRight
-                            ]
+                    (Element.el
+                        [ Element.padding style.spacing
+                        , Element.alignBottom
+                        , Element.alignRight
+                        ]
                     )
                 |> Maybe.withDefault Element.none
 
@@ -236,15 +240,9 @@ view attributes { search, title, onChangedSidebar, menu, actions, deviceClass, d
                 Just LeftSheet ->
                     [ [ title
                       ]
-                    , menu.items
-                        |> List.indexedMap
-                            (\i ->
-                                if i == menu.selected then
-                                    Style.sheetButtonSelected style
-
-                                else
-                                    Style.sheetButton style
-                            )
+                    , menu
+                        |> Widget.select
+                        |> List.map (Style.sheetButton style)
                     ]
                         |> List.concat
                         |> Element.column [ Element.width <| Element.fill ]
@@ -257,7 +255,7 @@ view attributes { search, title, onChangedSidebar, menu, actions, deviceClass, d
 
                 Just RightSheet ->
                     moreActions
-                        |> List.map (Style.sheetButton style)
+                        |> List.map (Button.view style.sheetButton)
                         |> Element.column [ Element.width <| Element.fill ]
                         |> Element.el
                             (style.sheet
@@ -269,7 +267,11 @@ view attributes { search, title, onChangedSidebar, menu, actions, deviceClass, d
                 Just Search ->
                     case search of
                         Just { onChange, text, label } ->
-                            Input.text style.search
+                            Input.text
+                                (style.searchFill
+                                    ++ [ Element.width <| Element.fill
+                                       ]
+                                )
                                 { onChange = onChange
                                 , text = text
                                 , placeholder =
@@ -297,33 +299,22 @@ view attributes { search, title, onChangedSidebar, menu, actions, deviceClass, d
                   , Element.inFront snackbar
                   ]
                 , if (layout.active /= Nothing) || (dialog /= Nothing) then
-                    Widget.scrim
-                        { onDismiss =
-                            Just <|
-                                case dialog of
-                                    Just { onDismiss } ->
-                                        onDismiss
-                                            |> Maybe.withDefault
-                                                (Nothing
-                                                    |> onChangedSidebar
-                                                )
+                    (Element.height <| Element.px <| window.height)
+                        :: (case dialog of
+                                Just dialogConfig ->
+                                    Widget.modal dialogConfig
 
-                                    Nothing ->
-                                        Nothing
-                                            |> onChangedSidebar
-                        , content = Element.none
-                        }
+                                Nothing ->
+                                    Widget.modal
+                                        { onDismiss =
+                                            Nothing
+                                                |> onChangedSidebar
+                                                |> Just
+                                        , content = sheet
+                                        }
+                           )
 
                   else
                     []
-                , [ Element.inFront sheet
-                  , Element.inFront <|
-                        case dialog of
-                            Just element ->
-                                element.content
-
-                            Nothing ->
-                                Element.none
-                  ]
                 ]
             )

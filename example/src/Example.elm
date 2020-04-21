@@ -5,7 +5,7 @@ import Browser.Dom as Dom exposing (Viewport)
 import Browser.Events as Events
 import Browser.Navigation as Navigation
 import Component
-import Element exposing (DeviceClass(..), Element)
+import Element exposing (DeviceClass(..), Element,Attribute)
 import Element.Input as Input
 import Element.Font as Font
 import Element.Border as Border
@@ -29,21 +29,27 @@ import Stateless
 import Task
 import Time
 import Widget
+import Widget.Button exposing (ButtonStyle)
 import Widget.FilterSelect as FilterSelect
 import Widget.ScrollingNav as ScrollingNav
 import Widget.Snackbar as Snackbar
 import Widget.ValidatedInput as ValidatedInput
 import Data.Section as Section exposing (Section(..))
+import Array
 
 type alias LoadedModel =
     { component : Component.Model
     , stateless : Stateless.Model
     , reusable : Reusable.Model
     , scrollingNav : ScrollingNav.Model Section
-    , layout : Layout
+    , layout : Layout LoadedMsg
     , displayDialog : Bool
-    , deviceClass : DeviceClass
-    , search : String
+    , window : { height : Int, width : Int }
+    , search : 
+        { raw : String
+        , current : String
+        , remaining : Int
+        }
     }
 
 
@@ -58,7 +64,7 @@ type LoadedMsg
     | ComponentSpecific Component.Msg
     | UpdateScrollingNav (ScrollingNav.Model Section -> ScrollingNav.Model Section)
     | TimePassed Int
-    | AddSnackbar String
+    | AddSnackbar (String,Bool)
     | ToggleDialog Bool
     | ChangedSidebar (Maybe Part)
     | Resized { width : Int, height : Int }
@@ -72,9 +78,64 @@ type Msg
     = LoadedSpecific LoadedMsg
     | GotViewport Viewport
 
-style : Style msg
+textButton : ButtonStyle msg
+textButton =
+    { container = Button.simple
+    , label = Grid.simple
+    , disabled = Color.disabled
+    , active = Color.primary
+    }
+
+simpleButton : ButtonStyle msg
+simpleButton =
+    { container = Button.simple ++ Color.primary
+    , label = Grid.simple
+    , disabled = Color.disabled
+    , active = Color.primary
+    }
+
+style : Style
+    { dialog :
+        { containerColumn : List (Attribute msg)
+        , title : List (Attribute msg)
+        , buttonRow : List (Attribute msg)
+        , accept : ButtonStyle msg
+        , dismiss : ButtonStyle msg
+        }
+    } msg
 style =
-    { snackbar = Card.simple ++ Color.dark
+    { dialog =
+        { containerColumn = 
+            Card.simple
+            ++ Grid.simple
+            ++ [ Element.width <| Element.minimum 280 <| Element.maximum  560 <| Element.fill ]
+        , title = Heading.h3
+        , buttonRow = 
+            Grid.simple ++
+            [ Element.paddingEach
+                { top = 28
+                , bottom = 0
+                , left = 0
+                , right = 0
+                }
+            ]
+        , accept = simpleButton
+        , dismiss = textButton
+        }
+    , snackbar = 
+        { row = 
+            Card.simple 
+            ++ Color.dark
+            ++ Grid.simple
+            ++ [ Element.paddingXY 8 6]
+        , button = 
+            { label = Grid.simple
+            , container = Button.simple ++ Color.dark
+            , disabled = Color.disabled
+            , active = Color.primary
+            }
+        , text = [Element.paddingXY 8 0]
+        }
     , layout = Framework.responsiveLayout
     , header =
         Framework.container
@@ -83,28 +144,42 @@ style =
                 , Element.height <| Element.px <| 42
                 ]
     , menuButton =
-        Button.simple ++ Group.center ++ Color.dark
-    , menuButtonSelected =
-        Color.primary
+        { label = Grid.simple
+        , container = Button.simple ++ Group.center ++ Color.dark
+        , disabled = Color.disabled
+        , active = Color.primary
+        }
     , sheetButton =
-        Button.fill
-        ++ Group.center 
-        ++ Color.light
-        ++ [Font.alignLeft]
-    , sheetButtonSelected =
-        Color.primary
-    , tabButton = 
-        [ Element.height <| Element.px <| 42
-        , Border.widthEach 
-            { top = 0,
-            left = 0,
-            right = 0,
-            bottom = 8
-            }
-        ]
-    , tabButtonSelected =
-        [ Border.color Color.turquoise
-        ]
+        { container = 
+            Button.fill
+            ++ Group.center 
+            ++ Color.light
+            ++ [Font.alignLeft]
+        , label = Grid.simple
+        , disabled = Color.disabled
+        , active = Color.primary
+        }
+    , menuTabButton = 
+        { container =
+            [ Element.height <| Element.px <| 42
+            , Border.widthEach 
+                { top = 0,
+                left = 0,
+                right = 0,
+                bottom = 4
+                }
+            , Element.paddingEach
+                { top = 12
+                , left = 8
+                , right = 8
+                , bottom = 4
+                }
+            , Border.color Color.black
+            ]
+        , label = Grid.simple
+        , disabled = Color.disabled
+        , active = [ Border.color Color.turquoise ]
+        }
     , sheet =
         Color.light ++ [ Element.width <| Element.maximum 256 <| Element.fill]
     , menuIcon =
@@ -116,7 +191,16 @@ style =
     , searchIcon =
         Icons.search |> Element.html |> Element.el []
     , search =
-        Color.simple ++ [Font.color <| Element.rgb255 0 0 0 ]
+        Color.simple ++ 
+        Card.large ++
+        [Font.color <| Element.rgb255 0 0 0
+        , Element.padding 6
+        , Element.centerY
+        , Element.alignRight
+        ]
+    , searchFill =
+        Color.light
+        ++ Group.center
     }
 
 
@@ -125,7 +209,8 @@ initialModel { viewport } =
     let
         ( scrollingNav, cmd ) =
             ScrollingNav.init
-                { labels = Section.toString
+                { toString = Section.toString
+                , fromString = Section.fromString
                 , arrangement = Section.asList
                 , toMsg = \result ->
                     case result of
@@ -141,13 +226,15 @@ initialModel { viewport } =
       , scrollingNav = scrollingNav
       , layout = Layout.init
       , displayDialog = False
-      , deviceClass =
+      , window =
             { width = viewport.width |> round
             , height = viewport.height |> round
             }
-                |> Element.classifyDevice
-                |> .class
-      , search = ""
+      , search = 
+            { raw = ""
+            , current = ""
+            , remaining = 0
+            }
       }
     , cmd
     )
@@ -171,25 +258,23 @@ view model =
                 Layout.view []
                     { dialog =
                         if m.displayDialog then
-                            Just
-                                { onDismiss = Just <| ToggleDialog False
-                                , content =
-                                    [ Element.el Heading.h3 <| Element.text "Dialog"
-                                    , "This is a dialog window"
+                            { body =
+                                "This is a dialog window"
                                         |> Element.text
                                         |> List.singleton
                                         |> Element.paragraph []
-                                    , Input.button (Button.simple ++ [ Element.alignRight ])
-                                        { onPress = Just <| ToggleDialog False
-                                        , label = Element.text "Ok"
-                                        }
-                                    ]
-                                        |> Element.column 
-                                            ( Grid.simple
-                                                ++ Card.large
-                                                ++ [Element.centerX, Element.centerY]
-                                            )
+                            , title = Just "Dialog"
+                            , accept = Just
+                                { text = "Ok"
+                                , onPress = Just <| ToggleDialog False
                                 }
+                            , dismiss = Just
+                                { text = "Dismiss"
+                                , onPress = Just <| ToggleDialog False
+                                }
+                            }
+                            |> Widget.dialog style.dialog
+                            |> Just
 
                         else
                             Nothing
@@ -198,11 +283,12 @@ view model =
                         , [ m.scrollingNav
                                 |> ScrollingNav.view
                                     (\section ->
-                                        case section of
+                                        ( case section of
                                             ComponentViews ->
                                                 m.component
-                                                    |> Component.view
-                                                    |> Element.map ComponentSpecific
+                                                    |> Component.view  ComponentSpecific
+                                                 
+        
 
                                             ReusableViews ->
                                                 Reusable.view
@@ -218,6 +304,39 @@ view model =
                                                     , changedSheet = ChangedSidebar
                                                     }
                                                     m.stateless
+                                        ) |> (\{title,description,items} ->
+                                                        [ Element.el Heading.h2 <| Element.text <| title
+                                                        , if m.search.current == "" then
+                                                            description
+                                                            |> Element.text
+                                                            |> List.singleton
+                                                            |> Element.paragraph []
+                                                          else Element.none
+                                                        , items
+                                                            |> (if m.search.current /= "" then
+                                                                    List.filter 
+                                                                        ( Tuple.first 
+                                                                        >> String.toLower
+                                                                        >> String.contains (m.search.current |> String.toLower)
+                                                                        )
+                                                                else
+                                                                    identity)
+                                                            |> List.map
+                                                                (\(name,elem) ->
+                                                                    [ Element.text name
+                                                                    |> Element.el Heading.h3
+                                                                    , elem
+                                                                    ]
+                                                                    |> Element.column
+                                                                        (Grid.simple 
+                                                                        ++ Card.large 
+                                                                        ++ [Element.height <| Element.fill])
+                                                                )
+                                                            |> Element.wrappedRow
+                                                            (Grid.simple ++ [Element.height <| Element.shrink])
+                                                        ]
+                                                            |> Element.column (Grid.section ++ [ Element.centerX ])
+                                                        )
                                     )
                           ]
                             |> Element.column Framework.container
@@ -225,52 +344,35 @@ view model =
                             |> Element.column Grid.compact
                     , style = style
                     , layout = m.layout
-                    , deviceClass = m.deviceClass
+                    , window = m.window
                     , menu =
-                        { selected = 
-                            Section.asList
-                            |> List.indexedMap (\i s -> (i,s))
-                            |> List.filterMap
-                                ( \(i,s) ->
-                                    if  m.scrollingNav
-                                        |> ScrollingNav.current Section.fromString
-                                        |> (==) (Just s)
-                                    then
-                                        Just i
-                                    else
-                                        Nothing
-                                )
-                            |> List.head
-                            |> Maybe.withDefault 0
-                        , items =
-                            Section.asList
-                            |> List.map
-                                (\label ->
-                                    { icon = Element.none
-                                    , label = label |> Section.toString
-                                    , onPress = Just <| JumpTo <| label
-                                    }
-                                )
-                        }
+                         m.scrollingNav
+                         |> ScrollingNav.toSelect
+                         (\int ->
+                                m.scrollingNav.arrangement
+                                |> Array.fromList
+                                |> Array.get int
+                                |> Maybe.map JumpTo
+                         )
                     , actions =
                         [ { onPress = Just <| Load "https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/"
-                          , label = "Docs"
+                          , text = "Docs"
                           , icon = Icons.book|> Element.html |> Element.el []
                           }
                         , { onPress = Just <| Load "https://github.com/Orasund/elm-ui-widgets"
-                          , label = "Github"
+                          , text = "Github"
                           , icon = Icons.github|> Element.html |> Element.el []
                           }
                         , { onPress = Nothing
-                          , label = "Placeholder"
+                          , text = "Placeholder"
                           , icon = Icons.circle|> Element.html |> Element.el []
                           }
                         , { onPress = Nothing
-                          , label = "Placeholder"
+                          , text = "Placeholder"
                           , icon = Icons.triangle|> Element.html |> Element.el []
                           }
                         , { onPress = Nothing
-                          , label = "Placeholder"
+                          , text = "Placeholder"
                           , icon = Icons.square|> Element.html |> Element.el []
                           }
                         ]
@@ -281,7 +383,7 @@ view model =
                         |> Element.el Heading.h1
                     , search =
                         Just
-                            { text = m.search
+                            { text = m.search.raw
                             , onChange = ChangedSearch
                             , label = "Search"
                             }
@@ -330,15 +432,44 @@ updateLoaded msg model =
             )
 
         TimePassed int ->
+            let
+                search = model.search
+            in
             ( { model
                 | layout = model.layout |> Layout.timePassed int
+                , search =
+                    if search.remaining > 0 then
+                        if search.remaining <= int then
+                            { search
+                            | current = search.raw
+                            , remaining = 0
+                            }
+                        else
+                            { search
+                            | remaining = search.remaining - int
+                            }
+                    else
+                        model.search
               }
             , ScrollingNav.getPos
                 |> Task.perform UpdateScrollingNav
             )
 
-        AddSnackbar string ->
-            ( { model | layout = model.layout |> Layout.queueMessage string }
+        AddSnackbar (string,bool) ->
+            ( { model 
+              | layout = model.layout 
+                |> Layout.queueMessage 
+                    { text = string
+                    , button = if bool then
+                            Just
+                                { text = "Add"
+                                , onPress = Just <|
+                                    (AddSnackbar ("This is another message", False))
+                                }
+                        else
+                            Nothing
+                    }
+                }
             , Cmd.none
             )
 
@@ -347,8 +478,8 @@ updateLoaded msg model =
             , Cmd.none
             )
 
-        Resized screen ->
-            ( { model | deviceClass = screen |> Element.classifyDevice |> .class }
+        Resized window ->
+            ( { model | window = window }
             , Cmd.none
             )
 
@@ -370,7 +501,17 @@ updateLoaded msg model =
             )
         
         ChangedSearch string ->
-            ( { model | search = string},Cmd.none)
+            let
+                search = model.search
+            in
+            ( { model | search = 
+                    { search
+                    | raw = string
+                    , remaining = 300
+                    }
+            }
+            , Cmd.none
+            )
         
         Idle ->
             ( model , Cmd.none)

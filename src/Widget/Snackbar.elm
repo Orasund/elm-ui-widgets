@@ -1,6 +1,7 @@
 module Widget.Snackbar exposing
     ( Model, init, current, timePassed
     , insert, insertFor, dismiss
+    , Message, view
     )
 
 {-| A [snackbar](https://material.io/components/snackbars/) shows notification, one at a time.
@@ -17,7 +18,16 @@ module Widget.Snackbar exposing
 
 -}
 
+import Element exposing (Attribute, Element)
 import Queue exposing (Queue)
+import Widget
+import Widget.Button as Button exposing (ButtonStyle, TextButton)
+
+
+type alias Message msg =
+    { text : String
+    , button : Maybe (TextButton msg)
+    }
 
 
 {-| A snackbar has a queue of Notifications, each with the amount of ms the message should be displayed
@@ -92,3 +102,31 @@ timePassed ms model =
 current : Model a -> Maybe a
 current model =
     model.current |> Maybe.map Tuple.first
+
+
+view :
+    { row : List (Attribute msg)
+    , text : List (Attribute msg)
+    , button : ButtonStyle msg
+    }
+    -> (a -> Message msg)
+    -> Model a
+    -> Maybe (Element msg)
+view style toMessage model =
+    model
+        |> current
+        |> Maybe.map
+            (toMessage
+                >> (\{ text, button } ->
+                        [ text
+                            |> Element.text
+                            |> List.singleton
+                            |> Element.paragraph style.text
+                        , button
+                            |> Maybe.map
+                                (Button.viewTextOnly style.button)
+                            |> Maybe.withDefault Element.none
+                        ]
+                            |> Element.row style.row
+                   )
+            )
