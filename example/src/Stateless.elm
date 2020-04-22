@@ -22,30 +22,7 @@ import Layout exposing (Part(..))
 import Icons
 import Widget
 import Element.Font as Font
-
-buttonStyle : ButtonStyle msg
-buttonStyle =
-    { label = [ Element.spacing 8]
-    , container = Button.simple
-    , disabled = Color.disabled
-    , active = Color.primary
-    }
-
-tabButtonStyle :ButtonStyle msg
-tabButtonStyle=
-    { label = [ Element.spacing 8]
-    , container = Button.simple ++ Group.top
-    , disabled = Color.disabled
-    , active = Color.primary
-    }
-
-chipButton : ButtonStyle msg
-chipButton =
-    { container = Tag.simple
-    , disabled = []
-    , label = Grid.simple
-    , active = Color.primary
-    }
+import Data.Style exposing (style)
 
 type alias Model =
     { selected : Maybe Int
@@ -153,6 +130,9 @@ update msg model =
 
 select : Model -> (String,Element Msg)
 select model =
+    let
+        buttonStyle = style.button
+    in
     ( "Select"
     , { selected = model.selected
       , options = 
@@ -188,6 +168,9 @@ select model =
 
 multiSelect : Model -> (String,Element Msg)
 multiSelect model =
+    let
+        buttonStyle = style.button
+    in
     ( "Multi Select"
     , { selected = model.multiSelected
       , options = 
@@ -247,7 +230,7 @@ tab : Model -> (String,Element Msg)
 tab model =
     ( "Tab"
     , Widget.tab 
-            { button = tabButtonStyle
+            { button = style.tabButton
             , optionRow = Grid.simple
             , containerColumn = Grid.compact
             } 
@@ -339,7 +322,7 @@ carousel model =
 iconButton : Model -> (String,Element Msg)
 iconButton model =
     ( "Icon Button"
-    , [Button.view buttonStyle
+    , [Button.view style.button
         { text = "disable me"
         , icon = Icons.slash |> Element.html |> Element.el []        , onPress =
             if model.button then
@@ -347,7 +330,7 @@ iconButton model =
             else
                 Nothing
         }
-    , Button.view buttonStyle
+    , Button.view style.button
         { text = "reset button"
         , icon = Element.none       
         , onPress =  Just <| ToggleButton True
@@ -375,24 +358,7 @@ textInput model =
         , label = "Chips"
         , onChange = SetTextInput
         }
-            |> Widget.textInput
-            { chip = chipButton
-            , chipsRow = 
-                [ Element.width <| Element.shrink
-                , Element.spacing <| 4 ]
-            , containerRow = 
-                Button.simple
-                ++ Color.light
-                ++ [ Border.color <| Element.rgb255 186 189 182
-                    , Font.alignLeft
-                    , Element.padding 8
-                    , Element.height <| Element.px <|42
-                    ]
-                ++ Grid.simple
-            , input =
-                Color.light
-                ++ [Element.padding 0]
-            }
+            |> Widget.textInput style.textInput
         , model.chipTextInput
             |> Set.diff
                 (["A","B","C"]

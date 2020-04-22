@@ -27,6 +27,7 @@ import Widget.FilterMultiSelect as FilterMultiSelect
 import Widget.ScrollingNav as ScrollingNav
 import Widget.Snackbar as Snackbar
 import Widget.ValidatedInput as ValidatedInput
+import Data.Style exposing (style)
 
 type alias Model =
     { filterSelect : FilterSelect.Model
@@ -40,13 +41,7 @@ type Msg
     | FilterMultiSelectSpecific FilterMultiSelect.Msg
     | ValidatedInputSpecific ValidatedInput.Msg
 
-chipButton : ButtonStyle msg
-chipButton =
-    { container = Tag.simple
-    , disabled = []
-    , label = Grid.simple
-    , active = Color.primary
-    }
+
 
 init : Model
 init =
@@ -183,24 +178,7 @@ filterMultiSelect model =
                 , icon = Element.none
                 }
             }
-            |> Widget.textInput
-                { chip = chipButton
-                , chipsRow = 
-                    [ Element.width <| Element.shrink
-                    , Element.spacing <| 4 ]
-                , containerRow = 
-                    Button.simple
-                    ++ Color.light
-                    ++ [ Border.color <| Element.rgb255 186 189 182
-                        , Font.alignLeft
-                        , Element.padding 8
-                        , Element.height <| Element.px <|42
-                        ]
-                    ++ Grid.simple
-                , input =
-                    Color.light
-                    ++ [Element.padding 0]
-                }
+            |> Widget.textInput style.textInput
 
         , model
             |> FilterMultiSelect.viewOptions

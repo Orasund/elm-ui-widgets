@@ -1,6 +1,6 @@
 module Widget exposing
     ( select, multiSelect, collapsable, carousel, modal, tab, dialog
-    , Dialog, Select, selectButton, textInput
+    , Dialog, Select, TextInputStyle, selectButton, textInput
     )
 
 {-| This module contains functions for displaying data.
@@ -34,6 +34,14 @@ type alias Dialog msg =
     , body : Element msg
     , accept : Maybe (TextButton msg)
     , dismiss : Maybe (TextButton msg)
+    }
+
+
+type alias TextInputStyle msg =
+    { chip : ButtonStyle msg
+    , containerRow : List (Attribute msg)
+    , chipsRow : List (Attribute msg)
+    , input : List (Attribute msg)
     }
 
 
@@ -103,11 +111,7 @@ multiSelect { selected, options, onSelect } =
 
 {-| -}
 textInput :
-    { chip : ButtonStyle msg
-    , containerRow : List (Attribute msg)
-    , chipsRow : List (Attribute msg)
-    , input : List (Attribute msg)
-    }
+    TextInputStyle msg
     ->
         { chips : List (Button msg)
         , text : String

@@ -1,10 +1,10 @@
 module Layout exposing (Layout, Part(..), activate, init, queueMessage, timePassed, view)
 
 import Array
-import Core.Style as Style exposing (Style)
 import Element exposing (Attribute, DeviceClass(..), Element)
 import Element.Input as Input
 import Html exposing (Html)
+import Style exposing (Style)
 import Widget exposing (Select)
 import Widget.Button as Button exposing (Button)
 import Widget.Snackbar as Snackbar exposing (Message)

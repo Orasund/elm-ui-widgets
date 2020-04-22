@@ -1,4 +1,4 @@
-module Core.Style exposing (Style, menuButton, menuIconButton, menuTabButton, sheetButton)
+module Style exposing (Style, menuButton, menuIconButton, menuTabButton, sheetButton)
 
 import Element exposing (Attribute, Element)
 import Html exposing (Html)
