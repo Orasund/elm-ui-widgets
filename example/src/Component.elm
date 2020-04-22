@@ -4,6 +4,8 @@ import Browser
 import Element exposing (Color, Element)
 import Element.Background as Background
 import Element.Input as Input
+import Element.Border as Border
+import Element.Font as Font
 import Framework
 import Framework.Button as Button
 import Framework.Card as Card
@@ -19,22 +21,32 @@ import Html.Attributes as Attributes
 import Set exposing (Set)
 import Time
 import Widget
+import Widget.Button as Button exposing (ButtonStyle)
 import Widget.FilterSelect as FilterSelect
+import Widget.FilterMultiSelect as FilterMultiSelect
 import Widget.ScrollingNav as ScrollingNav
 import Widget.Snackbar as Snackbar
 import Widget.ValidatedInput as ValidatedInput
 
-
 type alias Model =
     { filterSelect : FilterSelect.Model
+    , filterMultiSelect : FilterMultiSelect.Model
     , validatedInput : ValidatedInput.Model () ( String, String )
     }
 
 
 type Msg
     = FilterSelectSpecific FilterSelect.Msg
+    | FilterMultiSelectSpecific FilterMultiSelect.Msg
     | ValidatedInputSpecific ValidatedInput.Msg
 
+chipButton : ButtonStyle msg
+chipButton =
+    { container = Tag.simple
+    , disabled = []
+    , label = Grid.simple
+    , active = Color.primary
+    }
 
 init : Model
 init =
@@ -56,6 +68,24 @@ init =
         ]
             |> Set.fromList
             |> FilterSelect.init
+    , filterMultiSelect =
+        [ "Apple"
+        , "Kiwi"
+        , "Strawberry"
+        , "Pineapple"
+        , "Mango"
+        , "Grapes"
+        , "Watermelon"
+        , "Orange"
+        , "Lemon"
+        , "Blueberry"
+        , "Grapefruit"
+        , "Coconut"
+        , "Cherry"
+        , "Banana"
+        ]
+            |> Set.fromList
+            |> FilterMultiSelect.init
     , validatedInput =
         ValidatedInput.init
             { value = ( "John", "Doe" )
@@ -79,6 +109,13 @@ update msg model =
         FilterSelectSpecific m ->
             ( { model
                 | filterSelect = model.filterSelect |> FilterSelect.update m
+              }
+            , Cmd.none
+            )
+
+        FilterMultiSelectSpecific m ->
+            ( { model
+                | filterMultiSelect = model.filterMultiSelect |> FilterMultiSelect.update m
               }
             , Cmd.none
             )
@@ -129,6 +166,55 @@ filterSelect model =
                     ]
     )
 
+filterMultiSelect : FilterMultiSelect.Model -> (String,Element Msg)
+filterMultiSelect model =
+    ( "Filter Multi Select"
+    ,   [ FilterMultiSelect.viewInput model
+            { msgMapper = FilterMultiSelectSpecific
+            , placeholder =
+                Just <|
+                    Input.placeholder [] <|
+                        Element.text <|
+                            "Fruit"
+            , label = "Fruit"
+            , toChip = \string ->
+                { text = string
+                , onPress = Just <| FilterMultiSelectSpecific <| FilterMultiSelect.ToggleSelected <| string
+                , icon = Element.none
+                }
+            }
+            |> Widget.textInput
+                { chip = chipButton
+                , chipsRow = 
+                    [ Element.width <| Element.shrink
+                    , Element.spacing <| 4 ]
+                , containerRow = 
+                    Button.simple
+                    ++ Color.light
+                    ++ [ Border.color <| Element.rgb255 186 189 182
+                        , Font.alignLeft
+                        , Element.padding 8
+                        , Element.height <| Element.px <|42
+                        ]
+                    ++ Grid.simple
+                , input =
+                    Color.light
+                    ++ [Element.padding 0]
+                }
+
+        , model
+            |> FilterMultiSelect.viewOptions
+            |> List.map
+                (\string ->
+                    Input.button (Button.simple ++ Tag.simple)
+                        { onPress = Just <| FilterMultiSelectSpecific <| FilterMultiSelect.ToggleSelected <| string
+                        , label = Element.text string
+                        }
+                )
+            |> Element.wrappedRow [ Element.spacing 10 ]
+        ]
+            |> Element.column Grid.simple
+    )
 
 validatedInput : ValidatedInput.Model () ( String, String ) -> (String,Element Msg)
 validatedInput model =
@@ -162,6 +248,7 @@ view msgMapper model =
     , description = "Components have a Model, an Update- and sometimes even a Subscription-function. It takes some time to set them up correctly."
     , items =
         [ filterSelect model.filterSelect
+        , filterMultiSelect model.filterMultiSelect
         , validatedInput model.validatedInput 
         ]
             |> List.map (Tuple.mapSecond (Element.map msgMapper) )

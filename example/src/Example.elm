@@ -127,7 +127,8 @@ style =
             Card.simple 
             ++ Color.dark
             ++ Grid.simple
-            ++ [ Element.paddingXY 8 6]
+            ++ [ Element.paddingXY 8 6
+                , Element.height <| Element.px <|54]
         , button = 
             { label = Grid.simple
             , container = Button.simple ++ Color.dark
@@ -137,6 +138,23 @@ style =
         , text = [Element.paddingXY 8 0]
         }
     , layout = Framework.responsiveLayout
+    {--\a w ->
+        Html.div []
+        [ Html.node "meta"
+            [ Attributes.attribute "name" "viewport"
+            , Attributes.attribute "content" "width=device-width, initial-scale=1.0"
+            ]
+            []
+        , Element.layoutWith
+            {options = (Element.focusStyle
+                { borderColor = Nothing
+                , backgroundColor = Nothing
+                , shadow = Nothing
+                }
+                |> List.singleton)
+            }
+         (Framework.layoutAttributes ++ a) <| w
+        ]--}
     , header =
         Framework.container
             ++ Color.dark

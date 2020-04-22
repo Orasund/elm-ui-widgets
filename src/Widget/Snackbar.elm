@@ -20,7 +20,6 @@ module Widget.Snackbar exposing
 
 import Element exposing (Attribute, Element)
 import Queue exposing (Queue)
-import Widget
 import Widget.Button as Button exposing (ButtonStyle, TextButton)
 
 

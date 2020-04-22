@@ -21,6 +21,7 @@ import Widget.Button as Button exposing (ButtonStyle)
 import Layout exposing (Part(..))
 import Icons
 import Widget
+import Element.Font as Font
 
 buttonStyle : ButtonStyle msg
 buttonStyle =
@@ -38,13 +39,23 @@ tabButtonStyle=
     , active = Color.primary
     }
 
+chipButton : ButtonStyle msg
+chipButton =
+    { container = Tag.simple
+    , disabled = []
+    , label = Grid.simple
+    , active = Color.primary
+    }
+
 type alias Model =
     { selected : Maybe Int
     , multiSelected : Set Int
+    , chipTextInput : Set String
     , isCollapsed : Bool
     , carousel : Int
     , tab : Maybe Int
     , button : Bool
+    , textInput : String
     }
 
 
@@ -52,19 +63,24 @@ type Msg
     = ChangedSelected Int
     | ChangedMultiSelected Int
     | ToggleCollapsable Bool
+    | ToggleTextInputChip String
     | ChangedTab Int
     | SetCarousel Int
     | ToggleButton Bool
+    | SetTextInput String
+    | Idle
 
 
 init : Model
 init =
     { selected = Nothing
     , multiSelected = Set.empty
+    , chipTextInput = Set.empty
     , isCollapsed = False
     , carousel = 0
     , tab = Just 1
     , button = True
+    , textInput = ""
     }
 
 
@@ -98,6 +114,18 @@ update msg model =
               }
             , Cmd.none
             )
+        
+        ToggleTextInputChip string ->
+            ( { model
+                | chipTextInput =
+                    model.chipTextInput |>
+                        if model.chipTextInput |> Set.member string then
+                            Set.remove string
+                        else
+                            Set.insert string
+                }
+            , Cmd.none
+            )
 
         SetCarousel int ->
             ( if (int < 0) || (int > 3) then
@@ -115,6 +143,12 @@ update msg model =
         
         ToggleButton bool ->
             ( { model | button = bool }, Cmd.none )
+        
+        SetTextInput string ->
+            ( {model | textInput = string },Cmd.none)
+
+        Idle ->
+            ( model, Cmd.none)
 
 
 select : Model -> (String,Element Msg)
@@ -187,29 +221,35 @@ multiSelect model =
 collapsable : Model -> (String,Element Msg)
 collapsable model =
     ( "Collapsable"
-    , Widget.collapsable
-        { onToggle = ToggleCollapsable
+    ,   { onToggle = ToggleCollapsable
         , isCollapsed = model.isCollapsed
         , label =
-            Element.row Grid.compact
+            Element.row (Grid.simple ++ [Element.width<| Element.fill])
                 [ Element.html <|
                     if model.isCollapsed then
                         Heroicons.cheveronRight [ Attributes.width 20 ]
 
                     else
                         Heroicons.cheveronDown [ Attributes.width 20 ]
-                , Element.el Heading.h4 <| Element.text <| "Title"
+                , Element.text <| "Title"
                 ]
         , content = Element.text <| "Hello World"
         }
+        |>Widget.collapsable
+        { containerColumn = Card.simple ++ Grid.simple
+            ++ [ Element.padding 8 ]
+        , button = []
+        }
+        
     )
 
 tab : Model -> (String,Element Msg)
 tab model =
     ( "Tab"
     , Widget.tab 
-            { tabButton = tabButtonStyle
-            , tabRow = Grid.simple
+            { button = tabButtonStyle
+            , optionRow = Grid.simple
+            , containerColumn = Grid.compact
             } 
             { selected = model.tab
             , options = [ 1, 2, 3 ]
@@ -315,6 +355,64 @@ iconButton model =
     ] |> Element.column Grid.simple
     )
 
+textInput : Model -> (String,Element Msg)
+textInput model =
+    ( "Chip Text Input"
+    ,   [ { chips =
+            model.chipTextInput
+            |> Set.toList
+            |> List.map (\string ->
+                    { icon = Element.none
+                    , text = string
+                    , onPress =
+                        string
+                            |> ToggleTextInputChip
+                            |> Just
+                    }
+                )
+        , text = model.textInput
+        , placeholder = Nothing
+        , label = "Chips"
+        , onChange = SetTextInput
+        }
+            |> Widget.textInput
+            { chip = chipButton
+            , chipsRow = 
+                [ Element.width <| Element.shrink
+                , Element.spacing <| 4 ]
+            , containerRow = 
+                Button.simple
+                ++ Color.light
+                ++ [ Border.color <| Element.rgb255 186 189 182
+                    , Font.alignLeft
+                    , Element.padding 8
+                    , Element.height <| Element.px <|42
+                    ]
+                ++ Grid.simple
+            , input =
+                Color.light
+                ++ [Element.padding 0]
+            }
+        , model.chipTextInput
+            |> Set.diff
+                (["A","B","C"]
+                    |> Set.fromList
+                )
+            |> Set.toList
+            |> List.map
+                (\string ->
+                    Input.button (Button.simple ++ Tag.simple)
+                        { onPress =
+                            string
+                            |> ToggleTextInputChip
+                            |> Just
+                        , label = Element.text string
+                        }
+                )
+            |> Element.wrappedRow [ Element.spacing 10 ]
+        ] |> Element.column Grid.simple
+    )
+
 view : 
     { msgMapper : Msg -> msg
     , showDialog : msg
@@ -336,5 +434,6 @@ view { msgMapper, showDialog, changedSheet } model =
         , carousel model |> Tuple.mapSecond (Element.map msgMapper)
         , tab model |> Tuple.mapSecond (Element.map msgMapper)
         , dialog showDialog model
+        , textInput model |> Tuple.mapSecond (Element.map msgMapper)
         ]
     }

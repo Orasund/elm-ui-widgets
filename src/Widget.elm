@@ -1,16 +1,11 @@
 module Widget exposing
     ( select, multiSelect, collapsable, carousel, modal, tab, dialog
-    , Dialog, MultiSelect, Select, selectButton
+    , Dialog, Select, selectButton, textInput
     )
 
 {-| This module contains functions for displaying data.
 
 @docs select, multiSelect, collapsable, carousel, modal, tab, dialog
-
-
-# DEPRECATED
-
-@docs dialog
 
 -}
 
@@ -18,24 +13,13 @@ import Array exposing (Array)
 import Element exposing (Attribute, Element)
 import Element.Background as Background
 import Element.Events as Events
-import Element.Input as Input
+import Element.Input as Input exposing (Placeholder)
 import Set exposing (Set)
 import Widget.Button as Button exposing (Button, ButtonStyle, TextButton)
 
 
 type alias Select msg =
     { selected : Maybe Int
-    , options :
-        List
-            { text : String
-            , icon : Element Never
-            }
-    , onSelect : Int -> Maybe msg
-    }
-
-
-type alias MultiSelect msg =
-    { selected : Set Int
     , options :
         List
             { text : String
@@ -95,7 +79,14 @@ select { selected, options, onSelect } =
 {-| Selects multible options. This can be used for checkboxes.
 -}
 multiSelect :
-    MultiSelect msg
+    { selected : Set Int
+    , options :
+        List
+            { text : String
+            , icon : Element Never
+            }
+    , onSelect : Int -> Maybe msg
+    }
     -> List ( Bool, Button msg )
 multiSelect { selected, options, onSelect } =
     options
@@ -110,18 +101,51 @@ multiSelect { selected, options, onSelect } =
             )
 
 
+{-| -}
+textInput :
+    { chip : ButtonStyle msg
+    , containerRow : List (Attribute msg)
+    , chipsRow : List (Attribute msg)
+    , input : List (Attribute msg)
+    }
+    ->
+        { chips : List (Button msg)
+        , text : String
+        , placeholder : Maybe (Placeholder msg)
+        , label : String
+        , onChange : String -> msg
+        }
+    -> Element msg
+textInput style { chips, placeholder, label, text, onChange } =
+    Element.row style.containerRow
+        [ chips
+            |> List.map (Button.view style.chip)
+            |> Element.row style.chipsRow
+        , Input.text style.input
+            { onChange = onChange
+            , text = text
+            , placeholder = placeholder
+            , label = Input.labelHidden label
+            }
+        ]
+
+
 {-| Some collapsable content.
 -}
 collapsable :
-    { onToggle : Bool -> msg
-    , isCollapsed : Bool
-    , label : Element msg
-    , content : Element msg
+    { containerColumn : List (Attribute msg)
+    , button : List (Attribute msg)
     }
+    ->
+        { onToggle : Bool -> msg
+        , isCollapsed : Bool
+        , label : Element msg
+        , content : Element msg
+        }
     -> Element msg
-collapsable { onToggle, isCollapsed, label, content } =
-    Element.column [] <|
-        [ Input.button []
+collapsable style { onToggle, isCollapsed, label, content } =
+    Element.column style.containerColumn <|
+        [ Input.button style.button
             { onPress = Just <| onToggle <| not isCollapsed
             , label = label
             }
@@ -137,9 +161,9 @@ collapsable { onToggle, isCollapsed, label, content } =
 {-| Displayes a list of contents in a tab
 -}
 tab :
-    { style
-        | tabButton : ButtonStyle msg
-        , tabRow : List (Attribute msg)
+    { button : ButtonStyle msg
+    , optionRow : List (Attribute msg)
+    , containerColumn : List (Attribute msg)
     }
     -> Select msg
     -> (Maybe Int -> Element msg)
@@ -147,12 +171,12 @@ tab :
 tab style options content =
     [ options
         |> select
-        |> List.map (selectButton style.tabButton)
-        |> Element.row style.tabRow
+        |> List.map (selectButton style.button)
+        |> Element.row style.optionRow
     , options.selected
         |> content
     ]
-        |> Element.column []
+        |> Element.column style.containerColumn
 
 
 dialog :
