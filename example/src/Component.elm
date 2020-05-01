@@ -21,7 +21,7 @@ import Html.Attributes as Attributes
 import Set exposing (Set)
 import Time
 import Widget
-import Widget.Button as Button exposing (ButtonStyle)
+import Widget.Style exposing (ButtonStyle)
 import Widget.FilterSelect as FilterSelect
 import Widget.FilterMultiSelect as FilterMultiSelect
 import Widget.ScrollingNav as ScrollingNav

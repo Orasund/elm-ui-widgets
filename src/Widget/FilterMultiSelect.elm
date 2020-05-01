@@ -8,7 +8,7 @@ module Widget.FilterMultiSelect exposing (Model, Msg(..), init, update, viewInpu
 
 import Element.Input exposing (Placeholder)
 import Set exposing (Set)
-import Widget.Button exposing (Button)
+import Widget exposing (Button)
 
 
 {-| The Model containing the raw value, the selected value and all the possible options.

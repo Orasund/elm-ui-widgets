@@ -17,7 +17,7 @@ import Heroicons.Solid as Heroicons
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Set exposing (Set)
-import Widget.Button as Button exposing (ButtonStyle)
+import Widget.Style exposing (ButtonStyle)
 import Layout exposing (Part(..))
 import Icons
 import Widget
@@ -208,12 +208,11 @@ collapsable model =
         , isCollapsed = model.isCollapsed
         , label =
             Element.row (Grid.simple ++ [Element.width<| Element.fill])
-                [ Element.html <|
-                    if model.isCollapsed then
-                        Heroicons.cheveronRight [ Attributes.width 20 ]
+                [  if model.isCollapsed then
+                        Icons.chevronRight |> Element.html |> Element.el []
 
                     else
-                        Heroicons.cheveronDown [ Attributes.width 20 ]
+                        Icons.chevronDown  |> Element.html |> Element.el []
                 , Element.text <| "Title"
                 ]
         , content = Element.text <| "Hello World"
@@ -293,11 +292,21 @@ carousel model =
         , current = model.carousel
         , label =
             \c ->
-                [ Input.button [ Element.centerY ]
-                    { onPress = Just <| SetCarousel <| model.carousel - 1
-                    , label =
-                        Heroicons.cheveronLeft [ Attributes.width 20 ]
+                [ Element.el [Element.centerY] <|
+                Widget.iconButton style.button
+                    { onPress = 
+                        model.carousel - 1
+                        |> \i ->
+                            if i < 0 then
+                                Nothing
+                            else
+                                SetCarousel i
+                                |> Just
+                    , icon =
+                        Icons.chevronLeft
                             |> Element.html
+                            |> Element.el []
+                    , text = "Previous"
                     }
                 , Element.el
                     (Card.simple
@@ -308,11 +317,20 @@ carousel model =
                     )
                   <|
                     Element.none
-                , Input.button [ Element.centerY ]
-                    { onPress = Just <| SetCarousel <| model.carousel + 1
-                    , label =
-                        Heroicons.cheveronRight [ Attributes.width 20 ]
+                , Element.el [ Element.centerY ] <|
+                    Widget.iconButton style.button
+                    { onPress = model.carousel + 1
+                        |> \i ->
+                            if i >= 4 then
+                                Nothing
+                            else
+                                SetCarousel i
+                                |> Just
+                    , icon =
+                        Icons.chevronRight 
                             |> Element.html
+                            |> Element.el []
+                    , text = "Next"
                     }
                 ]
                     |> Element.row (Grid.simple ++ [ Element.centerX, Element.width <| Element.shrink ])
@@ -322,20 +340,27 @@ carousel model =
 iconButton : Model -> (String,Element Msg)
 iconButton model =
     ( "Icon Button"
-    , [Button.view style.button
-        { text = "disable me"
-        , icon = Icons.slash |> Element.html |> Element.el []        , onPress =
-            if model.button then
-                Just <| ToggleButton False
-            else
-                Nothing
-        }
-    , Button.view style.button
-        { text = "reset button"
-        , icon = Element.none       
-        , onPress =  Just <| ToggleButton True
-        }
-    ] |> Element.column Grid.simple
+    ,   [   [ Widget.button style.primaryButton
+                { text = "disable me"
+                , icon = Icons.slash |> Element.html |> Element.el []        , onPress =
+                    if model.button then
+                        Just <| ToggleButton False
+                    else
+                        Nothing
+                }
+            , Widget.iconButton style.button
+                { text = "reset"
+                , icon = Icons.repeat |> Element.html |> Element.el []       
+                , onPress =  Just <| ToggleButton True
+                }
+            ]
+            |> Element.row Grid.simple
+        , Widget.button style.button
+            { text = "reset button"
+            , icon = Element.none       
+            , onPress =  Just <| ToggleButton True
+            }
+        ] |> Element.column Grid.simple
     )
 
 textInput : Model -> (String,Element Msg)

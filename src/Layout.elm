@@ -4,10 +4,9 @@ import Array
 import Element exposing (Attribute, DeviceClass(..), Element)
 import Element.Input as Input
 import Html exposing (Html)
-import Style exposing (Style)
-import Widget exposing (Select)
-import Widget.Button as Button exposing (Button)
+import Widget exposing (Button, Select)
 import Widget.Snackbar as Snackbar exposing (Message)
+import Widget.Style exposing (Style)
 
 
 type Part
@@ -62,7 +61,7 @@ view :
     List (Attribute msg)
     ->
         { window : { height : Int, width : Int }
-        , dialog : Maybe { onDismiss : Maybe msg, content : Element msg }
+        , dialog : Maybe (List (Attribute msg))
         , content : Element msg
         , layout : Layout msg
         , title : Element msg
@@ -117,7 +116,7 @@ view attributes { search, title, onChangedSidebar, menu, actions, window, dialog
                     || (deviceClass == Tablet)
                     || ((menu.options |> List.length) > 5)
                then
-                [ Button.viewIconOnly style.menuButton
+                [ Widget.iconButton style.menuButton
                     { onPress = Just <| onChangedSidebar <| Just LeftSheet
                     , icon = style.menuIcon |> Element.map never
                     , text = "Menu"
@@ -137,7 +136,7 @@ view attributes { search, title, onChangedSidebar, menu, actions, window, dialog
                 [ title
                 , menu
                     |> Widget.select
-                    |> List.map (Style.menuTabButton style)
+                    |> List.map (Widget.selectButton style.menuTabButton)
                     |> Element.row
                         [ Element.width <| Element.shrink
                         ]
@@ -169,7 +168,7 @@ view attributes { search, title, onChangedSidebar, menu, actions, window, dialog
                     |> Maybe.map
                         (\{ label } ->
                             if deviceClass == Tablet then
-                                [ Button.view style.menuButton
+                                [ Widget.button style.menuButton
                                     { onPress = Just <| onChangedSidebar <| Just Search
                                     , icon = style.searchIcon
                                     , text = label
@@ -177,7 +176,7 @@ view attributes { search, title, onChangedSidebar, menu, actions, window, dialog
                                 ]
 
                             else if deviceClass == Phone then
-                                [ Style.menuIconButton style
+                                [ Widget.iconButton style.menuButton
                                     { onPress = Just <| onChangedSidebar <| Just Search
                                     , icon = style.searchIcon
                                     , text = label
@@ -191,16 +190,16 @@ view attributes { search, title, onChangedSidebar, menu, actions, window, dialog
               , primaryActions
                     |> List.map
                         (if deviceClass == Phone then
-                            Style.menuIconButton style
+                            Widget.iconButton style.menuButton
 
                          else
-                            Button.view style.menuButton
+                            Widget.button style.menuButton
                         )
               , if moreActions |> List.isEmpty then
                     []
 
                 else
-                    [ Button.viewIconOnly style.menuButton
+                    [ Widget.iconButton style.menuButton
                         { onPress = Just <| onChangedSidebar <| Just RightSheet
                         , icon = style.moreVerticalIcon
                         , text = "More"
@@ -242,7 +241,7 @@ view attributes { search, title, onChangedSidebar, menu, actions, window, dialog
                       ]
                     , menu
                         |> Widget.select
-                        |> List.map (Style.sheetButton style)
+                        |> List.map (Widget.selectButton style.sheetButton)
                     ]
                         |> List.concat
                         |> Element.column [ Element.width <| Element.fill ]
@@ -255,7 +254,7 @@ view attributes { search, title, onChangedSidebar, menu, actions, window, dialog
 
                 Just RightSheet ->
                     moreActions
-                        |> List.map (Button.view style.sheetButton)
+                        |> List.map (Widget.button style.sheetButton)
                         |> Element.column [ Element.width <| Element.fill ]
                         |> Element.el
                             (style.sheet
@@ -302,7 +301,7 @@ view attributes { search, title, onChangedSidebar, menu, actions, window, dialog
                     (Element.height <| Element.px <| window.height)
                         :: (case dialog of
                                 Just dialogConfig ->
-                                    Widget.modal dialogConfig
+                                    dialogConfig
 
                                 Nothing ->
                                     Widget.modal

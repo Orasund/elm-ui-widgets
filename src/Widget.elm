@@ -1,23 +1,123 @@
 module Widget exposing
-    ( select, multiSelect, collapsable, carousel, modal, tab, dialog
-    , Dialog, Select, TextInputStyle, selectButton, textInput
+    ( Button, TextButton, iconButton, textButton, button
+    , Select, MultiSelect, selectButton, select, multiSelect
+    , Dialog, modal, dialog
+    , TextInputStyle, textInput, collapsable, carousel, tab
     )
 
 {-| This module contains functions for displaying data.
 
-@docs select, multiSelect, collapsable, carousel, modal, tab, dialog
+
+# Buttons
+
+@docs Button, TextButton, iconButton, textButton, button
+
+
+# Select
+
+@docs Select, MultiSelect, selectButton, select, multiSelect
+
+
+# Dialog
+
+@docs Dialog, modal, dialog
+
+
+# Other Widgets
+
+@docs TextInputStyle, textInput, collapsable, carousel, tab
 
 -}
 
 import Array exposing (Array)
 import Element exposing (Attribute, Element)
-import Element.Background as Background
-import Element.Events as Events
 import Element.Input as Input exposing (Placeholder)
+import Internal.Button as Button
+import Internal.Dialog as Dialog
+import Internal.Select as Select
 import Set exposing (Set)
-import Widget.Button as Button exposing (Button, ButtonStyle, TextButton)
+import Widget.Style exposing (ButtonStyle, DialogStyle)
 
 
+
+{----------------------------------------------------------
+- BUTTON
+----------------------------------------------------------}
+
+
+{-| A Button as a type
+-}
+type alias Button msg =
+    { text : String
+    , icon : Element Never
+    , onPress : Maybe msg
+    }
+
+
+{-| A Button with just text as a type
+-}
+type alias TextButton msg =
+    { text : String
+    , onPress : Maybe msg
+    }
+
+
+{-| A button containing only an icon, the text is used for screenreaders.
+-}
+iconButton :
+    ButtonStyle msg
+    ->
+        { text : String
+        , icon : Element Never
+        , onPress : Maybe msg
+        }
+    -> Element msg
+iconButton =
+    Button.iconButton
+
+
+{-| A button with just text and not icon.
+-}
+textButton :
+    ButtonStyle msg
+    ->
+        { textButton
+            | text : String
+            , onPress : Maybe msg
+        }
+    -> Element msg
+textButton style { text, onPress } =
+    Button.textButton style
+        { text = text
+        , onPress = onPress
+        }
+
+
+{-| A button containing a text and an icon.
+-}
+button :
+    ButtonStyle msg
+    ->
+        { text : String
+        , icon : Element Never
+        , onPress : Maybe msg
+        }
+    -> Element msg
+button =
+    Button.button
+
+
+
+{----------------------------------------------------------
+- SELECT
+----------------------------------------------------------}
+
+
+{-| A list of options with at most one selected.
+
+Alternaitve Name: Choice
+
+-}
 type alias Select msg =
     { selected : Maybe Int
     , options :
@@ -29,64 +129,12 @@ type alias Select msg =
     }
 
 
-type alias Dialog msg =
-    { title : Maybe String
-    , body : Element msg
-    , accept : Maybe (TextButton msg)
-    , dismiss : Maybe (TextButton msg)
-    }
+{-| A list of options with multiple selected.
 
+Alternative Name: Options
 
-type alias TextInputStyle msg =
-    { chip : ButtonStyle msg
-    , containerRow : List (Attribute msg)
-    , chipsRow : List (Attribute msg)
-    , input : List (Attribute msg)
-    }
-
-
-{-| A simple button
 -}
-selectButton :
-    ButtonStyle msg
-    -> ( Bool, Button msg )
-    -> Element msg
-selectButton style ( selected, b ) =
-    b
-        |> Button.view
-            { style
-                | container =
-                    style.container
-                        ++ (if selected then
-                                style.active
-
-                            else
-                                []
-                           )
-            }
-
-
-{-| Selects one out of multiple options. This can be used for radio buttons or Menus.
--}
-select :
-    Select msg
-    -> List ( Bool, Button msg )
-select { selected, options, onSelect } =
-    options
-        |> List.indexedMap
-            (\i a ->
-                ( selected == Just i
-                , { onPress = i |> onSelect
-                  , text = a.text
-                  , icon = a.icon
-                  }
-                )
-            )
-
-
-{-| Selects multible options. This can be used for checkboxes.
--}
-multiSelect :
+type alias MultiSelect msg =
     { selected : Set Int
     , options :
         List
@@ -95,18 +143,90 @@ multiSelect :
             }
     , onSelect : Int -> Maybe msg
     }
+
+
+{-| A simple button that can be selected.
+-}
+selectButton :
+    ButtonStyle msg
+    -> ( Bool, Button msg )
+    -> Element msg
+selectButton =
+    Select.selectButton
+
+
+{-| Selects one out of multiple options. This can be used for radio buttons or Menus.
+-}
+select :
+    Select msg
     -> List ( Bool, Button msg )
-multiSelect { selected, options, onSelect } =
-    options
-        |> List.indexedMap
-            (\i a ->
-                ( selected |> Set.member i
-                , { onPress = i |> onSelect
-                  , text = a.text
-                  , icon = a.icon
-                  }
-                )
-            )
+select =
+    Select.select
+
+
+{-| Selects multible options. This can be used for checkboxes.
+-}
+multiSelect :
+    MultiSelect msg
+    -> List ( Bool, Button msg )
+multiSelect =
+    Select.multiSelect
+
+
+
+{----------------------------------------------------------
+- DIALOG
+----------------------------------------------------------}
+
+
+{-| A Dialog window displaying an important choice.
+-}
+type alias Dialog msg =
+    { title : Maybe String
+    , body : Element msg
+    , accept : Maybe (TextButton msg)
+    , dismiss : Maybe (TextButton msg)
+    }
+
+
+{-| A modal.
+
+NOTE: to stop the screen from scrolling, set the height of the layout to the height of the screen.
+
+-}
+modal : { onDismiss : Maybe msg, content : Element msg } -> List (Attribute msg)
+modal =
+    Dialog.modal
+
+
+{-| A Dialog Window.
+-}
+dialog :
+    DialogStyle msg
+    ->
+        { title : Maybe String
+        , body : Element msg
+        , accept : Maybe (TextButton msg)
+        , dismiss : Maybe (TextButton msg)
+        }
+    -> List (Attribute msg)
+dialog =
+    Dialog.dialog
+
+
+
+{----------------------------------------------------------
+- OTHER STATELESS WIDGETS
+----------------------------------------------------------}
+
+
+{-| -}
+type alias TextInputStyle msg =
+    { chip : ButtonStyle msg
+    , containerRow : List (Attribute msg)
+    , chipsRow : List (Attribute msg)
+    , input : List (Attribute msg)
+    }
 
 
 {-| -}
@@ -123,7 +243,7 @@ textInput :
 textInput style { chips, placeholder, label, text, onChange } =
     Element.row style.containerRow
         [ chips
-            |> List.map (Button.view style.chip)
+            |> List.map (Button.button style.chip)
             |> Element.row style.chipsRow
         , Input.text style.input
             { onChange = onChange
@@ -183,114 +303,7 @@ tab style options content =
         |> Element.column style.containerColumn
 
 
-dialog :
-    { containerColumn : List (Attribute msg)
-    , title : List (Attribute msg)
-    , buttonRow : List (Attribute msg)
-    , accept : ButtonStyle msg
-    , dismiss : ButtonStyle msg
-    }
-    -> Dialog msg
-    -> { onDismiss : Maybe msg, content : Element msg }
-dialog style { title, body, accept, dismiss } =
-    { onDismiss =
-        case ( accept, dismiss ) of
-            ( Nothing, Nothing ) ->
-                Nothing
-
-            ( Nothing, Just { onPress } ) ->
-                onPress
-
-            ( Just _, _ ) ->
-                Nothing
-    , content =
-        Element.column
-            (style.containerColumn
-                ++ [ Element.centerX
-                   , Element.centerY
-                   ]
-            )
-            [ title
-                |> Maybe.map
-                    (Element.text
-                        >> Element.el style.title
-                    )
-                |> Maybe.withDefault Element.none
-            , body
-            , Element.row
-                (style.buttonRow
-                    ++ [ Element.alignRight
-                       , Element.width <| Element.shrink
-                       ]
-                )
-                (case ( accept, dismiss ) of
-                    ( Just acceptButton, Nothing ) ->
-                        acceptButton
-                            |> Button.viewTextOnly style.accept
-                            |> List.singleton
-
-                    ( Just acceptButton, Just dismissButton ) ->
-                        [ dismissButton
-                            |> Button.viewTextOnly style.dismiss
-                        , acceptButton
-                            |> Button.viewTextOnly style.accept
-                        ]
-
-                    _ ->
-                        []
-                )
-            ]
-    }
-
-
-{-| A modal.
-
-NOTE: to stop the screen from scrolling, just set the height of the layout to the height of the screen.
-
--}
-modal : { onDismiss : Maybe msg, content : Element msg } -> List (Attribute msg)
-modal { onDismiss, content } =
-    [ Element.el
-        ([ Element.width <| Element.fill
-         , Element.height <| Element.fill
-         , Background.color <| Element.rgba255 0 0 0 0.5
-         ]
-            ++ (onDismiss
-                    |> Maybe.map (Events.onClick >> List.singleton)
-                    |> Maybe.withDefault []
-               )
-        )
-        content
-        |> Element.inFront
-    , Element.clip
-    ]
-
-
 {-| A Carousel circles through a non empty list of contents.
-
-        Widget.carousel
-            {content = ("Blue",["Yellow", "Green" , "Red" ]|> Array.fromList)
-            ,current = model.carousel
-            , label = \c ->
-                [ Input.button [Element.centerY]
-                    { onPress = Just <|
-                         SetCarousel <|
-                            (\x -> if x < 0 then 0 else x) <|
-                                model.carousel - 1
-                    , label = "<" |> Element.text
-                    }
-                , c |> Element.text
-                , Input.button [Element.centerY]
-                    { onPress = Just <|
-                        SetCarousel <|
-                            (\x -> if x > 3 then 3 else x) <|
-                            model.carousel + 1
-                    , label = ">" |> Element.text
-                    }
-                ]
-                |> Element.row [Element.centerX, Element.width<| Element.shrink]
-            }
-
 -}
 carousel :
     { content : ( a, Array a )

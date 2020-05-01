@@ -8,6 +8,10 @@ module Icons exposing
     , square
     , search
     , slash
+    , repeat
+    , chevronDown
+    , chevronRight
+    , chevronLeft
     )
 
 import Html exposing (Html)
@@ -27,6 +31,33 @@ svgFeatherIcon className =
         , strokeWidth "2"
         , viewBox "0 0 24 24"
         , width "16"
+        ]
+
+chevronDown : Html msg
+chevronDown =
+    svgFeatherIcon "chevron-down"
+        [ Svg.polyline [ points "6 9 12 15 18 9" ] []
+        ]
+
+
+chevronRight : Html msg
+chevronRight =
+    svgFeatherIcon "chevron-right"
+        [ Svg.polyline [ points "9 18 15 12 9 6" ] []
+        ]
+chevronLeft : Html msg
+chevronLeft =
+    svgFeatherIcon "chevron-left"
+        [ Svg.polyline [ points "15 18 9 12 15 6" ] []
+        ]
+
+repeat : Html msg
+repeat =
+    svgFeatherIcon "repeat"
+        [ Svg.polyline [ points "17 1 21 5 17 9" ] []
+        , Svg.path [ d "M3 11V9a4 4 0 0 1 4-4h14" ] []
+        , Svg.polyline [ points "7 23 3 19 7 15" ] []
+        , Svg.path [ d "M21 13v2a4 4 0 0 1-4 4H3" ] []
         ]
 
 

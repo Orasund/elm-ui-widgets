@@ -29,7 +29,7 @@ import Stateless
 import Task
 import Time
 import Widget
-import Widget.Button exposing (ButtonStyle)
+import Widget.Style exposing (ButtonStyle)
 import Widget.FilterSelect as FilterSelect
 import Widget.ScrollingNav as ScrollingNav
 import Widget.Snackbar as Snackbar

@@ -1,8 +1,7 @@
 module Data.Style exposing (style)
 
 import Widget exposing (TextInputStyle)
-import Widget.Button exposing (ButtonStyle)
-import Style exposing (Style)
+import Widget.Style exposing (Style,ButtonStyle)
 import Element exposing (Attribute)
 import Element.Input as Input
 import Element.Font as Font
@@ -95,12 +94,14 @@ style : Style
         , dismiss : ButtonStyle msg
         }
     , button : ButtonStyle msg
+    , primaryButton : ButtonStyle msg
     , tabButton : ButtonStyle msg
     , textInput : TextInputStyle msg
     , chipButton : ButtonStyle msg
     } msg
 style =
     { button = buttonStyle
+    , primaryButton = simpleButton
     , tabButton = tabButtonStyle
     , textInput = textInputStyle
     , chipButton = chipButtonStyle

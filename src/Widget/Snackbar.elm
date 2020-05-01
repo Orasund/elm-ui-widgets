@@ -20,7 +20,8 @@ module Widget.Snackbar exposing
 
 import Element exposing (Attribute, Element)
 import Queue exposing (Queue)
-import Widget.Button as Button exposing (ButtonStyle, TextButton)
+import Widget exposing (TextButton)
+import Widget.Style exposing (ButtonStyle)
 
 
 type alias Message msg =
@@ -123,7 +124,7 @@ view style toMessage model =
                             |> Element.paragraph style.text
                         , button
                             |> Maybe.map
-                                (Button.viewTextOnly style.button)
+                                (Widget.textButton style.button)
                             |> Maybe.withDefault Element.none
                         ]
                             |> Element.row style.row

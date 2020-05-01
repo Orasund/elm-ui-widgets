@@ -1,9 +1,24 @@
-module Style exposing (Style, menuButton, menuIconButton, menuTabButton, sheetButton)
+module Widget.Style exposing (ButtonStyle, DialogStyle, Style)
 
 import Element exposing (Attribute, Element)
 import Html exposing (Html)
-import Widget
-import Widget.Button as Button exposing (Button, ButtonStyle)
+
+
+type alias ButtonStyle msg =
+    { container : List (Attribute msg)
+    , disabled : List (Attribute msg)
+    , label : List (Attribute msg)
+    , active : List (Attribute msg)
+    }
+
+
+type alias DialogStyle msg =
+    { containerColumn : List (Attribute msg)
+    , title : List (Attribute msg)
+    , buttonRow : List (Attribute msg)
+    , accept : ButtonStyle msg
+    , dismiss : ButtonStyle msg
+    }
 
 
 type alias Style style msg =
@@ -27,23 +42,3 @@ type alias Style style msg =
         , search : List (Attribute msg)
         , searchFill : List (Attribute msg)
     }
-
-
-menuButton : Style style msg -> ( Bool, Button msg ) -> Element msg
-menuButton style =
-    Widget.selectButton style.menuButton
-
-
-menuIconButton : Style style msg -> Button msg -> Element msg
-menuIconButton style =
-    Button.viewIconOnly style.menuButton
-
-
-sheetButton : Style style msg -> ( Bool, Button msg ) -> Element msg
-sheetButton style =
-    Widget.selectButton style.sheetButton
-
-
-menuTabButton : Style style msg -> ( Bool, Button msg ) -> Element msg
-menuTabButton style =
-    Widget.selectButton style.menuTabButton

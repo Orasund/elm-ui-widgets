@@ -12817,8 +12817,85 @@ var $mdgriffith$elm_ui$Element$el = F2(
 				_List_fromArray(
 					[child])));
 	});
+var $mdgriffith$elm_ui$Internal$Model$Class = F2(
+	function (a, b) {
+		return {$: 'Class', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$overflow = $mdgriffith$elm_ui$Internal$Flag$flag(20);
+var $mdgriffith$elm_ui$Element$clip = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$overflow, $mdgriffith$elm_ui$Internal$Style$classes.clip);
+var $mdgriffith$elm_ui$Internal$Model$InFront = {$: 'InFront'};
+var $mdgriffith$elm_ui$Internal$Model$Nearby = F2(
+	function (a, b) {
+		return {$: 'Nearby', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Model$NoAttribute = {$: 'NoAttribute'};
+var $mdgriffith$elm_ui$Element$createNearby = F2(
+	function (loc, element) {
+		if (element.$ === 'Empty') {
+			return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
+		} else {
+			return A2($mdgriffith$elm_ui$Internal$Model$Nearby, loc, element);
+		}
+	});
+var $mdgriffith$elm_ui$Element$inFront = function (element) {
+	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$InFront, element);
+};
 var $mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
 var $mdgriffith$elm_ui$Element$none = $mdgriffith$elm_ui$Internal$Model$Empty;
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $mdgriffith$elm_ui$Element$Events$onClick = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Attr, $elm$html$Html$Events$onClick);
+var $mdgriffith$elm_ui$Element$rgba255 = F4(
+	function (red, green, blue, a) {
+		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, red / 255, green / 255, blue / 255, a);
+	});
+var $elm$core$List$singleton = function (value) {
+	return _List_fromArray(
+		[value]);
+};
+var $author$project$Internal$Dialog$modal = function (_v0) {
+	var onDismiss = _v0.onDismiss;
+	var content = _v0.content;
+	return _List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$inFront(
+			A2(
+				$mdgriffith$elm_ui$Element$el,
+				_Utils_ap(
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Element$Background$color(
+							A4($mdgriffith$elm_ui$Element$rgba255, 0, 0, 0, 0.5))
+						]),
+					A2(
+						$elm$core$Maybe$withDefault,
+						_List_Nil,
+						A2(
+							$elm$core$Maybe$map,
+							A2($elm$core$Basics$composeR, $mdgriffith$elm_ui$Element$Events$onClick, $elm$core$List$singleton),
+							onDismiss))),
+				$mdgriffith$elm_ui$Element$none)),
+			$mdgriffith$elm_ui$Element$inFront(content),
+			$mdgriffith$elm_ui$Element$clip
+		]);
+};
 var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
 var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
 var $mdgriffith$elm_ui$Element$row = F2(
@@ -12839,10 +12916,6 @@ var $mdgriffith$elm_ui$Element$row = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
-var $elm$core$List$singleton = function (value) {
-	return _List_fromArray(
-		[value]);
-};
 var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
 	return {$: 'Text', a: a};
 };
@@ -12859,7 +12932,6 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 			$elm$json$Json$Encode$bool(bool));
 	});
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
-var $mdgriffith$elm_ui$Internal$Model$NoAttribute = {$: 'NoAttribute'};
 var $mdgriffith$elm_ui$Element$Input$hasFocusStyle = function (attr) {
 	if (((attr.$ === 'StyleClass') && (attr.b.$ === 'PseudoSelector')) && (attr.b.a.$ === 'Focus')) {
 		var _v1 = attr.b;
@@ -12872,24 +12944,6 @@ var $mdgriffith$elm_ui$Element$Input$hasFocusStyle = function (attr) {
 var $mdgriffith$elm_ui$Element$Input$focusDefault = function (attrs) {
 	return A2($elm$core$List$any, $mdgriffith$elm_ui$Element$Input$hasFocusStyle, attrs) ? $mdgriffith$elm_ui$Internal$Model$NoAttribute : $mdgriffith$elm_ui$Internal$Model$htmlClass('focusable');
 };
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
-var $mdgriffith$elm_ui$Element$Events$onClick = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Attr, $elm$html$Html$Events$onClick);
 var $mdgriffith$elm_ui$Element$Input$enter = 'Enter';
 var $elm$json$Json$Decode$andThen = _Json_andThen;
 var $elm$json$Json$Decode$fail = _Json_fail;
@@ -12927,10 +12981,6 @@ var $mdgriffith$elm_ui$Element$Input$onKey = F2(
 var $mdgriffith$elm_ui$Element$Input$onEnter = function (msg) {
 	return A2($mdgriffith$elm_ui$Element$Input$onKey, $mdgriffith$elm_ui$Element$Input$enter, msg);
 };
-var $mdgriffith$elm_ui$Internal$Model$Class = F2(
-	function (a, b) {
-		return {$: 'Class', a: a, b: b};
-	});
 var $mdgriffith$elm_ui$Internal$Flag$cursor = $mdgriffith$elm_ui$Internal$Flag$flag(21);
 var $mdgriffith$elm_ui$Element$pointer = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$cursor, $mdgriffith$elm_ui$Internal$Style$classes.cursorPointer);
 var $elm$html$Html$Attributes$tabindex = function (n) {
@@ -13023,7 +13073,7 @@ var $mdgriffith$elm_ui$Internal$Model$map = F2(
 		}
 	});
 var $mdgriffith$elm_ui$Element$map = $mdgriffith$elm_ui$Internal$Model$map;
-var $author$project$Widget$Button$view = F2(
+var $author$project$Internal$Button$button = F2(
 	function (style, _v0) {
 		var onPress = _v0.onPress;
 		var text = _v0.text;
@@ -13045,90 +13095,92 @@ var $author$project$Widget$Button$view = F2(
 				onPress: onPress
 			});
 	});
-var $author$project$Widget$Button$viewTextOnly = F2(
+var $author$project$Internal$Button$textButton = F2(
 	function (style, _v0) {
 		var onPress = _v0.onPress;
 		var text = _v0.text;
 		return A2(
-			$author$project$Widget$Button$view,
+			$author$project$Internal$Button$button,
 			style,
 			{icon: $mdgriffith$elm_ui$Element$none, onPress: onPress, text: text});
 	});
-var $author$project$Widget$dialog = F2(
+var $author$project$Internal$Dialog$dialog = F2(
 	function (style, _v0) {
 		var title = _v0.title;
 		var body = _v0.body;
 		var accept = _v0.accept;
 		var dismiss = _v0.dismiss;
-		return {
-			content: A2(
-				$mdgriffith$elm_ui$Element$column,
-				_Utils_ap(
-					style.containerColumn,
+		return $author$project$Internal$Dialog$modal(
+			{
+				content: A2(
+					$mdgriffith$elm_ui$Element$column,
+					_Utils_ap(
+						style.containerColumn,
+						_List_fromArray(
+							[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY])),
 					_List_fromArray(
-						[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY])),
-				_List_fromArray(
-					[
-						A2(
-						$elm$core$Maybe$withDefault,
-						$mdgriffith$elm_ui$Element$none,
-						A2(
-							$elm$core$Maybe$map,
+						[
 							A2(
-								$elm$core$Basics$composeR,
-								$mdgriffith$elm_ui$Element$text,
-								$mdgriffith$elm_ui$Element$el(style.title)),
-							title)),
-						body,
-						A2(
-						$mdgriffith$elm_ui$Element$row,
-						_Utils_ap(
-							style.buttonRow,
-							_List_fromArray(
-								[
-									$mdgriffith$elm_ui$Element$alignRight,
-									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink)
-								])),
-						function () {
-							var _v1 = _Utils_Tuple2(accept, dismiss);
-							if (_v1.a.$ === 'Just') {
-								if (_v1.b.$ === 'Nothing') {
-									var acceptButton = _v1.a.a;
-									var _v2 = _v1.b;
-									return $elm$core$List$singleton(
-										A2($author$project$Widget$Button$viewTextOnly, style.accept, acceptButton));
+							$elm$core$Maybe$withDefault,
+							$mdgriffith$elm_ui$Element$none,
+							A2(
+								$elm$core$Maybe$map,
+								A2(
+									$elm$core$Basics$composeR,
+									$mdgriffith$elm_ui$Element$text,
+									$mdgriffith$elm_ui$Element$el(style.title)),
+								title)),
+							body,
+							A2(
+							$mdgriffith$elm_ui$Element$row,
+							_Utils_ap(
+								style.buttonRow,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$alignRight,
+										$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink)
+									])),
+							function () {
+								var _v1 = _Utils_Tuple2(accept, dismiss);
+								if (_v1.a.$ === 'Just') {
+									if (_v1.b.$ === 'Nothing') {
+										var acceptButton = _v1.a.a;
+										var _v2 = _v1.b;
+										return $elm$core$List$singleton(
+											A2($author$project$Internal$Button$textButton, style.accept, acceptButton));
+									} else {
+										var acceptButton = _v1.a.a;
+										var dismissButton = _v1.b.a;
+										return _List_fromArray(
+											[
+												A2($author$project$Internal$Button$textButton, style.dismiss, dismissButton),
+												A2($author$project$Internal$Button$textButton, style.accept, acceptButton)
+											]);
+									}
 								} else {
-									var acceptButton = _v1.a.a;
-									var dismissButton = _v1.b.a;
-									return _List_fromArray(
-										[
-											A2($author$project$Widget$Button$viewTextOnly, style.dismiss, dismissButton),
-											A2($author$project$Widget$Button$viewTextOnly, style.accept, acceptButton)
-										]);
+									return _List_Nil;
 								}
-							} else {
-								return _List_Nil;
-							}
-						}())
-					])),
-			onDismiss: function () {
-				var _v3 = _Utils_Tuple2(accept, dismiss);
-				if (_v3.a.$ === 'Nothing') {
-					if (_v3.b.$ === 'Nothing') {
-						var _v4 = _v3.a;
-						var _v5 = _v3.b;
-						return $elm$core$Maybe$Nothing;
+							}())
+						])),
+				onDismiss: function () {
+					var _v3 = _Utils_Tuple2(accept, dismiss);
+					if (_v3.a.$ === 'Nothing') {
+						if (_v3.b.$ === 'Nothing') {
+							var _v4 = _v3.a;
+							var _v5 = _v3.b;
+							return $elm$core$Maybe$Nothing;
+						} else {
+							var _v6 = _v3.a;
+							var onPress = _v3.b.a.onPress;
+							return onPress;
+						}
 					} else {
-						var _v6 = _v3.a;
-						var onPress = _v3.b.a.onPress;
-						return onPress;
+						return $elm$core$Maybe$Nothing;
 					}
-				} else {
-					return $elm$core$Maybe$Nothing;
-				}
-			}()
-		};
+				}()
+			});
 	});
+var $author$project$Widget$dialog = $author$project$Internal$Dialog$dialog;
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -13856,26 +13908,12 @@ var $author$project$Icons$square = A2(
 var $mdgriffith$elm_ui$Internal$Flag$fontAlignment = $mdgriffith$elm_ui$Internal$Flag$flag(12);
 var $mdgriffith$elm_ui$Element$Font$alignLeft = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textLeft);
 var $Orasund$elm_ui_framework$Framework$Color$black = A3($mdgriffith$elm_ui$Element$rgb255, 0, 0, 0);
-var $Orasund$elm_ui_framework$Framework$Group$center = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$Border$rounded(0)
-	]);
-var $Orasund$elm_ui_framework$Framework$Color$dark = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$Background$color($Orasund$elm_ui_framework$Framework$Color$darkerGrey),
-		$mdgriffith$elm_ui$Element$Border$color($Orasund$elm_ui_framework$Framework$Color$darkerGrey),
-		$mdgriffith$elm_ui$Element$Font$color($Orasund$elm_ui_framework$Framework$Color$lighterGrey)
-	]);
 var $mdgriffith$elm_ui$Internal$Model$Focus = {$: 'Focus'};
 var $mdgriffith$elm_ui$Internal$Model$PseudoSelector = F2(
 	function (a, b) {
 		return {$: 'PseudoSelector', a: a, b: b};
 	});
 var $mdgriffith$elm_ui$Internal$Flag$focus = $mdgriffith$elm_ui$Internal$Flag$flag(31);
-var $mdgriffith$elm_ui$Internal$Model$Nearby = F2(
-	function (a, b) {
-		return {$: 'Nearby', a: a, b: b};
-	});
 var $mdgriffith$elm_ui$Internal$Model$TransformComponent = F2(
 	function (a, b) {
 		return {$: 'TransformComponent', a: a, b: b};
@@ -13997,6 +14035,11 @@ var $Orasund$elm_ui_framework$Framework$Color$disabled = _Utils_ap(
 			$mdgriffith$elm_ui$Element$htmlAttribute(
 			A2($elm$html$Html$Attributes$style, 'cursor', 'not-allowed'))
 		]));
+var $Orasund$elm_ui_framework$Framework$Color$primary = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Background$color($Orasund$elm_ui_framework$Framework$Color$turquoise),
+		$mdgriffith$elm_ui$Element$Border$color($Orasund$elm_ui_framework$Framework$Color$turquoise)
+	]);
 var $mdgriffith$elm_ui$Element$Font$center = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$fontAlignment, $mdgriffith$elm_ui$Internal$Style$classes.textCenter);
 var $Orasund$elm_ui_framework$Framework$Button$simple = _Utils_ap(
 	$Orasund$elm_ui_framework$Framework$Card$simple,
@@ -14012,6 +14055,26 @@ var $Orasund$elm_ui_framework$Framework$Button$simple = _Utils_ap(
 					])),
 				A2($mdgriffith$elm_ui$Element$paddingXY, 16, 12)
 			])));
+var $author$project$Data$Style$buttonStyle = {
+	active: $Orasund$elm_ui_framework$Framework$Color$primary,
+	container: $Orasund$elm_ui_framework$Framework$Button$simple,
+	disabled: $Orasund$elm_ui_framework$Framework$Color$disabled,
+	label: _List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$spacing(8)
+		])
+};
+var $Orasund$elm_ui_framework$Framework$Group$center = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Border$rounded(0)
+	]);
+var $author$project$Data$Style$chipButtonStyle = {active: $Orasund$elm_ui_framework$Framework$Color$primary, container: $Orasund$elm_ui_framework$Framework$Tag$simple, disabled: _List_Nil, label: $Orasund$elm_ui_framework$Framework$Grid$simple};
+var $Orasund$elm_ui_framework$Framework$Color$dark = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Background$color($Orasund$elm_ui_framework$Framework$Color$darkerGrey),
+		$mdgriffith$elm_ui$Element$Border$color($Orasund$elm_ui_framework$Framework$Color$darkerGrey),
+		$mdgriffith$elm_ui$Element$Font$color($Orasund$elm_ui_framework$Framework$Color$lighterGrey)
+	]);
 var $Orasund$elm_ui_framework$Framework$Button$fill = _Utils_ap(
 	$Orasund$elm_ui_framework$Framework$Button$simple,
 	_List_fromArray(
@@ -14092,11 +14155,6 @@ var $author$project$Icons$moreVertical = A2(
 				]),
 			_List_Nil)
 		]));
-var $Orasund$elm_ui_framework$Framework$Color$primary = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$Background$color($Orasund$elm_ui_framework$Framework$Color$turquoise),
-		$mdgriffith$elm_ui$Element$Border$color($Orasund$elm_ui_framework$Framework$Color$turquoise)
-	]);
 var $author$project$Icons$search = A2(
 	$author$project$Icons$svgFeatherIcon,
 	'search',
@@ -14122,16 +14180,77 @@ var $author$project$Icons$search = A2(
 				]),
 			_List_Nil)
 		]));
-var $author$project$Example$simpleButton = {
+var $author$project$Data$Style$simpleButton = {
 	active: $Orasund$elm_ui_framework$Framework$Color$primary,
 	container: _Utils_ap($Orasund$elm_ui_framework$Framework$Button$simple, $Orasund$elm_ui_framework$Framework$Color$primary),
 	disabled: $Orasund$elm_ui_framework$Framework$Color$disabled,
 	label: $Orasund$elm_ui_framework$Framework$Grid$simple
 };
-var $author$project$Example$textButton = {active: $Orasund$elm_ui_framework$Framework$Color$primary, container: $Orasund$elm_ui_framework$Framework$Button$simple, disabled: $Orasund$elm_ui_framework$Framework$Color$disabled, label: $Orasund$elm_ui_framework$Framework$Grid$simple};
-var $author$project$Example$style = {
+var $mdgriffith$elm_ui$Element$Border$roundEach = function (_v0) {
+	var topLeft = _v0.topLeft;
+	var topRight = _v0.topRight;
+	var bottomLeft = _v0.bottomLeft;
+	var bottomRight = _v0.bottomRight;
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$borderRound,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Single,
+			'br-' + ($elm$core$String$fromInt(topLeft) + ('-' + ($elm$core$String$fromInt(topRight) + ($elm$core$String$fromInt(bottomLeft) + ('-' + $elm$core$String$fromInt(bottomRight)))))),
+			'border-radius',
+			$elm$core$String$fromInt(topLeft) + ('px ' + ($elm$core$String$fromInt(topRight) + ('px ' + ($elm$core$String$fromInt(bottomRight) + ('px ' + ($elm$core$String$fromInt(bottomLeft) + 'px'))))))));
+};
+var $Orasund$elm_ui_framework$Framework$Group$top = _List_fromArray(
+	[
+		$mdgriffith$elm_ui$Element$Border$roundEach(
+		{bottomLeft: 0, bottomRight: 0, topLeft: 4, topRight: 4})
+	]);
+var $author$project$Data$Style$tabButtonStyle = {
+	active: $Orasund$elm_ui_framework$Framework$Color$primary,
+	container: _Utils_ap($Orasund$elm_ui_framework$Framework$Button$simple, $Orasund$elm_ui_framework$Framework$Group$top),
+	disabled: $Orasund$elm_ui_framework$Framework$Color$disabled,
+	label: _List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$spacing(8)
+		])
+};
+var $author$project$Data$Style$textButton = {active: $Orasund$elm_ui_framework$Framework$Color$primary, container: $Orasund$elm_ui_framework$Framework$Button$simple, disabled: $Orasund$elm_ui_framework$Framework$Color$disabled, label: $Orasund$elm_ui_framework$Framework$Grid$simple};
+var $author$project$Data$Style$textInputStyle = {
+	chip: $author$project$Data$Style$chipButtonStyle,
+	chipsRow: _List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+			$mdgriffith$elm_ui$Element$spacing(4),
+			$mdgriffith$elm_ui$Element$paddingEach(
+			{bottom: 8, left: 0, right: 0, top: 8})
+		]),
+	containerRow: _Utils_ap(
+		$Orasund$elm_ui_framework$Framework$Button$simple,
+		_Utils_ap(
+			$Orasund$elm_ui_framework$Framework$Color$light,
+			_Utils_ap(
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$Border$color(
+						A3($mdgriffith$elm_ui$Element$rgb255, 186, 189, 182)),
+						$mdgriffith$elm_ui$Element$Font$alignLeft,
+						A2($mdgriffith$elm_ui$Element$paddingXY, 8, 0),
+						$mdgriffith$elm_ui$Element$height(
+						$mdgriffith$elm_ui$Element$px(42))
+					]),
+				$Orasund$elm_ui_framework$Framework$Grid$simple))),
+	input: _Utils_ap(
+		$Orasund$elm_ui_framework$Framework$Color$light,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$padding(8)
+			]))
+};
+var $author$project$Data$Style$style = {
+	button: $author$project$Data$Style$buttonStyle,
+	chipButton: $author$project$Data$Style$chipButtonStyle,
 	dialog: {
-		accept: $author$project$Example$simpleButton,
+		accept: $author$project$Data$Style$simpleButton,
 		buttonRow: _Utils_ap(
 			$Orasund$elm_ui_framework$Framework$Grid$simple,
 			_List_fromArray(
@@ -14151,7 +14270,7 @@ var $author$project$Example$style = {
 							280,
 							A2($mdgriffith$elm_ui$Element$maximum, 560, $mdgriffith$elm_ui$Element$fill)))
 					]))),
-		dismiss: $author$project$Example$textButton,
+		dismiss: $author$project$Data$Style$textButton,
 		title: $Orasund$elm_ui_framework$Framework$Heading$h3
 	},
 	header: _Utils_ap(
@@ -14199,6 +14318,7 @@ var $author$project$Example$style = {
 		$mdgriffith$elm_ui$Element$el,
 		_List_Nil,
 		$mdgriffith$elm_ui$Element$html($author$project$Icons$moreVertical)),
+	primaryButton: $author$project$Data$Style$simpleButton,
 	search: _Utils_ap(
 		$Orasund$elm_ui_framework$Framework$Color$simple,
 		_Utils_ap(
@@ -14261,6 +14381,8 @@ var $author$project$Example$style = {
 			])
 	},
 	spacing: 8,
+	tabButton: $author$project$Data$Style$tabButtonStyle,
+	textInput: $author$project$Data$Style$textInputStyle,
 	title: $Orasund$elm_ui_framework$Framework$Heading$h2
 };
 var $elm_community$intdict$IntDict$findMin = function (dict) {
@@ -14463,7 +14585,6 @@ var $author$project$Component$FilterMultiSelectSpecific = function (a) {
 var $author$project$Widget$FilterMultiSelect$ToggleSelected = function (a) {
 	return {$: 'ToggleSelected', a: a};
 };
-var $author$project$Component$chipButton = {active: $Orasund$elm_ui_framework$Framework$Color$primary, container: $Orasund$elm_ui_framework$Framework$Tag$simple, disabled: _List_Nil, label: $Orasund$elm_ui_framework$Framework$Grid$simple};
 var $mdgriffith$elm_ui$Element$Input$Placeholder = F2(
 	function (a, b) {
 		return {$: 'Placeholder', a: a, b: b};
@@ -14548,14 +14669,6 @@ var $mdgriffith$elm_ui$Element$Input$autofill = A2(
 	$mdgriffith$elm_ui$Internal$Model$Attr,
 	$elm$html$Html$Attributes$attribute('autocomplete'));
 var $mdgriffith$elm_ui$Internal$Model$Behind = {$: 'Behind'};
-var $mdgriffith$elm_ui$Element$createNearby = F2(
-	function (loc, element) {
-		if (element.$ === 'Empty') {
-			return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
-		} else {
-			return A2($mdgriffith$elm_ui$Internal$Model$Nearby, loc, element);
-		}
-	});
 var $mdgriffith$elm_ui$Element$behindContent = function (element) {
 	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$Behind, element);
 };
@@ -14594,8 +14707,6 @@ var $mdgriffith$elm_ui$Element$Input$calcMoveToCompensateForPadding = function (
 			$elm$core$Basics$floor(vSpace / 2));
 	}
 };
-var $mdgriffith$elm_ui$Internal$Flag$overflow = $mdgriffith$elm_ui$Internal$Flag$flag(20);
-var $mdgriffith$elm_ui$Element$clip = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$overflow, $mdgriffith$elm_ui$Internal$Style$classes.clip);
 var $mdgriffith$elm_ui$Element$rgb = F3(
 	function (r, g, b) {
 		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, r, g, b, 1);
@@ -14633,10 +14744,6 @@ var $mdgriffith$elm_ui$Element$Input$hiddenLabelAttribute = function (label) {
 	} else {
 		return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
 	}
-};
-var $mdgriffith$elm_ui$Internal$Model$InFront = {$: 'InFront'};
-var $mdgriffith$elm_ui$Element$inFront = function (element) {
-	return A2($mdgriffith$elm_ui$Element$createNearby, $mdgriffith$elm_ui$Internal$Model$InFront, element);
 };
 var $mdgriffith$elm_ui$Element$Input$isConstrained = function (len) {
 	isConstrained:
@@ -15293,7 +15400,7 @@ var $author$project$Widget$textInput = F2(
 					style.chipsRow,
 					A2(
 						$elm$core$List$map,
-						$author$project$Widget$Button$view(style.chip),
+						$author$project$Internal$Button$button(style.chip),
 						chips)),
 					A2(
 					$mdgriffith$elm_ui$Element$Input$text,
@@ -15547,35 +15654,7 @@ var $author$project$Component$filterMultiSelect = function (model) {
 				[
 					A2(
 					$author$project$Widget$textInput,
-					{
-						chip: $author$project$Component$chipButton,
-						chipsRow: _List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-								$mdgriffith$elm_ui$Element$spacing(4)
-							]),
-						containerRow: _Utils_ap(
-							$Orasund$elm_ui_framework$Framework$Button$simple,
-							_Utils_ap(
-								$Orasund$elm_ui_framework$Framework$Color$light,
-								_Utils_ap(
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$Border$color(
-											A3($mdgriffith$elm_ui$Element$rgb255, 186, 189, 182)),
-											$mdgriffith$elm_ui$Element$Font$alignLeft,
-											$mdgriffith$elm_ui$Element$padding(8),
-											$mdgriffith$elm_ui$Element$height(
-											$mdgriffith$elm_ui$Element$px(42))
-										]),
-									$Orasund$elm_ui_framework$Framework$Grid$simple))),
-						input: _Utils_ap(
-							$Orasund$elm_ui_framework$Framework$Color$light,
-							_List_fromArray(
-								[
-									$mdgriffith$elm_ui$Element$padding(0)
-								]))
-					},
+					$author$project$Data$Style$style.textInput,
 					A2(
 						$author$project$Widget$FilterMultiSelect$viewInput,
 						model,
@@ -15632,20 +15711,6 @@ var $Orasund$elm_ui_framework$Framework$Color$danger = _List_fromArray(
 		$mdgriffith$elm_ui$Element$Border$color($Orasund$elm_ui_framework$Framework$Color$red),
 		$mdgriffith$elm_ui$Element$Font$color($Orasund$elm_ui_framework$Framework$Color$lighterGrey)
 	]);
-var $mdgriffith$elm_ui$Element$Border$roundEach = function (_v0) {
-	var topLeft = _v0.topLeft;
-	var topRight = _v0.topRight;
-	var bottomLeft = _v0.bottomLeft;
-	var bottomRight = _v0.bottomRight;
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$borderRound,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Single,
-			'br-' + ($elm$core$String$fromInt(topLeft) + ('-' + ($elm$core$String$fromInt(topRight) + ($elm$core$String$fromInt(bottomLeft) + ('-' + $elm$core$String$fromInt(bottomRight)))))),
-			'border-radius',
-			$elm$core$String$fromInt(topLeft) + ('px ' + ($elm$core$String$fromInt(topRight) + ('px ' + ($elm$core$String$fromInt(bottomRight) + ('px ' + ($elm$core$String$fromInt(bottomLeft) + 'px'))))))));
-};
 var $Orasund$elm_ui_framework$Framework$Group$left = _List_fromArray(
 	[
 		$mdgriffith$elm_ui$Element$Border$roundEach(
@@ -15937,6 +16002,7 @@ var $author$project$Layout$Search = {$: 'Search'};
 var $mdgriffith$elm_ui$Element$Tablet = {$: 'Tablet'};
 var $mdgriffith$elm_ui$Internal$Model$Bottom = {$: 'Bottom'};
 var $mdgriffith$elm_ui$Element$alignBottom = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$Bottom);
+var $author$project$Widget$button = $author$project$Internal$Button$button;
 var $mdgriffith$elm_ui$Element$BigDesktop = {$: 'BigDesktop'};
 var $mdgriffith$elm_ui$Element$Desktop = {$: 'Desktop'};
 var $mdgriffith$elm_ui$Element$Landscape = {$: 'Landscape'};
@@ -15973,7 +16039,7 @@ var $elm$core$List$drop = F2(
 		}
 	});
 var $mdgriffith$elm_ui$Element$Region$description = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Describe, $mdgriffith$elm_ui$Internal$Model$Label);
-var $author$project$Widget$Button$viewIconOnly = F2(
+var $author$project$Internal$Button$iconButton = F2(
 	function (style, _v0) {
 		var onPress = _v0.onPress;
 		var text = _v0.text;
@@ -15993,59 +16059,9 @@ var $author$project$Widget$Button$viewIconOnly = F2(
 				onPress: onPress
 			});
 	});
-var $author$project$Core$Style$menuIconButton = function (style) {
-	return $author$project$Widget$Button$viewIconOnly(style.menuButton);
-};
-var $author$project$Widget$selectButton = F2(
-	function (style, _v0) {
-		var selected = _v0.a;
-		var b = _v0.b;
-		return A2(
-			$author$project$Widget$Button$view,
-			_Utils_update(
-				style,
-				{
-					container: _Utils_ap(
-						style.container,
-						selected ? style.active : _List_Nil)
-				}),
-			b);
-	});
-var $author$project$Core$Style$menuTabButton = function (style) {
-	return $author$project$Widget$selectButton(style.menuTabButton);
-};
-var $mdgriffith$elm_ui$Element$rgba255 = F4(
-	function (red, green, blue, a) {
-		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, red / 255, green / 255, blue / 255, a);
-	});
-var $author$project$Widget$modal = function (_v0) {
-	var onDismiss = _v0.onDismiss;
-	var content = _v0.content;
-	return _List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$inFront(
-			A2(
-				$mdgriffith$elm_ui$Element$el,
-				_Utils_ap(
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-							$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-							$mdgriffith$elm_ui$Element$Background$color(
-							A4($mdgriffith$elm_ui$Element$rgba255, 0, 0, 0, 0.5))
-						]),
-					A2(
-						$elm$core$Maybe$withDefault,
-						_List_Nil,
-						A2(
-							$elm$core$Maybe$map,
-							A2($elm$core$Basics$composeR, $mdgriffith$elm_ui$Element$Events$onClick, $elm$core$List$singleton),
-							onDismiss))),
-				content)),
-			$mdgriffith$elm_ui$Element$clip
-		]);
-};
-var $author$project$Widget$select = function (_v0) {
+var $author$project$Widget$iconButton = $author$project$Internal$Button$iconButton;
+var $author$project$Widget$modal = $author$project$Internal$Dialog$modal;
+var $author$project$Internal$Select$select = function (_v0) {
 	var selected = _v0.selected;
 	var options = _v0.options;
 	var onSelect = _v0.onSelect;
@@ -16065,9 +16081,23 @@ var $author$project$Widget$select = function (_v0) {
 			}),
 		options);
 };
-var $author$project$Core$Style$sheetButton = function (style) {
-	return $author$project$Widget$selectButton(style.sheetButton);
-};
+var $author$project$Widget$select = $author$project$Internal$Select$select;
+var $author$project$Internal$Select$selectButton = F2(
+	function (style, _v0) {
+		var selected = _v0.a;
+		var b = _v0.b;
+		return A2(
+			$author$project$Internal$Button$button,
+			_Utils_update(
+				style,
+				{
+					container: _Utils_ap(
+						style.container,
+						selected ? style.active : _List_Nil)
+				}),
+			b);
+	});
+var $author$project$Widget$selectButton = $author$project$Internal$Select$selectButton;
 var $elm$core$List$takeReverse = F3(
 	function (n, list, kept) {
 		takeReverse:
@@ -16197,6 +16227,15 @@ var $elm$core$List$take = F2(
 var $author$project$Widget$Snackbar$current = function (model) {
 	return A2($elm$core$Maybe$map, $elm$core$Tuple$first, model.current);
 };
+var $author$project$Widget$textButton = F2(
+	function (style, _v0) {
+		var text = _v0.text;
+		var onPress = _v0.onPress;
+		return A2(
+			$author$project$Internal$Button$textButton,
+			style,
+			{onPress: onPress, text: text});
+	});
 var $author$project$Widget$Snackbar$view = F3(
 	function (style, toMessage, model) {
 		return A2(
@@ -16222,7 +16261,7 @@ var $author$project$Widget$Snackbar$view = F3(
 								$mdgriffith$elm_ui$Element$none,
 								A2(
 									$elm$core$Maybe$map,
-									$author$project$Widget$Button$viewTextOnly(style.button),
+									$author$project$Widget$textButton(style.button),
 									button))
 							]));
 				}),
@@ -16287,7 +16326,7 @@ var $author$project$Layout$view = F2(
 											[title]),
 											A2(
 											$elm$core$List$map,
-											$author$project$Core$Style$sheetButton(style),
+											$author$project$Widget$selectButton(style.sheetButton),
 											$author$project$Widget$select(menu))
 										]))));
 					case 'RightSheet':
@@ -16309,7 +16348,7 @@ var $author$project$Layout$view = F2(
 									]),
 								A2(
 									$elm$core$List$map,
-									$author$project$Widget$Button$view(style.sheetButton),
+									$author$project$Widget$button(style.sheetButton),
 									moreActions)));
 					default:
 						var _v8 = _v5.a;
@@ -16374,7 +16413,7 @@ var $author$project$Layout$view = F2(
 					(_Utils_eq(deviceClass, $mdgriffith$elm_ui$Element$Phone) || (_Utils_eq(deviceClass, $mdgriffith$elm_ui$Element$Tablet) || ($elm$core$List$length(menu.options) > 5))) ? _List_fromArray(
 						[
 							A2(
-							$author$project$Widget$Button$viewIconOnly,
+							$author$project$Widget$iconButton,
 							style.menuButton,
 							{
 								icon: A2($mdgriffith$elm_ui$Element$map, $elm$core$Basics$never, style.menuIcon),
@@ -16417,7 +16456,7 @@ var $author$project$Layout$view = F2(
 								]),
 							A2(
 								$elm$core$List$map,
-								$author$project$Core$Style$menuTabButton(style),
+								$author$project$Widget$selectButton(style.menuTabButton),
 								$author$project$Widget$select(menu)))
 						])),
 					(_Utils_eq(deviceClass, $mdgriffith$elm_ui$Element$Phone) || _Utils_eq(deviceClass, $mdgriffith$elm_ui$Element$Tablet)) ? $mdgriffith$elm_ui$Element$none : A2(
@@ -16464,7 +16503,7 @@ var $author$project$Layout$view = F2(
 										return _Utils_eq(deviceClass, $mdgriffith$elm_ui$Element$Tablet) ? _List_fromArray(
 											[
 												A2(
-												$author$project$Widget$Button$view,
+												$author$project$Widget$button,
 												style.menuButton,
 												{
 													icon: style.searchIcon,
@@ -16476,8 +16515,8 @@ var $author$project$Layout$view = F2(
 											]) : (_Utils_eq(deviceClass, $mdgriffith$elm_ui$Element$Phone) ? _List_fromArray(
 											[
 												A2(
-												$author$project$Core$Style$menuIconButton,
-												style,
+												$author$project$Widget$iconButton,
+												style.menuButton,
 												{
 													icon: style.searchIcon,
 													onPress: $elm$core$Maybe$Just(
@@ -16490,12 +16529,12 @@ var $author$project$Layout$view = F2(
 									search)),
 								A2(
 								$elm$core$List$map,
-								_Utils_eq(deviceClass, $mdgriffith$elm_ui$Element$Phone) ? $author$project$Core$Style$menuIconButton(style) : $author$project$Widget$Button$view(style.menuButton),
+								_Utils_eq(deviceClass, $mdgriffith$elm_ui$Element$Phone) ? $author$project$Widget$iconButton(style.menuButton) : $author$project$Widget$button(style.menuButton),
 								primaryActions),
 								$elm$core$List$isEmpty(moreActions) ? _List_Nil : _List_fromArray(
 								[
 									A2(
-									$author$project$Widget$Button$viewIconOnly,
+									$author$project$Widget$iconButton,
 									style.menuButton,
 									{
 										icon: style.moreVerticalIcon,
@@ -16525,7 +16564,7 @@ var $author$project$Layout$view = F2(
 						function () {
 							if (dialog.$ === 'Just') {
 								var dialogConfig = dialog.a;
-								return $author$project$Widget$modal(dialogConfig);
+								return dialogConfig;
 							} else {
 								return $author$project$Widget$modal(
 									{
@@ -17106,52 +17145,34 @@ var $author$project$Widget$carousel = function (_v0) {
 			head,
 			A2($elm$core$Array$get, current - 1, tail))));
 };
-var $jasonliang512$elm_heroicons$Heroicons$Solid$cheveronLeft = function (attrs) {
-	return A2(
-		$elm$svg$Svg$svg,
-		A2(
-			$elm$core$List$cons,
-			$elm$svg$Svg$Attributes$viewBox('0 0 20 20'),
+var $elm$svg$Svg$Attributes$points = _VirtualDom_attribute('points');
+var $elm$svg$Svg$polyline = $elm$svg$Svg$trustedNode('polyline');
+var $author$project$Icons$chevronLeft = A2(
+	$author$project$Icons$svgFeatherIcon,
+	'chevron-left',
+	_List_fromArray(
+		[
 			A2(
-				$elm$core$List$cons,
-				$elm$svg$Svg$Attributes$fill('currentColor'),
-				attrs)),
-		_List_fromArray(
-			[
-				A2(
-				$elm$svg$Svg$path,
-				_List_fromArray(
-					[
-						$elm$svg$Svg$Attributes$fillRule('evenodd'),
-						$elm$svg$Svg$Attributes$d('M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z'),
-						$elm$svg$Svg$Attributes$clipRule('evenodd')
-					]),
-				_List_Nil)
-			]));
-};
-var $jasonliang512$elm_heroicons$Heroicons$Solid$cheveronRight = function (attrs) {
-	return A2(
-		$elm$svg$Svg$svg,
-		A2(
-			$elm$core$List$cons,
-			$elm$svg$Svg$Attributes$viewBox('0 0 20 20'),
+			$elm$svg$Svg$polyline,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$points('15 18 9 12 15 6')
+				]),
+			_List_Nil)
+		]));
+var $author$project$Icons$chevronRight = A2(
+	$author$project$Icons$svgFeatherIcon,
+	'chevron-right',
+	_List_fromArray(
+		[
 			A2(
-				$elm$core$List$cons,
-				$elm$svg$Svg$Attributes$fill('currentColor'),
-				attrs)),
-		_List_fromArray(
-			[
-				A2(
-				$elm$svg$Svg$path,
-				_List_fromArray(
-					[
-						$elm$svg$Svg$Attributes$fillRule('evenodd'),
-						$elm$svg$Svg$Attributes$d('M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z'),
-						$elm$svg$Svg$Attributes$clipRule('evenodd')
-					]),
-				_List_Nil)
-			]));
-};
+			$elm$svg$Svg$polyline,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$points('9 18 15 12 9 6')
+				]),
+			_List_Nil)
+		]));
 var $Orasund$elm_ui_framework$Framework$Color$cyan = A3($mdgriffith$elm_ui$Element$rgb255, 32, 156, 238);
 var $Orasund$elm_ui_framework$Framework$Color$green = A3($mdgriffith$elm_ui$Element$rgb255, 35, 209, 96);
 var $Orasund$elm_ui_framework$Framework$Color$yellow = A3($mdgriffith$elm_ui$Element$rgb255, 255, 221, 87);
@@ -17179,19 +17200,23 @@ var $author$project$Stateless$carousel = function (model) {
 						_List_fromArray(
 							[
 								A2(
-								$mdgriffith$elm_ui$Element$Input$button,
+								$mdgriffith$elm_ui$Element$el,
 								_List_fromArray(
 									[$mdgriffith$elm_ui$Element$centerY]),
-								{
-									label: $mdgriffith$elm_ui$Element$html(
-										$jasonliang512$elm_heroicons$Heroicons$Solid$cheveronLeft(
-											_List_fromArray(
-												[
-													$elm$html$Html$Attributes$width(20)
-												]))),
-									onPress: $elm$core$Maybe$Just(
-										$author$project$Stateless$SetCarousel(model.carousel - 1))
-								}),
+								A2(
+									$author$project$Widget$iconButton,
+									$author$project$Data$Style$style.button,
+									{
+										icon: A2(
+											$mdgriffith$elm_ui$Element$el,
+											_List_Nil,
+											$mdgriffith$elm_ui$Element$html($author$project$Icons$chevronLeft)),
+										onPress: function (i) {
+											return (i < 0) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+												$author$project$Stateless$SetCarousel(i));
+										}(model.carousel - 1),
+										text: 'Previous'
+									})),
 								A2(
 								$mdgriffith$elm_ui$Element$el,
 								_Utils_ap(
@@ -17206,19 +17231,23 @@ var $author$project$Stateless$carousel = function (model) {
 										])),
 								$mdgriffith$elm_ui$Element$none),
 								A2(
-								$mdgriffith$elm_ui$Element$Input$button,
+								$mdgriffith$elm_ui$Element$el,
 								_List_fromArray(
 									[$mdgriffith$elm_ui$Element$centerY]),
-								{
-									label: $mdgriffith$elm_ui$Element$html(
-										$jasonliang512$elm_heroicons$Heroicons$Solid$cheveronRight(
-											_List_fromArray(
-												[
-													$elm$html$Html$Attributes$width(20)
-												]))),
-									onPress: $elm$core$Maybe$Just(
-										$author$project$Stateless$SetCarousel(model.carousel + 1))
-								})
+								A2(
+									$author$project$Widget$iconButton,
+									$author$project$Data$Style$style.button,
+									{
+										icon: A2(
+											$mdgriffith$elm_ui$Element$el,
+											_List_Nil,
+											$mdgriffith$elm_ui$Element$html($author$project$Icons$chevronRight)),
+										onPress: function (i) {
+											return (i >= 4) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+												$author$project$Stateless$SetCarousel(i));
+										}(model.carousel + 1),
+										text: 'Next'
+									}))
 							]));
 				}
 			}));
@@ -17226,6 +17255,19 @@ var $author$project$Stateless$carousel = function (model) {
 var $author$project$Stateless$ToggleCollapsable = function (a) {
 	return {$: 'ToggleCollapsable', a: a};
 };
+var $author$project$Icons$chevronDown = A2(
+	$author$project$Icons$svgFeatherIcon,
+	'chevron-down',
+	_List_fromArray(
+		[
+			A2(
+			$elm$svg$Svg$polyline,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$points('6 9 12 15 18 9')
+				]),
+			_List_Nil)
+		]));
 var $author$project$Widget$collapsable = F2(
 	function (style, _v0) {
 		var onToggle = _v0.onToggle;
@@ -17279,16 +17321,13 @@ var $author$project$Stateless$collapsable = function (model) {
 							])),
 					_List_fromArray(
 						[
-							$mdgriffith$elm_ui$Element$html(
-							model.isCollapsed ? $jasonliang512$elm_heroicons$Heroicons$Solid$cheveronRight(
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$width(20)
-									])) : $jasonliang512$elm_heroicons$Heroicons$Solid$cheveronDown(
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$width(20)
-									]))),
+							model.isCollapsed ? A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_Nil,
+							$mdgriffith$elm_ui$Element$html($author$project$Icons$chevronRight)) : A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_Nil,
+							$mdgriffith$elm_ui$Element$html($author$project$Icons$chevronDown)),
 							$mdgriffith$elm_ui$Element$text('Title')
 						])),
 				onToggle: $author$project$Stateless$ToggleCollapsable
@@ -17309,15 +17348,40 @@ var $author$project$Stateless$dialog = F2(
 var $author$project$Stateless$ToggleButton = function (a) {
 	return {$: 'ToggleButton', a: a};
 };
-var $author$project$Stateless$buttonStyle = {
-	active: $Orasund$elm_ui_framework$Framework$Color$primary,
-	container: $Orasund$elm_ui_framework$Framework$Button$simple,
-	disabled: $Orasund$elm_ui_framework$Framework$Color$disabled,
-	label: _List_fromArray(
+var $author$project$Icons$repeat = A2(
+	$author$project$Icons$svgFeatherIcon,
+	'repeat',
+	_List_fromArray(
 		[
-			$mdgriffith$elm_ui$Element$spacing(8)
-		])
-};
+			A2(
+			$elm$svg$Svg$polyline,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$points('17 1 21 5 17 9')
+				]),
+			_List_Nil),
+			A2(
+			$elm$svg$Svg$path,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$d('M3 11V9a4 4 0 0 1 4-4h14')
+				]),
+			_List_Nil),
+			A2(
+			$elm$svg$Svg$polyline,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$points('7 23 3 19 7 15')
+				]),
+			_List_Nil),
+			A2(
+			$elm$svg$Svg$path,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$d('M21 13v2a4 4 0 0 1-4 4H3')
+				]),
+			_List_Nil)
+		]));
 var $author$project$Icons$slash = A2(
 	$author$project$Icons$svgFeatherIcon,
 	'slash',
@@ -17352,20 +17416,38 @@ var $author$project$Stateless$iconButton = function (model) {
 			_List_fromArray(
 				[
 					A2(
-					$author$project$Widget$Button$view,
-					$author$project$Stateless$buttonStyle,
-					{
-						icon: A2(
-							$mdgriffith$elm_ui$Element$el,
-							_List_Nil,
-							$mdgriffith$elm_ui$Element$html($author$project$Icons$slash)),
-						onPress: model.button ? $elm$core$Maybe$Just(
-							$author$project$Stateless$ToggleButton(false)) : $elm$core$Maybe$Nothing,
-						text: 'disable me'
-					}),
+					$mdgriffith$elm_ui$Element$row,
+					$Orasund$elm_ui_framework$Framework$Grid$simple,
+					_List_fromArray(
+						[
+							A2(
+							$author$project$Widget$button,
+							$author$project$Data$Style$style.primaryButton,
+							{
+								icon: A2(
+									$mdgriffith$elm_ui$Element$el,
+									_List_Nil,
+									$mdgriffith$elm_ui$Element$html($author$project$Icons$slash)),
+								onPress: model.button ? $elm$core$Maybe$Just(
+									$author$project$Stateless$ToggleButton(false)) : $elm$core$Maybe$Nothing,
+								text: 'disable me'
+							}),
+							A2(
+							$author$project$Widget$iconButton,
+							$author$project$Data$Style$style.button,
+							{
+								icon: A2(
+									$mdgriffith$elm_ui$Element$el,
+									_List_Nil,
+									$mdgriffith$elm_ui$Element$html($author$project$Icons$repeat)),
+								onPress: $elm$core$Maybe$Just(
+									$author$project$Stateless$ToggleButton(true)),
+								text: 'reset'
+							})
+						])),
 					A2(
-					$author$project$Widget$Button$view,
-					$author$project$Stateless$buttonStyle,
+					$author$project$Widget$button,
+					$author$project$Data$Style$style.button,
 					{
 						icon: $mdgriffith$elm_ui$Element$none,
 						onPress: $elm$core$Maybe$Just(
@@ -17406,7 +17488,7 @@ var $author$project$Stateless$modal = F2(
 var $author$project$Stateless$ChangedMultiSelected = function (a) {
 	return {$: 'ChangedMultiSelected', a: a};
 };
-var $author$project$Widget$multiSelect = function (_v0) {
+var $author$project$Internal$Select$multiSelect = function (_v0) {
 	var selected = _v0.selected;
 	var options = _v0.options;
 	var onSelect = _v0.onSelect;
@@ -17424,7 +17506,9 @@ var $author$project$Widget$multiSelect = function (_v0) {
 			}),
 		options);
 };
+var $author$project$Widget$multiSelect = $author$project$Internal$Select$multiSelect;
 var $author$project$Stateless$multiSelect = function (model) {
+	var buttonStyle = $author$project$Data$Style$style.button;
 	return _Utils_Tuple2(
 		'Multi Select',
 		A2(
@@ -17435,10 +17519,10 @@ var $author$project$Stateless$multiSelect = function (model) {
 				function (i) {
 					return $author$project$Widget$selectButton(
 						_Utils_update(
-							$author$project$Stateless$buttonStyle,
+							buttonStyle,
 							{
 								container: _Utils_ap(
-									$author$project$Stateless$buttonStyle.container,
+									buttonStyle.container,
 									(!i) ? $Orasund$elm_ui_framework$Framework$Group$left : ((i === 2) ? $Orasund$elm_ui_framework$Framework$Group$right : $Orasund$elm_ui_framework$Framework$Group$center))
 							}));
 				},
@@ -17462,6 +17546,7 @@ var $author$project$Stateless$ChangedSelected = function (a) {
 	return {$: 'ChangedSelected', a: a};
 };
 var $author$project$Stateless$select = function (model) {
+	var buttonStyle = $author$project$Data$Style$style.button;
 	return _Utils_Tuple2(
 		'Select',
 		A2(
@@ -17472,10 +17557,10 @@ var $author$project$Stateless$select = function (model) {
 				function (i) {
 					return $author$project$Widget$selectButton(
 						_Utils_update(
-							$author$project$Stateless$buttonStyle,
+							buttonStyle,
 							{
 								container: _Utils_ap(
-									$author$project$Stateless$buttonStyle.container,
+									buttonStyle.container,
 									(!i) ? $Orasund$elm_ui_framework$Framework$Group$left : ((i === 2) ? $Orasund$elm_ui_framework$Framework$Group$right : $Orasund$elm_ui_framework$Framework$Group$center))
 							}));
 				},
@@ -17521,26 +17606,12 @@ var $author$project$Widget$tab = F3(
 					content(options.selected)
 				]));
 	});
-var $Orasund$elm_ui_framework$Framework$Group$top = _List_fromArray(
-	[
-		$mdgriffith$elm_ui$Element$Border$roundEach(
-		{bottomLeft: 0, bottomRight: 0, topLeft: 4, topRight: 4})
-	]);
-var $author$project$Stateless$tabButtonStyle = {
-	active: $Orasund$elm_ui_framework$Framework$Color$primary,
-	container: _Utils_ap($Orasund$elm_ui_framework$Framework$Button$simple, $Orasund$elm_ui_framework$Framework$Group$top),
-	disabled: $Orasund$elm_ui_framework$Framework$Color$disabled,
-	label: _List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$spacing(8)
-		])
-};
 var $author$project$Stateless$tab = function (model) {
 	return _Utils_Tuple2(
 		'Tab',
 		A3(
 			$author$project$Widget$tab,
-			{button: $author$project$Stateless$tabButtonStyle, containerColumn: $Orasund$elm_ui_framework$Framework$Grid$compact, optionRow: $Orasund$elm_ui_framework$Framework$Grid$simple},
+			{button: $author$project$Data$Style$style.tabButton, containerColumn: $Orasund$elm_ui_framework$Framework$Grid$compact, optionRow: $Orasund$elm_ui_framework$Framework$Grid$simple},
 			{
 				onSelect: A2($elm$core$Basics$composeR, $author$project$Stateless$ChangedTab, $elm$core$Maybe$Just),
 				options: A2(
@@ -17588,7 +17659,6 @@ var $author$project$Stateless$SetTextInput = function (a) {
 var $author$project$Stateless$ToggleTextInputChip = function (a) {
 	return {$: 'ToggleTextInputChip', a: a};
 };
-var $author$project$Stateless$chipButton = {active: $Orasund$elm_ui_framework$Framework$Color$primary, container: $Orasund$elm_ui_framework$Framework$Tag$simple, disabled: _List_Nil, label: $Orasund$elm_ui_framework$Framework$Grid$simple};
 var $elm$core$Dict$diff = F2(
 	function (t1, t2) {
 		return A3(
@@ -17617,35 +17687,7 @@ var $author$project$Stateless$textInput = function (model) {
 				[
 					A2(
 					$author$project$Widget$textInput,
-					{
-						chip: $author$project$Stateless$chipButton,
-						chipsRow: _List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-								$mdgriffith$elm_ui$Element$spacing(4)
-							]),
-						containerRow: _Utils_ap(
-							$Orasund$elm_ui_framework$Framework$Button$simple,
-							_Utils_ap(
-								$Orasund$elm_ui_framework$Framework$Color$light,
-								_Utils_ap(
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$Border$color(
-											A3($mdgriffith$elm_ui$Element$rgb255, 186, 189, 182)),
-											$mdgriffith$elm_ui$Element$Font$alignLeft,
-											$mdgriffith$elm_ui$Element$padding(8),
-											$mdgriffith$elm_ui$Element$height(
-											$mdgriffith$elm_ui$Element$px(42))
-										]),
-									$Orasund$elm_ui_framework$Framework$Grid$simple))),
-						input: _Utils_ap(
-							$Orasund$elm_ui_framework$Framework$Color$light,
-							_List_fromArray(
-								[
-									$mdgriffith$elm_ui$Element$padding(0)
-								]))
-					},
+					$author$project$Data$Style$style.textInput,
 					{
 						chips: A2(
 							$elm$core$List$map,
@@ -17924,7 +17966,7 @@ var $author$project$Example$view = function (model) {
 					dialog: m.displayDialog ? $elm$core$Maybe$Just(
 						A2(
 							$author$project$Widget$dialog,
-							$author$project$Example$style.dialog,
+							$author$project$Data$Style$style.dialog,
 							{
 								accept: $elm$core$Maybe$Just(
 									{
@@ -17961,7 +18003,7 @@ var $author$project$Example$view = function (model) {
 					onChangedSidebar: $author$project$Example$ChangedSidebar,
 					search: $elm$core$Maybe$Just(
 						{label: 'Search', onChange: $author$project$Example$ChangedSearch, text: m.search.raw}),
-					style: $author$project$Example$style,
+					style: $author$project$Data$Style$style,
 					title: A2(
 						$mdgriffith$elm_ui$Element$el,
 						$Orasund$elm_ui_framework$Framework$Heading$h1,

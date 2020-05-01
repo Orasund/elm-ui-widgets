@@ -1,15 +1,15 @@
-module Widget.Button exposing
+module Internal.Button exposing
     ( Button
-    , ButtonStyle
     , TextButton
-    , view
-    , viewIconOnly
-    , viewTextOnly
+    , button
+    , iconButton
+    , textButton
     )
 
-import Element exposing (Attribute, Element)
+import Element exposing (Element)
 import Element.Input as Input
 import Element.Region as Region
+import Widget.Style exposing (ButtonStyle)
 
 
 type alias Button msg =
@@ -25,16 +25,8 @@ type alias TextButton msg =
     }
 
 
-type alias ButtonStyle msg =
-    { container : List (Attribute msg)
-    , disabled : List (Attribute msg)
-    , label : List (Attribute msg)
-    , active : List (Attribute msg)
-    }
-
-
-viewIconOnly : ButtonStyle msg -> Button msg -> Element msg
-viewIconOnly style { onPress, text, icon } =
+iconButton : ButtonStyle msg -> Button msg -> Element msg
+iconButton style { onPress, text, icon } =
     Input.button
         (style.container
             ++ (if onPress == Nothing then
@@ -51,19 +43,20 @@ viewIconOnly style { onPress, text, icon } =
         }
 
 
-viewTextOnly : ButtonStyle msg -> TextButton msg -> Element msg
-viewTextOnly style { onPress, text } =
-    view style
+textButton : ButtonStyle msg -> TextButton msg -> Element msg
+textButton style { onPress, text } =
+    button style
         { onPress = onPress
         , text = text
         , icon = Element.none
         }
 
 
-{-| The first argument can be used to define the spacing between the icon and the text
--}
-view : ButtonStyle msg -> Button msg -> Element msg
-view style { onPress, text, icon } =
+button :
+    ButtonStyle msg
+    -> Button msg
+    -> Element msg
+button style { onPress, text, icon } =
     Input.button
         (style.container
             ++ (if onPress == Nothing then
