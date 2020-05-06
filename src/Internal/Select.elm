@@ -1,4 +1,4 @@
-module Internal.Select exposing (multiSelect, select, selectButton)
+module Internal.Select exposing (MultiSelect, Select, multiSelect, select, selectButton)
 
 import Element exposing (Element)
 import Internal.Button as Button exposing (Button)
@@ -39,7 +39,7 @@ selectButton style ( selected, b ) =
                 | container =
                     style.container
                         ++ (if selected then
-                                style.active
+                                style.ifActive
 
                             else
                                 []

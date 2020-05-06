@@ -1,17 +1,19 @@
 module Icons exposing
     ( book
+    , chevronDown
+    , chevronLeft
+    , chevronRight
+    , circle
     , github
     , menu
     , moreVertical
-    , circle
-    , triangle
-    , square
+    , repeat
     , search
     , slash
-    , repeat
-    , chevronDown
-    , chevronRight
-    , chevronLeft
+    , square
+    , triangle
+    , chevronUp
+    , penTool
     )
 
 import Html exposing (Html)
@@ -33,6 +35,7 @@ svgFeatherIcon className =
         , width "16"
         ]
 
+
 chevronDown : Html msg
 chevronDown =
     svgFeatherIcon "chevron-down"
@@ -45,10 +48,18 @@ chevronRight =
     svgFeatherIcon "chevron-right"
         [ Svg.polyline [ points "9 18 15 12 9 6" ] []
         ]
+
+
 chevronLeft : Html msg
 chevronLeft =
     svgFeatherIcon "chevron-left"
         [ Svg.polyline [ points "15 18 9 12 15 6" ] []
+        ]
+
+chevronUp : Html msg
+chevronUp =
+    svgFeatherIcon "chevron-up"
+        [ Svg.polyline [ points "18 15 12 9 6 15" ] []
         ]
 
 repeat : Html msg
@@ -60,6 +71,14 @@ repeat =
         , Svg.path [ d "M21 13v2a4 4 0 0 1-4 4H3" ] []
         ]
 
+penTool : Html msg
+penTool =
+    svgFeatherIcon "pen-tool"
+        [ Svg.path [ d "M12 19l7-7 3 3-7 7-3-3z" ] []
+        , Svg.path [ d "M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" ] []
+        , Svg.path [ d "M2 2l7.586 7.586" ] []
+        , Svg.circle [ cx "11", cy "11", r "2" ] []
+        ]
 
 book : Html msg
 book =
@@ -84,6 +103,7 @@ menu =
         , Svg.line [ x1 "3", y1 "18", x2 "21", y2 "18" ] []
         ]
 
+
 moreVertical : Html msg
 moreVertical =
     svgFeatherIcon "more-vertical"
@@ -92,11 +112,13 @@ moreVertical =
         , Svg.circle [ cx "12", cy "19", r "1" ] []
         ]
 
+
 circle : Html msg
 circle =
     svgFeatherIcon "circle"
         [ Svg.circle [ cx "12", cy "12", r "10" ] []
         ]
+
 
 slash : Html msg
 slash =
@@ -105,17 +127,20 @@ slash =
         , Svg.line [ x1 "4.93", y1 "4.93", x2 "19.07", y2 "19.07" ] []
         ]
 
+
 triangle : Html msg
 triangle =
     svgFeatherIcon "triangle"
         [ Svg.path [ d "M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" ] []
         ]
 
+
 square : Html msg
 square =
     svgFeatherIcon "square"
         [ Svg.rect [ Svg.Attributes.x "3", y "3", width "18", height "18", rx "2", ry "2" ] []
         ]
+
 
 search : Html msg
 search =

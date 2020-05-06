@@ -1,14 +1,15 @@
 module Example exposing (main)
 
+import Array
 import Browser
 import Browser.Dom as Dom exposing (Viewport)
 import Browser.Events as Events
 import Browser.Navigation as Navigation
-import Component
-import Element exposing (DeviceClass(..), Element,Attribute)
-import Element.Input as Input
-import Element.Font as Font
+import Data.Section as Section exposing (Section(..))
+import Element exposing (Attribute, DeviceClass(..), Element)
 import Element.Border as Border
+import Element.Font as Font
+import Element.Input as Input
 import Framework
 import Framework.Button as Button
 import Framework.Card as Card
@@ -21,35 +22,35 @@ import Framework.Tag as Tag
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Icons
-import Layout exposing (Part, Layout)
-import Data.Style exposing (style)
+import Layout exposing (Layout, Part)
 import Reusable
 import Set exposing (Set)
 import Stateless
 import Task
 import Time
 import Widget
-import Widget.Style exposing (ButtonStyle)
-import Widget.FilterSelect as FilterSelect
 import Widget.ScrollingNav as ScrollingNav
 import Widget.Snackbar as Snackbar
-import Widget.ValidatedInput as ValidatedInput
-import Data.Section as Section exposing (Section(..))
-import Array
+import Widget.Style exposing (ButtonStyle)
+import Data.Style as Style exposing (Style)
+import Data.Theme as Theme exposing (Theme(..))
+
+
+
 
 type alias LoadedModel =
-    { component : Component.Model
-    , stateless : Stateless.Model
+    { stateless : Stateless.Model
     , reusable : Reusable.Model
     , scrollingNav : ScrollingNav.Model Section
     , layout : Layout LoadedMsg
     , displayDialog : Bool
     , window : { height : Int, width : Int }
-    , search : 
+    , search :
         { raw : String
         , current : String
         , remaining : Int
         }
+    , theme : Theme
     }
 
 
@@ -61,16 +62,16 @@ type Model
 type LoadedMsg
     = StatelessSpecific Stateless.Msg
     | ReusableSpecific Reusable.Msg
-    | ComponentSpecific Component.Msg
     | UpdateScrollingNav (ScrollingNav.Model Section -> ScrollingNav.Model Section)
     | TimePassed Int
-    | AddSnackbar (String,Bool)
+    | AddSnackbar ( String, Bool )
     | ToggleDialog Bool
     | ChangedSidebar (Maybe Part)
     | Resized { width : Int, height : Int }
     | Load String
     | JumpTo Section
     | ChangedSearch String
+    | SetTheme Theme
     | Idle
 
 
@@ -87,16 +88,17 @@ initialModel { viewport } =
                 { toString = Section.toString
                 , fromString = Section.fromString
                 , arrangement = Section.asList
-                , toMsg = \result ->
-                    case result of
-                        Ok fun ->
-                            UpdateScrollingNav fun
-                        Err _ ->
-                            Idle
+                , toMsg =
+                    \result ->
+                        case result of
+                            Ok fun ->
+                                UpdateScrollingNav fun
+
+                            Err _ ->
+                                Idle
                 }
     in
-    ( { component = Component.init
-      , stateless = Stateless.init
+    ( { stateless = Stateless.init
       , reusable = Reusable.init
       , scrollingNav = scrollingNav
       , layout = Layout.init
@@ -105,11 +107,12 @@ initialModel { viewport } =
             { width = viewport.width |> round
             , height = viewport.height |> round
             }
-      , search = 
+      , search =
             { raw = ""
             , current = ""
             , remaining = 0
             }
+      , theme = ElmUiFramework
       }
     , cmd
     )
@@ -124,32 +127,40 @@ init () =
 
 view : Model -> Html Msg
 view model =
+    
     case model of
         Loading ->
             Element.none |> Framework.responsiveLayout []
 
         Loaded m ->
+            let
+                style : Style msg
+                style =
+                    Theme.toStyle m.theme
+            in
             Html.map LoadedSpecific <|
                 Layout.view []
                     { dialog =
                         if m.displayDialog then
                             { body =
                                 "This is a dialog window"
-                                        |> Element.text
-                                        |> List.singleton
-                                        |> Element.paragraph []
+                                    |> Element.text
+                                    |> List.singleton
+                                    |> Element.paragraph []
                             , title = Just "Dialog"
-                            , accept = Just
-                                { text = "Ok"
-                                , onPress = Just <| ToggleDialog False
-                                }
-                            , dismiss = Just
-                                { text = "Dismiss"
-                                , onPress = Just <| ToggleDialog False
-                                }
+                            , accept =
+                                Just
+                                    { text = "Ok"
+                                    , onPress = Just <| ToggleDialog False
+                                    }
+                            , dismiss =
+                                Just
+                                    { text = "Dismiss"
+                                    , onPress = Just <| ToggleDialog False
+                                    }
                             }
-                            |> Widget.dialog style.dialog
-                            |> Just
+                                |> Widget.dialog style.dialog
+                                |> Just
 
                         else
                             Nothing
@@ -158,104 +169,116 @@ view model =
                         , [ m.scrollingNav
                                 |> ScrollingNav.view
                                     (\section ->
-                                        ( case section of
-                                            ComponentViews ->
-                                                m.component
-                                                    |> Component.view  ComponentSpecific
-                                                 
-        
-
+                                        (case section of
                                             ReusableViews ->
-                                                Reusable.view
+                                                Reusable.view m.theme
                                                     { addSnackbar = AddSnackbar
                                                     , model = m.reusable
                                                     , msgMapper = ReusableSpecific
                                                     }
 
                                             StatelessViews ->
-                                                Stateless.view
+                                                Stateless.view m.theme
                                                     { msgMapper = StatelessSpecific
                                                     , showDialog = ToggleDialog True
                                                     , changedSheet = ChangedSidebar
                                                     }
                                                     m.stateless
-                                        ) |> (\{title,description,items} ->
-                                                        [ Element.el Heading.h2 <| Element.text <| title
-                                                        , if m.search.current == "" then
-                                                            description
+                                        )
+                                            |> (\{ title, description, items } ->
+                                                    [ Element.el Heading.h2 <| Element.text <| title
+                                                    , if m.search.current == "" then
+                                                        description
                                                             |> Element.text
                                                             |> List.singleton
                                                             |> Element.paragraph []
-                                                          else Element.none
-                                                        , items
-                                                            |> (if m.search.current /= "" then
-                                                                    List.filter 
-                                                                        ( Tuple.first 
-                                                                        >> String.toLower
-                                                                        >> String.contains (m.search.current |> String.toLower)
-                                                                        )
-                                                                else
-                                                                    identity)
-                                                            |> List.map
-                                                                (\(name,elem) ->
-                                                                    [ Element.text name
+
+                                                      else
+                                                        Element.none
+                                                    , items
+                                                        |> (if m.search.current /= "" then
+                                                                List.filter
+                                                                    (\(a,_,_) ->
+                                                                        a
+                                                                        |> String.toLower
+                                                                        |> String.contains (m.search.current |> String.toLower)
+                                                                    )
+
+                                                            else
+                                                                identity
+                                                           )
+                                                        |> List.map
+                                                            (\( name, elem, more ) ->
+                                                                [ Element.text name
                                                                     |> Element.el Heading.h3
-                                                                    , elem
-                                                                    ]
-                                                                    |> Element.column
-                                                                        (Grid.simple 
-                                                                        ++ Card.large 
-                                                                        ++ [Element.height <| Element.fill])
-                                                                )
-                                                            |> Element.wrappedRow
-                                                            (Grid.simple ++ [Element.height <| Element.shrink])
-                                                        ]
-                                                            |> Element.column (Grid.section ++ [ Element.centerX ])
-                                                        )
+                                                                , elem
+                                                                , more
+                                                                ]
+                                                                    |> Widget.column style.cardColumn
+                                                            )
+                                                        |> Element.wrappedRow
+                                                            (Grid.simple ++ [ Element.height <| Element.shrink ])
+                                                    ]
+                                                        |> Element.column (Grid.section ++ [ Element.centerX ])
+                                               )
                                     )
                           ]
                             |> Element.column Framework.container
                         ]
                             |> Element.column Grid.compact
-                    , style = style
+                    , style =style
                     , layout = m.layout
                     , window = m.window
                     , menu =
-                         m.scrollingNav
-                         |> ScrollingNav.toSelect
-                         (\int ->
-                                m.scrollingNav.arrangement
-                                |> Array.fromList
-                                |> Array.get int
-                                |> Maybe.map JumpTo
-                         )
+                        m.scrollingNav
+                            |> ScrollingNav.toSelect
+                                (\int ->
+                                    m.scrollingNav.arrangement
+                                        |> Array.fromList
+                                        |> Array.get int
+                                        |> Maybe.map JumpTo
+                                )
                     , actions =
                         [ { onPress = Just <| Load "https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/"
                           , text = "Docs"
-                          , icon = Icons.book|> Element.html |> Element.el []
+                          , icon = Icons.book |> Element.html |> Element.el []
                           }
                         , { onPress = Just <| Load "https://github.com/Orasund/elm-ui-widgets"
                           , text = "Github"
-                          , icon = Icons.github|> Element.html |> Element.el []
+                          , icon = Icons.github |> Element.html |> Element.el []
+                          }
+                        , { onPress = if m.theme /= ElmUiFramework then
+                                Just <| SetTheme <| ElmUiFramework
+                            else
+                                Nothing
+                          , text = "Elm-Ui-Framework Theme"
+                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          }
+                        , { onPress = if m.theme /= Template then
+                                Just <| SetTheme <| Template
+                            else
+                                Nothing
+                          , text = "Template Theme"
+                          , icon = Icons.penTool |> Element.html |> Element.el []
                           }
                         , { onPress = Nothing
                           , text = "Placeholder"
-                          , icon = Icons.circle|> Element.html |> Element.el []
+                          , icon = Icons.circle |> Element.html |> Element.el []
                           }
                         , { onPress = Nothing
                           , text = "Placeholder"
-                          , icon = Icons.triangle|> Element.html |> Element.el []
+                          , icon = Icons.triangle |> Element.html |> Element.el []
                           }
                         , { onPress = Nothing
                           , text = "Placeholder"
-                          , icon = Icons.square|> Element.html |> Element.el []
+                          , icon = Icons.square |> Element.html |> Element.el []
                           }
                         ]
                     , onChangedSidebar = ChangedSidebar
-                    , title = 
+                    , title =
                         "Elm-Ui-Widgets"
-                        |> Element.text 
-                        |> Element.el Heading.h1
+                            |> Element.text
+                            |> Element.el Heading.h1
                     , search =
                         Just
                             { text = m.search.raw
@@ -268,17 +291,6 @@ view model =
 updateLoaded : LoadedMsg -> LoadedModel -> ( LoadedModel, Cmd LoadedMsg )
 updateLoaded msg model =
     case msg of
-        ComponentSpecific m ->
-            model.component
-                |> Component.update m
-                |> Tuple.mapBoth
-                    (\component ->
-                        { model
-                            | component = component
-                        }
-                    )
-                    (Cmd.map ComponentSpecific)
-
         ReusableSpecific m ->
             ( model.reusable
                 |> Reusable.update m
@@ -300,15 +312,16 @@ updateLoaded msg model =
                         }
                     )
                     (Cmd.map StatelessSpecific)
-        
+
         UpdateScrollingNav fun ->
-            ( { model | scrollingNav = model.scrollingNav |> fun}
+            ( { model | scrollingNav = model.scrollingNav |> fun }
             , Cmd.none
             )
 
         TimePassed int ->
             let
-                search = model.search
+                search =
+                    model.search
             in
             ( { model
                 | layout = model.layout |> Layout.timePassed int
@@ -316,13 +329,15 @@ updateLoaded msg model =
                     if search.remaining > 0 then
                         if search.remaining <= int then
                             { search
-                            | current = search.raw
-                            , remaining = 0
+                                | current = search.raw
+                                , remaining = 0
                             }
+
                         else
                             { search
-                            | remaining = search.remaining - int
+                                | remaining = search.remaining - int
                             }
+
                     else
                         model.search
               }
@@ -330,21 +345,25 @@ updateLoaded msg model =
                 |> Task.perform UpdateScrollingNav
             )
 
-        AddSnackbar (string,bool) ->
-            ( { model 
-              | layout = model.layout 
-                |> Layout.queueMessage 
-                    { text = string
-                    , button = if bool then
-                            Just
-                                { text = "Add"
-                                , onPress = Just <|
-                                    (AddSnackbar ("This is another message", False))
-                                }
-                        else
-                            Nothing
-                    }
-                }
+        AddSnackbar ( string, bool ) ->
+            ( { model
+                | layout =
+                    model.layout
+                        |> Layout.queueMessage
+                            { text = string
+                            , button =
+                                if bool then
+                                    Just
+                                        { text = "Add"
+                                        , onPress =
+                                            Just <|
+                                                AddSnackbar ( "This is another message", False )
+                                        }
+
+                                else
+                                    Nothing
+                            }
+              }
             , Cmd.none
             )
 
@@ -362,34 +381,41 @@ updateLoaded msg model =
             ( { model | layout = model.layout |> Layout.activate sidebar }
             , Cmd.none
             )
-        
+
         Load string ->
-            ( model, Navigation.load string)
-        
+            ( model, Navigation.load string )
+
         JumpTo section ->
             ( model
             , model.scrollingNav
-                |> ScrollingNav.jumpTo 
+                |> ScrollingNav.jumpTo
                     { section = section
                     , onChange = always Idle
                     }
             )
-        
+
         ChangedSearch string ->
             let
-                search = model.search
+                search =
+                    model.search
             in
-            ( { model | search = 
+            ( { model
+                | search =
                     { search
-                    | raw = string
-                    , remaining = 300
+                        | raw = string
+                        , remaining = 300
                     }
-            }
+              }
             , Cmd.none
             )
         
+        SetTheme theme ->
+            ( { model | theme = theme }
+            , Cmd.none
+            )
+
         Idle ->
-            ( model , Cmd.none)
+            ( model, Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

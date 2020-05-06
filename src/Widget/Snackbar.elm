@@ -18,10 +18,10 @@ module Widget.Snackbar exposing
 
 -}
 
-import Element exposing (Attribute, Element)
+import Element exposing (Element)
 import Queue exposing (Queue)
 import Widget exposing (TextButton)
-import Widget.Style exposing (ButtonStyle)
+import Widget.Style exposing (SnackbarStyle)
 
 
 type alias Message msg =
@@ -105,10 +105,7 @@ current model =
 
 
 view :
-    { row : List (Attribute msg)
-    , text : List (Attribute msg)
-    , button : ButtonStyle msg
-    }
+    SnackbarStyle msg
     -> (a -> Message msg)
     -> Model a
     -> Maybe (Element msg)
@@ -127,6 +124,6 @@ view style toMessage model =
                                 (Widget.textButton style.button)
                             |> Maybe.withDefault Element.none
                         ]
-                            |> Element.row style.row
+                            |> Element.row style.containerRow
                    )
             )

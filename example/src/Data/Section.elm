@@ -1,19 +1,19 @@
-module Data.Section exposing (Section(..),asList,toString,fromString)
+module Data.Section exposing (Section(..), asList, fromString, toString)
+
 
 type Section
-    = ComponentViews
-    | ReusableViews
+    = ReusableViews
     | StatelessViews
+
 
 asList : List Section
 asList =
-    [ StatelessViews, ReusableViews, ComponentViews ]
+    [ StatelessViews, ReusableViews ]
+
 
 toString : Section -> String
 toString section =
     case section of
-        ComponentViews ->
-            "Component"
 
         ReusableViews ->
             "Reusable"
@@ -21,11 +21,10 @@ toString section =
         StatelessViews ->
             "Stateless"
 
+
 fromString : String -> Maybe Section
 fromString string =
     case string of
-        "Component" ->
-            Just ComponentViews
 
         "Reusable" ->
             Just ReusableViews

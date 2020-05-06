@@ -2,7 +2,9 @@ module Widget exposing
     ( Button, TextButton, iconButton, textButton, button
     , Select, MultiSelect, selectButton, select, multiSelect
     , Dialog, modal, dialog
-    , TextInputStyle, textInput, collapsable, carousel, tab
+    , ExpansionPanel, expansionPanel
+    , TextInputStyle, textInput, carousel, tab
+    , Tab, buttonColumn, buttonRow, column, row
     )
 
 {-| This module contains functions for displaying data.
@@ -23,20 +25,28 @@ module Widget exposing
 @docs Dialog, modal, dialog
 
 
+# ExpansionPanel
+
+@docs ExpansionPanel, expansionPanel
+
+
 # Other Widgets
 
-@docs TextInputStyle, textInput, collapsable, carousel, tab
+@docs TextInputStyle, textInput, carousel, tab
 
 -}
 
 import Array exposing (Array)
 import Element exposing (Attribute, Element)
-import Element.Input as Input exposing (Placeholder)
+import Element.Input exposing (Placeholder)
 import Internal.Button as Button
 import Internal.Dialog as Dialog
+import Internal.ExpansionPanel as ExpansionPanel
+import Internal.List as List
 import Internal.Select as Select
+import Internal.TextInput as TextInput
 import Set exposing (Set)
-import Widget.Style exposing (ButtonStyle, DialogStyle)
+import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, RowStyle, TabStyle)
 
 
 
@@ -216,13 +226,44 @@ dialog =
 
 
 {----------------------------------------------------------
-- OTHER STATELESS WIDGETS
+- DIALOG
+----------------------------------------------------------}
+
+
+type alias ExpansionPanel msg =
+    { onToggle : Bool -> msg
+    , icon : Element Never
+    , text : String
+    , expandIcon : Element Never
+    , collapseIcon : Element Never
+    , content : Element msg
+    , isExpanded : Bool
+    }
+
+
+expansionPanel :
+    ExpansionPanelStyle msg
+    ->
+        { onToggle : Bool -> msg
+        , icon : Element Never
+        , text : String
+        , content : Element msg
+        , isExpanded : Bool
+        }
+    -> Element msg
+expansionPanel =
+    ExpansionPanel.expansionPanel
+
+
+
+{----------------------------------------------------------
+- TEXT INPUT
 ----------------------------------------------------------}
 
 
 {-| -}
 type alias TextInputStyle msg =
-    { chip : ButtonStyle msg
+    { chipButton : ButtonStyle msg
     , containerRow : List (Attribute msg)
     , chipsRow : List (Attribute msg)
     , input : List (Attribute msg)
@@ -240,65 +281,75 @@ textInput :
         , onChange : String -> msg
         }
     -> Element msg
-textInput style { chips, placeholder, label, text, onChange } =
-    Element.row style.containerRow
-        [ chips
-            |> List.map (Button.button style.chip)
-            |> Element.row style.chipsRow
-        , Input.text style.input
-            { onChange = onChange
-            , text = text
-            , placeholder = placeholder
-            , label = Input.labelHidden label
-            }
-        ]
+textInput =
+    TextInput.textInput
 
 
-{-| Some collapsable content.
--}
-collapsable :
-    { containerColumn : List (Attribute msg)
-    , button : List (Attribute msg)
+
+{----------------------------------------------------------
+- LIST
+----------------------------------------------------------}
+
+
+row : RowStyle msg -> List (Element msg) -> Element msg
+row =
+    List.row
+
+
+column : ColumnStyle msg -> List (Element msg) -> Element msg
+column =
+    List.column
+
+
+buttonRow :
+    { list : RowStyle msg
+    , button : ButtonStyle msg
     }
-    ->
-        { onToggle : Bool -> msg
-        , isCollapsed : Bool
-        , label : Element msg
-        , content : Element msg
-        }
+    -> List ( Bool, Button msg )
     -> Element msg
-collapsable style { onToggle, isCollapsed, label, content } =
-    Element.column style.containerColumn <|
-        [ Input.button style.button
-            { onPress = Just <| onToggle <| not isCollapsed
-            , label = label
-            }
-        ]
-            ++ (if isCollapsed then
-                    []
+buttonRow =
+    List.buttonRow
 
-                else
-                    [ content ]
-               )
+
+buttonColumn :
+    { list : ColumnStyle msg
+    , button : ButtonStyle msg
+    }
+    -> List ( Bool, Button msg )
+    -> Element msg
+buttonColumn =
+    List.buttonColumn
+
+
+
+{----------------------------------------------------------
+- OTHER STATELESS WIDGETS
+----------------------------------------------------------}
+
+
+type alias Tab msg =
+    { tabs : Select msg
+    , content : Maybe Int -> Element msg
+    }
 
 
 {-| Displayes a list of contents in a tab
 -}
 tab :
-    { button : ButtonStyle msg
-    , optionRow : List (Attribute msg)
-    , containerColumn : List (Attribute msg)
-    }
-    -> Select msg
-    -> (Maybe Int -> Element msg)
+    TabStyle msg
+    ->
+        { tabs : Select msg
+        , content : Maybe Int -> Element msg
+        }
     -> Element msg
-tab style options content =
-    [ options
+tab style { tabs, content } =
+    [ tabs
         |> select
         |> List.map (selectButton style.button)
         |> Element.row style.optionRow
-    , options.selected
+    , tabs.selected
         |> content
+        |> Element.el style.content
     ]
         |> Element.column style.containerColumn
 

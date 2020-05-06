@@ -51,10 +51,10 @@ dialog style { title, body, accept, dismiss } =
                 Nothing
     , content =
         Element.column
-            (style.containerColumn
-                ++ [ Element.centerX
-                   , Element.centerY
-                   ]
+            ([ Element.centerX
+             , Element.centerY
+             ]
+                ++ style.containerColumn
             )
             [ title
                 |> Maybe.map
@@ -64,22 +64,22 @@ dialog style { title, body, accept, dismiss } =
                 |> Maybe.withDefault Element.none
             , body
             , Element.row
-                (style.buttonRow
-                    ++ [ Element.alignRight
-                       , Element.width <| Element.shrink
-                       ]
+                ([ Element.alignRight
+                 , Element.width <| Element.shrink
+                 ]
+                    ++ style.buttonRow
                 )
                 (case ( accept, dismiss ) of
                     ( Just acceptButton, Nothing ) ->
                         acceptButton
-                            |> Button.textButton style.accept
+                            |> Button.textButton style.acceptButton
                             |> List.singleton
 
                     ( Just acceptButton, Just dismissButton ) ->
                         [ dismissButton
-                            |> Button.textButton style.dismiss
+                            |> Button.textButton style.dismissButton
                         , acceptButton
-                            |> Button.textButton style.accept
+                            |> Button.textButton style.acceptButton
                         ]
 
                     _ ->

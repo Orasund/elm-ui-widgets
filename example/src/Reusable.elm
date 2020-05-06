@@ -20,12 +20,11 @@ import Html.Attributes as Attributes
 import Set exposing (Set)
 import Time
 import Widget
-import Widget.FilterSelect as FilterSelect
 import Widget.ScrollingNav as ScrollingNav
 import Widget.Snackbar as Snackbar
 import Widget.SortTable as SortTable
-import Widget.ValidatedInput as ValidatedInput
-
+import Data.Style exposing (Style)
+import Data.Theme as Theme exposing (Theme)
 
 type alias Model =
     SortTable.Model
@@ -54,36 +53,37 @@ init =
     SortTable.sortBy { title = "Name", asc = True }
 
 
-snackbar : ((String,Bool) -> msg) -> (String,Element msg)
-snackbar addSnackbar =
+snackbar : Style msg -> (( String, Bool ) -> msg) -> ( String, Element msg,Element msg )
+snackbar style addSnackbar =
     ( "Snackbar"
-    , [Input.button Button.simple
-        { onPress = Just <| addSnackbar <|
-            ("This is a notification. It will disappear after 10 seconds."
-            , False
-            )
-        , label =
-            "Add Notification"
-                |> Element.text
-                |> List.singleton
-                |> Element.paragraph []
-        }
-    ,  Input.button Button.simple
-        { onPress = Just <| addSnackbar <|
-            ("You can add another notification if you want."
-            , True
-            )
-        , label =
-            "Add Notification with Action"
-                |> Element.text
-                |> List.singleton
-                |> Element.paragraph []
-        }
-    ] |> Element.column Grid.simple
+    , [ Widget.button style.button
+            { onPress =
+                Just <|
+                    addSnackbar <|
+                        ( "This is a notification. It will disappear after 10 seconds."
+                        , False
+                        )
+            , text = "Add Notification"
+            , icon =Element.none
+            }
+      , Widget.button style.button
+            { onPress =
+                Just <|
+                    addSnackbar <|
+                        ( "You can add another notification if you want."
+                        , True
+                        )
+            , text = "Add Notification with Action"
+            , icon = Element.none
+            }
+      ]
+        |> Element.column Grid.simple
+    , Element.none
     )
 
-sortTable : SortTable.Model -> (String,Element Msg)
-sortTable model =
+
+sortTable : Style Msg -> SortTable.Model -> ( String, Element Msg,Element Msg )
+sortTable style model =
     ( "Sort Table"
     , SortTable.view
         { content =
@@ -152,31 +152,41 @@ sortTable model =
                 }
            )
         |> Element.table Grid.simple
+    , Element.none
     )
 
-scrollingNavCard : (String , Element msg )
-scrollingNavCard =
-    ("Scrolling Nav"
+
+scrollingNavCard : Style msg -> ( String, Element msg, Element msg )
+scrollingNavCard style =
+    ( "Scrolling Nav"
     , Element.text "Resize the screen and open the side-menu. Then start scrolling to see the scrolling navigation in action."
         |> List.singleton
         |> Element.paragraph []
+    , Element.none
     )
 
+
 view :
-    { addSnackbar : (String,Bool) -> msg
+    Theme ->
+    { addSnackbar : ( String, Bool ) -> msg
     , msgMapper : Msg -> msg
     , model : Model
     }
-    -> { title : String
+    ->
+        { title : String
         , description : String
-        , items : List (String,Element msg)
+        , items : List ( String, Element msg,Element msg )
         }
-view { addSnackbar, msgMapper, model } =
+view theme { addSnackbar, msgMapper, model } =
+    let
+        style = Theme.toStyle theme
+    in
     { title = "Reusable Views"
     , description = "Reusable views have an internal state but no update function. You will need to do some wiring, but nothing complicated."
     , items =
-        [ snackbar addSnackbar
-        , sortTable model |> Tuple.mapSecond (Element.map msgMapper)
-        , scrollingNavCard
+        [ snackbar style addSnackbar
+        , sortTable style model |> \(a,b,c) ->
+            (a,b |> Element.map msgMapper,c |> Element.map msgMapper)
+        , scrollingNavCard style
         ]
     }

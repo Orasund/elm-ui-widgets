@@ -14,8 +14,8 @@ import Widget.Style exposing (ButtonStyle)
 
 type alias Button msg =
     { text : String
-    , icon : Element Never
     , onPress : Maybe msg
+    , icon : Element Never
     }
 
 
@@ -30,7 +30,7 @@ iconButton style { onPress, text, icon } =
     Input.button
         (style.container
             ++ (if onPress == Nothing then
-                    style.disabled
+                    style.ifDisabled
 
                 else
                     []
@@ -60,7 +60,7 @@ button style { onPress, text, icon } =
     Input.button
         (style.container
             ++ (if onPress == Nothing then
-                    style.disabled
+                    style.ifDisabled
 
                 else
                     []
@@ -68,7 +68,7 @@ button style { onPress, text, icon } =
         )
         { onPress = onPress
         , label =
-            Element.row style.label
+            Element.row style.labelRow
                 [ icon |> Element.map never
                 , Element.text text
                 ]
