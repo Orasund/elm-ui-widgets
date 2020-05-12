@@ -29,7 +29,7 @@ textButton =
 
 simpleButton : ButtonStyle msg
 simpleButton =
-    { container = Button.simple ++ Color.primary
+    { container = Button.simple ++ Color.success
     , labelRow = Grid.simple
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
@@ -211,7 +211,7 @@ row =
 
 cardColumn : ColumnStyle msg
 cardColumn =
-    { containerColumn = Grid.compact
+    { containerColumn = Grid.compact ++ [Element.height <| Element.fill]
     , element = Card.large ++ [Element.height <| Element.fill]
     , ifFirst = Group.top
     , ifLast = Group.bottom

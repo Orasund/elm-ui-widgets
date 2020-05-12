@@ -3,8 +3,10 @@ module Widget exposing
     , Select, MultiSelect, selectButton, select, multiSelect
     , Dialog, modal, dialog
     , ExpansionPanel, expansionPanel
+    , row, column, buttonRow, buttonColumn
+    , ColumnType, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInputStyle, textInput, carousel, tab
-    , Tab, buttonColumn, buttonRow, column, row
+    , Tab
     )
 
 {-| This module contains functions for displaying data.
@@ -30,6 +32,16 @@ module Widget exposing
 @docs ExpansionPanel, expansionPanel
 
 
+# List
+
+@docs row, column, buttonRow, buttonColumn
+
+
+# SortTable
+
+@docs ColumnType, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
+
+
 # Other Widgets
 
 @docs TextInputStyle, textInput, carousel, tab
@@ -37,16 +49,17 @@ module Widget exposing
 -}
 
 import Array exposing (Array)
-import Element exposing (Attribute, Element)
+import Element exposing (Attribute, Element, Length)
 import Element.Input exposing (Placeholder)
 import Internal.Button as Button
 import Internal.Dialog as Dialog
 import Internal.ExpansionPanel as ExpansionPanel
 import Internal.List as List
 import Internal.Select as Select
+import Internal.SortTable as SortTable
 import Internal.TextInput as TextInput
 import Set exposing (Set)
-import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, RowStyle, TabStyle)
+import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, RowStyle, SortTableStyle, TabStyle)
 
 
 
@@ -319,6 +332,87 @@ buttonColumn :
     -> Element msg
 buttonColumn =
     List.buttonColumn
+
+
+
+{----------------------------------------------------------
+- SORT TABLE
+----------------------------------------------------------}
+
+
+{-| A Sortable list allows you to sort coulmn.
+-}
+type alias ColumnType a =
+    SortTable.ColumnType a
+
+
+type alias Column a =
+    SortTable.Column a
+
+
+unsortableColumn :
+    { title : String
+    , toString : a -> String
+    , width : Length
+    }
+    -> Column a
+unsortableColumn =
+    SortTable.unsortableColumn
+
+
+{-| A Column containing a Int
+-}
+intColumn :
+    { title : String
+    , value : a -> Int
+    , toString : Int -> String
+    , width : Length
+    }
+    -> Column a
+intColumn =
+    SortTable.intColumn
+
+
+{-| A Column containing a Float
+-}
+floatColumn :
+    { title : String
+    , value : a -> Float
+    , toString : Float -> String
+    , width : Length
+    }
+    -> Column a
+floatColumn =
+    SortTable.floatColumn
+
+
+{-| A Column containing a String
+-}
+stringColumn :
+    { title : String
+    , value : a -> String
+    , toString : String -> String
+    , width : Length
+    }
+    -> Column a
+stringColumn =
+    SortTable.stringColumn
+
+
+{-| The View
+-}
+sortTable :
+    SortTableStyle msg
+    ->
+        { content : List a
+        , columns : List (Column a)
+        , sortBy : String
+        , asc : Bool
+        , onChange : String -> msg
+        }
+    -> Element msg
+sortTable =
+    SortTable.sortTable
 
 
 

@@ -1,96 +1,66 @@
 module Stateless exposing (Model, Msg, init, update, view)
 
-import Array exposing (Array)
+import Array
+import Data.Example as Example
 import Data.Style exposing (Style)
+import Data.Theme as Theme exposing (Theme)
 import Element exposing (Element)
 import Element.Background as Background
-import Element.Border as Border
-import Element.Font as Font
-import Element.Input as Input
-import Framework.Button as Button
 import Framework.Card as Card
 import Framework.Color as Color
 import Framework.Grid as Grid
-import Framework.Group as Group
-import Framework.Heading as Heading
-import Framework.Input as Input
-import Framework.Tag as Tag
 import Heroicons.Solid as Heroicons
-import Html exposing (Html)
 import Html.Attributes as Attributes
 import Icons
 import Layout exposing (Part(..))
 import Set exposing (Set)
 import Widget
-import Widget.Style exposing (ButtonStyle)
-import Data.Theme as Theme exposing (Theme)
+
 
 type alias Model =
-    { selected : Maybe Int
-    , multiSelected : Set Int
-    , chipTextInput : Set String
-    , isExpanded : Bool
+    { chipTextInput : Set String
     , carousel : Int
-    , tab : Maybe Int
-    , button : Bool
     , textInput : String
+    , table : { title : String, asc : Bool }
+    , example : Example.Model
     }
 
 
 type Msg
-    = ChangedSelected Int
-    | ChangedMultiSelected Int
-    | ToggleCollapsable Bool
-    | ToggleTextInputChip String
-    | ChangedTab Int
+    = ToggleTextInputChip String
     | SetCarousel Int
-    | ToggleButton Bool
     | SetTextInput String
+    | ChangedSorting String
+    | ExampleSpecific Example.Msg
     | Idle
 
 
-init : Model
+init : ( Model, Cmd Msg )
 init =
-    { selected = Nothing
-    , multiSelected = Set.empty
-    , chipTextInput = Set.empty
-    , isExpanded = False
-    , carousel = 0
-    , tab = Just 1
-    , button = True
-    , textInput = ""
-    }
+    let
+        ( example, cmd ) =
+            Example.init
+    in
+    ( { chipTextInput = Set.empty
+      , carousel = 0
+      , textInput = ""
+      , table = { title = "Name", asc = True }
+      , example = example
+      }
+    , cmd |> Cmd.map ExampleSpecific
+    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ChangedSelected int ->
-            ( { model
-                | selected = Just int
-              }
-            , Cmd.none
-            )
-
-        ChangedMultiSelected int ->
-            ( { model
-                | multiSelected =
-                    model.multiSelected
-                        |> (if model.multiSelected |> Set.member int then
-                                Set.remove int
-
-                            else
-                                Set.insert int
-                           )
-              }
-            , Cmd.none
-            )
-
-        ToggleCollapsable bool ->
-            ( { model
-                | isExpanded = bool
-              }
-            , Cmd.none
+        ExampleSpecific exampleMsg ->
+            let
+                ( exampleModel, exampleCmd ) =
+                    Example.update exampleMsg model.example
+            in
+            ( { model | example = exampleModel }
+            , exampleCmd |> Cmd.map ExampleSpecific
             )
 
         ToggleTextInputChip string ->
@@ -118,127 +88,30 @@ update msg model =
             , Cmd.none
             )
 
-        ChangedTab int ->
-            ( { model | tab = Just int }, Cmd.none )
-
-        ToggleButton bool ->
-            ( { model | button = bool }, Cmd.none )
-
         SetTextInput string ->
             ( { model | textInput = string }, Cmd.none )
+
+        ChangedSorting string ->
+            ( { model
+                | table =
+                    { title = string
+                    , asc =
+                        if model.table.title == string then
+                            not model.table.asc
+
+                        else
+                            True
+                    }
+              }
+            , Cmd.none
+            )
 
         Idle ->
             ( model, Cmd.none )
 
 
-select : Style Msg -> Model -> ( String, Element Msg,Element Msg )
-select style model =
-    let
-        buttonStyle =
-            style.button
-    in
-    ( "Select"
-    , { selected = model.selected
-      , options =
-            [ 1, 2, 42 ]
-                |> List.map
-                    (\int ->
-                        { text = String.fromInt int
-                        , icon = Element.none
-                        }
-                    )
-      , onSelect = ChangedSelected >> Just
-      }
-        |> Widget.select
-        |> Widget.buttonRow
-            { list = style.row
-            , button = style.button
-            }
-    , Element.none
-    )
-
-
-multiSelect : Style Msg -> Model -> ( String, Element Msg, Element Msg )
-multiSelect style model =
-    let
-        buttonStyle =
-            style.button
-    in
-    ( "Multi Select"
-    , { selected = model.multiSelected
-      , options =
-            [ 1, 2, 42 ]
-                |> List.map
-                    (\int ->
-                        { text = String.fromInt int
-                        , icon = Element.none
-                        }
-                    )
-      , onSelect = ChangedMultiSelected >> Just
-      }
-        |> Widget.multiSelect
-        |> Widget.buttonRow
-            { list = style.row
-            , button = style.button
-            }
-    , Element.none
-    )
-
-expansionPanel : Style Msg -> Model -> (String,Element Msg,Element Msg)
-expansionPanel style model =
-    ( "Expansion Panel"
-    ,   { onToggle = ToggleCollapsable
-        , isExpanded = model.isExpanded
-        , icon = Element.none
-        , text = "Title"
-        , content = Element.text <| "Hello World"
-        }
-        |>Widget.expansionPanel style.expansionPanel
-    , Element.none
-    )
-
-
-
-
-tab : Style Msg -> Model -> ( String, Element Msg, Element Msg )
-tab style model =
-    ( "Tab"
-    , Widget.tab style.tab
-        { tabs =
-            { selected = model.tab
-            , options =
-                [ 1, 2, 3 ]
-                    |> List.map
-                        (\int ->
-                            { text = "Tab " ++ (int |> String.fromInt)
-                            , icon = Element.none
-                            }
-                        )
-            , onSelect = ChangedTab >> Just
-            }
-        , content =
-            \selected ->
-                (case selected of
-                    Just 0 ->
-                        "This is Tab 1"
-
-                    Just 1 ->
-                        "This is the second tab"
-
-                    Just 2 ->
-                        "The thrid and last tab"
-
-                    _ ->
-                        "Please select a tab"
-                )
-                    |> Element.text
-        }
-    , Element.none
-    )
-
-
-modal : Style msg -> (Maybe Part -> msg) -> Model -> ( String, Element msg,Element msg )
-modal style changedSheet model =
+modal : Style msg -> (Maybe Part -> msg) -> Model -> ( String, Element msg, Element msg )
+modal style changedSheet _ =
     ( "Modal"
     , [ Widget.button style.button
             { onPress = Just <| changedSheet <| Just LeftSheet
@@ -252,12 +125,12 @@ modal style changedSheet model =
             }
       ]
         |> Element.column Grid.simple
-    ,Element.none
+    , Element.none
     )
 
 
 dialog : Style msg -> msg -> Model -> ( String, Element msg, Element msg )
-dialog style showDialog model =
+dialog style showDialog _ =
     ( "Dialog"
     , Widget.button style.button
         { onPress = Just showDialog
@@ -330,66 +203,6 @@ carousel style model =
     )
 
 
-iconButton : Style Msg -> Model -> ( String, Element Msg, Element Msg )
-iconButton style model =
-    ( "Icon Button"
-    , [ Widget.button style.primaryButton
-            { text = "disable me"
-            , icon = Icons.slash |> Element.html |> Element.el []
-            , onPress =
-                if model.button then
-                    Just <| ToggleButton False
-
-                else
-                    Nothing
-            }
-        , Widget.iconButton style.button
-            { text = "reset"
-            , icon = Icons.repeat |> Element.html |> Element.el []
-            , onPress = Just <| ToggleButton True
-            }
-        ]
-            |> Element.row Grid.simple
-    , Element.column Grid.simple
-            [ Element.row Grid.spacedEvenly
-                [ "Button"
-                    |> Element.text
-                , Widget.button style.button
-                    { text = "reset"
-                    , icon = Icons.repeat |> Element.html |> Element.el []
-                    , onPress = Just <| ToggleButton True
-                    }
-                ]
-            , Element.row Grid.spacedEvenly
-                [ "Text button"
-                    |> Element.text
-                , Widget.textButton style.button
-                    { text = "reset"
-                    , onPress = Just <| ToggleButton True
-                    }
-                ]
-            , Element.row Grid.spacedEvenly
-                [ "Button"
-                    |> Element.text
-                , Widget.iconButton style.button
-                    { text = "reset"
-                    , icon = Icons.repeat |> Element.html |> Element.el []
-                    , onPress = Just <| ToggleButton True
-                    }
-                ]
-            , Element.row Grid.spacedEvenly
-                [ "Disabled button"
-                    |> Element.text
-                , Widget.button style.button
-                    { text = "reset"
-                    , icon = Icons.repeat |> Element.html |> Element.el []
-                    , onPress = Nothing
-                    }
-                ] 
-            ]
-    )
-
-
 textInput : Style Msg -> Model -> ( String, Element Msg, Element Msg )
 textInput style model =
     ( "Chip Text Input"
@@ -432,16 +245,112 @@ textInput style model =
             |> Element.wrappedRow [ Element.spacing 10 ]
       ]
         |> Element.column Grid.simple
+    , [ Element.row Grid.spacedEvenly
+            [ "Nothing Selected"
+                |> Element.text
+                |> Element.el [ Element.width <| Element.fill ]
+            , { chips = []
+              , text = ""
+              , placeholder = Nothing
+              , label = "Label"
+              , onChange = always Idle
+              }
+                |> Widget.textInput style.textInput
+            ]
+      , Element.row Grid.spacedEvenly
+            [ "Some chips"
+                |> Element.text
+                |> Element.el [ Element.width <| Element.fill ]
+            , { chips =
+                    [ { icon = Icons.triangle |> Element.html |> Element.el []
+                      , text = "A"
+                      , onPress = Just Idle
+                      }
+                    , { icon = Icons.circle |> Element.html |> Element.el []
+                      , text = "B"
+                      , onPress = Just Idle
+                      }
+                    ]
+              , text = ""
+              , placeholder = Nothing
+              , label = "Label"
+              , onChange = always Idle
+              }
+                |> Widget.textInput style.textInput
+            ]
+      ]
+        |> Element.column Grid.simple
+    )
+
+
+list : Style Msg -> Model -> ( String, Element Msg, Element Msg )
+list style _ =
+    ( "List"
+    , [ Element.text <| "A"
+      , Element.text <| "B"
+      , Element.text <| "C"
+      ]
+        |> Widget.column style.cardColumn
+    , Element.none
+    )
+
+
+sortTable : Style Msg -> Model -> ( String, Element Msg, Element Msg )
+sortTable _ model =
+    ( "Sort Table"
+    , Widget.sortTable
+        { containerTable = Grid.simple
+        , headerButton =
+            { container = []
+            , labelRow = []
+            , ifDisabled = []
+            , ifActive = []
+            }
+        , ascIcon = Heroicons.cheveronUp [ Attributes.width 16 ] |> Element.html
+        , descIcon = Heroicons.cheveronDown [ Attributes.width 16 ] |> Element.html
+        , defaultIcon = Element.none
+        }
+        { content =
+            [ { id = 1, name = "Antonio", rating = 2.456 }
+            , { id = 2, name = "Ana", rating = 1.34 }
+            , { id = 3, name = "Alfred", rating = 4.22 }
+            , { id = 4, name = "Thomas", rating = 3 }
+            ]
+        , columns =
+            [ Widget.intColumn
+                { title = "Id"
+                , value = .id
+                , toString = \int -> "#" ++ String.fromInt int
+                , width = Element.fill
+                }
+            , Widget.stringColumn
+                { title = "Name"
+                , value = .name
+                , toString = identity
+                , width = Element.fill
+                }
+            , Widget.floatColumn
+                { title = "rating"
+                , value = .rating
+                , toString = String.fromFloat
+                , width = Element.fill
+                }
+            ]
+        , asc = model.table.asc
+        , sortBy = model.table.title
+        , onChange = ChangedSorting
+        }
     , Element.none
     )
 
 
 view :
-    Theme ->
-    { msgMapper : Msg -> msg
-    , showDialog : msg
-    , changedSheet : Maybe Part -> msg
-    }
+    Theme
+    ->
+        { msgMapper : Msg -> msg
+        , showDialog : msg
+        , changedSheet : Maybe Part -> msg
+        }
     -> Model
     ->
         { title : String
@@ -450,9 +359,10 @@ view :
         }
 view theme { msgMapper, showDialog, changedSheet } model =
     let
-        style = Theme.toStyle theme
+        style =
+            Theme.toStyle theme
 
-        map (a,b,c) =
+        map ( a, b, c ) =
             ( a
             , b |> Element.map msgMapper
             , c |> Element.map msgMapper
@@ -461,14 +371,17 @@ view theme { msgMapper, showDialog, changedSheet } model =
     { title = "Stateless Views"
     , description = "Stateless views are simple functions that view some content. No wiring required."
     , items =
-        [ iconButton style model |> map
-        , select style model |> map
-        , multiSelect style model |> map
-        , expansionPanel style model |> map
-        , modal style changedSheet model
-        , carousel style model |> map
-        , tab style model |> map
-        , dialog style showDialog model
-        , textInput style model |> map
-        ]
+        Example.toCardList
+            { idle = Idle |> msgMapper
+            , msgMapper = ExampleSpecific >> msgMapper
+            , style = style
+            , model = model.example
+            }
+            ++ [ modal style changedSheet model
+               , carousel style model |> map
+               , dialog style showDialog model
+               , textInput style model |> map
+               , list style model |> map
+               , sortTable style model |> map
+               ]
     }

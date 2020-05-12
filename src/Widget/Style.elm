@@ -1,4 +1,4 @@
-module Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, RowStyle, SnackbarStyle, Style, TabStyle, TextInputStyle)
+module Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, RowStyle, SnackbarStyle, SortTableStyle, Style, TabStyle, TextInputStyle)
 
 import Element exposing (Attribute, Element)
 import Html exposing (Html)
@@ -69,6 +69,15 @@ type alias ColumnStyle msg =
     , ifFirst : List (Attribute msg)
     , ifLast : List (Attribute msg)
     , ifCenter : List (Attribute msg)
+    }
+
+
+type alias SortTableStyle msg =
+    { containerTable : List (Attribute msg)
+    , headerButton : ButtonStyle msg
+    , ascIcon : Element Never
+    , descIcon : Element Never
+    , defaultIcon : Element Never
     }
 
 

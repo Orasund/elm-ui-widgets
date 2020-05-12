@@ -17,6 +17,7 @@
             "feathericons/elm-feather": "1.4.0",
             "jasonliang512/elm-heroicons": "1.0.2",
             "mdgriffith/elm-ui": "1.1.5",
+            "ryannhg/elm-spa": "4.1.0",
             "turboMaCk/queue": "1.0.2",
             "wernerdegroot/listzipper": "4.0.0"
         },

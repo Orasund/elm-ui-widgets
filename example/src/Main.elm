@@ -1,4 +1,4 @@
-module Example exposing (main)
+module Main exposing (main)
 
 import Array
 import Browser
@@ -6,6 +6,8 @@ import Browser.Dom as Dom exposing (Viewport)
 import Browser.Events as Events
 import Browser.Navigation as Navigation
 import Data.Section as Section exposing (Section(..))
+import Data.Style as Style exposing (Style)
+import Data.Theme as Theme exposing (Theme(..))
 import Element exposing (Attribute, DeviceClass(..), Element)
 import Element.Border as Border
 import Element.Font as Font
@@ -32,15 +34,10 @@ import Widget
 import Widget.ScrollingNav as ScrollingNav
 import Widget.Snackbar as Snackbar
 import Widget.Style exposing (ButtonStyle)
-import Data.Style as Style exposing (Style)
-import Data.Theme as Theme exposing (Theme(..))
-
-
 
 
 type alias LoadedModel =
     { stateless : Stateless.Model
-    , reusable : Reusable.Model
     , scrollingNav : ScrollingNav.Model Section
     , layout : Layout LoadedMsg
     , displayDialog : Bool
@@ -61,7 +58,6 @@ type Model
 
 type LoadedMsg
     = StatelessSpecific Stateless.Msg
-    | ReusableSpecific Reusable.Msg
     | UpdateScrollingNav (ScrollingNav.Model Section -> ScrollingNav.Model Section)
     | TimePassed Int
     | AddSnackbar ( String, Bool )
@@ -97,9 +93,11 @@ initialModel { viewport } =
                             Err _ ->
                                 Idle
                 }
+
+        ( stateless, statelessCmd ) =
+            Stateless.init
     in
-    ( { stateless = Stateless.init
-      , reusable = Reusable.init
+    ( { stateless = stateless
       , scrollingNav = scrollingNav
       , layout = Layout.init
       , displayDialog = False
@@ -114,7 +112,10 @@ initialModel { viewport } =
             }
       , theme = ElmUiFramework
       }
-    , cmd
+    , [ cmd
+      , statelessCmd |> Cmd.map StatelessSpecific
+      ]
+        |> Cmd.batch
     )
 
 
@@ -127,7 +128,6 @@ init () =
 
 view : Model -> Html Msg
 view model =
-    
     case model of
         Loading ->
             Element.none |> Framework.responsiveLayout []
@@ -173,8 +173,6 @@ view model =
                                             ReusableViews ->
                                                 Reusable.view m.theme
                                                     { addSnackbar = AddSnackbar
-                                                    , model = m.reusable
-                                                    , msgMapper = ReusableSpecific
                                                     }
 
                                             StatelessViews ->
@@ -198,10 +196,10 @@ view model =
                                                     , items
                                                         |> (if m.search.current /= "" then
                                                                 List.filter
-                                                                    (\(a,_,_) ->
+                                                                    (\( a, _, _ ) ->
                                                                         a
-                                                                        |> String.toLower
-                                                                        |> String.contains (m.search.current |> String.toLower)
+                                                                            |> String.toLower
+                                                                            |> String.contains (m.search.current |> String.toLower)
                                                                     )
 
                                                             else
@@ -209,10 +207,13 @@ view model =
                                                            )
                                                         |> List.map
                                                             (\( name, elem, more ) ->
-                                                                [ Element.text name
-                                                                    |> Element.el Heading.h3
-                                                                , elem
+                                                                [ [ Element.text name
+                                                                        |> Element.el (Heading.h3 ++ [ Element.height <| Element.shrink ])
+                                                                  , elem
+                                                                  ]
+                                                                    |> Element.column Grid.simple
                                                                 , more
+                                                                    |> Element.el [ Element.height <| Element.fill ]
                                                                 ]
                                                                     |> Widget.column style.cardColumn
                                                             )
@@ -226,7 +227,7 @@ view model =
                             |> Element.column Framework.container
                         ]
                             |> Element.column Grid.compact
-                    , style =style
+                    , style = style
                     , layout = m.layout
                     , window = m.window
                     , menu =
@@ -247,17 +248,21 @@ view model =
                           , text = "Github"
                           , icon = Icons.github |> Element.html |> Element.el []
                           }
-                        , { onPress = if m.theme /= ElmUiFramework then
-                                Just <| SetTheme <| ElmUiFramework
-                            else
-                                Nothing
+                        , { onPress =
+                                if m.theme /= ElmUiFramework then
+                                    Just <| SetTheme <| ElmUiFramework
+
+                                else
+                                    Nothing
                           , text = "Elm-Ui-Framework Theme"
                           , icon = Icons.penTool |> Element.html |> Element.el []
                           }
-                        , { onPress = if m.theme /= Template then
-                                Just <| SetTheme <| Template
-                            else
-                                Nothing
+                        , { onPress =
+                                if m.theme /= Template then
+                                    Just <| SetTheme <| Template
+
+                                else
+                                    Nothing
                           , text = "Template Theme"
                           , icon = Icons.penTool |> Element.html |> Element.el []
                           }
@@ -291,17 +296,6 @@ view model =
 updateLoaded : LoadedMsg -> LoadedModel -> ( LoadedModel, Cmd LoadedMsg )
 updateLoaded msg model =
     case msg of
-        ReusableSpecific m ->
-            ( model.reusable
-                |> Reusable.update m
-                |> (\reusable ->
-                        { model
-                            | reusable = reusable
-                        }
-                   )
-            , Cmd.none
-            )
-
         StatelessSpecific m ->
             model.stateless
                 |> Stateless.update m
@@ -408,7 +402,7 @@ updateLoaded msg model =
               }
             , Cmd.none
             )
-        
+
         SetTheme theme ->
             ( { model | theme = theme }
             , Cmd.none
