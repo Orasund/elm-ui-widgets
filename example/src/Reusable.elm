@@ -1,40 +1,13 @@
-module Reusable exposing ( view)
+module Reusable exposing (view)
 
-import Browser
-import Element exposing (Color, Element)
-import Element.Background as Background
-import Element.Font as Font
-import Element.Input as Input
-import Framework
-import Framework.Button as Button
-import Framework.Card as Card
-import Framework.Color as Color
-import Framework.Grid as Grid
-import Framework.Group as Group
-import Framework.Heading as Heading
-import Framework.Input as Input
-import Framework.Tag as Tag
-import Heroicons.Solid as Heroicons
-import Html exposing (Html)
-import Html.Attributes as Attributes
-import Set exposing (Set)
-import Time
-import Widget
-import Widget.ScrollingNav as ScrollingNav
-import Widget.Snackbar as Snackbar
 import Data.Style exposing (Style)
 import Data.Theme as Theme exposing (Theme)
+import Element exposing (Element)
+import Framework.Grid as Grid
+import Widget
 
 
-type alias Item =
-    { name : String
-    , amount : Int
-    , price : Float
-    }
-
-
-
-snackbar : Style msg -> (( String, Bool ) -> msg) -> ( String, Element msg,Element msg )
+snackbar : Style msg -> (( String, Bool ) -> msg) -> ( String, Element msg, Element msg )
 snackbar style addSnackbar =
     ( "Snackbar"
     , [ Widget.button style.button
@@ -45,7 +18,7 @@ snackbar style addSnackbar =
                         , False
                         )
             , text = "Add Notification"
-            , icon =Element.none
+            , icon = Element.none
             }
       , Widget.button style.button
             { onPress =
@@ -63,11 +36,8 @@ snackbar style addSnackbar =
     )
 
 
-
-
-
 scrollingNavCard : Style msg -> ( String, Element msg, Element msg )
-scrollingNavCard style =
+scrollingNavCard _ =
     ( "Scrolling Nav"
     , Element.text "Resize the screen and open the side-menu. Then start scrolling to see the scrolling navigation in action."
         |> List.singleton
@@ -76,23 +46,35 @@ scrollingNavCard style =
     )
 
 
+layout : Style msg -> ( String, Element msg, Element msg )
+layout _ =
+    ( "Layout"
+    , Element.text "The layout combines the menu bar, both side bar, the dialog window and the snackbar. Try using all of them and also try resizing the window to see how they interact with each other."
+        |> List.singleton
+        |> Element.paragraph []
+    , Element.none
+    )
+
+
 view :
-    Theme ->
-    { addSnackbar : ( String, Bool ) -> msg
+    { theme : Theme
+    , addSnackbar : ( String, Bool ) -> msg
     }
     ->
         { title : String
         , description : String
-        , items : List ( String, Element msg,Element msg )
+        , items : List ( String, Element msg, Element msg )
         }
-view theme { addSnackbar } =
+view { theme, addSnackbar } =
     let
-        style = Theme.toStyle theme
+        style =
+            Theme.toStyle theme
     in
     { title = "Reusable Views"
     , description = "Reusable views have an internal state but no update function. You will need to do some wiring, but nothing complicated."
     , items =
         [ snackbar style addSnackbar
         , scrollingNavCard style
+        , layout style
         ]
     }

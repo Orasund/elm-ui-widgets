@@ -13,9 +13,8 @@ type alias Style style msg =
     }
 
 
-type alias Model =
-    { selected : Set Int
-    }
+type Model
+    = Selected (Set Int)
 
 
 type Msg
@@ -24,25 +23,23 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( { selected = Set.empty }
+    ( Selected <| Set.empty
     , Cmd.none
     )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg (Selected selected) =
     case msg of
         ChangedSelected int ->
-            ( { model
-                | selected =
-                    model.selected
-                        |> (if model.selected |> Set.member int then
-                                Set.remove int
+            ( selected
+                |> (if selected |> Set.member int then
+                        Set.remove int
 
-                            else
-                                Set.insert int
-                           )
-              }
+                    else
+                        Set.insert int
+                   )
+                |> Selected
             , Cmd.none
             )
 
@@ -53,8 +50,8 @@ subscriptions _ =
 
 
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
-view msgMapper style model =
-    { selected = model.selected
+view msgMapper style (Selected selected) =
+    { selected = selected
     , options =
         [ 1, 2, 42 ]
             |> List.map

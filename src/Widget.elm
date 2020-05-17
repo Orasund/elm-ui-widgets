@@ -5,8 +5,8 @@ module Widget exposing
     , ExpansionPanel, expansionPanel
     , row, column, buttonRow, buttonColumn
     , ColumnType, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
-    , TextInputStyle, textInput, carousel, tab
-    , Tab
+    , TextInputStyle, textInput
+    , Tab, tab
     )
 
 {-| This module contains functions for displaying data.
@@ -27,7 +27,7 @@ module Widget exposing
 @docs Dialog, modal, dialog
 
 
-# ExpansionPanel
+# Expansion Panel
 
 @docs ExpansionPanel, expansionPanel
 
@@ -37,18 +37,22 @@ module Widget exposing
 @docs row, column, buttonRow, buttonColumn
 
 
-# SortTable
+# Sort Table
 
 @docs ColumnType, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
 
 
-# Other Widgets
+# Text Input
 
-@docs TextInputStyle, textInput, carousel, tab
+@docs TextInputStyle, textInput
+
+
+# Tab
+
+@docs Tab, tab
 
 -}
 
-import Array exposing (Array)
 import Element exposing (Attribute, Element, Length)
 import Element.Input exposing (Placeholder)
 import Internal.Button as Button
@@ -57,6 +61,7 @@ import Internal.ExpansionPanel as ExpansionPanel
 import Internal.List as List
 import Internal.Select as Select
 import Internal.SortTable as SortTable
+import Internal.Tab as Tab
 import Internal.TextInput as TextInput
 import Set exposing (Set)
 import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, RowStyle, SortTableStyle, TabStyle)
@@ -417,7 +422,7 @@ sortTable =
 
 
 {----------------------------------------------------------
-- OTHER STATELESS WIDGETS
+- TAB
 ----------------------------------------------------------}
 
 
@@ -436,42 +441,5 @@ tab :
         , content : Maybe Int -> Element msg
         }
     -> Element msg
-tab style { tabs, content } =
-    [ tabs
-        |> select
-        |> List.map (selectButton style.button)
-        |> Element.row style.optionRow
-    , tabs.selected
-        |> content
-        |> Element.el style.content
-    ]
-        |> Element.column style.containerColumn
-
-
-{-| A Carousel circles through a non empty list of contents.
--}
-carousel :
-    { content : ( a, Array a )
-    , current : Int
-    , label : a -> Element msg
-    }
-    -> Element msg
-carousel { content, current, label } =
-    let
-        ( head, tail ) =
-            content
-    in
-    (if current <= 0 then
-        head
-
-     else if current > Array.length tail then
-        tail
-            |> Array.get (Array.length tail - 1)
-            |> Maybe.withDefault head
-
-     else
-        tail
-            |> Array.get (current - 1)
-            |> Maybe.withDefault head
-    )
-        |> label
+tab =
+    Tab.tab

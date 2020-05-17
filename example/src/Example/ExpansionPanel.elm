@@ -11,8 +11,8 @@ type alias Style style msg =
     }
 
 
-type alias Model =
-    { isExpanded : Bool }
+type Model
+    = IsExpanded Bool
 
 
 type Msg
@@ -21,18 +21,16 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( { isExpanded = False }
+    ( IsExpanded False
     , Cmd.none
     )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg _ =
     case msg of
         ToggleCollapsable bool ->
-            ( { model
-                | isExpanded = bool
-              }
+            ( IsExpanded bool
             , Cmd.none
             )
 
@@ -43,9 +41,9 @@ subscriptions _ =
 
 
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
-view msgMapper style model =
+view msgMapper style (IsExpanded isExpanded) =
     { onToggle = ToggleCollapsable >> msgMapper
-    , isExpanded = model.isExpanded
+    , isExpanded = isExpanded
     , icon = Element.none
     , text = "Title"
     , content = Element.text <| "Hello World"

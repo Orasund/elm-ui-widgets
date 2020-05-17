@@ -11,7 +11,7 @@ internal :
         | element : List (Attribute msg)
         , ifFirst : List (Attribute msg)
         , ifLast : List (Attribute msg)
-        , ifCenter : List (Attribute msg)
+        , otherwise : List (Attribute msg)
     }
     -> List (Element msg)
     -> List (Element msg)
@@ -31,7 +31,7 @@ internal style list =
                                 style.ifLast
 
                             else
-                                style.ifCenter
+                                style.otherwise
                            )
             )
 
@@ -52,7 +52,7 @@ internalButton :
             | element : List (Attribute msg)
             , ifFirst : List (Attribute msg)
             , ifLast : List (Attribute msg)
-            , ifCenter : List (Attribute msg)
+            , otherwise : List (Attribute msg)
         }
     , button : ButtonStyle msg
     }
@@ -76,7 +76,7 @@ internalButton style list =
                                     style.list.ifLast
 
                                 else
-                                    style.list.ifCenter
+                                    style.list.otherwise
                                )
                     , labelRow =
                         style.button.labelRow
@@ -84,6 +84,8 @@ internalButton style list =
                         style.button.ifDisabled
                     , ifActive =
                         style.button.ifActive
+                    , otherwise =
+                        style.button.otherwise
                     }
             )
 

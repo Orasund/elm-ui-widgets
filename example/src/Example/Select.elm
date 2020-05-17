@@ -1,7 +1,6 @@
 module Example.Select exposing (Model, Msg, init, subscriptions, update, view)
 
-import Element exposing (Attribute, Element)
-import FeatherIcons
+import Element exposing (Element)
 import Widget
 import Widget.Style exposing (ButtonStyle, RowStyle)
 
@@ -13,8 +12,8 @@ type alias Style style msg =
     }
 
 
-type alias Model =
-    { selected : Maybe Int }
+type Model
+    = Selected (Maybe Int)
 
 
 type Msg
@@ -23,18 +22,16 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( { selected = Nothing }
+    ( Selected Nothing
     , Cmd.none
     )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg _ =
     case msg of
         ChangedSelected int ->
-            ( { model
-                | selected = Just int
-              }
+            ( Selected <| Just int
             , Cmd.none
             )
 
@@ -45,8 +42,8 @@ subscriptions _ =
 
 
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
-view msgMapper style model =
-    { selected = model.selected
+view msgMapper style (Selected selected) =
+    { selected = selected
     , options =
         [ 1, 2, 42 ]
             |> List.map

@@ -11,9 +11,8 @@ type alias Style style msg =
     }
 
 
-type alias Model =
-    { selected : Maybe Int
-    }
+type Model
+    = Selected (Maybe Int)
 
 
 type Msg
@@ -22,17 +21,16 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( { selected = Nothing
-      }
+    ( Selected Nothing
     , Cmd.none
     )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg _ =
     case msg of
         ChangedTab int ->
-            ( { model | selected = Just int }
+            ( Selected <| Just int
             , Cmd.none
             )
 
@@ -43,10 +41,10 @@ subscriptions _ =
 
 
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
-view msgMapper style model =
+view msgMapper style (Selected selected) =
     Widget.tab style.tab
         { tabs =
-            { selected = model.selected
+            { selected = selected
             , options =
                 [ 1, 2, 3 ]
                     |> List.map
@@ -58,8 +56,8 @@ view msgMapper style model =
             , onSelect = ChangedTab >> msgMapper >> Just
             }
         , content =
-            \selected ->
-                (case selected of
+            \s ->
+                (case s of
                     Just 0 ->
                         "This is Tab 1"
 

@@ -1,8 +1,17 @@
 module Data.Style exposing (Style)
 
-import Element exposing (Attribute)
-import Widget.Style exposing (ButtonStyle, DialogStyle, ExpansionPanelStyle,
-    SnackbarStyle ,RowStyle,ColumnStyle,TextInputStyle,TabStyle)
+import Widget.Style
+    exposing
+        ( ButtonStyle
+        , ColumnStyle
+        , DialogStyle
+        , ExpansionPanelStyle
+        , RowStyle
+        , SortTableStyle
+        , TabStyle
+        , TextInputStyle
+        )
+
 
 type alias Style msg =
     Widget.Style.Style
@@ -16,5 +25,6 @@ type alias Style msg =
         , row : RowStyle msg
         , column : ColumnStyle msg
         , cardColumn : ColumnStyle msg
+        , sortTable : SortTableStyle msg
         }
         msg

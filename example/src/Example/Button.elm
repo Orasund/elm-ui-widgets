@@ -3,19 +3,19 @@ module Example.Button exposing (Model, Msg, init, subscriptions, update, view)
 import Element exposing (Element)
 import FeatherIcons
 import Widget
-import Widget.Style exposing (ButtonStyle)
+import Widget.Style exposing (ButtonStyle, RowStyle)
 
 
 type alias Style style msg =
     { style
         | primaryButton : ButtonStyle msg
         , button : ButtonStyle msg
+        , row : RowStyle msg
     }
 
 
-type alias Model =
-    { isButtonEnabled : Bool
-    }
+type Model
+    = IsButtonEnabled Bool
 
 
 type Msg
@@ -24,17 +24,16 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( { isButtonEnabled = True
-      }
+    ( IsButtonEnabled True
     , Cmd.none
     )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg _ =
     case msg of
         ChangedButtonStatus bool ->
-            ( { model | isButtonEnabled = bool }
+            ( IsButtonEnabled bool
             , Cmd.none
             )
 
@@ -45,7 +44,7 @@ subscriptions _ =
 
 
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
-view msgMapper style model =
+view msgMapper style (IsButtonEnabled isButtonEnabled) =
     [ Widget.button style.primaryButton
         { text = "disable me"
         , icon =
@@ -55,7 +54,7 @@ view msgMapper style model =
                 |> Element.html
                 |> Element.el []
         , onPress =
-            if model.isButtonEnabled then
+            if isButtonEnabled then
                 ChangedButtonStatus False
                     |> msgMapper
                     |> Just
@@ -77,7 +76,4 @@ view msgMapper style model =
                 |> Just
         }
     ]
-        |> Element.row
-            [ Element.spaceEvenly
-            , Element.width <| Element.fill
-            ]
+        |> Widget.row style.row

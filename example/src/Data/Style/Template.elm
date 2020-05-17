@@ -1,16 +1,28 @@
 module Data.Style.Template exposing (style)
 
 import Data.Style exposing (Style)
-import Element exposing (Attribute,Element)
+import Element exposing (Attribute, Element)
+import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
-import Element.Background as Background
-import Widget.Style exposing (ButtonStyle, DialogStyle, ExpansionPanelStyle,
-    SnackbarStyle ,TextInputStyle,TabStyle,ColumnStyle,RowStyle)
+import Widget.Style
+    exposing
+        ( ButtonStyle
+        , ColumnStyle
+        , DialogStyle
+        , ExpansionPanelStyle
+        , RowStyle
+        , SnackbarStyle
+        , TabStyle
+        , TextInputStyle
+        ,SortTableStyle
+        )
 
 
 fontSize : Int
-fontSize = 10
+fontSize =
+    10
+
 
 box : String -> List (Attribute msg)
 box string =
@@ -18,15 +30,16 @@ box string =
     , Background.color <| Element.rgba 1 1 1 0.5
     , Element.padding 10
     , Element.spacing 10
-    , Element.above <| 
-        Element.el [Font.size <| fontSize] <|
-            Element.text string 
+    , Element.above <|
+        Element.el [ Font.size <| fontSize ] <|
+            Element.text string
     ]
+
 
 decoration : String -> List (Attribute msg)
 decoration string =
-    [ Element.below <| 
-        Element.el [Font.size <| fontSize] <|
+    [ Element.below <|
+        Element.el [ Font.size <| fontSize ] <|
             Element.text string
     , Background.color <| Element.rgb 0.66 0.66 0.66
     ]
@@ -35,15 +48,16 @@ decoration string =
 icon : String -> Element msg
 icon string =
     Element.none
-    |> Element.el
-    [ Element.width <| Element.px 12
-    , Element.height <| Element.px 12
-    , Border.rounded 6
-    , Border.width 1
-    , Element.above <|
-        Element.el [Font.size <| fontSize] <|
-            Element.text string 
-    ]
+        |> Element.el
+            [ Element.width <| Element.px 12
+            , Element.height <| Element.px 12
+            , Border.rounded 6
+            , Border.width 1
+            , Element.above <|
+                Element.el [ Font.size <| fontSize ] <|
+                    Element.text string
+            ]
+
 
 button : String -> ButtonStyle msg
 button string =
@@ -51,7 +65,9 @@ button string =
     , labelRow = box <| string ++ ":labelRow"
     , ifDisabled = decoration <| string ++ ":ifDisabled"
     , ifActive = decoration <| string ++ ":ifActive"
+    , otherwise = decoration <| string ++ ":otherwise"
     }
+
 
 snackbar : String -> SnackbarStyle msg
 snackbar string =
@@ -60,14 +76,16 @@ snackbar string =
     , text = box <| string ++ ":text"
     }
 
+
 dialog : String -> DialogStyle msg
 dialog string =
     { containerColumn = box <| string ++ ":containerColumn"
     , title = box <| string ++ ":title"
     , buttonRow = box <| string ++ ":buttonRow"
     , acceptButton = button <| string ++ ":acceptButton"
-    , dismissButton = button <| string  ++ ":dismissButton"
+    , dismissButton = button <| string ++ ":dismissButton"
     }
+
 
 expansionPanel : String -> ExpansionPanelStyle msg
 expansionPanel string =
@@ -79,6 +97,7 @@ expansionPanel string =
     , collapseIcon = icon <| string ++ ":collapseIcon"
     }
 
+
 textInput : String -> TextInputStyle msg
 textInput string =
     { chipButton = button <| string ++ ":chipButton"
@@ -86,6 +105,7 @@ textInput string =
     , containerRow = box <| string ++ ":containerRow"
     , input = box <| string ++ ":input"
     }
+
 
 tab : String -> TabStyle msg
 tab string =
@@ -95,14 +115,16 @@ tab string =
     , content = box <| string ++ ":content"
     }
 
+
 row : String -> RowStyle msg
 row string =
     { containerRow = box <| string ++ ":containerRow"
     , element = box <| string ++ ":element"
     , ifFirst = box <| string ++ ":ifFirst"
     , ifLast = box <| string ++ ":ifLast"
-    , ifCenter = box <| string ++ ":ifCenter"
+    , otherwise = box <| string ++ ":otherwise"
     }
+
 
 column : String -> ColumnStyle msg
 column string =
@@ -110,12 +132,24 @@ column string =
     , element = box <| string ++ ":element"
     , ifFirst = box <| string ++ ":ifFirst"
     , ifLast = box <| string ++ ":ifLast"
-    , ifCenter = box <| string ++ ":ifCenter"
+    , otherwise = box <| string ++ ":otherwise"
     }
 
-style :Style msg
+
+sortTable : String -> SortTableStyle msg
+sortTable string =
+    { containerTable = box <| string ++ ":containerTable"
+    , headerButton = button <| string ++ ":headerButton"
+    , ascIcon = icon <| string ++ ":ascIcon"
+    , descIcon = icon <| string ++ ":descIcon"
+    , defaultIcon = icon <| string ++ ":defaultIcon"
+    }
+
+
+style : Style msg
 style =
-    { row = row <| "row"
+    { sortTable = sortTable <| "sortTable"
+    , row = row <| "row"
     , cardColumn = column <| "cardRow"
     , column = column <| "column"
     , button = button <| "button"

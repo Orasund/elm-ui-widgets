@@ -6,34 +6,21 @@ import Browser.Dom as Dom exposing (Viewport)
 import Browser.Events as Events
 import Browser.Navigation as Navigation
 import Data.Section as Section exposing (Section(..))
-import Data.Style as Style exposing (Style)
+import Data.Style exposing (Style)
 import Data.Theme as Theme exposing (Theme(..))
-import Element exposing (Attribute, DeviceClass(..), Element)
-import Element.Border as Border
-import Element.Font as Font
-import Element.Input as Input
+import Element exposing (DeviceClass(..))
 import Framework
-import Framework.Button as Button
-import Framework.Card as Card
-import Framework.Color as Color
 import Framework.Grid as Grid
-import Framework.Group as Group
 import Framework.Heading as Heading
-import Framework.Input as Input
-import Framework.Tag as Tag
 import Html exposing (Html)
-import Html.Attributes as Attributes
 import Icons
-import Layout exposing (Layout, Part)
 import Reusable
-import Set exposing (Set)
 import Stateless
 import Task
 import Time
 import Widget
+import Widget.Layout as Layout exposing (Layout, Part)
 import Widget.ScrollingNav as ScrollingNav
-import Widget.Snackbar as Snackbar
-import Widget.Style exposing (ButtonStyle)
 
 
 type alias LoadedModel =
@@ -41,7 +28,10 @@ type alias LoadedModel =
     , scrollingNav : ScrollingNav.Model Section
     , layout : Layout LoadedMsg
     , displayDialog : Bool
-    , window : { height : Int, width : Int }
+    , window :
+        { height : Int
+        , width : Int
+        }
     , search :
         { raw : String
         , current : String
@@ -110,7 +100,7 @@ initialModel { viewport } =
             , current = ""
             , remaining = 0
             }
-      , theme = ElmUiFramework
+      , theme = Material
       }
     , [ cmd
       , statelessCmd |> Cmd.map StatelessSpecific
@@ -171,17 +161,17 @@ view model =
                                     (\section ->
                                         (case section of
                                             ReusableViews ->
-                                                Reusable.view m.theme
-                                                    { addSnackbar = AddSnackbar
+                                                Reusable.view
+                                                    { theme = m.theme
+                                                    , addSnackbar = AddSnackbar
                                                     }
 
                                             StatelessViews ->
-                                                Stateless.view m.theme
-                                                    { msgMapper = StatelessSpecific
-                                                    , showDialog = ToggleDialog True
-                                                    , changedSheet = ChangedSidebar
+                                                Stateless.view
+                                                    { theme = m.theme
+                                                    , msgMapper = StatelessSpecific
+                                                    , model = m.stateless
                                                     }
-                                                    m.stateless
                                         )
                                             |> (\{ title, description, items } ->
                                                     [ Element.el Heading.h2 <| Element.text <| title
@@ -213,12 +203,17 @@ view model =
                                                                   ]
                                                                     |> Element.column Grid.simple
                                                                 , more
-                                                                    |> Element.el [ Element.height <| Element.fill ]
+                                                                    |> Element.el
+                                                                        [ Element.width <| Element.fill
+                                                                        ]
                                                                 ]
                                                                     |> Widget.column style.cardColumn
                                                             )
                                                         |> Element.wrappedRow
-                                                            (Grid.simple ++ [ Element.height <| Element.shrink ])
+                                                            (Grid.simple
+                                                                ++ [ Element.height <| Element.shrink
+                                                                   ]
+                                                            )
                                                     ]
                                                         |> Element.column (Grid.section ++ [ Element.centerX ])
                                                )
@@ -264,6 +259,15 @@ view model =
                                 else
                                     Nothing
                           , text = "Template Theme"
+                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          }
+                        , { onPress =
+                                if m.theme /= Material then
+                                    Just <| SetTheme <| Material
+
+                                else
+                                    Nothing
+                          , text = "Material Theme"
                           , icon = Icons.penTool |> Element.html |> Element.el []
                           }
                         , { onPress = Nothing
@@ -428,7 +432,7 @@ update msg model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.batch
         [ Time.every 50 (always (TimePassed 50))
         , Events.onResize (\h w -> Resized { height = h, width = w })

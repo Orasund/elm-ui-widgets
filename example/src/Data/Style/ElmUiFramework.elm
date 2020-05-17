@@ -1,9 +1,9 @@
 module Data.Style.ElmUiFramework exposing (style)
 
-import Element exposing (Attribute)
+import Data.Style exposing (Style)
+import Element
 import Element.Border as Border
 import Element.Font as Font
-import Element.Input as Input
 import Framework
 import Framework.Button as Button
 import Framework.Card as Card
@@ -11,12 +11,21 @@ import Framework.Color as Color
 import Framework.Grid as Grid
 import Framework.Group as Group
 import Framework.Heading as Heading
-import Framework.Input as Input
 import Framework.Tag as Tag
 import Icons
-import Data.Style exposing (Style)
-import Widget.Style exposing (ButtonStyle, DialogStyle, ExpansionPanelStyle,
-    SnackbarStyle ,RowStyle,ColumnStyle,TextInputStyle,TabStyle)
+import Widget.Style
+    exposing
+        ( ButtonStyle
+        , ColumnStyle
+        , DialogStyle
+        , ExpansionPanelStyle
+        , RowStyle
+        , SnackbarStyle
+        , SortTableStyle
+        , TabStyle
+        , TextInputStyle
+        )
+
 
 textButton : ButtonStyle msg
 textButton =
@@ -24,6 +33,7 @@ textButton =
     , labelRow = Grid.simple
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
+    , otherwise = []
     }
 
 
@@ -33,6 +43,7 @@ simpleButton =
     , labelRow = Grid.simple
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
+    , otherwise = []
     }
 
 
@@ -57,6 +68,7 @@ menuTabButton =
     , labelRow = Grid.simple
     , ifDisabled = Color.disabled
     , ifActive = [ Border.color Color.turquoise ]
+    , otherwise = []
     }
 
 
@@ -66,6 +78,7 @@ menuButton =
     , container = Button.simple ++ Group.center ++ Color.dark
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
+    , otherwise = []
     }
 
 
@@ -79,6 +92,7 @@ sheetButton =
     , labelRow = Grid.simple
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
+    , otherwise = []
     }
 
 
@@ -88,6 +102,7 @@ buttonStyle =
     , container = Button.simple
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
+    , otherwise = []
     }
 
 
@@ -97,6 +112,7 @@ snackbarButton =
     , container = Button.simple ++ Color.dark
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
+    , otherwise = []
     }
 
 
@@ -106,7 +122,9 @@ tabButtonStyle =
     , container = Button.simple ++ Group.top
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
+    , otherwise = []
     }
+
 
 textInputStyle : TextInputStyle msg
 textInputStyle =
@@ -143,41 +161,43 @@ chipButtonStyle =
     , ifDisabled = []
     , labelRow = Grid.simple
     , ifActive = Color.primary
+    , otherwise = []
     }
+
 
 expansionPanelStyle : ExpansionPanelStyle msg
 expansionPanelStyle =
-    { containerColumn = Card.simple ++ Grid.simple ++ [Element.height <| Element.shrink]
-    , panelRow = Grid.spacedEvenly ++ [Element.height <| Element.shrink]
-    , labelRow = Grid.simple ++ [Element.height <| Element.shrink]
+    { containerColumn = Card.simple ++ Grid.simple ++ [ Element.height <| Element.shrink ]
+    , panelRow = Grid.spacedEvenly ++ [ Element.height <| Element.shrink ]
+    , labelRow = Grid.simple ++ [ Element.height <| Element.shrink ]
     , content = []
-        , expandIcon = Icons.chevronDown  |> Element.html |> Element.el []
-        , collapseIcon = Icons.chevronUp |> Element.html |> Element.el []
+    , expandIcon = Icons.chevronDown |> Element.html |> Element.el []
+    , collapseIcon = Icons.chevronUp |> Element.html |> Element.el []
     }
-
 
 
 dialog : DialogStyle msg
 dialog =
     { containerColumn =
-            Card.simple
-                ++ Grid.simple
-                ++  [ Element.centerY
-                    , Element.width <| Element.minimum 280 <| Element.maximum 560 <| Element.fill
-                    ]
-        , title = Heading.h3
-        , buttonRow =
-            Grid.simple
-                ++ [ Element.paddingEach
-                        { top = 28
-                        , bottom = 0
-                        , left = 0
-                        , right = 0
-                        }
-                   ]
-        , acceptButton = simpleButton
-        , dismissButton = textButton
-        }
+        Card.simple
+            ++ Grid.simple
+            ++ [ Element.centerY
+               , Element.width <| Element.minimum 280 <| Element.maximum 560 <| Element.fill
+               ]
+    , title = Heading.h3
+    , buttonRow =
+        Grid.simple
+            ++ [ Element.paddingEach
+                    { top = 28
+                    , bottom = 0
+                    , left = 0
+                    , right = 0
+                    }
+               ]
+    , acceptButton = simpleButton
+    , dismissButton = textButton
+    }
+
 
 snackbar : SnackbarStyle msg
 snackbar =
@@ -186,19 +206,21 @@ snackbar =
             ++ Color.dark
             ++ Grid.simple
             ++ [ Element.paddingXY 8 6
-                , Element.height <| Element.px <| 54
-                ]
+               , Element.height <| Element.px <| 54
+               ]
     , button = snackbarButton
     , text = [ Element.paddingXY 8 0 ]
     }
 
+
 tab : TabStyle msg
 tab =
     { button = tabButtonStyle
-        , optionRow = Grid.simple
-        , containerColumn = Grid.compact
-        , content = (Card.small ++ Group.bottom)
-        }
+    , optionRow = Grid.simple
+    , containerColumn = Grid.compact
+    , content = Card.small ++ Group.bottom
+    }
+
 
 row : RowStyle msg
 row =
@@ -206,17 +228,19 @@ row =
     , element = []
     , ifFirst = Group.left
     , ifLast = Group.right
-    , ifCenter = Group.center
+    , otherwise = Group.center
     }
+
 
 cardColumn : ColumnStyle msg
 cardColumn =
-    { containerColumn = Grid.compact ++ [Element.height <| Element.fill]
-    , element = Card.large ++ [Element.height <| Element.fill]
+    { containerColumn = Grid.compact ++ [ Element.height <| Element.fill ]
+    , element = Card.large ++ [ Element.height <| Element.fill ]
     , ifFirst = Group.top
     , ifLast = Group.bottom
-    , ifCenter = Group.center 
+    , otherwise = Group.center
     }
+
 
 column : ColumnStyle msg
 column =
@@ -224,12 +248,24 @@ column =
     , element = []
     , ifFirst = Group.top
     , ifLast = Group.bottom
-    , ifCenter =Group.center 
+    , otherwise = Group.center
     }
+
+
+sortTable : SortTableStyle msg
+sortTable =
+    { containerTable = Grid.simple
+    , headerButton = tabButtonStyle
+    , ascIcon = Icons.chevronUp |> Element.html |> Element.el []
+    , descIcon = Icons.chevronDown |> Element.html |> Element.el []
+    , defaultIcon = Element.none
+    }
+
 
 style : Style msg
 style =
-    { row = row
+    { sortTable = sortTable
+    , row = row
     , cardColumn = cardColumn
     , column = column
     , button = buttonStyle

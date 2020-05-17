@@ -9,6 +9,7 @@ type alias ButtonStyle msg =
     , labelRow : List (Attribute msg)
     , ifDisabled : List (Attribute msg)
     , ifActive : List (Attribute msg)
+    , otherwise : List (Attribute msg)
     }
 
 
@@ -59,7 +60,7 @@ type alias RowStyle msg =
     , element : List (Attribute msg)
     , ifFirst : List (Attribute msg)
     , ifLast : List (Attribute msg)
-    , ifCenter : List (Attribute msg)
+    , otherwise : List (Attribute msg)
     }
 
 
@@ -68,7 +69,7 @@ type alias ColumnStyle msg =
     , element : List (Attribute msg)
     , ifFirst : List (Attribute msg)
     , ifLast : List (Attribute msg)
-    , ifCenter : List (Attribute msg)
+    , otherwise : List (Attribute msg)
     }
 
 

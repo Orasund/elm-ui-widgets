@@ -1,4 +1,4 @@
-module Layout exposing (Layout, Part(..), activate, init, queueMessage, timePassed, view)
+module Widget.Layout exposing (Layout, Part(..), activate, init, queueMessage, timePassed, view)
 
 import Array
 import Element exposing (Attribute, DeviceClass(..), Element)

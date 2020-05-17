@@ -33,7 +33,7 @@ iconButton style { onPress, text, icon } =
                     style.ifDisabled
 
                 else
-                    []
+                    style.otherwise
                )
             ++ [ Region.description text ]
         )
@@ -63,7 +63,7 @@ button style { onPress, text, icon } =
                     style.ifDisabled
 
                 else
-                    []
+                    style.otherwise
                )
         )
         { onPress = onPress
