@@ -361,7 +361,15 @@ toCardList { idle, msgMapper, style, model } =
                                     |> List.singleton
                                     |> Element.wrappedRow [ Element.width <| Element.shrink ]
                                 , elem
-                                    |> Element.el [ Element.width <| Element.shrink ]
+                                    |> Element.el
+                                        [ Element.paddingEach
+                                            { top = 0
+                                            , right = 0
+                                            , bottom = 0
+                                            , left = 8
+                                            }
+                                        , Element.width <| Element.shrink
+                                        ]
                                 ]
                         )
                     |> Element.column

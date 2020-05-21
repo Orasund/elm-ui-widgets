@@ -6,7 +6,7 @@ import Element.Input as Input
 import Html exposing (Html)
 import Widget exposing (Button, Select)
 import Widget.Snackbar as Snackbar exposing (Message)
-import Widget.Style exposing (Style)
+import Widget.Style exposing (LayoutStyle)
 
 
 type Part
@@ -58,11 +58,10 @@ timePassed sec layout =
 
 
 view :
-    List (Attribute msg)
+    LayoutStyle msg
     ->
         { window : { height : Int, width : Int }
         , dialog : Maybe (List (Attribute msg))
-        , content : Element msg
         , layout : Layout msg
         , title : Element msg
         , menu : Select msg
@@ -74,10 +73,10 @@ view :
                 }
         , actions : List (Button msg)
         , onChangedSidebar : Maybe Part -> msg
-        , style : Style style msg
         }
+    -> Element msg
     -> Html msg
-view attributes { search, title, onChangedSidebar, menu, actions, window, dialog, content, style, layout } =
+view style { search, title, onChangedSidebar, menu, actions, window, dialog, layout } content =
     let
         deviceClass : DeviceClass
         deviceClass =
@@ -293,7 +292,7 @@ view attributes { search, title, onChangedSidebar, menu, actions, window, dialog
     content
         |> style.layout
             (List.concat
-                [ attributes
+                [ style.container
                 , [ Element.inFront nav
                   , Element.inFront snackbar
                   ]

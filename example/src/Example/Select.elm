@@ -7,8 +7,8 @@ import Widget.Style exposing (ButtonStyle, RowStyle)
 
 type alias Style style msg =
     { style
-        | row : RowStyle msg
-        , button : ButtonStyle msg
+        | buttonRow : RowStyle msg
+        , selectButton : ButtonStyle msg
     }
 
 
@@ -56,6 +56,6 @@ view msgMapper style (Selected selected) =
     }
         |> Widget.select
         |> Widget.buttonRow
-            { list = style.row
-            , button = style.button
+            { list = style.buttonRow
+            , button = style.selectButton
             }

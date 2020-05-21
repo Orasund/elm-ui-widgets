@@ -1,7 +1,8 @@
 module Internal.Select exposing (MultiSelect, Select, multiSelect, select, selectButton)
 
 import Element exposing (Element)
-import Internal.Button as Button exposing (Button)
+import Element.Input as Input
+import Internal.Button exposing (Button)
 import Set exposing (Set)
 import Widget.Style exposing (ButtonStyle)
 
@@ -33,18 +34,25 @@ selectButton :
     -> ( Bool, Button msg )
     -> Element msg
 selectButton style ( selected, b ) =
-    b
-        |> Button.button
-            { style
-                | container =
-                    style.container
-                        ++ (if selected then
-                                style.ifActive
+    Input.button
+        (style.container
+            ++ (if b.onPress == Nothing then
+                    style.ifDisabled
 
-                            else
-                                []
-                           )
-            }
+                else if selected then
+                    style.ifActive
+
+                else
+                    style.otherwise
+               )
+        )
+        { onPress = b.onPress
+        , label =
+            Element.row style.labelRow
+                [ b.icon |> Element.map never
+                , Element.text b.text |> Element.el style.text
+                ]
+        }
 
 
 select :

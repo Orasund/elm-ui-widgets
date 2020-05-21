@@ -129,7 +129,7 @@ view model =
                     Theme.toStyle m.theme
             in
             Html.map LoadedSpecific <|
-                Layout.view []
+                Layout.view style.layout
                     { dialog =
                         if m.displayDialog then
                             { body =
@@ -154,8 +154,88 @@ view model =
 
                         else
                             Nothing
-                    , content =
-                        [ Element.el [ Element.height <| Element.px <| 42 ] <| Element.none
+                    , layout = m.layout
+                    , window = m.window
+                    , menu =
+                        m.scrollingNav
+                            |> ScrollingNav.toSelect
+                                (\int ->
+                                    m.scrollingNav.arrangement
+                                        |> Array.fromList
+                                        |> Array.get int
+                                        |> Maybe.map JumpTo
+                                )
+                    , actions =
+                        [ { onPress = Just <| Load "https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/"
+                          , text = "Docs"
+                          , icon = Icons.book |> Element.html |> Element.el []
+                          }
+                        , { onPress = Just <| Load "https://github.com/Orasund/elm-ui-widgets"
+                          , text = "Github"
+                          , icon = Icons.github |> Element.html |> Element.el []
+                          }
+                        , { onPress =
+                                if m.theme /= ElmUiFramework then
+                                    Just <| SetTheme <| ElmUiFramework
+
+                                else
+                                    Nothing
+                          , text = "Elm-Ui-Framework Theme"
+                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          }
+                        , { onPress =
+                                if m.theme /= Template then
+                                    Just <| SetTheme <| Template
+
+                                else
+                                    Nothing
+                          , text = "Template Theme"
+                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          }
+                        , { onPress =
+                                if m.theme /= Material then
+                                    Just <| SetTheme <| Material
+
+                                else
+                                    Nothing
+                          , text = "Material Theme"
+                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          }
+                        , { onPress =
+                                if m.theme /= DarkMaterial then
+                                    Just <| SetTheme <| DarkMaterial
+
+                                else
+                                    Nothing
+                          , text = "Dark Material Theme"
+                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          }
+                        , { onPress = Nothing
+                          , text = "Placeholder"
+                          , icon = Icons.circle |> Element.html |> Element.el []
+                          }
+                        , { onPress = Nothing
+                          , text = "Placeholder"
+                          , icon = Icons.triangle |> Element.html |> Element.el []
+                          }
+                        , { onPress = Nothing
+                          , text = "Placeholder"
+                          , icon = Icons.square |> Element.html |> Element.el []
+                          }
+                        ]
+                    , onChangedSidebar = ChangedSidebar
+                    , title =
+                        "Elm-Ui-Widgets"
+                            |> Element.text
+                            |> Element.el Heading.h1
+                    , search =
+                        Just
+                            { text = m.search.raw
+                            , onChange = ChangedSearch
+                            , label = "Search"
+                            }
+                    } <|
+                    ([ Element.el [ Element.height <| Element.px <| 42 ] <| Element.none
                         , [ m.scrollingNav
                                 |> ScrollingNav.view
                                     (\section ->
@@ -221,80 +301,7 @@ view model =
                           ]
                             |> Element.column Framework.container
                         ]
-                            |> Element.column Grid.compact
-                    , style = style
-                    , layout = m.layout
-                    , window = m.window
-                    , menu =
-                        m.scrollingNav
-                            |> ScrollingNav.toSelect
-                                (\int ->
-                                    m.scrollingNav.arrangement
-                                        |> Array.fromList
-                                        |> Array.get int
-                                        |> Maybe.map JumpTo
-                                )
-                    , actions =
-                        [ { onPress = Just <| Load "https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/"
-                          , text = "Docs"
-                          , icon = Icons.book |> Element.html |> Element.el []
-                          }
-                        , { onPress = Just <| Load "https://github.com/Orasund/elm-ui-widgets"
-                          , text = "Github"
-                          , icon = Icons.github |> Element.html |> Element.el []
-                          }
-                        , { onPress =
-                                if m.theme /= ElmUiFramework then
-                                    Just <| SetTheme <| ElmUiFramework
-
-                                else
-                                    Nothing
-                          , text = "Elm-Ui-Framework Theme"
-                          , icon = Icons.penTool |> Element.html |> Element.el []
-                          }
-                        , { onPress =
-                                if m.theme /= Template then
-                                    Just <| SetTheme <| Template
-
-                                else
-                                    Nothing
-                          , text = "Template Theme"
-                          , icon = Icons.penTool |> Element.html |> Element.el []
-                          }
-                        , { onPress =
-                                if m.theme /= Material then
-                                    Just <| SetTheme <| Material
-
-                                else
-                                    Nothing
-                          , text = "Material Theme"
-                          , icon = Icons.penTool |> Element.html |> Element.el []
-                          }
-                        , { onPress = Nothing
-                          , text = "Placeholder"
-                          , icon = Icons.circle |> Element.html |> Element.el []
-                          }
-                        , { onPress = Nothing
-                          , text = "Placeholder"
-                          , icon = Icons.triangle |> Element.html |> Element.el []
-                          }
-                        , { onPress = Nothing
-                          , text = "Placeholder"
-                          , icon = Icons.square |> Element.html |> Element.el []
-                          }
-                        ]
-                    , onChangedSidebar = ChangedSidebar
-                    , title =
-                        "Elm-Ui-Widgets"
-                            |> Element.text
-                            |> Element.el Heading.h1
-                    , search =
-                        Just
-                            { text = m.search.raw
-                            , onChange = ChangedSearch
-                            , label = "Search"
-                            }
-                    }
+                            |> Element.column Grid.compact)
 
 
 updateLoaded : LoadedMsg -> LoadedModel -> ( LoadedModel, Cmd LoadedMsg )

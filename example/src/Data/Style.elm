@@ -10,11 +10,11 @@ import Widget.Style
         , SortTableStyle
         , TabStyle
         , TextInputStyle
+        , LayoutStyle
         )
 
 
 type alias Style msg =
-    Widget.Style.Style
         { dialog : DialogStyle msg
         , expansionPanel : ExpansionPanelStyle msg
         , button : ButtonStyle msg
@@ -23,8 +23,10 @@ type alias Style msg =
         , textInput : TextInputStyle msg
         , chipButton : ButtonStyle msg
         , row : RowStyle msg
+        , buttonRow : RowStyle msg
         , column : ColumnStyle msg
         , cardColumn : ColumnStyle msg
         , sortTable : SortTableStyle msg
+        , selectButton : ButtonStyle msg
+        , layout : LayoutStyle msg
         }
-        msg

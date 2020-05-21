@@ -1,24 +1,11 @@
 # Elm-Ui-Widgets
 
 Usefull Widgets written for Elm-ui.
-These include:
-
-* Select
-* Tab
-* Multi Select
-* Collapsable
-* Dialog
-* Carousel
-* Snackbar
-* Sort Table
-* Filter Select
-* Validated Input
-* Scrolling Nav
 
 Examples of all widgets can be found [here](https://orasund.github.io/elm-ui-widgets/). For styling, I used my own [Orasund/elm-ui-framework](https://package.elm-lang.org/packages/Orasund/elm-ui-framework/latest/).
 
 ## Why create such a package?
-
+el
 After looking at the current packages that implement various reusable views (and components) I noticed two things:
 
 * There are (nearly) no widgets for Elm-Ui, and that's a problem because while going from `Element` to `Html` is easy, the opposite is not always possible (as a lot of styling in Elm-Ui would not be adapted to the `Html` element.)
@@ -42,12 +29,81 @@ Here are some alternative packages for creating UIs:
     * [surprisetalk/elm-bulma](https://dark.elm.dmy.fr/packages/surprisetalk/elm-bulma/latest/) - Wrapper for Bulma by  including the bulma stylesheet.
     * [rundis/elm-bootstrap](https://dark.elm.dmy.fr/packages/rundis/elm-bootstrap/latest/) - Wrapper for Bootstrap by including the bootstrap stylesheet.
 
+# Goal
 
+The long time goal is to have a universal tool for creating UI-frameworks natively in Elm, in particular a native **Material Design** implementation. It should allow easy customizability and also extendability of existing widgets.
 
+# Example: Button
 
-## Why does this package also include components?
+A good example, how I image the package to work is the button:
 
-I wrote a component whenever the boilerplate of a similar reusable view is less than just include the wiring in the package.
+```elm
+button: ButtonStyle msg
+    ->
+        { text : String
+        , icon : Element Never
+        , onPress : Maybe msg
+        }
+    -> Element msg
+```
+
+In comparison to Elm-Ui's button, we see two new things: 
+
+* `List (Attribute msg)` has changed into
+  ```
+  type alias ButtonStyle msg =
+      { container : List (Attribute msg)
+      , labelRow : List (Attribute msg)
+      , ifDisabled : List (Attribute msg)
+      , ifActive : List (Attribute msg)
+      }
+  ```
+* We can display an icon, besides the text. Just like the [Material Design specification](https://material.io/components/buttons) describes it.
+  Actually there is also a type for the button:
+  ```
+  type alias Button msg =
+      { text : String
+      , icon : Element Never
+      , onPress : Maybe msg
+      }
+  ```
+
+There are also a few different implementations of the button, like the Icon without text:
+
+``` elm
+iconButton :
+    ButtonStyle msg
+    ->
+        { text : String --for screen readers
+        , icon : Element Never
+        , onPress : Maybe msg
+        }
+    -> Element msg
+```
+
+or a Button with no icon
+
+```
+textButton :
+    ButtonStyle msg
+    ->
+        { textButton
+            | text : String
+            , onPress : Maybe msg
+        }
+    -> Element msg
+```
+
+# Concept
+
+Here are the reasons why I implemented it that way:
+
+* The core of Elm-Ui-Widgets are **independend** widgets (no components), that can be used without knowing anything else about the package.
+* Each widget comes with a _Widget Type_ and a _Style Type_. The Widget Type is an abstract representation of the widget and the Style Type has all styling attributes.
+* Style Types should be definable without knowing implementation details
+* Widget Types can be use for a Master View Type (Elm-Ui-Widgets might provide some master view types, for example for elm-Markup support)
+* Widget Types can be used as building Blocks for more complicated Widgets
+  (Button -> Select Buttons -> Menu -> Layout)
 
 ## Where will it go from here
 

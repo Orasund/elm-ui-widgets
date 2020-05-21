@@ -74,8 +74,8 @@ select idle style =
         }
             |> Widget.select
             |> Widget.buttonRow
-                { list = style.row
-                , button = style.button
+                { list = style.buttonRow
+                , button = style.selectButton
                 }
       )
     , ( "Nothing selected"
@@ -92,8 +92,8 @@ select idle style =
         }
             |> Widget.select
             |> Widget.buttonRow
-                { list = style.row
-                , button = style.button
+                { list = style.buttonRow
+                , button = style.selectButton
                 }
       )
     , ( "Invalid selection"
@@ -110,8 +110,8 @@ select idle style =
         }
             |> Widget.select
             |> Widget.buttonRow
-                { list = style.row
-                , button = style.button
+                { list = style.buttonRow
+                , button = style.selectButton
                 }
       )
     , ( "Disabled selection"
@@ -128,8 +128,8 @@ select idle style =
         }
             |> Widget.select
             |> Widget.buttonRow
-                { list = style.row
-                , button = style.button
+                { list = style.buttonRow
+                , button = style.selectButton
                 }
       )
     , ( "Empty Options"
@@ -146,8 +146,8 @@ select idle style =
         }
             |> Widget.select
             |> Widget.buttonRow
-                { list = style.row
-                , button = style.button
+                { list = style.buttonRow
+                , button = style.selectButton
                 }
       )
     ]
@@ -169,8 +169,8 @@ multiSelect idle style =
         }
             |> Widget.multiSelect
             |> Widget.buttonRow
-                { list = style.row
-                , button = style.button
+                { list = style.buttonRow
+                , button = style.selectButton
                 }
       )
     , ( "Nothing selected"
@@ -187,8 +187,8 @@ multiSelect idle style =
         }
             |> Widget.multiSelect
             |> Widget.buttonRow
-                { list = style.row
-                , button = style.button
+                { list = style.buttonRow
+                , button = style.selectButton
                 }
       )
     , ( "Invalid selection"
@@ -205,8 +205,8 @@ multiSelect idle style =
         }
             |> Widget.multiSelect
             |> Widget.buttonRow
-                { list = style.row
-                , button = style.button
+                { list = style.buttonRow
+                , button = style.selectButton
                 }
       )
     , ( "Disabled selection"
@@ -223,8 +223,8 @@ multiSelect idle style =
         }
             |> Widget.multiSelect
             |> Widget.buttonRow
-                { list = style.row
-                , button = style.button
+                { list = style.buttonRow
+                , button = style.selectButton
                 }
       )
     , ( "Empty Options"
@@ -241,8 +241,8 @@ multiSelect idle style =
         }
             |> Widget.multiSelect
             |> Widget.buttonRow
-                { list = style.row
-                , button = style.button
+                { list = style.buttonRow
+                , button = style.selectButton
                 }
       )
     ]

@@ -39,7 +39,7 @@ iconButton style { onPress, text, icon } =
         )
         { onPress = onPress
         , label =
-            icon |> Element.map never
+            icon |> Element.map never |> Element.el style.labelRow
         }
 
 
@@ -70,6 +70,6 @@ button style { onPress, text, icon } =
         , label =
             Element.row style.labelRow
                 [ icon |> Element.map never
-                , Element.text text
+                , Element.text text |> Element.el style.text
                 ]
         }

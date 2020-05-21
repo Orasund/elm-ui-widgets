@@ -19,6 +19,7 @@ import Widget.Style
         , ColumnStyle
         , DialogStyle
         , ExpansionPanelStyle
+        , LayoutStyle
         , RowStyle
         , SnackbarStyle
         , SortTableStyle
@@ -31,6 +32,7 @@ textButton : ButtonStyle msg
 textButton =
     { container = Button.simple
     , labelRow = Grid.simple
+    , text = []
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
     , otherwise = []
@@ -41,6 +43,7 @@ simpleButton : ButtonStyle msg
 simpleButton =
     { container = Button.simple ++ Color.success
     , labelRow = Grid.simple
+    , text = []
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
     , otherwise = []
@@ -66,6 +69,7 @@ menuTabButton =
         , Border.color Color.black
         ]
     , labelRow = Grid.simple
+    , text = []
     , ifDisabled = Color.disabled
     , ifActive = [ Border.color Color.turquoise ]
     , otherwise = []
@@ -76,6 +80,7 @@ menuButton : ButtonStyle msg
 menuButton =
     { labelRow = Grid.simple
     , container = Button.simple ++ Group.center ++ Color.dark
+    , text = []
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
     , otherwise = []
@@ -90,6 +95,7 @@ sheetButton =
             ++ Color.light
             ++ [ Font.alignLeft ]
     , labelRow = Grid.simple
+    , text = []
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
     , otherwise = []
@@ -100,6 +106,7 @@ buttonStyle : ButtonStyle msg
 buttonStyle =
     { labelRow = [ Element.spacing 8 ]
     , container = Button.simple
+    , text = []
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
     , otherwise = []
@@ -110,6 +117,7 @@ snackbarButton : ButtonStyle msg
 snackbarButton =
     { labelRow = Grid.simple
     , container = Button.simple ++ Color.dark
+    , text = []
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
     , otherwise = []
@@ -120,6 +128,7 @@ tabButtonStyle : ButtonStyle msg
 tabButtonStyle =
     { labelRow = [ Element.spacing 8 ]
     , container = Button.simple ++ Group.top
+    , text = []
     , ifDisabled = Color.disabled
     , ifActive = Color.primary
     , otherwise = []
@@ -158,6 +167,7 @@ textInputStyle =
 chipButtonStyle : ButtonStyle msg
 chipButtonStyle =
     { container = Tag.simple
+    , text = []
     , ifDisabled = []
     , labelRow = Grid.simple
     , ifActive = Color.primary
@@ -224,6 +234,16 @@ tab =
 
 row : RowStyle msg
 row =
+    { containerRow = Grid.simple
+    , element = []
+    , ifFirst = Group.left
+    , ifLast = Group.right
+    , otherwise = Group.center
+    }
+
+
+buttonRow : RowStyle msg
+buttonRow =
     { containerRow = Grid.compact
     , element = []
     , ifFirst = Group.left
@@ -262,39 +282,11 @@ sortTable =
     }
 
 
-style : Style msg
-style =
-    { sortTable = sortTable
-    , row = row
-    , cardColumn = cardColumn
-    , column = column
-    , button = buttonStyle
-    , primaryButton = simpleButton
-    , tab = tab
-    , textInput = textInputStyle
-    , chipButton = chipButtonStyle
-    , expansionPanel = expansionPanelStyle
-    , dialog = dialog
+layout : LayoutStyle msg
+layout =
+    { container = []
     , snackbar = snackbar
     , layout = Framework.responsiveLayout
-
-    {--\a w ->
-        Html.div []
-        [ Html.node "meta"
-            [ Attributes.attribute "name" "viewport"
-            , Attributes.attribute "content" "width=device-width, initial-scale=1.0"
-            ]
-            []
-        , Element.layoutWith
-            {options = (Element.focusStyle
-                { borderColor = Nothing
-                , backgroundColor = Nothing
-                , shadow = Nothing
-                }
-                |> List.singleton)
-            }
-         (Framework.layoutAttributes ++ a) <| w
-        ]--}
     , header =
         Framework.container
             ++ Color.dark
@@ -324,4 +316,23 @@ style =
                ]
     , searchFill =
         Color.light ++ Group.center
+    }
+
+
+style : Style msg
+style =
+    { sortTable = sortTable
+    , row = row
+    , buttonRow = buttonRow
+    , cardColumn = cardColumn
+    , column = column
+    , button = buttonStyle
+    , primaryButton = simpleButton
+    , tab = tab
+    , textInput = textInputStyle
+    , chipButton = chipButtonStyle
+    , expansionPanel = expansionPanelStyle
+    , dialog = dialog
+    , selectButton = buttonStyle
+    , layout = layout
     }

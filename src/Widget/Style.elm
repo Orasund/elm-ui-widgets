@@ -1,4 +1,4 @@
-module Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, RowStyle, SnackbarStyle, SortTableStyle, Style, TabStyle, TextInputStyle)
+module Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle)
 
 import Element exposing (Attribute, Element)
 import Html exposing (Html)
@@ -7,6 +7,7 @@ import Html exposing (Html)
 type alias ButtonStyle msg =
     { container : List (Attribute msg)
     , labelRow : List (Attribute msg)
+    , text : List (Attribute msg)
     , ifDisabled : List (Attribute msg)
     , ifActive : List (Attribute msg)
     , otherwise : List (Attribute msg)
@@ -82,20 +83,20 @@ type alias SortTableStyle msg =
     }
 
 
-type alias Style style msg =
-    { style
-        | snackbar : SnackbarStyle msg
-        , layout : List (Attribute msg) -> Element msg -> Html msg
-        , header : List (Attribute msg)
-        , sheet : List (Attribute msg)
-        , sheetButton : ButtonStyle msg
-        , menuButton : ButtonStyle msg
-        , menuTabButton : ButtonStyle msg
-        , menuIcon : Element Never
-        , moreVerticalIcon : Element Never
-        , spacing : Int
-        , title : List (Attribute msg)
-        , searchIcon : Element Never
-        , search : List (Attribute msg)
-        , searchFill : List (Attribute msg)
+type alias LayoutStyle msg =
+    { container : List (Attribute msg)
+    , snackbar : SnackbarStyle msg
+    , layout : List (Attribute msg) -> Element msg -> Html msg
+    , header : List (Attribute msg)
+    , sheet : List (Attribute msg)
+    , sheetButton : ButtonStyle msg
+    , menuButton : ButtonStyle msg
+    , menuTabButton : ButtonStyle msg
+    , menuIcon : Element Never
+    , moreVerticalIcon : Element Never
+    , spacing : Int
+    , title : List (Attribute msg)
+    , searchIcon : Element Never
+    , search : List (Attribute msg)
+    , searchFill : List (Attribute msg)
     }
