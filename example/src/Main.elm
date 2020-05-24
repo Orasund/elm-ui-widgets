@@ -132,11 +132,7 @@ view model =
                 Layout.view style.layout
                     { dialog =
                         if m.displayDialog then
-                            { body =
-                                "This is a dialog window"
-                                    |> Element.text
-                                    |> List.singleton
-                                    |> Element.paragraph []
+                            { text = "This is a dialog window"
                             , title = Just "Dialog"
                             , accept =
                                 Just
@@ -209,18 +205,6 @@ view model =
                                     Nothing
                           , text = "Dark Material Theme"
                           , icon = Icons.penTool |> Element.html |> Element.el []
-                          }
-                        , { onPress = Nothing
-                          , text = "Placeholder"
-                          , icon = Icons.circle |> Element.html |> Element.el []
-                          }
-                        , { onPress = Nothing
-                          , text = "Placeholder"
-                          , icon = Icons.triangle |> Element.html |> Element.el []
-                          }
-                        , { onPress = Nothing
-                          , text = "Placeholder"
-                          , icon = Icons.square |> Element.html |> Element.el []
                           }
                         ]
                     , onChangedSidebar = ChangedSidebar

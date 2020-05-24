@@ -195,6 +195,7 @@ dialog =
                , Element.width <| Element.minimum 280 <| Element.maximum 560 <| Element.fill
                ]
     , title = Heading.h3
+    , text = []
     , buttonRow =
         Grid.simple
             ++ [ Element.paddingEach

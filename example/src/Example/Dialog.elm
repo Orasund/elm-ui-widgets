@@ -62,11 +62,7 @@ view msgMapper style (IsOpen isOpen) =
              , Element.width <| Element.minimum 400 <| Element.fill
              ]
                 ++ (if isOpen then
-                        { body =
-                            "This is a dialog window"
-                                |> Element.text
-                                |> List.singleton
-                                |> Element.paragraph []
+                        { text = "This is a dialog window"
                         , title = Just "Dialog"
                         , accept =
                             Just

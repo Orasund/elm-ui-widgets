@@ -20,6 +20,7 @@ type alias DialogStyle msg =
     , buttonRow : List (Attribute msg)
     , acceptButton : ButtonStyle msg
     , dismissButton : ButtonStyle msg
+    , text : List (Attribute msg)
     }
 
 

@@ -233,7 +233,7 @@ dialog :
     DialogStyle msg
     ->
         { title : Maybe String
-        , body : Element msg
+        , text : String
         , accept : Maybe (TextButton msg)
         , dismiss : Maybe (TextButton msg)
         }

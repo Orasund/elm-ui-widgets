@@ -23,7 +23,11 @@ textInput style { chips, placeholder, label, text, onChange } =
 
           else
             chips
-                |> List.map (Button.button style.chipButton)
+                |> List.map
+                    (Button.button style.chipButton
+                        --Workaround for https://github.com/mdgriffith/elm-ui/issues/47
+                        >> Element.el []
+                    )
                 |> Element.row style.chipsRow
         , Input.text style.input
             { onChange = onChange

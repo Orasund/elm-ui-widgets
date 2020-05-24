@@ -9,7 +9,7 @@ import Widget.Style exposing (DialogStyle)
 
 type alias Dialog msg =
     { title : Maybe String
-    , body : Element msg
+    , text : String
     , accept : Maybe (TextButton msg)
     , dismiss : Maybe (TextButton msg)
     }
@@ -38,7 +38,7 @@ dialog :
     DialogStyle msg
     -> Dialog msg
     -> List (Attribute msg)
-dialog style { title, body, accept, dismiss } =
+dialog style { title, text, accept, dismiss } =
     { onDismiss =
         case ( accept, dismiss ) of
             ( Nothing, Nothing ) ->
@@ -62,7 +62,10 @@ dialog style { title, body, accept, dismiss } =
                         >> Element.el style.title
                     )
                 |> Maybe.withDefault Element.none
-            , body
+            , text
+                |> Element.text
+                |> List.singleton
+                |> Element.paragraph style.text
             , Element.row
                 ([ Element.alignRight
                  , Element.width <| Element.shrink
