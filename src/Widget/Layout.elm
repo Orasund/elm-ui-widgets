@@ -127,12 +127,13 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                                 |> Array.fromList
                                 |> Array.get option
                         )
-                    |> Maybe.map (.text >> Element.text >> Element.el style.title)
+                    |> Maybe.map (.text >> Element.text)
                     |> Maybe.withDefault title
+                    |> Element.el style.title
                 ]
 
                else
-                [ title
+                [ title |> Element.el style.title
                 , menu
                     |> Widget.select
                     |> List.map (Widget.selectButton style.menuTabButton)
@@ -240,7 +241,9 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                       ]
                     , menu
                         |> Widget.select
-                        |> List.map (Widget.selectButton style.sheetButton)
+                        |> List.map
+                            (Widget.selectButton style.sheetButton
+                            )
                     ]
                         |> List.concat
                         |> Element.column [ Element.width <| Element.fill ]
@@ -297,20 +300,20 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                   , Element.inFront snackbar
                   ]
                 , if (layout.active /= Nothing) || (dialog /= Nothing) then
-                    (Element.height <| Element.px <| window.height)
-                        :: (case dialog of
-                                Just dialogConfig ->
-                                    dialogConfig
+                    --(Element.height <| Element.px <| window.height)
+                    --    ::
+                    case dialog of
+                        Just dialogConfig ->
+                            dialogConfig
 
-                                Nothing ->
-                                    Widget.modal
-                                        { onDismiss =
-                                            Nothing
-                                                |> onChangedSidebar
-                                                |> Just
-                                        , content = sheet
-                                        }
-                           )
+                        Nothing ->
+                            Widget.modal
+                                { onDismiss =
+                                    Nothing
+                                        |> onChangedSidebar
+                                        |> Just
+                                , content = sheet
+                                }
 
                   else
                     []

@@ -73,3 +73,4 @@ button style { onPress, text, icon } =
                 , Element.text text |> Element.el style.text
                 ]
         }
+        

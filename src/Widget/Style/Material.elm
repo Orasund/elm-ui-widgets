@@ -5,7 +5,7 @@ module Widget.Style.Material exposing
     , alertDialog
     , row, column, cardColumn
     , expansionPanel
-    , chip, darkPalette, snackbar, textInput
+    , chip, darkPalette, iconButton, layout, snackbar, tab, tabButton, textInput
     )
 
 {-|
@@ -60,12 +60,13 @@ import Widget.Style
         , ColumnStyle
         , DialogStyle
         , ExpansionPanelStyle
+        , LayoutStyle
         , RowStyle
         , SnackbarStyle
-        , SortTableStyle
         , TabStyle
         , TextInputStyle
         )
+import Widget.Style.Template as Template
 
 
 
@@ -239,6 +240,7 @@ accessibleWithTextColor c color =
            )
 
 
+toCIELCH : Color -> { l : Float, c : Float, h : Float }
 toCIELCH =
     Convert.colorToLab
         >> (\{ l, a, b } ->
@@ -249,6 +251,7 @@ toCIELCH =
            )
 
 
+fromCIELCH : { l : Float, c : Float, h : Float } -> Color
 fromCIELCH =
     (\{ l, c, h } ->
         { l = l
@@ -524,7 +527,7 @@ textButton palette =
     }
 
 
-{-| Implementation Detail:
+{-| Technical Remark:
 
   - Border color was not defined in the [specification](https://material.io/components/buttons#toggle-button)
 
@@ -613,13 +616,72 @@ toggleButton palette =
     }
 
 
+{-| Technical Remark:
+
+  - Could not find any specification details
+
+-}
+iconButton : Palette -> ButtonStyle msg
+iconButton palette =
+    { container =
+        (baseButton palette |> .container)
+            ++ [ Element.height <| Element.px 48
+               , Border.rounded 24
+
+               --, Font.color <| fromColor <| palette.primary
+               , Element.mouseDown
+                    [ palette.surface
+                        |> scaleOpacity buttonPressedOpacity
+                        |> fromColor
+                        |> Background.color
+                    ]
+               , Element.focused
+                    [ palette.surface
+                        |> scaleOpacity buttonFocusOpacity
+                        |> fromColor
+                        |> Background.color
+                    ]
+               , Element.mouseOver
+                    [ palette.surface
+                        |> scaleOpacity buttonHoverOpacity
+                        |> fromColor
+                        |> Background.color
+                    ]
+               ]
+    , labelRow =
+        [ Element.spacing 8
+        , Element.width <| Element.shrink
+        , Element.centerY
+        , Element.centerX
+        ]
+    , text = baseButton palette |> .text
+    , ifDisabled =
+        (baseButton palette |> .ifDisabled)
+            ++ [ gray
+                    |> fromColor
+                    |> Font.color
+               , Element.mouseDown []
+               , Element.mouseOver []
+               , Element.focused []
+               ]
+    , ifActive =
+        [ palette.surface
+            |> scaleOpacity buttonHoverOpacity
+            |> fromColor
+            |> Background.color
+        ]
+    , otherwise =
+        []
+    }
+
+
 
 {-------------------------------------------------------------------------------
 -- C H I P
 -------------------------------------------------------------------------------}
 
 
-{-| Implementation Detail:
+{-| Technical Remark:
 
   - There seams to be a bug, where in the mouseOver effects are now visible.
     This might have something to do with <https://github.com/mdgriffith/elm-ui/issues/47>.
@@ -747,7 +809,7 @@ buttonRow =
     }
 
 
-{-| Implementation Detail:
+{-| Technical Remark:
 
 This is a simplification of the [Material Design Card
 ](https://material.io/components/cards) and might get replaced at a later date.
@@ -849,17 +911,18 @@ alertDialog palette =
 -------------------------------------------------------------------------------}
 
 
-icon : String -> List (Svg Never) -> Element Never
-icon size =
+icon : String -> Int -> List (Svg Never) -> Element Never
+icon string size =
     Svg.svg
-        [ Svg.Attributes.height "24"
+        [ Svg.Attributes.height <| String.fromInt size
         , Svg.Attributes.stroke "currentColor"
         , Svg.Attributes.fill "currentColor"
-        , Svg.Attributes.strokeLinecap "round"
-        , Svg.Attributes.strokeLinejoin "round"
-        , Svg.Attributes.strokeWidth "2"
-        , Svg.Attributes.viewBox size
-        , Svg.Attributes.width "24"
+
+        --, Svg.Attributes.strokeLinecap "round"
+        --, Svg.Attributes.strokeLinejoin "round"
+        --, Svg.Attributes.strokeWidth "2"
+        , Svg.Attributes.viewBox string
+        , Svg.Attributes.width <| String.fromInt size
         ]
         >> Element.html
         >> Element.el []
@@ -867,20 +930,20 @@ icon size =
 
 expand_less : Element Never
 expand_less =
-    icon "0 0 48 48" [ Svg.path [ Svg.Attributes.d "M24 16L12 28l2.83 2.83L24 21.66l9.17 9.17L36 28z" ] [] ]
+    icon "0 0 48 48" 24 [ Svg.path [ Svg.Attributes.d "M24 16L12 28l2.83 2.83L24 21.66l9.17 9.17L36 28z" ] [] ]
 
 
 expand_more : Element Never
 expand_more =
-    icon "0 0 48 48" [ Svg.path [ Svg.Attributes.d "M33.17 17.17L24 26.34l-9.17-9.17L12 20l12 12 12-12z" ] [] ]
+    icon "0 0 48 48" 24 [ Svg.path [ Svg.Attributes.d "M33.17 17.17L24 26.34l-9.17-9.17L12 20l12 12 12-12z" ] [] ]
 
 
-{-| Implementation Details:
+{-| Technical Remarks:
 
   - The expansion panel is part of an [older version](https://material.io/archive/guidelines/components/expansion-panels.html) of the Material Design.
     The newer version is part of the List component.
     The styling is taken from the [new specification](https://material.io/components/lists#specs).
-  - The Icons are taken from [icidasset/elm-material-icons](https://dark.elm.dmy.fr/packages/icidasset/elm-material-icons/latest) but seem wrong.
+  - The Icons are taken from [danmarcab/material-icons](https://dark.elm.dmy.fr/packages/danmarcab/material-icons/latest/).
 
 -}
 expansionPanel : Palette -> ExpansionPanelStyle msg
@@ -923,7 +986,7 @@ expansionPanel palette =
 -------------------------------------------------------------------------------}
 
 
-{-| Implementation Detail:
+{-| Technical Remark:
 
   - The text color of the button was not given in the specification. This implementation
     adujsts the luminance of the color to fit the [w3 accessability standard](https://www.w3.org/TR/WCAG20/#Contrast)
@@ -971,7 +1034,7 @@ snackbar palette =
 -------------------------------------------------------------------------------}
 
 
-{-| Implementation Detail:
+{-| Technical Remark:
 
   - This is just a temporary implementation. It will soon be replaced with the official implementation.
 
@@ -981,27 +1044,111 @@ textInput palette =
     { chipButton = chip palette
     , chipsRow = [ Element.spacing 8 ]
     , containerRow =
-        [ Element.spacing 8
-        , Element.paddingXY 8 0
-        , Border.width 1
-        , Border.rounded 4
-        , palette.on.surface
-            |> scaleOpacity 0.14
-            |> fromColor
-            |> Border.color
-        , Element.focused
-            [ Border.shadow <| shadow 4
-            , palette.primary
-                |> fromColor
-                |> Border.color
-            ]
-        , Element.mouseOver [ Border.shadow <| shadow 2 ]
-        ]
+        (palette.surface
+            |> textAndBackground
+        )
+            ++ [ Element.spacing 8
+               , Element.paddingXY 8 0
+               , Border.width 1
+               , Border.rounded 4
+               , palette.on.surface
+                    |> scaleOpacity 0.14
+                    |> fromColor
+                    |> Border.color
+               , Element.focused
+                    [ Border.shadow <| shadow 4
+                    , palette.primary
+                        |> fromColor
+                        |> Border.color
+                    ]
+               , Element.mouseOver [ Border.shadow <| shadow 2 ]
+               ]
     , input =
-        [ Border.width 0
-        , Element.mouseOver []
-        , Element.focused []
+        (palette.surface
+            |> textAndBackground
+        )
+            ++ [ Border.width 0
+               , Element.mouseOver []
+               , Element.focused []
+               ]
+    }
+
+
+
+{-------------------------------------------------------------------------------
+-- T A B
+-------------------------------------------------------------------------------}
+
+
+tabButton : Palette -> ButtonStyle msg
+tabButton palette =
+    { container =
+        buttonFont
+            ++ [ Element.height <| Element.px 48
+               , Element.fill
+                    |> Element.maximum 360
+                    |> Element.minimum 90
+                    |> Element.width
+               , Element.paddingXY 12 16
+               , Font.color <| fromColor <| palette.primary
+               , Element.mouseDown
+                    [ palette.primary
+                        |> scaleOpacity buttonPressedOpacity
+                        |> fromColor
+                        |> Background.color
+                    ]
+               , Element.focused
+                    [ palette.primary
+                        |> scaleOpacity buttonFocusOpacity
+                        |> fromColor
+                        |> Background.color
+                    ]
+               , Element.mouseOver
+                    [ palette.primary
+                        |> scaleOpacity buttonHoverOpacity
+                        |> fromColor
+                        |> Background.color
+                    ]
+               ]
+    , labelRow =
+        [ Element.spacing <| 8
+        , Element.centerY
+        , Element.centerX
         ]
+    , text = []
+    , ifDisabled =
+        (baseButton palette |> .ifDisabled)
+            ++ [ gray
+                    |> fromColor
+                    |> Font.color
+               , Element.mouseDown []
+               , Element.mouseOver []
+               , Element.focused []
+               ]
+    , ifActive =
+        [ Element.height <| Element.px 48
+        , Border.widthEach
+            { bottom = 2
+            , left = 0
+            , right = 0
+            , top = 0
+            }
+        ]
+    , otherwise =
+        []
+    }
+
+
+{-| -}
+tab : Palette -> TabStyle msg
+tab palette =
+    { button = tabButton palette
+    , optionRow =
+        [ Element.spaceEvenly
+        , Border.shadow <| shadow 4
+        ]
+    , containerColumn = [ Element.spacing 8 ]
+    , content = [ Element.width <| Element.fill ]
     }
 
 
@@ -1010,3 +1157,203 @@ textInput palette =
 -- L A Y O U T
 -------------------------------------------------------------------------------}
 
+
+more_vert : Element Never
+more_vert =
+    icon "0 0 48 48" 24 [ Svg.path [ Svg.Attributes.d "M24 16c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 4c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z" ] [] ]
+
+
+search : Element Never
+search =
+    icon "0 0 48 48" 24 [ Svg.path [ Svg.Attributes.d "M31 28h-1.59l-.55-.55C30.82 25.18 32 22.23 32 19c0-7.18-5.82-13-13-13S6 11.82 6 19s5.82 13 13 13c3.23 0 6.18-1.18 8.45-3.13l.55.55V31l10 9.98L40.98 38 31 28zm-12 0c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9z" ] [] ]
+
+
+menu : Element Never
+menu =
+    icon "0 0 48 48" 24 [ Svg.path [ Svg.Attributes.d "M6 36h36v-4H6v4zm0-10h36v-4H6v4zm0-14v4h36v-4H6z" ] [] ]
+
+
+menuTabButton : Palette -> ButtonStyle msg
+menuTabButton palette =
+    { container =
+        buttonFont
+            ++ [ Element.height <| Element.px 56
+               , Element.fill
+                    |> Element.maximum 360
+                    |> Element.minimum 90
+                    |> Element.width
+               , Element.paddingXY 12 16
+               , palette.primary
+                    |> accessibleTextColor
+                    |> fromColor
+                    |> Font.color
+               , Element.alignBottom
+               , Element.mouseDown
+                    [ palette.primary
+                        |> scaleOpacity buttonPressedOpacity
+                        |> fromColor
+                        |> Background.color
+                    ]
+               , Element.focused
+                    [ palette.primary
+                        |> scaleOpacity buttonFocusOpacity
+                        |> fromColor
+                        |> Background.color
+                    ]
+               , Element.mouseOver
+                    [ palette.primary
+                        |> scaleOpacity buttonHoverOpacity
+                        |> fromColor
+                        |> Background.color
+                    ]
+               ]
+    , labelRow =
+        [ Element.spacing <| 8
+        , Element.centerY
+        , Element.centerX
+        ]
+    , text = []
+    , ifDisabled =
+        (baseButton palette |> .ifDisabled)
+            ++ [ gray
+                    |> fromColor
+                    |> Font.color
+               , Element.mouseDown []
+               , Element.mouseOver []
+               , Element.focused []
+               ]
+    , ifActive =
+        [ Border.widthEach
+            { bottom = 2
+            , left = 0
+            , right = 0
+            , top = 0
+            }
+        ]
+    , otherwise =
+        []
+    }
+
+
+drawerButton : Palette -> ButtonStyle msg
+drawerButton palette =
+    { container =
+        [ Font.size 14
+        , Font.semiBold
+        , Font.letterSpacing 0.25
+        , Element.height <| Element.px 36
+        , Element.width <| Element.fill
+        , Element.paddingXY 8 8
+        , Border.rounded <| 4
+        , palette.surface
+            |> accessibleTextColor
+            |> fromColor
+            |> Font.color
+        , Element.mouseDown
+            [ palette.primary
+                |> scaleOpacity buttonPressedOpacity
+                |> fromColor
+                |> Background.color
+            ]
+        , Element.focused
+            [ palette.primary
+                |> scaleOpacity buttonFocusOpacity
+                |> fromColor
+                |> Background.color
+            ]
+        , Element.mouseOver
+            [ palette.primary
+                |> scaleOpacity buttonHoverOpacity
+                |> fromColor
+                |> Background.color
+            ]
+        ]
+    , labelRow = baseButton palette |> .labelRow
+    , text = baseButton palette |> .text
+    , ifDisabled =
+        (baseButton palette |> .ifDisabled)
+            ++ [ gray
+                    |> fromColor
+                    |> Font.color
+               , Element.mouseDown []
+               , Element.mouseOver []
+               , Element.focused []
+               ]
+    , ifActive =
+        [ palette.primary
+            |> scaleOpacity buttonHoverOpacity
+            |> fromColor
+            |> Background.color
+        , palette.primary
+            |> fromColor
+            |> Font.color
+        ]
+    , otherwise =
+        []
+    }
+
+
+{-| Technical Remark:
+
+  - Due to [a bug in Elm-Ui](https://github.com/mdgriffith/elm-ui/issues/47) the menu button still behave wierd.
+    I've not found a workaround for it.
+  - The Icons are taken from [danmarcab/material-icons](https://dark.elm.dmy.fr/packages/danmarcab/material-icons/latest/).
+  - The drawer button as not taken from the specification (This will been to be added later)
+
+-}
+layout : Palette -> String -> LayoutStyle msg
+layout palette string =
+    { container =
+        (palette.background |> textAndBackground)
+            ++ [ Font.family
+                    [ Font.typeface "Roboto"
+                    , Font.sansSerif
+                    ]
+               , Font.size 16
+               , Font.letterSpacing 0.5
+               ]
+    , snackbar = snackbar palette
+    , layout = Element.layout
+    , header =
+        (palette.primary
+            |> textAndBackground
+        )
+            ++ [ Element.height <| Element.px 56
+               , Element.padding 16
+               , Element.width <| Element.minimum 360 <| Element.fill
+               ]
+    , menuButton = iconButton palette
+    , sheetButton = drawerButton palette
+    , menuTabButton = menuTabButton palette
+    , sheet =
+        (palette.surface |> textAndBackground)
+            ++ [ Element.width <| Element.maximum 360 <| Element.fill
+               , Element.padding 8
+               , Element.spacing 8
+               ]
+    , menuIcon = menu
+    , moreVerticalIcon = more_vert
+    , spacing = 8
+    , title = h6 ++ [ Element.paddingXY 8 0 ]
+    , searchIcon = search
+    , search =
+        (palette.surface |> textAndBackground)
+            ++ [ Element.spacing 8
+               , Element.paddingXY 8 8
+               , Element.height <| Element.px 32
+               , Border.width 1
+               , Border.rounded 4
+               , palette.on.surface
+                    |> scaleOpacity 0.14
+                    |> fromColor
+                    |> Border.color
+               , Element.focused
+                    [ Border.shadow <| shadow 4
+                    ]
+               , Element.mouseOver [ Border.shadow <| shadow 2 ]
+               , Element.width <| Element.maximum 360 <| Element.fill
+               , Element.alignRight
+               ]
+    , searchFill =
+        palette.surface |> textAndBackground
+    }

@@ -35,30 +35,6 @@ sortTable palette =
     , defaultIcon = Element.none
     }
 
-layout : Palette -> String -> LayoutStyle msg
-layout palette string =
-    { container = [Font.family
-            [ Font.typeface "Roboto"
-            , Font.sansSerif
-            ]
-        ,Font.size 16
-    , Font.letterSpacing 0.5]
-    , snackbar = Material.snackbar palette
-    , layout = Element.layout
-    , header = Template.box <| string ++ ":header"
-    , menuButton = Template.button <| string ++ ":menuButton"
-    , sheetButton = Template.button <| string ++ ":sheetButton"
-    , menuTabButton = Template.button <| string ++ ":menuTabButton"
-    , sheet = Template.box <| string ++ ":sheet"
-    , menuIcon = Template.icon <| string ++ ":menuIcon"
-    , moreVerticalIcon = Template.icon <| string ++ ":moreVerticalIcon"
-    , spacing = 8
-    , title = Template.box <| string ++ ":title"
-    , searchIcon = Template.icon <| string ++ ":searchIcon"
-    , search = Template.box <| string ++ ":search"
-    , searchFill = Template.box <| string ++ ":searchFill"
-    }
-
 
 style : Palette -> Style msg
 style palette =
@@ -70,10 +46,10 @@ style palette =
     , button = Material.outlinedButton palette
     , primaryButton = Material.containedButton palette
     , selectButton = Material.toggleButton palette
-    , tab = Template.tab <| "tab"
+    , tab = Material.tab palette
     , textInput = Material.textInput palette
     , chipButton = Material.chip palette
     , expansionPanel = Material.expansionPanel palette
     , dialog = Material.alertDialog palette
-    , layout = layout palette "layout"
+    , layout = Material.layout palette "layout"
     }

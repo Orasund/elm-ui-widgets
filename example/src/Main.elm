@@ -8,11 +8,13 @@ import Browser.Navigation as Navigation
 import Data.Section as Section exposing (Section(..))
 import Data.Style exposing (Style)
 import Data.Theme as Theme exposing (Theme(..))
+import Data.Example as Example exposing (Example)
 import Element exposing (DeviceClass(..))
 import Framework
 import Framework.Grid as Grid
 import Framework.Heading as Heading
 import Html exposing (Html)
+import Html.Attributes as Attributes
 import Icons
 import Reusable
 import Stateless
@@ -25,7 +27,7 @@ import Widget.ScrollingNav as ScrollingNav
 
 type alias LoadedModel =
     { stateless : Stateless.Model
-    , scrollingNav : ScrollingNav.Model Section
+    , scrollingNav : ScrollingNav.Model Example
     , layout : Layout LoadedMsg
     , displayDialog : Bool
     , window :
@@ -48,14 +50,14 @@ type Model
 
 type LoadedMsg
     = StatelessSpecific Stateless.Msg
-    | UpdateScrollingNav (ScrollingNav.Model Section -> ScrollingNav.Model Section)
+    | UpdateScrollingNav (ScrollingNav.Model Example -> ScrollingNav.Model Example)
     | TimePassed Int
     | AddSnackbar ( String, Bool )
     | ToggleDialog Bool
     | ChangedSidebar (Maybe Part)
     | Resized { width : Int, height : Int }
     | Load String
-    | JumpTo Section
+    | JumpTo Example
     | ChangedSearch String
     | SetTheme Theme
     | Idle
@@ -71,9 +73,9 @@ initialModel { viewport } =
     let
         ( scrollingNav, cmd ) =
             ScrollingNav.init
-                { toString = Section.toString
-                , fromString = Section.fromString
-                , arrangement = Section.asList
+                { toString = Example.toString
+                , fromString = Example.fromString
+                , arrangement = Example.asList 
                 , toMsg =
                     \result ->
                         case result of
@@ -171,24 +173,6 @@ view model =
                           , icon = Icons.github |> Element.html |> Element.el []
                           }
                         , { onPress =
-                                if m.theme /= ElmUiFramework then
-                                    Just <| SetTheme <| ElmUiFramework
-
-                                else
-                                    Nothing
-                          , text = "Elm-Ui-Framework Theme"
-                          , icon = Icons.penTool |> Element.html |> Element.el []
-                          }
-                        , { onPress =
-                                if m.theme /= Template then
-                                    Just <| SetTheme <| Template
-
-                                else
-                                    Nothing
-                          , text = "Template Theme"
-                          , icon = Icons.penTool |> Element.html |> Element.el []
-                          }
-                        , { onPress =
                                 if m.theme /= Material then
                                     Just <| SetTheme <| Material
 
@@ -206,6 +190,25 @@ view model =
                           , text = "Dark Material Theme"
                           , icon = Icons.penTool |> Element.html |> Element.el []
                           }
+                        
+                        , { onPress =
+                                if m.theme /= ElmUiFramework then
+                                    Just <| SetTheme <| ElmUiFramework
+
+                                else
+                                    Nothing
+                          , text = "Elm-Ui-Framework Theme"
+                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          }
+                        , { onPress =
+                                if m.theme /= Template then
+                                    Just <| SetTheme <| Template
+
+                                else
+                                    Nothing
+                          , text = "Template Theme"
+                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          }
                         ]
                     , onChangedSidebar = ChangedSidebar
                     , title =
@@ -219,9 +222,10 @@ view model =
                             , label = "Search"
                             }
                     } <|
-                    ([ Element.el [ Element.height <| Element.px <| 42 ] <| Element.none
-                        , [ m.scrollingNav
-                                |> ScrollingNav.view
+                    (
+                        [ Element.el [ Element.height <| Element.px <| 42 ] <| Element.none
+                        , [StatelessViews,ReusableViews]
+                                |> List.map
                                     (\section ->
                                         (case section of
                                             ReusableViews ->
@@ -238,7 +242,9 @@ view model =
                                                     }
                                         )
                                             |> (\{ title, description, items } ->
-                                                    [ Element.el Heading.h2 <| Element.text <| title
+                                                    [ title
+                                                    |> Element.text
+                                                    |> Element.el ( Heading.h2 )
                                                     , if m.search.current == "" then
                                                         description
                                                             |> Element.text
@@ -262,7 +268,10 @@ view model =
                                                         |> List.map
                                                             (\( name, elem, more ) ->
                                                                 [ [ Element.text name
-                                                                        |> Element.el (Heading.h3 ++ [ Element.height <| Element.shrink ])
+                                                                        |> Element.el (Heading.h3 ++ [ Element.height <| Element.shrink 
+                                                                       , name
+                                                            |> Attributes.id
+                                                            |> Element.htmlAttribute])
                                                                   , elem
                                                                   ]
                                                                     |> Element.column Grid.simple
@@ -282,10 +291,12 @@ view model =
                                                         |> Element.column (Grid.section ++ [ Element.centerX ])
                                                )
                                     )
-                          ]
-                            |> Element.column Framework.container
+                               -- |> Element.column Grid.section
+                          --]
+                            |> Element.column (Framework.container ++ style.layout.container)
                         ]
-                            |> Element.column Grid.compact)
+                            |> Element.column Grid.compact
+                    )
 
 
 updateLoaded : LoadedMsg -> LoadedModel -> ( LoadedModel, Cmd LoadedMsg )
