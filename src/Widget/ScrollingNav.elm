@@ -1,7 +1,6 @@
 module Widget.ScrollingNav exposing
-    ( Model, Msg, init, update, subscriptions, view, viewSections, current
-    , jumpTo, syncPositions
-    , jumpToWithOffset
+    ( ScrollingNav, init, view, current, toSelect
+    , jumpTo, jumpToWithOffset, syncPositions, getPos, setPos
     )
 
 {-| The Scrolling Nav is a navigation bar thats updates while you scroll through
@@ -10,51 +9,45 @@ the page. Clicking on a navigation button will scroll directly to that section.
 
 # Basics
 
-@docs Model, Msg, init, update, subscriptions, view, viewSections, current
+@docs ScrollingNav, init, view, current, toSelect
 
 
 # Operations
 
-@docs jumpTo, syncPositions
+@docs jumpTo, jumpToWithOffset, syncPositions, getPos, setPos
 
 -}
 
 import Browser.Dom as Dom
-import Element exposing (Attribute, Element)
-import Framework.Grid as Grid
+import Element exposing (Element)
 import Html.Attributes as Attributes
 import IntDict exposing (IntDict)
-import Task
-import Time
+import Task exposing (Task)
+import Widget exposing (Select)
 
 
 {-| -}
-type alias Model section =
-    { labels : section -> String
+type alias ScrollingNav section =
+    { toString : section -> String
+    , fromString : String -> Maybe section
     , positions : IntDict String
     , arrangement : List section
     , scrollPos : Int
     }
 
 
-{-| -}
-type Msg section
-    = GotHeaderPos section (Result Dom.Error Int)
-    | ChangedViewport (Result Dom.Error ())
-    | SyncPosition Int
-    | JumpTo section
-    | TimePassed
-
-
 {-| The intial state include the labels and the arrangement of the sections
 -}
 init :
-    { labels : section -> String
+    { toString : section -> String
+    , fromString : String -> Maybe section
     , arrangement : List section
+    , toMsg : Result Dom.Error (ScrollingNav section -> ScrollingNav section) -> msg
     }
-    -> ( Model section, Cmd (Msg section) )
-init { labels, arrangement } =
-    { labels = labels
+    -> ( ScrollingNav section, Cmd msg )
+init { toString, fromString, arrangement, toMsg } =
+    { toString = toString
+    , fromString = fromString
     , positions = IntDict.empty
     , arrangement = arrangement
     , scrollPos = 0
@@ -62,101 +55,102 @@ init { labels, arrangement } =
         |> (\a ->
                 ( a
                 , syncPositions a
+                    |> Task.attempt toMsg
                 )
            )
 
 
-{-| -}
-update : Msg section -> Model section -> ( Model section, Cmd (Msg section) )
-update msg model =
-    case msg of
-        GotHeaderPos label result ->
-            ( case result of
-                Ok pos ->
-                    { model
-                        | positions =
-                            model.positions
-                                |> IntDict.insert pos
-                                    (label |> model.labels)
-                    }
-
-                Err _ ->
-                    model
-            , Cmd.none
-            )
-
-        ChangedViewport _ ->
-            ( model, Cmd.none )
-
-        SyncPosition pos ->
-            ( { model
-                | scrollPos = pos
-              }
-            , Cmd.none
-            )
-
-        TimePassed ->
-            ( model
-            , Dom.getViewport
-                |> Task.map (.viewport >> .y >> round)
-                |> Task.perform SyncPosition
-            )
-
-        JumpTo elem ->
-            ( model
-            , model
-                |> jumpTo elem
-            )
-
-
-{-| -}
-subscriptions : Sub (Msg msg)
-subscriptions =
-    Time.every 100 (always TimePassed)
-
-
-{-| scrolls the screen to the respective section
+{-| Syncs the position of of the viewport
 -}
-jumpTo : section -> Model section -> Cmd (Msg msg)
-jumpTo section { labels } =
-    Dom.getElement (section |> labels)
+getPos : Task x (ScrollingNav selection -> ScrollingNav selection)
+getPos =
+    Dom.getViewport
+        |> Task.map
+            (\int model ->
+                { model
+                    | scrollPos = int.viewport.y |> round
+                }
+            )
+
+
+{-| sets the position of the viewport to show a specific section
+-}
+setPos : Int -> ScrollingNav section -> ScrollingNav section
+setPos pos model =
+    { model | scrollPos = pos }
+
+
+{-| Scrolls the screen to the respective section
+-}
+jumpTo :
+    { section : section
+    , onChange : Result Dom.Error () -> msg
+    }
+    -> ScrollingNav section
+    -> Cmd msg
+jumpTo { section, onChange } { toString } =
+    Dom.getElement (section |> toString)
         |> Task.andThen
             (\{ element } ->
-                Dom.setViewport 0 (element.y)
+                Dom.setViewport 0 element.y
             )
-        |> Task.attempt ChangedViewport
+        |> Task.attempt onChange
 
-{-| scrolls the screen to the respective section with some offset
+
+{-| Scrolls the screen to the respective section with some offset
 -}
-jumpToWithOffset : Float -> section -> Model section -> Cmd (Msg msg)
-jumpToWithOffset offset section { labels } =
-    Dom.getElement (section |> labels)
+jumpToWithOffset :
+    { offset : Float
+    , section : section
+    , onChange : Result Dom.Error () -> msg
+    }
+    -> ScrollingNav section
+    -> Cmd msg
+jumpToWithOffset { offset, section, onChange } { toString } =
+    Dom.getElement (section |> toString)
         |> Task.andThen
             (\{ element } ->
                 Dom.setViewport 0 (element.y - offset)
             )
-        |> Task.attempt ChangedViewport
+        |> Task.attempt onChange
 
-{-| -}
-syncPositions : Model section -> Cmd (Msg section)
-syncPositions { labels, arrangement } =
+
+{-| Updates the positions of all sections.
+This functions should be called regularly if the height of elements on your page can change during time.
+-}
+syncPositions : ScrollingNav section -> Task Dom.Error (ScrollingNav section -> ScrollingNav section)
+syncPositions { toString, arrangement } =
     arrangement
         |> List.map
             (\label ->
-                Dom.getElement (labels label)
+                Dom.getElement (toString label)
                     |> Task.map
-                        (.element
-                            >> .y
-                            >> round
+                        (\x ->
+                            ( x.element.y |> round
+                            , label
+                            )
                         )
-                    |> Task.attempt
-                        (GotHeaderPos label)
             )
-        |> Cmd.batch
+        |> Task.sequence
+        |> Task.map
+            (\list m ->
+                list
+                    |> List.foldl
+                        (\( pos, label ) model ->
+                            { model
+                                | positions =
+                                    model.positions
+                                        |> IntDict.insert pos
+                                            (label |> model.toString)
+                            }
+                        )
+                        m
+            )
 
 
-{-| -}
-current : (String -> Maybe section) -> Model section -> Maybe section
+{-| Returns the current section
+-}
+current : (String -> Maybe section) -> ScrollingNav section -> Maybe section
 current fromString { positions, scrollPos } =
     positions
         |> IntDict.before (scrollPos + 1)
@@ -166,42 +160,50 @@ current fromString { positions, scrollPos } =
         |> Maybe.andThen fromString
 
 
-{-| -}
-viewSections :
-    { label : String -> Element msg
-    , fromString : String -> Maybe section
-    , msgMapper : Msg section -> msg
-    , attributes : Bool -> List (Attribute msg)
-    }
-    -> Model section
-    ->
-        { selected : Maybe section
-        , options : List section
-        , label : section -> Element msg
-        , onChange : section -> msg
-        , attributes : Bool -> List (Attribute msg)
-        }
-viewSections { label, fromString, msgMapper, attributes } ({ arrangement, scrollPos, labels, positions } as model) =
-    { selected = model |> current fromString
-    , options = arrangement
-    , label = \elem -> label (elem |> labels)
-    , onChange = JumpTo >> msgMapper
-    , attributes = attributes
+{-| Returns a select widget containing all section, with the current section selected.
+-}
+toSelect : (Int -> Maybe msg) -> ScrollingNav section -> Select msg
+toSelect onSelect ({ arrangement, toString, fromString } as model) =
+    { selected =
+        arrangement
+            |> List.indexedMap (\i s -> ( i, s ))
+            |> List.filterMap
+                (\( i, s ) ->
+                    if Just s == current fromString model then
+                        Just i
+
+                    else
+                        Nothing
+                )
+            |> List.head
+    , options =
+        arrangement
+            |> List.map
+                (\s ->
+                    { text = toString s
+                    , icon = Element.none
+                    }
+                )
+    , onSelect = onSelect
     }
 
 
-{-| -}
+{-| Opinionated way of viewing the section.
+
+This might be useful at first, but you should consider writing your own view function.
+
+```
 view :
     (section -> Element msg)
     -> Model section
-    -> Element msg
-view asElement { labels, arrangement } =
+    -> List (Element msg)
+view asElement { toString, arrangement } =
     arrangement
         |> List.map
             (\header ->
                 Element.el
                     [ header
-                        |> labels
+                        |> toString
                         |> Attributes.id
                         |> Element.htmlAttribute
                     , Element.width <| Element.fill
@@ -210,4 +212,25 @@ view asElement { labels, arrangement } =
                     asElement <|
                         header
             )
-        |> Element.column Grid.simple
+```
+
+-}
+view :
+    (section -> Element msg)
+    -> ScrollingNav section
+    -> List (Element msg)
+view asElement { toString, arrangement } =
+    arrangement
+        |> List.map
+            (\header ->
+                Element.el
+                    [ header
+                        |> toString
+                        |> Attributes.id
+                        |> Element.htmlAttribute
+                    , Element.width <| Element.fill
+                    ]
+                <|
+                    asElement <|
+                        header
+            )

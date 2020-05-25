@@ -1,249 +1,508 @@
 module Widget exposing
-    ( select, multiSelect, collapsable, carousel, scrim, tab
-    , dialog
+    ( Button, TextButton, iconButton, textButton, button
+    , Select, MultiSelect, selectButton, select, multiSelect
+    , Dialog, modal, dialog
+    , ExpansionPanel, expansionPanel
+    , row, column, buttonRow, buttonColumn
+    , SortTable,Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
+    , TextInput, textInput
+    , Tab, tab
     )
 
-{-| This module contains functions for displaying data.
+{-| This module contains different stateless view functions. No wiring required.
 
-@docs select, multiSelect, collapsable, carousel, scrim, tab
+These widgets should be used by defining the styling seperately:
+
+```
+Widget.button Material.primaryButton
+    { text = "disable me"
+    , icon =
+        FeatherIcons.slash
+            |> FeatherIcons.withSize 16
+            |> FeatherIcons.toHtml []
+            |> Element.html
+            |> Element.el []
+    , onPress =
+        if isButtonEnabled then
+            ChangedButtonStatus False
+                |> Just
+
+        else
+            Nothing
+    }
+```
+
+Every widgets comes with a type. You can think of the widgets as building blocks.
+You can create you own widgets by sticking widgets types together.
+
+# Buttons
+
+![Button](https://orasund.github.io/elm-ui-widgets/assets/button.png)
+
+@docs Button, TextButton, iconButton, textButton, button
 
 
-# DEPRECATED
+# Select
 
-@docs dialog
+![Select](https://orasund.github.io/elm-ui-widgets/assets/select.png)
+
+@docs Select, selectButton, select
+
+![multiSelect](https://orasund.github.io/elm-ui-widgets/assets/multiSelect.png)
+
+@docs MultiSelect, multiSelect
+
+
+# Dialog
+
+![dialog](https://orasund.github.io/elm-ui-widgets/assets/dialog.png)
+
+@docs Dialog, modal, dialog
+
+
+# Expansion Panel
+
+![expansionPanel](https://orasund.github.io/elm-ui-widgets/assets/expansionPanel.png)
+
+@docs ExpansionPanel, expansionPanel
+
+
+# List
+
+![list](https://orasund.github.io/elm-ui-widgets/assets/list.png)
+
+@docs row, column, buttonRow, buttonColumn
+
+
+# Sort Table
+
+![sortTable](https://orasund.github.io/elm-ui-widgets/assets/sortTable.png)
+
+@docs SortTable,Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
+
+
+# Text Input
+
+![textInput](https://orasund.github.io/elm-ui-widgets/assets/textInput.png)
+
+@docs TextInput, textInput
+
+
+# Tab
+
+![tab](https://orasund.github.io/elm-ui-widgets/assets/textInput.png)
+
+@docs Tab, tab
 
 -}
 
-import Array exposing (Array)
-import Element exposing (Attribute, Element)
-import Element.Background as Background
-import Element.Events as Events
-import Element.Input as Input
+import Element exposing (Attribute, Element, Length)
+import Element.Input exposing (Placeholder)
+import Internal.Button as Button
+import Internal.Dialog as Dialog
+import Internal.ExpansionPanel as ExpansionPanel
+import Internal.List as List
+import Internal.Select as Select
+import Internal.SortTable as SortTable
+import Internal.Tab as Tab
+import Internal.TextInput as TextInput
 import Set exposing (Set)
+import Widget.Style exposing (ButtonStyle,TextInputStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, RowStyle, SortTableStyle, TabStyle)
+
+
+
+{----------------------------------------------------------
+- BUTTON
+----------------------------------------------------------}
+
+
+{-| Button widget type
+-}
+type alias Button msg =
+    { text : String
+    , icon : Element Never
+    , onPress : Maybe msg
+    }
+
+
+{-| Button widget type with no icon
+-}
+type alias TextButton msg =
+    { text : String
+    , onPress : Maybe msg
+    }
+
+
+{-| A button containing only an icon, the text is used for screenreaders.
+-}
+iconButton :
+    ButtonStyle msg
+    ->
+        { text : String
+        , icon : Element Never
+        , onPress : Maybe msg
+        }
+    -> Element msg
+iconButton =
+    Button.iconButton
+
+
+{-| A button with just text and not icon.
+-}
+textButton :
+    ButtonStyle msg
+    ->
+        { textButton
+            | text : String
+            , onPress : Maybe msg
+        }
+    -> Element msg
+textButton style { text, onPress } =
+    Button.textButton style
+        { text = text
+        , onPress = onPress
+        }
+
+
+{-| A button containing a text and an icon.
+-}
+button :
+    ButtonStyle msg
+    ->
+        { text : String
+        , icon : Element Never
+        , onPress : Maybe msg
+        }
+    -> Element msg
+button =
+    Button.button
+
+
+
+{----------------------------------------------------------
+- SELECT
+----------------------------------------------------------}
+
+
+{-| Select widget type
+
+Technical Remark:
+
+* A more suitable name would be "Choice"
+
+-}
+type alias Select msg =
+    { selected : Maybe Int
+    , options :
+        List
+            { text : String
+            , icon : Element Never
+            }
+    , onSelect : Int -> Maybe msg
+    }
+
+
+{-| Multi Select widget type
+
+Technical Remark:
+
+* A more suitable name would be "Options"
+
+-}
+type alias MultiSelect msg =
+    { selected : Set Int
+    , options :
+        List
+            { text : String
+            , icon : Element Never
+            }
+    , onSelect : Int -> Maybe msg
+    }
+
+
+{-| A simple button that can be selected.
+-}
+selectButton :
+    ButtonStyle msg
+    -> ( Bool, Button msg )
+    -> Element msg
+selectButton =
+    Select.selectButton
 
 
 {-| Selects one out of multiple options. This can be used for radio buttons or Menus.
 -}
 select :
-    { selected : Maybe a
-    , options : List a
-    , label : a -> Element msg
-    , onChange : a -> msg
-    , attributes : Bool -> List (Attribute msg)
-    }
-    -> List (Element msg)
-select { selected, options, label, onChange, attributes } =
-    options
-        |> List.map
-            (\a ->
-                Input.button (attributes (selected == Just a))
-                    { onPress = a |> onChange |> Just
-                    , label = label a
-                    }
-            )
+    Select msg
+    -> List ( Bool, Button msg )
+select =
+    Select.select
 
 
 {-| Selects multible options. This can be used for checkboxes.
 -}
 multiSelect :
-    { selected : Set comparable
-    , options : List comparable
-    , label : comparable -> Element msg
-    , onChange : comparable -> msg
-    , attributes : Bool -> List (Attribute msg)
+    MultiSelect msg
+    -> List ( Bool, Button msg )
+multiSelect =
+    Select.multiSelect
+
+
+
+{----------------------------------------------------------
+- DIALOG
+----------------------------------------------------------}
+
+
+{-| Dialog widget type
+-}
+type alias Dialog msg =
+    { title : Maybe String
+    , body : Element msg
+    , accept : Maybe (TextButton msg)
+    , dismiss : Maybe (TextButton msg)
     }
-    -> List (Element msg)
-multiSelect { selected, options, label, onChange, attributes } =
-    options
-        |> List.map
-            (\a ->
-                Input.button (attributes (selected |> Set.member a))
-                    { onPress = a |> onChange |> Just
-                    , label =
-                        label a
-                    }
-            )
 
 
-{-| Some collapsable content.
+{-| A modal.
 
-        Widget.collapsable
-            {onToggle = ToggleCollapsable
-            ,isCollapsed = model.isCollapsed
-            ,label = Element.row Grid.compact
-                [ Element.html <|
-                    if model.isCollapsed then
-                        Heroicons.cheveronRight  [ Attributes.width 20]
-                    else
-                        Heroicons.cheveronDown [ Attributes.width 20]
-                , Element.el Heading.h4 <|Element.text <| "Title"
-                ]
-            ,content = Element.text <| "Hello World"
-            }
+Technical Remark:
+
+* To stop the screen from scrolling, set the height of the layout to the height of the screen.
 
 -}
-collapsable :
-    { onToggle : Bool -> msg
-    , isCollapsed : Bool
-    , label : Element msg
-    , content : Element msg
-    }
-    -> Element msg
-collapsable { onToggle, isCollapsed, label, content } =
-    Element.column [] <|
-        [ Input.button []
-            { onPress = Just <| onToggle <| not isCollapsed
-            , label = label
-            }
-        ]
-            ++ (if isCollapsed then
-                    []
+modal : { onDismiss : Maybe msg, content : Element msg } -> List (Attribute msg)
+modal =
+    Dialog.modal
 
-                else
-                    [ content ]
-               )
+
+{-| A Dialog Window.
+-}
+dialog :
+    DialogStyle msg
+    ->
+        { title : Maybe String
+        , text : String
+        , accept : Maybe (TextButton msg)
+        , dismiss : Maybe (TextButton msg)
+        }
+    -> List (Attribute msg)
+dialog =
+    Dialog.dialog
+
+
+
+{----------------------------------------------------------
+- EXPANSION PANEL
+----------------------------------------------------------}
+
+{-| Expansion Panel widget type
+-}
+type alias ExpansionPanel msg =
+    { onToggle : Bool -> msg
+    , icon : Element Never
+    , text : String
+    , expandIcon : Element Never
+    , collapseIcon : Element Never
+    , content : Element msg
+    , isExpanded : Bool
+    }
+
+{-| An expansion Panel
+-}
+expansionPanel :
+    ExpansionPanelStyle msg
+    ->
+        { onToggle : Bool -> msg
+        , icon : Element Never
+        , text : String
+        , content : Element msg
+        , isExpanded : Bool
+        }
+    -> Element msg
+expansionPanel =
+    ExpansionPanel.expansionPanel
+
+
+
+{----------------------------------------------------------
+- TEXT INPUT
+----------------------------------------------------------}
+
+{-| Text Input widget type
+-}
+type alias TextInput msg =
+    { chips : List (Button msg)
+    , text : String
+    , placeholder : Maybe (Placeholder msg)
+    , label : String
+    , onChange : String -> msg
+    }
+
+{-| A text Input that allows to include chips. -}
+textInput :
+    TextInputStyle msg
+    ->
+        { chips : List (Button msg)
+        , text : String
+        , placeholder : Maybe (Placeholder msg)
+        , label : String
+        , onChange : String -> msg
+        }
+    -> Element msg
+textInput =
+    TextInput.textInput
+
+
+
+{----------------------------------------------------------
+- LIST
+----------------------------------------------------------}
+
+{-| Replacement of `Element.row`
+-}
+row : RowStyle msg -> List (Element msg) -> Element msg
+row =
+    List.row
+
+{-| Replacement of `Element.column`
+-}
+column : ColumnStyle msg -> List (Element msg) -> Element msg
+column =
+    List.column
+
+{-| A row of buttons
+-}
+buttonRow :
+    { list : RowStyle msg
+    , button : ButtonStyle msg
+    }
+    -> List ( Bool, Button msg )
+    -> Element msg
+buttonRow =
+    List.buttonRow
+
+{-| A column of buttons
+-}
+buttonColumn :
+    { list : ColumnStyle msg
+    , button : ButtonStyle msg
+    }
+    -> List ( Bool, Button msg )
+    -> Element msg
+buttonColumn =
+    List.buttonColumn
+
+
+
+{----------------------------------------------------------
+- SORT TABLE
+----------------------------------------------------------}
+
+
+{-| Column for the Sort Table widget type
+-}
+type alias Column a =
+    SortTable.Column a
+
+{-|  Sort Table widget type
+-}
+type alias SortTable a msg=
+    { content : List a
+    , columns : List (Column a)
+    , sortBy : String
+    , asc : Bool
+    , onChange : String -> msg
+    }
+
+{-| An unsortable Column, when trying to sort by this column, nothing will change.
+-}
+unsortableColumn :
+    { title : String
+    , toString : a -> String
+    , width : Length
+    }
+    -> Column a
+unsortableColumn =
+    SortTable.unsortableColumn
+
+
+{-| A Column containing a Int
+-}
+intColumn :
+    { title : String
+    , value : a -> Int
+    , toString : Int -> String
+    , width : Length
+    }
+    -> Column a
+intColumn =
+    SortTable.intColumn
+
+
+{-| A Column containing a Float
+-}
+floatColumn :
+    { title : String
+    , value : a -> Float
+    , toString : Float -> String
+    , width : Length
+    }
+    -> Column a
+floatColumn =
+    SortTable.floatColumn
+
+
+{-| A Column containing a String
+-}
+stringColumn :
+    { title : String
+    , value : a -> String
+    , toString : String -> String
+    , width : Length
+    }
+    -> Column a
+stringColumn =
+    SortTable.stringColumn
+
+
+{-| The View
+-}
+sortTable :
+    SortTableStyle msg
+    ->
+        { content : List a
+        , columns : List (Column a)
+        , sortBy : String
+        , asc : Bool
+        , onChange : String -> msg
+        }
+    -> Element msg
+sortTable =
+    SortTable.sortTable
+
+
+
+{----------------------------------------------------------
+- TAB
+----------------------------------------------------------}
+
+{-| Tab widget type
+-}
+type alias Tab msg =
+    { tabs : Select msg
+    , content : Maybe Int -> Element msg
+    }
 
 
 {-| Displayes a list of contents in a tab
 -}
 tab :
-    List (Attribute msg)
+    TabStyle msg
     ->
-        { selected : a
-        , options : List a
-        , onChange : a -> msg
-        , label : a -> Element msg
-        , content : a -> Element msg
-        , attributes : Bool -> List (Attribute msg)
+        { tabs : Select msg
+        , content : Maybe Int -> Element msg
         }
     -> Element msg
-tab atts { selected, options, onChange, label, content, attributes } =
-    [ select
-        { selected = Just selected
-        , options = options
-        , label = label
-        , onChange = onChange
-        , attributes = attributes
-        }
-        |> Element.row atts
-    , content selected
-    ]
-        |> Element.column []
-
-
-{-| DEPRECATED. Use scrim instead.
--}
-dialog :
-    { onDismiss : Maybe msg
-    , content : Element msg
-    }
-    -> Element msg
-dialog { onDismiss, content } =
-    content
-        |> Element.el
-            [ Element.centerX
-            , Element.centerY
-            ]
-        |> Element.el
-            ([ Element.width <| Element.fill
-             , Element.height <| Element.fill
-             , Background.color <| Element.rgba255 0 0 0 0.5
-             ]
-                ++ (onDismiss
-                        |> Maybe.map (Events.onClick >> List.singleton)
-                        |> Maybe.withDefault []
-                   )
-            )
-
-
-{-| A scrim to block the interaction with the site. Usefull for modals and side panels
-
-If the scrim is clicked a message may be send. Also one can place an element infront.
-
-        Framework.Layout
-            [ Wiget.scrim
-                { onDismiss = Just <| ToggleDialog False
-                , content =
-                    [ "This is a dialog window"
-                        |> Element.text
-                    , Input.button []
-                        {onPress = Just <| ToggleDialog False
-                        , label = Element.text "Ok"
-                        }
-                    ]
-                    |> Element.column
-                        [ Element.centerX
-                        , Element.centerY
-                        ]
-                }
-            ]
-
--}
-scrim : { onDismiss : Maybe msg, content : Element msg } -> List (Attribute msg)
-scrim { onDismiss, content } =
-    Element.el
-        ([ Element.width <| Element.fill
-         , Element.height <| Element.fill
-         , Background.color <| Element.rgba255 0 0 0 0.5
-         ]
-            ++ (onDismiss
-                    |> Maybe.map (Events.onClick >> List.singleton)
-                    |> Maybe.withDefault []
-               )
-        )
-        content
-        |> Element.inFront
-        |> List.singleton
-
-
-{-| A Carousel circles through a non empty list of contents.
-
-        Widget.carousel
-            {content = ("Blue",["Yellow", "Green" , "Red" ]|> Array.fromList)
-            ,current = model.carousel
-            , label = \c ->
-                [ Input.button [Element.centerY]
-                    { onPress = Just <|
-                         SetCarousel <|
-                            (\x -> if x < 0 then 0 else x) <|
-                                model.carousel - 1
-                    , label = "<" |> Element.text
-                    }
-                , c |> Element.text
-                , Input.button [Element.centerY]
-                    { onPress = Just <|
-                        SetCarousel <|
-                            (\x -> if x > 3 then 3 else x) <|
-                            model.carousel + 1
-                    , label = ">" |> Element.text
-                    }
-                ]
-                |> Element.row [Element.centerX, Element.width<| Element.shrink]
-            }
-
--}
-carousel :
-    { content : ( a, Array a )
-    , current : Int
-    , label : a -> Element msg
-    }
-    -> Element msg
-carousel { content, current, label } =
-    let
-        ( head, tail ) =
-            content
-    in
-    (if current <= 0 then
-        head
-
-     else if current > Array.length tail then
-        tail
-            |> Array.get (Array.length tail - 1)
-            |> Maybe.withDefault head
-
-     else
-        tail
-            |> Array.get (current - 1)
-            |> Maybe.withDefault head
-    )
-        |> label
+tab =
+    Tab.tab
