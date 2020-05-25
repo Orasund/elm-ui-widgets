@@ -1,47 +1,135 @@
 module Widget.Style.Material exposing
-    ( Palette, defaultPalette
+    ( Palette, defaultPalette, darkPalette
     , containedButton, outlinedButton, textButton
-    , toggleButton, buttonRow
+    , iconButton, toggleButton, buttonRow
+    , chip, textInput
     , alertDialog
-    , row, column, cardColumn
     , expansionPanel
-    , chip, darkPalette, iconButton, layout, snackbar, tab, tabButton, textInput
+    , row, column
+    , cardColumn
+    , layout, snackbar, tab, tabButton
     )
 
-{-|
+{-| ![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
+
+This module implements a Material design theme for all widgets.
+
+The stylings are following [the official Material Design guidelines](https://material.io/components) as close as possible.
+Please use these widgets in combination with the official guidelines.
+
+The typograpahy is taken from [the material design guidelines](https://material.io/design/typography/the-type-system.html#type-scale).
+Its recommended to use a font size of 16px width and the [Roboto Font](https://fonts.google.com/specimen/Roboto?query=Ro).
+
+The style are not opaque, so you can change every styling to your needs.
+
+If you have any suggestions or improvements, be sure to leave a PR or a Issue over at the github repos.
+
+You can use the theme by copying the following code:
+
+```
+type alias Style msg =
+    { dialog : DialogStyle msg
+    , expansionPanel : ExpansionPanelStyle msg
+    , button : ButtonStyle msg
+    , primaryButton : ButtonStyle msg
+    , tab : TabStyle msg
+    , textInput : TextInputStyle msg
+    , chipButton : ButtonStyle msg
+    , row : RowStyle msg
+    , buttonRow : RowStyle msg
+    , column : ColumnStyle msg
+    , cardColumn : ColumnStyle msg
+    , sortTable : SortTableStyle msg
+    , selectButton : ButtonStyle msg
+    , layout : LayoutStyle msg
+    }
+
+sortTable : Palette -> SortTableStyle msg
+sortTable palette =
+    { containerTable = []
+    , headerButton = Material.textButton palette
+    , ascIcon = Icons.chevronUp |> Element.html |> Element.el []
+    , descIcon = Icons.chevronDown |> Element.html |> Element.el []
+    , defaultIcon = Element.none
+    }
 
 
-# Style
-
-@docs style
-
+style : Palette -> Style msg
+style palette =
+    { sortTable = sortTable palette
+    , row = Material.row
+    , buttonRow = Material.buttonRow
+    , cardColumn = Material.cardColumn palette
+    , column = Material.column
+    , button = Material.outlinedButton palette
+    , primaryButton = Material.containedButton palette
+    , selectButton = Material.toggleButton palette
+    , tab = Material.tab palette
+    , textInput = Material.textInput palette
+    , chipButton = Material.chip palette
+    , expansionPanel = Material.expansionPanel palette
+    , dialog = Material.alertDialog palette
+    , layout = Material.layout palette
+    }
+```
 
 # Palette
 
-@docs Palette, defaultPalette
+@docs Palette, defaultPalette, darkPalette
 
 
 # Button
 
+Different styles for buttons have different meanings.
+
+  - Use `textButton` as your default button
+  - Use `containedButton` for any important action
+  - Use `outlinedButton` if you have more then one important action.
+    Use `containedButton` for **the most** important action of the group.
+
 @docs containedButton, outlinedButton, textButton
 
-@docs toggleButton, buttonRow
+@docs iconButton, toggleButton, buttonRow
 
+# Card
+
+In the material design specification the card is not really specified at all.
+Im practice the List seams more useful then a own card widget.
+Thus for now we only provide a card containing a list.
+
+@docs cardColumn
+
+# Chip
+
+@docs chip, textInput
 
 # Dialog
 
 @docs alertDialog
 
 
-# List
-
-@docs row, column, cardColumn
-
-
 # Expansion Panel
 
 @docs expansionPanel
 
+
+# List
+
+The [List widget](https://material.io/components/lists) is a very complex widget that sadly only particially made it into this package.
+
+@docs row, column
+
+# Snackbar
+
+@docs snackbar
+
+# Tab
+
+@docs tab, tabButton
+
+# Layout
+
+@docs layout
 -}
 
 import Color exposing (Color)
@@ -97,6 +185,13 @@ h6 =
 -------------------------------------------------------------------------------}
 
 
+{-| The material design comes with customizable color palettes.
+
+Check out [the official documentation about the color system](https://material.io/design/color/the-color-system.html#color-theme-creation) to see how these colors are used.
+
+For the `-on` colors you can use white, for transitions into white, or black,for transitions into black. Other colors are also possible, but i've not seen any website acutally using a different color.
+
+-}
 type alias Palette =
     { primary : Color --Color.rgb255 0x62 0x00 0xEE
     , secondary : Color --Color.rgb255 0x03 0xda 0xc6
@@ -113,6 +208,13 @@ type alias Palette =
     }
 
 
+{-| The default color theme.
+
+![The default theme](https://lh3.googleusercontent.com/k6WO1fd7T40A9JvSVfHqs0CPLFyTEDCecsVGxEDhOaTP0wUTPYOVVkxt60hKxBprgNoMqs8OyKqtlaQ4tDBtQJs-fTcZrpZEjxhUVQ=w1064-v0)
+
+_Image take from [material.io](https://material.io/design/color/the-color-system.html#color-theme-creation)_
+
+-}
 defaultPalette : Palette
 defaultPalette =
     { primary = Color.rgb255 0x62 0x00 0xEE
@@ -130,6 +232,13 @@ defaultPalette =
     }
 
 
+{-| The offical dark theme of google.
+
+![The dark theme](https://lh3.googleusercontent.com/tv7J2o4ZiSmLYwyBslBs_PLzKyzI8QUV5qdvHGfoAQn9r7pY4Hj5SmW27m3zUWeDtRSE8Cb5_5PQmkbavDfw7XbIL8EodIKZhilRdg=w1064-v0)
+
+_Image take from [material.io](https://material.io/design/color/dark-theme.html#ui-application)_
+
+-}
 darkPalette : Palette
 darkPalette =
     { primary = Color.rgb255 0xBB 0x86 0xFC
@@ -362,6 +471,13 @@ baseButton _ =
     }
 
 
+{-| A contained button representing the most important action of a group.
+
+![Contained Button](https://material.io/develop/images/content/79e62add1830d33fc90edb22212bce53.svg)
+
+_Image taken from [material.io](https://material.io/develop/android/components/buttons/)_
+
+-}
 containedButton : Palette -> ButtonStyle msg
 containedButton palette =
     { container =
@@ -413,6 +529,13 @@ containedButton palette =
     }
 
 
+{-| A outlined button representing an important action within a group.
+
+![Contained Button](https://material.io/develop/images/content/2b50635d38c5fdec260f09be9aeafb10.svg)
+
+_Image taken from [material.io](https://material.io/develop/android/components/buttons/)_
+
+-}
 outlinedButton : Palette -> ButtonStyle msg
 outlinedButton palette =
     { container =
@@ -480,6 +603,13 @@ outlinedButton palette =
     }
 
 
+{-| A text button representing a simple action within a group.
+
+![Text Button](https://material.io/develop/images/content/d3079632c6f54d86f9b7093d541c2ee9.svg)
+
+_Image taken from [material.io](https://material.io/develop/android/components/buttons/)_
+
+-}
 textButton : Palette -> ButtonStyle msg
 textButton palette =
     { container =
@@ -526,9 +656,19 @@ textButton palette =
     }
 
 
-{-| Technical Remark:
+{-| A ToggleButton. Only use as a group in combination with `buttonRow`.
+
+![Toggle Button](https://material.io/develop/images/content/749a1ba8591d02356fa1d6eea2641d96.svg)
+
+_Image taken from [material.io](https://material.io/develop/android/components/buttons/)_
+
+Toggle buttons should only be used with the `iconButton` widget, else use chips instead.
+
+Technical Remark:
 
   - Border color was not defined in the [specification](https://material.io/components/buttons#toggle-button)
+  - There are two different versions, one where the selected color is gray and another where the color is primary.
+    I noticed the gray version was used more often, so i went with that one.
 
 -}
 toggleButton : Palette -> ButtonStyle msg
@@ -615,7 +755,13 @@ toggleButton palette =
     }
 
 
-{-| Technical Remark:
+{-| An single selectable icon.
+
+![Icon Button](https://material.io/develop/images/content/9bc212d8a3ef79bb7ed83a5359651505.png)
+
+_Image taken from [material.io](https://material.io/develop/android/components/buttons/)_
+
+Technical Remark:
 
   - Could not find any specification details
 
@@ -680,9 +826,19 @@ iconButton palette =
 -------------------------------------------------------------------------------}
 
 
-{-| Technical Remark:
+{-| Chips have the same behaviour as buttons but are visually less important.
 
-  - There seams to be a bug, where in the mouseOver effects are now visible.
+In the [official documentation](https://material.io/components/chips#types) chips have different names depending on where they are used:
+
+  - **Input Chips** are used inside a text field. Use `textInput` for this feature.
+  - **Choice Chips** are used for selcting an option.
+    The material design guidelines recommend using `toggleButton` for icons with no text and chips for text with no icons.
+  - **Filter Chips** are used for selecting multiple options. They typically have a done-icon when selected.
+  - **Action chips** are like button. Make sure to include an icon when using action chips.
+
+Technical Remark:
+
+  - There seems to be a bug, where in the mouseOver effects are now visible.
     This might have something to do with <https://github.com/mdgriffith/elm-ui/issues/47>.
     This needs to be investigated, but for now i leave it at that.
 
@@ -760,9 +916,14 @@ chip palette =
 -------------------------------------------------------------------------------}
 
 
+{-| A simple styling for a row.
+-}
 row : RowStyle msg
 row =
-    { containerRow = [ Element.spacing 8 ]
+    { containerRow =
+        [ Element.paddingXY 0 8
+        , Element.spacing 8
+        ]
     , element = []
     , ifFirst = []
     , ifLast = []
@@ -770,9 +931,14 @@ row =
     }
 
 
+{-| A simple styling for a column.
+-}
 column : ColumnStyle msg
 column =
-    { containerColumn = [ Element.spacing 8 ]
+    { containerColumn =
+        [ Element.paddingXY 0 8
+        , Element.spacing 8
+        ]
     , element = []
     , ifFirst = []
     , ifLast = []
@@ -780,6 +946,11 @@ column =
     }
 
 
+{-| a Row of buttons.
+
+Only use in combination with `toggleButton`
+
+-}
 buttonRow : RowStyle msg
 buttonRow =
     { containerRow = []
@@ -808,7 +979,9 @@ buttonRow =
     }
 
 
-{-| Technical Remark:
+{-| A List styled like a card.
+
+Technical Remark:
 
 This is a simplification of the [Material Design Card
 ](https://material.io/components/cards) and might get replaced at a later date.
@@ -880,6 +1053,14 @@ cardColumn palette =
 -------------------------------------------------------------------------------}
 
 
+{-| An alert dialog for important decisions. Use a snackbar for less important notification.
+
+![Alert Dialog](https://material.io/develop/images/content/9d61e2d1bd60599344c7fae5e71c9667.png)
+
+_Image taken from [material.io](https://material.io/develop/android/components/buttons/)_
+
+
+-}
 alertDialog : Palette -> DialogStyle msg
 alertDialog palette =
     { containerColumn =
@@ -937,7 +1118,10 @@ expand_more =
     icon "0 0 48 48" 24 [ Svg.path [ Svg.Attributes.d "M33.17 17.17L24 26.34l-9.17-9.17L12 20l12 12 12-12z" ] [] ]
 
 
-{-| Technical Remarks:
+{-| The expansion Panel is an outdated part of the material design specification.
+In modern implementation it gets replaced with a very sophisticated list widget.
+
+Technical Remarks:
 
   - The expansion panel is part of an [older version](https://material.io/archive/guidelines/components/expansion-panels.html) of the Material Design.
     The newer version is part of the List component.
@@ -985,7 +1169,13 @@ expansionPanel palette =
 -------------------------------------------------------------------------------}
 
 
-{-| Technical Remark:
+{-| A typical snackbar
+
+![Snackbar](https://material.io/develop/images/content/f2ec5451582a06af5eb20e3dfb3d27d5.svg)
+
+_Image take from [material.io](https://material.io/develop/android/components/snackbar/)_
+
+Technical Remark:
 
   - The text color of the button was not given in the specification. This implementation
     adujsts the luminance of the color to fit the [w3 accessability standard](https://www.w3.org/TR/WCAG20/#Contrast)
@@ -1033,7 +1223,9 @@ snackbar palette =
 -------------------------------------------------------------------------------}
 
 
-{-| Technical Remark:
+{-| A text input style that is included only to support input chips.
+
+Technical Remark:
 
   - This is just a temporary implementation. It will soon be replaced with the official implementation.
 
@@ -1078,7 +1270,14 @@ textInput palette =
 -- T A B
 -------------------------------------------------------------------------------}
 
+{-| A single Tab button.
 
+Technical Remark:
+
+* The official specification states that the background color should be the surface color,
+   but the pictures and actuall implementations all have no background color.
+   So here the background color is also not set.
+-}
 tabButton : Palette -> ButtonStyle msg
 tabButton palette =
     { container =
@@ -1138,7 +1337,8 @@ tabButton palette =
     }
 
 
-{-| -}
+{-| A Tab bar meant for only the upper most level. Do not use a tab within a tab.
+-}
 tab : Palette -> TabStyle msg
 tab palette =
     { button = tabButton palette
@@ -1292,7 +1492,18 @@ drawerButton palette =
     }
 
 
-{-| Technical Remark:
+{-| The Layout Widget combines the following Material design concepts:
+
+* Top bar
+* Navigation drawer
+* Side Sheet
+* Dialog
+* Snackbar
+
+Future updates might try to seperate them into there own widgets.
+But for now they are only available as an all-in-one solution.
+
+Technical Remark:
 
   - Due to [a bug in Elm-Ui](https://github.com/mdgriffith/elm-ui/issues/47) the menu button still behave wierd.
     I've not found a workaround for it.

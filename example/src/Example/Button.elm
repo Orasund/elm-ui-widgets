@@ -4,13 +4,21 @@ import Element exposing (Element)
 import FeatherIcons
 import Widget
 import Widget.Style exposing (ButtonStyle, RowStyle)
-
+import Widget.Style.Material as Material
+import Browser
 
 type alias Style style msg =
     { style
         | primaryButton : ButtonStyle msg
         , button : ButtonStyle msg
         , row : RowStyle msg
+    }
+
+materialStyle : Style {} msg
+materialStyle =
+    { primaryButton = Material.containedButton Material.defaultPalette
+    , button = Material.outlinedButton Material.defaultPalette
+    , row = Material.row 
     }
 
 
@@ -77,3 +85,12 @@ view msgMapper style (IsButtonEnabled isButtonEnabled) =
         }
     ]
         |> Widget.row style.row
+
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = always init
+        , view = view identity materialStyle >> Element.layout []
+        , update = update
+        , subscriptions = subscriptions
+        }

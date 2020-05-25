@@ -3,13 +3,18 @@ module Example.Tab exposing (Model, Msg, init, subscriptions, update, view)
 import Element exposing (Element)
 import Widget
 import Widget.Style exposing (TabStyle)
-
+import Widget.Style.Material as Material
+import Browser
 
 type alias Style style msg =
     { style
         | tab : TabStyle msg
     }
 
+materialStyle : Style {} msg
+materialStyle =
+    { tab = Material.tab Material.defaultPalette
+    }
 
 type Model
     = Selected (Maybe Int)
@@ -71,4 +76,13 @@ view msgMapper style (Selected selected) =
                         "Please select a tab"
                 )
                     |> Element.text
+        }
+
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = always init
+        , view = view identity materialStyle >> Element.layout []
+        , update = update
+        , subscriptions = subscriptions
         }

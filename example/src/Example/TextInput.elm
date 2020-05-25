@@ -4,12 +4,19 @@ import Element exposing (Element)
 import Set exposing (Set)
 import Widget
 import Widget.Style exposing (ColumnStyle, TextInputStyle)
-
+import Widget.Style.Material as Material
+import Browser
 
 type alias Style style msg =
     { style
         | textInput : TextInputStyle msg
         , column : ColumnStyle msg
+    }
+
+materialStyle : Style {} msg
+materialStyle =
+    { textInput = Material.textInput Material.defaultPalette
+    , column = Material.column
     }
 
 
@@ -102,3 +109,12 @@ view msgMapper style model =
         |> Element.wrappedRow [ Element.spacing 10 ]
     ]
         |> Widget.column style.column
+
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = always init
+        , view = view identity materialStyle >> Element.layout []
+        , update = update
+        , subscriptions = subscriptions
+        }

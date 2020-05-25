@@ -4,50 +4,93 @@ module Widget exposing
     , Dialog, modal, dialog
     , ExpansionPanel, expansionPanel
     , row, column, buttonRow, buttonColumn
-    , ColumnType, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
-    , TextInputStyle, textInput
+    , SortTable,Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
+    , TextInput, textInput
     , Tab, tab
     )
 
-{-| This module contains functions for displaying data.
+{-| This module contains different stateless view functions. No wiring required.
 
+These widgets should be used by defining the styling seperately:
+
+```
+Widget.button Material.primaryButton
+    { text = "disable me"
+    , icon =
+        FeatherIcons.slash
+            |> FeatherIcons.withSize 16
+            |> FeatherIcons.toHtml []
+            |> Element.html
+            |> Element.el []
+    , onPress =
+        if isButtonEnabled then
+            ChangedButtonStatus False
+                |> Just
+
+        else
+            Nothing
+    }
+```
+
+Every widgets comes with a type. You can think of the widgets as building blocks.
+You can create you own widgets by sticking widgets types together.
 
 # Buttons
+
+![Button](https://orasund.github.io/elm-ui-widgets/assets/button.png)
 
 @docs Button, TextButton, iconButton, textButton, button
 
 
 # Select
 
-@docs Select, MultiSelect, selectButton, select, multiSelect
+![Select](https://orasund.github.io/elm-ui-widgets/assets/select.png)
+
+@docs Select, selectButton, select
+
+![multiSelect](https://orasund.github.io/elm-ui-widgets/assets/multiSelect.png)
+
+@docs MultiSelect, multiSelect
 
 
 # Dialog
+
+![dialog](https://orasund.github.io/elm-ui-widgets/assets/dialog.png)
 
 @docs Dialog, modal, dialog
 
 
 # Expansion Panel
 
+![expansionPanel](https://orasund.github.io/elm-ui-widgets/assets/expansionPanel.png)
+
 @docs ExpansionPanel, expansionPanel
 
 
 # List
+
+![list](https://orasund.github.io/elm-ui-widgets/assets/list.png)
 
 @docs row, column, buttonRow, buttonColumn
 
 
 # Sort Table
 
-@docs ColumnType, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
+![sortTable](https://orasund.github.io/elm-ui-widgets/assets/sortTable.png)
+
+@docs SortTable,Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
 
 
 # Text Input
 
-@docs TextInputStyle, textInput
+![textInput](https://orasund.github.io/elm-ui-widgets/assets/textInput.png)
+
+@docs TextInput, textInput
 
 
 # Tab
+
+![tab](https://orasund.github.io/elm-ui-widgets/assets/textInput.png)
 
 @docs Tab, tab
 
@@ -64,7 +107,7 @@ import Internal.SortTable as SortTable
 import Internal.Tab as Tab
 import Internal.TextInput as TextInput
 import Set exposing (Set)
-import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, RowStyle, SortTableStyle, TabStyle)
+import Widget.Style exposing (ButtonStyle,TextInputStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, RowStyle, SortTableStyle, TabStyle)
 
 
 
@@ -73,7 +116,7 @@ import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPa
 ----------------------------------------------------------}
 
 
-{-| A Button as a type
+{-| Button widget type
 -}
 type alias Button msg =
     { text : String
@@ -82,7 +125,7 @@ type alias Button msg =
     }
 
 
-{-| A Button with just text as a type
+{-| Button widget type with no icon
 -}
 type alias TextButton msg =
     { text : String
@@ -141,9 +184,11 @@ button =
 ----------------------------------------------------------}
 
 
-{-| A list of options with at most one selected.
+{-| Select widget type
 
-Alternaitve Name: Choice
+Technical Remark:
+
+* A more suitable name would be "Choice"
 
 -}
 type alias Select msg =
@@ -157,9 +202,11 @@ type alias Select msg =
     }
 
 
-{-| A list of options with multiple selected.
+{-| Multi Select widget type
 
-Alternative Name: Options
+Technical Remark:
+
+* A more suitable name would be "Options"
 
 -}
 type alias MultiSelect msg =
@@ -207,7 +254,7 @@ multiSelect =
 ----------------------------------------------------------}
 
 
-{-| A Dialog window displaying an important choice.
+{-| Dialog widget type
 -}
 type alias Dialog msg =
     { title : Maybe String
@@ -219,7 +266,9 @@ type alias Dialog msg =
 
 {-| A modal.
 
-NOTE: to stop the screen from scrolling, set the height of the layout to the height of the screen.
+Technical Remark:
+
+* To stop the screen from scrolling, set the height of the layout to the height of the screen.
 
 -}
 modal : { onDismiss : Maybe msg, content : Element msg } -> List (Attribute msg)
@@ -244,10 +293,11 @@ dialog =
 
 
 {----------------------------------------------------------
-- DIALOG
+- EXPANSION PANEL
 ----------------------------------------------------------}
 
-
+{-| Expansion Panel widget type
+-}
 type alias ExpansionPanel msg =
     { onToggle : Bool -> msg
     , icon : Element Never
@@ -258,7 +308,8 @@ type alias ExpansionPanel msg =
     , isExpanded : Bool
     }
 
-
+{-| An expansion Panel
+-}
 expansionPanel :
     ExpansionPanelStyle msg
     ->
@@ -278,17 +329,17 @@ expansionPanel =
 - TEXT INPUT
 ----------------------------------------------------------}
 
-
-{-| -}
-type alias TextInputStyle msg =
-    { chipButton : ButtonStyle msg
-    , containerRow : List (Attribute msg)
-    , chipsRow : List (Attribute msg)
-    , input : List (Attribute msg)
+{-| Text Input widget type
+-}
+type alias TextInput msg =
+    { chips : List (Button msg)
+    , text : String
+    , placeholder : Maybe (Placeholder msg)
+    , label : String
+    , onChange : String -> msg
     }
 
-
-{-| -}
+{-| A text Input that allows to include chips. -}
 textInput :
     TextInputStyle msg
     ->
@@ -308,17 +359,20 @@ textInput =
 - LIST
 ----------------------------------------------------------}
 
-
+{-| Replacement of `Element.row`
+-}
 row : RowStyle msg -> List (Element msg) -> Element msg
 row =
     List.row
 
-
+{-| Replacement of `Element.column`
+-}
 column : ColumnStyle msg -> List (Element msg) -> Element msg
 column =
     List.column
 
-
+{-| A row of buttons
+-}
 buttonRow :
     { list : RowStyle msg
     , button : ButtonStyle msg
@@ -328,7 +382,8 @@ buttonRow :
 buttonRow =
     List.buttonRow
 
-
+{-| A column of buttons
+-}
 buttonColumn :
     { list : ColumnStyle msg
     , button : ButtonStyle msg
@@ -345,16 +400,23 @@ buttonColumn =
 ----------------------------------------------------------}
 
 
-{-| A Sortable list allows you to sort coulmn.
+{-| Column for the Sort Table widget type
 -}
-type alias ColumnType a =
-    SortTable.ColumnType a
-
-
 type alias Column a =
     SortTable.Column a
 
+{-|  Sort Table widget type
+-}
+type alias SortTable a msg=
+    { content : List a
+    , columns : List (Column a)
+    , sortBy : String
+    , asc : Bool
+    , onChange : String -> msg
+    }
 
+{-| An unsortable Column, when trying to sort by this column, nothing will change.
+-}
 unsortableColumn :
     { title : String
     , toString : a -> String
@@ -425,7 +487,8 @@ sortTable =
 - TAB
 ----------------------------------------------------------}
 
-
+{-| Tab widget type
+-}
 type alias Tab msg =
     { tabs : Select msg
     , content : Maybe Int -> Element msg

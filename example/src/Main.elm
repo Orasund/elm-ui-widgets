@@ -28,7 +28,7 @@ import FeatherIcons
 
 type alias LoadedModel =
     { stateless : Stateless.Model
-    , scrollingNav : ScrollingNav.Model Example
+    , scrollingNav : ScrollingNav.ScrollingNav Example
     , layout : Layout LoadedMsg
     , displayDialog : Bool
     , window :
@@ -52,7 +52,7 @@ type Model
 
 type LoadedMsg
     = StatelessSpecific Stateless.Msg
-    | UpdateScrollingNav (ScrollingNav.Model Example -> ScrollingNav.Model Example)
+    | UpdateScrollingNav (ScrollingNav.ScrollingNav Example -> ScrollingNav.ScrollingNav Example)
     | TimePassed Int
     | AddSnackbar ( String, Bool )
     | ToggleDialog Bool

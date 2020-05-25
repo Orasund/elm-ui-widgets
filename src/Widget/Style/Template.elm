@@ -1,6 +1,61 @@
-module Widget.Style.Template exposing (box, button, column, decoration, dialog, expansionPanel, icon, layout, row, snackbar, sortTable, tab, textInput)
+module Widget.Style.Template exposing
+    ( box, decoration, icon
+    , button, column, dialog, expansionPanel, layout, row, snackbar, sortTable, tab, textInput
+    )
 
-{-| This package
+{-| ![Example using the Template style](https://orasund.github.io/elm-ui-widgets/assets/template-style.png)
+
+This package contains mockups designed for writing your own style.
+
+Start by copying the following code and then replace the fields one by one.
+
+```
+type alias Style msg =
+    { dialog : DialogStyle msg
+    , expansionPanel : ExpansionPanelStyle msg
+    , button : ButtonStyle msg
+    , primaryButton : ButtonStyle msg
+    , tab : TabStyle msg
+    , textInput : TextInputStyle msg
+    , chipButton : ButtonStyle msg
+    , row : RowStyle msg
+    , buttonRow : RowStyle msg
+    , column : ColumnStyle msg
+    , cardColumn : ColumnStyle msg
+    , sortTable : SortTableStyle msg
+    , selectButton : ButtonStyle msg
+    , layout : LayoutStyle msg
+    }
+
+style : Style msg
+style =
+    { sortTable = Template.sortTable <| "sortTable"
+    , row = Template.row <| "row"
+    , buttonRow = Template.row <| "buttonRow"
+    , cardColumn = Template.column <| "cardRow"
+    , column = Template.column <| "column"
+    , button = Template.button <| "button"
+    , primaryButton = Template.button <| "primaryButton"
+    , tab = Template.tab <| "tab"
+    , textInput = Template.textInput <| "textInput"
+    , chipButton = Template.button <| "chipButton"
+    , expansionPanel = Template.expansionPanel "expansionPanel"
+    , selectButton = Template.button "selectButton"
+    , dialog = Template.dialog "dialog"
+    , layout = Template.layout "layout"
+    }
+```
+
+
+# Base Elements
+
+@docs box, decoration, icon
+
+
+# Mockups
+
+@docs button, column, dialog, expansionPanel, layout, row, snackbar, sortTable, tab, textInput
+
 -}
 
 import Element exposing (Attribute, Element)
@@ -27,6 +82,8 @@ fontSize =
     10
 
 
+{-| A box representing an element
+-}
 box : String -> List (Attribute msg)
 box string =
     [ Border.width 1
@@ -39,6 +96,8 @@ box string =
     ]
 
 
+{-| An additional attribute representing a state change.
+-}
 decoration : String -> List (Attribute msg)
 decoration string =
     [ Element.below <|
@@ -48,6 +107,8 @@ decoration string =
     ]
 
 
+{-| A circle representing an icon
+-}
 icon : String -> Element msg
 icon string =
     Element.none
@@ -62,6 +123,21 @@ icon string =
             ]
 
 
+{-|
+
+```
+button : String -> ButtonStyle msg
+button string =
+    { container = box <| string ++ ":container"
+    , labelRow = box <| string ++ ":labelRow"
+    , text = box <| string ++ ":text"
+    , ifDisabled = decoration <| string ++ ":ifDisabled"
+    , ifActive = decoration <| string ++ ":ifActive"
+    , otherwise = decoration <| string ++ ":otherwise"
+    }
+```
+
+-}
 button : String -> ButtonStyle msg
 button string =
     { container = box <| string ++ ":container"
@@ -73,6 +149,18 @@ button string =
     }
 
 
+{-|
+
+```
+snackbar : String -> SnackbarStyle msg
+snackbar string =
+    { containerRow = box <| string ++ ":containerRow"
+    , button = button <| string ++ ":button"
+    , text = box <| string ++ ":text"
+    }
+```
+
+-}
 snackbar : String -> SnackbarStyle msg
 snackbar string =
     { containerRow = box <| string ++ ":containerRow"
@@ -81,6 +169,21 @@ snackbar string =
     }
 
 
+{-|
+
+```
+dialog : String -> DialogStyle msg
+dialog string =
+    { containerColumn = box <| string ++ ":containerColumn"
+    , title = box <| string ++ ":title"
+    , text = box <| string ++ ":text"
+    , buttonRow = box <| string ++ ":buttonRow"
+    , acceptButton = button <| string ++ ":acceptButton"
+    , dismissButton = button <| string ++ ":dismissButton"
+    }
+```
+
+-}
 dialog : String -> DialogStyle msg
 dialog string =
     { containerColumn = box <| string ++ ":containerColumn"
@@ -92,6 +195,22 @@ dialog string =
     }
 
 
+{-|
+
+```
+expansionPanel : String -> ExpansionPanelStyle msg
+expansionPanel string =
+    { containerColumn = box <| string ++ ":containerColumn"
+    , panelRow = box <| string ++ ":panelRow"
+    , labelRow = box <| string ++ ":labelRow"
+    , content = box <| string ++ ":content"
+    , expandIcon = icon <| string ++ ":expandIcon"
+    , collapseIcon = icon <| string ++ ":collapseIcon"
+    }
+
+```
+
+-}
 expansionPanel : String -> ExpansionPanelStyle msg
 expansionPanel string =
     { containerColumn = box <| string ++ ":containerColumn"
@@ -103,6 +222,20 @@ expansionPanel string =
     }
 
 
+{-|
+
+```
+textInput : String -> TextInputStyle msg
+textInput string =
+    { chipButton = button <| string ++ ":chipButton"
+    , chipsRow = box <| string ++ ":chipsRow"
+    , containerRow = box <| string ++ ":containerRow"
+    , input = box <| string ++ ":input"
+    }
+
+```
+
+-}
 textInput : String -> TextInputStyle msg
 textInput string =
     { chipButton = button <| string ++ ":chipButton"
@@ -112,6 +245,19 @@ textInput string =
     }
 
 
+{-|
+
+```
+tab : String -> TabStyle msg
+tab string =
+    { button = button <| string ++ ":button"
+    , optionRow = box <| string ++ ":optionRow"
+    , containerColumn = box <| string ++ ":containerColumn"
+    , content = box <| string ++ ":content"
+    }
+```
+
+-}
 tab : String -> TabStyle msg
 tab string =
     { button = button <| string ++ ":button"
@@ -121,26 +267,68 @@ tab string =
     }
 
 
+{-|
+
+```
 row : String -> RowStyle msg
 row string =
     { containerRow = box <| string ++ ":containerRow"
     , element = box <| string ++ ":element"
-    , ifFirst = box <| string ++ ":ifFirst"
-    , ifLast = box <| string ++ ":ifLast"
-    , otherwise = box <| string ++ ":otherwise"
+    , ifFirst = decoration <| string ++ ":ifFirst"
+    , ifLast = decoration <| string ++ ":ifLast"
+    , otherwise = decoration <| string ++ ":otherwise"
+    }
+```
+
+-}
+row : String -> RowStyle msg
+row string =
+    { containerRow = box <| string ++ ":containerRow"
+    , element = box <| string ++ ":element"
+    , ifFirst = decoration <| string ++ ":ifFirst"
+    , ifLast = decoration <| string ++ ":ifLast"
+    , otherwise = decoration <| string ++ ":otherwise"
     }
 
 
+{-|
+
+```
 column : String -> ColumnStyle msg
 column string =
     { containerColumn = box <| string ++ ":containerColumn"
     , element = box <| string ++ ":element"
-    , ifFirst = box <| string ++ ":ifFirst"
-    , ifLast = box <| string ++ ":ifLast"
-    , otherwise = box <| string ++ ":otherwise"
+    , ifFirst = decoration <| string ++ ":ifFirst"
+    , ifLast = decoration <| string ++ ":ifLast"
+    , otherwise = decoration <| string ++ ":otherwise"
+    }
+```
+
+-}
+column : String -> ColumnStyle msg
+column string =
+    { containerColumn = box <| string ++ ":containerColumn"
+    , element = box <| string ++ ":element"
+    , ifFirst = decoration <| string ++ ":ifFirst"
+    , ifLast = decoration <| string ++ ":ifLast"
+    , otherwise = decoration <| string ++ ":otherwise"
     }
 
 
+{-|
+
+```
+sortTable : String -> SortTableStyle msg
+sortTable string =
+    { containerTable = box <| string ++ ":containerTable"
+    , headerButton = button <| string ++ ":headerButton"
+    , ascIcon = icon <| string ++ ":ascIcon"
+    , descIcon = icon <| string ++ ":descIcon"
+    , defaultIcon = icon <| string ++ ":defaultIcon"
+    }
+```
+
+-}
 sortTable : String -> SortTableStyle msg
 sortTable string =
     { containerTable = box <| string ++ ":containerTable"
@@ -151,6 +339,30 @@ sortTable string =
     }
 
 
+{-|
+
+```
+layout : String -> LayoutStyle msg
+layout string =
+    { container = box <| string ++ ":container"
+    , snackbar = snackbar <| string ++ ":snackbar"
+    , layout = Element.layout
+    , header = box <| string ++ ":header"
+    , menuButton = button <| string ++ ":menuButton"
+    , sheetButton = button <| string ++ ":sheetButton"
+    , menuTabButton = button <| string ++ ":menuTabButton"
+    , sheet = box <| string ++ ":sheet"
+    , menuIcon = icon <| string ++ ":menuIcon"
+    , moreVerticalIcon = icon <| string ++ ":moreVerticalIcon"
+    , spacing = 8
+    , title = box <| string ++ ":title"
+    , searchIcon = icon <| string ++ ":searchIcon"
+    , search = box <| string ++ ":search"
+    , searchFill = box <| string ++ ":searchFill"
+    }
+```
+
+-}
 layout : String -> LayoutStyle msg
 layout string =
     { container = box <| string ++ ":container"

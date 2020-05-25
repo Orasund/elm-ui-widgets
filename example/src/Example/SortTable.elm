@@ -3,11 +3,27 @@ module Example.SortTable exposing (Model, Msg, init, subscriptions, update, view
 import Element exposing (Element)
 import Widget
 import Widget.Style exposing (SortTableStyle)
-
+import Widget.Style.Material as Material
+import Browser
 
 type alias Style style msg =
     { style
         | sortTable : SortTableStyle msg
+    }
+
+materialStyle : Style {} msg
+materialStyle =
+    { sortTable = 
+        { containerTable = []
+        , headerButton = Material.textButton Material.defaultPalette
+        , ascIcon = 
+            Material.expansionPanel Material.defaultPalette
+                |> .collapseIcon
+        , descIcon =
+            Material.expansionPanel Material.defaultPalette
+                |> .expandIcon
+        , defaultIcon = Element.none
+        }
     }
 
 
@@ -86,4 +102,13 @@ view msgMapper style model =
         , asc = model.asc
         , sortBy = model.title
         , onChange = ChangedSorting >> msgMapper
+        }
+
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = always init
+        , view = view identity materialStyle >> Element.layout []
+        , update = update
+        , subscriptions = subscriptions
         }

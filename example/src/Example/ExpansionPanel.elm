@@ -3,13 +3,18 @@ module Example.ExpansionPanel exposing (Model, Msg, init, subscriptions, update,
 import Element exposing (Element)
 import Widget
 import Widget.Style exposing (ExpansionPanelStyle)
-
+import Widget.Style.Material as Material
+import Browser
 
 type alias Style style msg =
     { style
         | expansionPanel : ExpansionPanelStyle msg
     }
 
+materialStyle : Style {} msg
+materialStyle =
+    { expansionPanel = Material.expansionPanel Material.defaultPalette
+    }
 
 type Model
     = IsExpanded Bool
@@ -49,3 +54,12 @@ view msgMapper style (IsExpanded isExpanded) =
     , content = Element.text <| "Hello World"
     }
         |> Widget.expansionPanel style.expansionPanel
+
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = always init
+        , view = view identity materialStyle >> Element.layout []
+        , update = update
+        , subscriptions = subscriptions
+        }

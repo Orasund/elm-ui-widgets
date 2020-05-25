@@ -4,7 +4,8 @@ import Element exposing (Element)
 import Set exposing (Set)
 import Widget
 import Widget.Style exposing (ButtonStyle, RowStyle)
-
+import Widget.Style.Material as Material
+import Browser
 
 type alias Style style msg =
     { style
@@ -12,6 +13,11 @@ type alias Style style msg =
         , selectButton : ButtonStyle msg
     }
 
+materialStyle : Style {} msg
+materialStyle =
+    { buttonRow = Material.buttonRow
+    , selectButton = Material.toggleButton Material.defaultPalette
+    }
 
 type Model
     = Selected (Set Int)
@@ -67,3 +73,12 @@ view msgMapper style (Selected selected) =
             { list = style.buttonRow
             , button = style.selectButton
             }
+
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = always init
+        , view = view identity materialStyle >> Element.layout []
+        , update = update
+        , subscriptions = subscriptions
+        }

@@ -1,14 +1,16 @@
 module Widget.Snackbar exposing
-    ( Model, Message, init, current, timePassed, view
+    ( Snackbar, Message, init, current, timePassed, view
     , insert, insertFor, dismiss
     )
 
-{-| A [snackbar](https://material.io/components/snackbars/) shows notification, one at a time.
+{-| ![Snackbar](https://orasund.github.io/elm-ui-widgets/assets/snackbar.png)
+
+A [snackbar](https://material.io/components/snackbars/) shows notification, one at a time.
 
 
 # Basics
 
-@docs Model, Message, init, current, timePassed, view
+@docs Snackbar, Message, init, current, timePassed, view
 
 
 # Operations
@@ -22,7 +24,8 @@ import Queue exposing (Queue)
 import Widget exposing (TextButton)
 import Widget.Style exposing (SnackbarStyle)
 
-
+{-| A message with maybe some action button
+-}
 type alias Message msg =
     { text : String
     , button : Maybe (TextButton msg)
@@ -31,7 +34,7 @@ type alias Message msg =
 
 {-| A snackbar has a queue of Notifications, each with the amount of ms the message should be displayed
 -}
-type alias Model a =
+type alias Snackbar a =
     { queue : Queue ( a, Int )
     , current : Maybe ( a, Int )
     }
@@ -39,7 +42,7 @@ type alias Model a =
 
 {-| Inital state
 -}
-init : Model a
+init : Snackbar a
 init =
     { queue = Queue.empty
     , current = Nothing
@@ -48,14 +51,14 @@ init =
 
 {-| Insert a message that will last for 10 seconds.
 -}
-insert : a -> Model a -> Model a
+insert : a -> Snackbar a -> Snackbar a
 insert =
     insertFor 10000
 
 
 {-| Insert a message for a specific amount of milli seconds.
 -}
-insertFor : Int -> a -> Model a -> Model a
+insertFor : Int -> a -> Snackbar a -> Snackbar a
 insertFor removeIn a model =
     case model.current of
         Nothing ->
@@ -67,7 +70,7 @@ insertFor removeIn a model =
 
 {-| Dismiss the current message.
 -}
-dismiss : Model a -> Model a
+dismiss : Snackbar a -> Snackbar a
 dismiss model =
     { model | current = Nothing }
 
@@ -75,7 +78,7 @@ dismiss model =
 {-| Updates the model. This functions should be called regularly.
 The first argument is the milli seconds that passed since the last time the function was called.
 -}
-timePassed : Int -> Model a -> Model a
+timePassed : Int -> Snackbar a -> Snackbar a
 timePassed ms model =
     case model.current of
         Nothing ->
@@ -98,7 +101,7 @@ timePassed ms model =
 
 {-| Returns the current element.
 -}
-current : Model a -> Maybe a
+current : Snackbar a -> Maybe a
 current model =
     model.current |> Maybe.map Tuple.first
 
@@ -108,7 +111,7 @@ current model =
 view :
     SnackbarStyle msg
     -> (a -> Message msg)
-    -> Model a
+    -> Snackbar a
     -> Maybe (Element msg)
 view style toMessage model =
     model

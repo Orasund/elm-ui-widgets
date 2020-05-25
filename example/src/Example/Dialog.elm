@@ -4,7 +4,8 @@ import Element exposing (Element)
 import FeatherIcons
 import Widget
 import Widget.Style exposing (ButtonStyle, DialogStyle)
-
+import Widget.Style.Material as Material
+import Browser
 
 type alias Style style msg =
     { style
@@ -12,6 +13,11 @@ type alias Style style msg =
         , primaryButton : ButtonStyle msg
     }
 
+materialStyle : Style {} msg
+materialStyle =
+    { dialog = Material.alertDialog Material.defaultPalette
+    , primaryButton = Material.containedButton Material.defaultPalette
+    }
 
 type Model
     = IsOpen Bool
@@ -87,3 +93,12 @@ view msgMapper style (IsOpen isOpen) =
                         []
                    )
             )
+
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = always init
+        , view = view identity materialStyle >> Element.layout []
+        , update = update
+        , subscriptions = subscriptions
+        }
