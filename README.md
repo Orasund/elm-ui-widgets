@@ -4,7 +4,7 @@ This package contains **independend** widgets (no components) written for [Elm-U
 
 It also supports custom themes and has a material design theme already ready to use.
 
-[Examples of all widgets can be found here](https://orasund.github.io/elm-ui-widgets/).
+[Examples of all widgets can be found here](https://orasund.github.io/elm-ui-widgets/2.0.0/).
 
 ![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
 
@@ -144,4 +144,4 @@ This package tries to solve both of these problems.
 
 ## Changelog
 
-* **Version 2.0** - Complete rewrite of the package. Now including a material design implementation.
+* **Version 2.0.0** - Complete rewrite of the package. Now including a material design implementation.
