@@ -14,7 +14,6 @@ asList =
 toString : Section -> String
 toString section =
     case section of
-
         ReusableViews ->
             "Reusable"
 
@@ -25,7 +24,6 @@ toString section =
 fromString : String -> Maybe Section
 fromString string =
     case string of
-
         "Reusable" ->
             Just ReusableViews
 

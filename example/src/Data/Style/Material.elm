@@ -9,6 +9,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Html.Attributes as Attributes
+import Icons
 import Widget.Style
     exposing
         ( ButtonStyle
@@ -24,7 +25,7 @@ import Widget.Style
         )
 import Widget.Style.Material as Material exposing (Palette)
 import Widget.Style.Template as Template
-import Icons
+
 
 sortTable : Palette -> SortTableStyle msg
 sortTable palette =
@@ -51,5 +52,5 @@ style palette =
     , chipButton = Material.chip palette
     , expansionPanel = Material.expansionPanel palette
     , dialog = Material.alertDialog palette
-    , layout = Material.layout palette "layout"
+    , layout = Material.layout palette
     }

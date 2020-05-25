@@ -1,9 +1,16 @@
 module Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle)
 
+{-| This module contains style types for every widget.
+
+@docs ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle
+
+-}
+
 import Element exposing (Attribute, Element)
 import Html exposing (Html)
 
 
+{-| -}
 type alias ButtonStyle msg =
     { container : List (Attribute msg)
     , labelRow : List (Attribute msg)
@@ -14,6 +21,7 @@ type alias ButtonStyle msg =
     }
 
 
+{-| -}
 type alias DialogStyle msg =
     { containerColumn : List (Attribute msg)
     , title : List (Attribute msg)
@@ -24,6 +32,12 @@ type alias DialogStyle msg =
     }
 
 
+{-| Technical Remark:
+
+  - If icons are defined in Svg, they might not display correctly.
+    To avoid that, make sure to wrap them in `Element.html >> Element.el []`
+
+-}
 type alias ExpansionPanelStyle msg =
     { containerColumn : List (Attribute msg)
     , panelRow : List (Attribute msg)
@@ -34,6 +48,7 @@ type alias ExpansionPanelStyle msg =
     }
 
 
+{-| -}
 type alias SnackbarStyle msg =
     { containerRow : List (Attribute msg)
     , text : List (Attribute msg)
@@ -41,6 +56,7 @@ type alias SnackbarStyle msg =
     }
 
 
+{-| -}
 type alias TextInputStyle msg =
     { chipButton : ButtonStyle msg
     , containerRow : List (Attribute msg)
@@ -49,6 +65,7 @@ type alias TextInputStyle msg =
     }
 
 
+{-| -}
 type alias TabStyle msg =
     { button : ButtonStyle msg
     , optionRow : List (Attribute msg)
@@ -57,6 +74,7 @@ type alias TabStyle msg =
     }
 
 
+{-| -}
 type alias RowStyle msg =
     { containerRow : List (Attribute msg)
     , element : List (Attribute msg)
@@ -66,6 +84,7 @@ type alias RowStyle msg =
     }
 
 
+{-| -}
 type alias ColumnStyle msg =
     { containerColumn : List (Attribute msg)
     , element : List (Attribute msg)
@@ -75,6 +94,12 @@ type alias ColumnStyle msg =
     }
 
 
+{-| Technical Remark:
+
+  - If icons are defined in Svg, they might not display correctly.
+    To avoid that, make sure to wrap them in `Element.html >> Element.el []`
+
+-}
 type alias SortTableStyle msg =
     { containerTable : List (Attribute msg)
     , headerButton : ButtonStyle msg
@@ -84,6 +109,12 @@ type alias SortTableStyle msg =
     }
 
 
+{-| Technical Remark:
+
+  - If icons are defined in Svg, they might not display correctly.
+    To avoid that, make sure to wrap them in `Element.html >> Element.el []`
+
+-}
 type alias LayoutStyle msg =
     { container : List (Attribute msg)
     , snackbar : SnackbarStyle msg

@@ -242,8 +242,7 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                     , menu
                         |> Widget.select
                         |> List.map
-                            (Widget.selectButton style.sheetButton
-                            )
+                            (Widget.selectButton style.sheetButton)
                     ]
                         |> List.concat
                         |> Element.column [ Element.width <| Element.fill ]

@@ -66,7 +66,6 @@ import Widget.Style
         , TabStyle
         , TextInputStyle
         )
-import Widget.Style.Template as Template
 
 
 
@@ -1301,8 +1300,8 @@ drawerButton palette =
   - The drawer button as not taken from the specification (This will been to be added later)
 
 -}
-layout : Palette -> String -> LayoutStyle msg
-layout palette string =
+layout : Palette -> LayoutStyle msg
+layout palette =
     { container =
         (palette.background |> textAndBackground)
             ++ [ Font.family

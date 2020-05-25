@@ -6,27 +6,27 @@ import Widget.Style
         , ColumnStyle
         , DialogStyle
         , ExpansionPanelStyle
+        , LayoutStyle
         , RowStyle
         , SortTableStyle
         , TabStyle
         , TextInputStyle
-        , LayoutStyle
         )
 
 
 type alias Style msg =
-        { dialog : DialogStyle msg
-        , expansionPanel : ExpansionPanelStyle msg
-        , button : ButtonStyle msg
-        , primaryButton : ButtonStyle msg
-        , tab : TabStyle msg
-        , textInput : TextInputStyle msg
-        , chipButton : ButtonStyle msg
-        , row : RowStyle msg
-        , buttonRow : RowStyle msg
-        , column : ColumnStyle msg
-        , cardColumn : ColumnStyle msg
-        , sortTable : SortTableStyle msg
-        , selectButton : ButtonStyle msg
-        , layout : LayoutStyle msg
-        }
+    { dialog : DialogStyle msg
+    , expansionPanel : ExpansionPanelStyle msg
+    , button : ButtonStyle msg
+    , primaryButton : ButtonStyle msg
+    , tab : TabStyle msg
+    , textInput : TextInputStyle msg
+    , chipButton : ButtonStyle msg
+    , row : RowStyle msg
+    , buttonRow : RowStyle msg
+    , column : ColumnStyle msg
+    , cardColumn : ColumnStyle msg
+    , sortTable : SortTableStyle msg
+    , selectButton : ButtonStyle msg
+    , layout : LayoutStyle msg
+    }

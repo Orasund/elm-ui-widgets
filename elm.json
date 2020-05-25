@@ -6,9 +6,11 @@
     "version": "1.0.0",
     "exposed-modules": [
         "Widget.Layout",
-        "Widget.Style",
         "Widget.ScrollingNav",
-        "Widget.Snackbar"
+        "Widget.Snackbar",
+        "Widget.Style",
+        "Widget.Style.Material",
+        "Widget.Style.Template"
     ],
     "elm-version": "0.19.0 <= v < 0.20.0",
     "dependencies": {

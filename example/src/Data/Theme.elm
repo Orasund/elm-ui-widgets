@@ -6,6 +6,7 @@ import Data.Style.Material
 import Data.Style.Template
 import Widget.Style.Material
 
+
 type Theme
     = ElmUiFramework
     | Template

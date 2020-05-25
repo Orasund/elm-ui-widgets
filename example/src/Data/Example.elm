@@ -1,4 +1,4 @@
-module Data.Example exposing (Example, asList, toString,fromString, Model, Msg, init, subscriptions, toCardList, update, view)
+module Data.Example exposing (Example, Model, Msg, asList, fromString, init, subscriptions, toCardList, toString, update, view)
 
 import Data.Style exposing (Style)
 import Element exposing (Element)
@@ -15,6 +15,7 @@ import Example.TextInput as TextInput
 import Framework.Grid as Grid
 import View.Test as Test
 
+
 type Example
     = ButtonExample
     | SelectExample
@@ -26,6 +27,7 @@ type Example
     | DialogExample
     | TextInputExample
     | ListExample
+
 
 asList : List Example
 asList =
@@ -40,65 +42,147 @@ asList =
     , TextInputExample
     , ListExample
     ]
-    |> List.sortBy toString
+        |> List.sortBy toString
 
 
 toString : Example -> String
 toString example =
     case example of
-        ButtonExample -> "Button"
-        SelectExample -> "Select"
-        MultiSelectExample -> "Multi Select"
-        ExpansionPanelExample -> "ExpansionPanel"
-        TabExample -> "Tab"
-        SortTableExample -> "SortTable"
-        ModalExample -> "Modal"
-        DialogExample -> "Dialog"
-        TextInputExample -> "TextInput"
-        ListExample -> "List"
+        ButtonExample ->
+            "Button"
 
-fromString  : String -> Maybe Example
+        SelectExample ->
+            "Select"
+
+        MultiSelectExample ->
+            "Multi Select"
+
+        ExpansionPanelExample ->
+            "ExpansionPanel"
+
+        TabExample ->
+            "Tab"
+
+        SortTableExample ->
+            "SortTable"
+
+        ModalExample ->
+            "Modal"
+
+        DialogExample ->
+            "Dialog"
+
+        TextInputExample ->
+            "TextInput"
+
+        ListExample ->
+            "List"
+
+
+fromString : String -> Maybe Example
 fromString string =
     case string of
-          "Button" -> Just ButtonExample
-          "Select" -> Just SelectExample
-          "Multi Select" -> Just MultiSelectExample
-          "ExpansionPanel" -> Just ExpansionPanelExample
-          "Tab" -> Just TabExample
-          "SortTable" -> Just SortTableExample
-          "Modal" -> Just ModalExample
-          "Dialog" -> Just DialogExample
-          "TextInput" -> Just TextInputExample
-          "List" -> Just ListExample
-          _ -> Nothing
+        "Button" ->
+            Just ButtonExample
+
+        "Select" ->
+            Just SelectExample
+
+        "Multi Select" ->
+            Just MultiSelectExample
+
+        "ExpansionPanel" ->
+            Just ExpansionPanelExample
+
+        "Tab" ->
+            Just TabExample
+
+        "SortTable" ->
+            Just SortTableExample
+
+        "Modal" ->
+            Just ModalExample
+
+        "Dialog" ->
+            Just DialogExample
+
+        "TextInput" ->
+            Just TextInputExample
+
+        "List" ->
+            Just ListExample
+
+        _ ->
+            Nothing
+
 
 get : Example -> ExampleView msg -> Element msg
 get example =
     case example of
-        ButtonExample -> .button
-        SelectExample -> .select
-        MultiSelectExample -> .multiSelect
-        ExpansionPanelExample -> .expansionPanel
-        TabExample -> .tab
-        SortTableExample -> .sortTable
-        ModalExample -> .modal
-        DialogExample -> .dialog
-        TextInputExample -> .textInput
-        ListExample -> .list
+        ButtonExample ->
+            .button
+
+        SelectExample ->
+            .select
+
+        MultiSelectExample ->
+            .multiSelect
+
+        ExpansionPanelExample ->
+            .expansionPanel
+
+        TabExample ->
+            .tab
+
+        SortTableExample ->
+            .sortTable
+
+        ModalExample ->
+            .modal
+
+        DialogExample ->
+            .dialog
+
+        TextInputExample ->
+            .textInput
+
+        ListExample ->
+            .list
+
 
 toTests : Example -> msg -> Style msg -> List ( String, Element msg )
 toTests example =
     case example of
-        ButtonExample -> Test.button
-        SelectExample -> Test.select
-        MultiSelectExample -> Test.multiSelect
-        ExpansionPanelExample -> Test.expansionPanel
-        TabExample -> Test.tab
-        SortTableExample -> Test.sortTable
-        ModalExample -> Test.modal
-        DialogExample -> Test.dialog
-        TextInputExample -> Test.textInput
-        ListExample -> Test.list
+        ButtonExample ->
+            Test.button
+
+        SelectExample ->
+            Test.select
+
+        MultiSelectExample ->
+            Test.multiSelect
+
+        ExpansionPanelExample ->
+            Test.expansionPanel
+
+        TabExample ->
+            Test.tab
+
+        SortTableExample ->
+            Test.sortTable
+
+        ModalExample ->
+            Test.modal
+
+        DialogExample ->
+            Test.dialog
+
+        TextInputExample ->
+            Test.textInput
+
+        ListExample ->
+            Test.list
+
 
 type Msg
     = Button Button.Msg
@@ -111,7 +195,6 @@ type Msg
     | Dialog Dialog.Msg
     | TextInput TextInput.Msg
     | List List.Msg
-
 
 
 type alias Model =
@@ -150,18 +233,20 @@ type alias UpgradeCollection =
     , list : UpgradeRecord List.Model List.Msg
     }
 
+
 type alias ExampleView msg =
     { button : Element msg
-        , select : Element msg
-        , multiSelect : Element msg
-        , expansionPanel : Element msg
-        , tab : Element msg
-        , sortTable : Element msg
-        , modal : Element msg
-        , dialog : Element msg
-        , textInput : Element msg
-        , list : Element msg
-        }
+    , select : Element msg
+    , multiSelect : Element msg
+    , expansionPanel : Element msg
+    , tab : Element msg
+    , sortTable : Element msg
+    , modal : Element msg
+    , dialog : Element msg
+    , textInput : Element msg
+    , list : Element msg
+    }
+
 
 init : ( Model, Cmd Msg )
 init =
@@ -358,7 +443,6 @@ view :
     -> Style msg
     -> Model
     -> ExampleView msg
-        
 view msgMapper style model =
     { button =
         Button.view (Button >> msgMapper) style (.button model)
@@ -392,13 +476,13 @@ toCardList :
     -> List ( String, Element msg, Element msg )
 toCardList { idle, msgMapper, style, model } =
     asList
-    |> List.map 
-        (\example ->
-            { title = example |> toString
-            , example = example |> get
-            , test = example |> toTests
-            }
-        )
+        |> List.map
+            (\example ->
+                { title = example |> toString
+                , example = example |> get
+                , test = example |> toTests
+                }
+            )
         |> List.map
             (\{ title, example, test } ->
                 ( title

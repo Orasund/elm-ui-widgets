@@ -1,7 +1,6 @@
 module Widget.Snackbar exposing
-    ( Model, init, current, timePassed
+    ( Model, Message, init, current, timePassed, view
     , insert, insertFor, dismiss
-    , Message, view
     )
 
 {-| A [snackbar](https://material.io/components/snackbars/) shows notification, one at a time.
@@ -9,7 +8,7 @@ module Widget.Snackbar exposing
 
 # Basics
 
-@docs Model, init, current, timePassed
+@docs Model, Message, init, current, timePassed, view
 
 
 # Operations
@@ -104,6 +103,8 @@ current model =
     model.current |> Maybe.map Tuple.first
 
 
+{-| Views the current Message. (only one at a time)
+-}
 view :
     SnackbarStyle msg
     -> (a -> Message msg)

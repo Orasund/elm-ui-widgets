@@ -1,5 +1,8 @@
 module Widget.Style.Template exposing (box, button, column, decoration, dialog, expansionPanel, icon, layout, row, snackbar, sortTable, tab, textInput)
 
+{-| This package
+-}
+
 import Element exposing (Attribute, Element)
 import Element.Background as Background
 import Element.Border as Border

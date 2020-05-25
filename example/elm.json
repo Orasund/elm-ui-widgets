@@ -20,6 +20,7 @@
             "mdgriffith/elm-ui": "1.1.5",
             "noahzgordon/elm-color-extra": "1.0.2",
             "ryannhg/elm-spa": "4.1.0",
+            "turboMaCk/any-set": "1.4.0",
             "turboMaCk/queue": "1.0.2",
             "wernerdegroot/listzipper": "4.0.0"
         },
@@ -28,7 +29,8 @@
             "elm/regex": "1.0.0",
             "elm/url": "1.0.0",
             "elm/virtual-dom": "1.0.2",
-            "fredcy/elm-parseint": "2.0.1"
+            "fredcy/elm-parseint": "2.0.1",
+            "turboMaCk/any-dict": "2.3.0"
         }
     },
     "test-dependencies": {

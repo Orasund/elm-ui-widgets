@@ -1,7 +1,6 @@
 module Widget.ScrollingNav exposing
-    ( Model, init, view, current
-    , jumpTo, syncPositions
-    , getPos, jumpToWithOffset, setPos, toSelect
+    ( Model, init, view, current, toSelect
+    , jumpTo, jumpToWithOffset, syncPositions, getPos, setPos
     )
 
 {-| The Scrolling Nav is a navigation bar thats updates while you scroll through
@@ -10,18 +9,17 @@ the page. Clicking on a navigation button will scroll directly to that section.
 
 # Basics
 
-@docs Model, Msg, init, update, subscriptions, view, viewSections, current
+@docs Model, init, view, current, toSelect
 
 
 # Operations
 
-@docs jumpTo, syncPositions
+@docs jumpTo, jumpToWithOffset, syncPositions, getPos, setPos
 
 -}
 
 import Browser.Dom as Dom
 import Element exposing (Element)
-import Framework.Grid as Grid
 import Html.Attributes as Attributes
 import IntDict exposing (IntDict)
 import Task exposing (Task)
@@ -62,6 +60,8 @@ init { toString, fromString, arrangement, toMsg } =
            )
 
 
+{-| Syncs the position of of the viewport
+-}
 getPos : Task x (Model selection -> Model selection)
 getPos =
     Dom.getViewport
@@ -73,12 +73,14 @@ getPos =
             )
 
 
+{-| sets the position of the viewport to show a specific section
+-}
 setPos : Int -> Model section -> Model section
 setPos pos model =
     { model | scrollPos = pos }
 
 
-{-| scrolls the screen to the respective section
+{-| Scrolls the screen to the respective section
 -}
 jumpTo :
     { section : section
@@ -95,7 +97,7 @@ jumpTo { section, onChange } { toString } =
         |> Task.attempt onChange
 
 
-{-| scrolls the screen to the respective section with some offset
+{-| Scrolls the screen to the respective section with some offset
 -}
 jumpToWithOffset :
     { offset : Float
@@ -113,7 +115,9 @@ jumpToWithOffset { offset, section, onChange } { toString } =
         |> Task.attempt onChange
 
 
-{-| -}
+{-| Updates the positions of all sections.
+This functions should be called regularly if the height of elements on your page can change during time.
+-}
 syncPositions : Model section -> Task Dom.Error (Model section -> Model section)
 syncPositions { toString, arrangement } =
     arrangement
@@ -144,7 +148,8 @@ syncPositions { toString, arrangement } =
             )
 
 
-{-| -}
+{-| Returns the current section
+-}
 current : (String -> Maybe section) -> Model section -> Maybe section
 current fromString { positions, scrollPos } =
     positions
@@ -155,6 +160,8 @@ current fromString { positions, scrollPos } =
         |> Maybe.andThen fromString
 
 
+{-| Returns a select widget containing all section, with the current section selected.
+-}
 toSelect : (Int -> Maybe msg) -> Model section -> Select msg
 toSelect onSelect ({ arrangement, toString, fromString } as model) =
     { selected =
@@ -181,11 +188,15 @@ toSelect onSelect ({ arrangement, toString, fromString } as model) =
     }
 
 
-{-| -}
+{-| Opinionated way of viewing the section.
+
+This might be useful at first, but you should consider writing your own view function.
+
+```
 view :
     (section -> Element msg)
     -> Model section
-    -> Element msg
+    -> List (Element msg)
 view asElement { toString, arrangement } =
     arrangement
         |> List.map
@@ -201,4 +212,25 @@ view asElement { toString, arrangement } =
                     asElement <|
                         header
             )
-        |> Element.column Grid.simple
+```
+
+-}
+view :
+    (section -> Element msg)
+    -> Model section
+    -> List (Element msg)
+view asElement { toString, arrangement } =
+    arrangement
+        |> List.map
+            (\header ->
+                Element.el
+                    [ header
+                        |> toString
+                        |> Attributes.id
+                        |> Element.htmlAttribute
+                    , Element.width <| Element.fill
+                    ]
+                <|
+                    asElement <|
+                        header
+            )

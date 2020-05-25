@@ -5,11 +5,11 @@ import Browser
 import Browser.Dom as Dom exposing (Viewport)
 import Browser.Events as Events
 import Browser.Navigation as Navigation
+import Data.Example as Example exposing (Example)
 import Data.Section as Section exposing (Section(..))
 import Data.Style exposing (Style)
 import Data.Theme as Theme exposing (Theme(..))
-import Data.Example as Example exposing (Example)
-import Element exposing (DeviceClass(..))
+import Element exposing (Element,DeviceClass(..))
 import Framework
 import Framework.Grid as Grid
 import Framework.Heading as Heading
@@ -17,13 +17,14 @@ import Html exposing (Html)
 import Html.Attributes as Attributes
 import Icons
 import Reusable
+import Set.Any as AnySet exposing (AnySet)
 import Stateless
 import Task
 import Time
 import Widget
 import Widget.Layout as Layout exposing (Layout, Part)
 import Widget.ScrollingNav as ScrollingNav
-
+import FeatherIcons
 
 type alias LoadedModel =
     { stateless : Stateless.Model
@@ -40,6 +41,7 @@ type alias LoadedModel =
         , remaining : Int
         }
     , theme : Theme
+    , expanded : AnySet String Example
     }
 
 
@@ -61,6 +63,7 @@ type LoadedMsg
     | ChangedSearch String
     | SetTheme Theme
     | Idle
+    | ToggledExample Example
 
 
 type Msg
@@ -75,7 +78,7 @@ initialModel { viewport } =
             ScrollingNav.init
                 { toString = Example.toString
                 , fromString = Example.fromString
-                , arrangement = Example.asList 
+                , arrangement = Example.asList
                 , toMsg =
                     \result ->
                         case result of
@@ -103,6 +106,7 @@ initialModel { viewport } =
             , remaining = 0
             }
       , theme = Material
+      , expanded = AnySet.empty Example.toString
       }
     , [ cmd
       , statelessCmd |> Cmd.map StatelessSpecific
@@ -116,187 +120,6 @@ init () =
     ( Loading
     , Task.perform GotViewport Dom.getViewport
     )
-
-
-view : Model -> Html Msg
-view model =
-    case model of
-        Loading ->
-            Element.none |> Framework.responsiveLayout []
-
-        Loaded m ->
-            let
-                style : Style msg
-                style =
-                    Theme.toStyle m.theme
-            in
-            Html.map LoadedSpecific <|
-                Layout.view style.layout
-                    { dialog =
-                        if m.displayDialog then
-                            { text = "This is a dialog window"
-                            , title = Just "Dialog"
-                            , accept =
-                                Just
-                                    { text = "Ok"
-                                    , onPress = Just <| ToggleDialog False
-                                    }
-                            , dismiss =
-                                Just
-                                    { text = "Dismiss"
-                                    , onPress = Just <| ToggleDialog False
-                                    }
-                            }
-                                |> Widget.dialog style.dialog
-                                |> Just
-
-                        else
-                            Nothing
-                    , layout = m.layout
-                    , window = m.window
-                    , menu =
-                        m.scrollingNav
-                            |> ScrollingNav.toSelect
-                                (\int ->
-                                    m.scrollingNav.arrangement
-                                        |> Array.fromList
-                                        |> Array.get int
-                                        |> Maybe.map JumpTo
-                                )
-                    , actions =
-                        [ { onPress = Just <| Load "https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/"
-                          , text = "Docs"
-                          , icon = Icons.book |> Element.html |> Element.el []
-                          }
-                        , { onPress = Just <| Load "https://github.com/Orasund/elm-ui-widgets"
-                          , text = "Github"
-                          , icon = Icons.github |> Element.html |> Element.el []
-                          }
-                        , { onPress =
-                                if m.theme /= Material then
-                                    Just <| SetTheme <| Material
-
-                                else
-                                    Nothing
-                          , text = "Material Theme"
-                          , icon = Icons.penTool |> Element.html |> Element.el []
-                          }
-                        , { onPress =
-                                if m.theme /= DarkMaterial then
-                                    Just <| SetTheme <| DarkMaterial
-
-                                else
-                                    Nothing
-                          , text = "Dark Material Theme"
-                          , icon = Icons.penTool |> Element.html |> Element.el []
-                          }
-                        
-                        , { onPress =
-                                if m.theme /= ElmUiFramework then
-                                    Just <| SetTheme <| ElmUiFramework
-
-                                else
-                                    Nothing
-                          , text = "Elm-Ui-Framework Theme"
-                          , icon = Icons.penTool |> Element.html |> Element.el []
-                          }
-                        , { onPress =
-                                if m.theme /= Template then
-                                    Just <| SetTheme <| Template
-
-                                else
-                                    Nothing
-                          , text = "Template Theme"
-                          , icon = Icons.penTool |> Element.html |> Element.el []
-                          }
-                        ]
-                    , onChangedSidebar = ChangedSidebar
-                    , title =
-                        "Elm-Ui-Widgets"
-                            |> Element.text
-                            |> Element.el Heading.h1
-                    , search =
-                        Just
-                            { text = m.search.raw
-                            , onChange = ChangedSearch
-                            , label = "Search"
-                            }
-                    } <|
-                    (
-                        [ Element.el [ Element.height <| Element.px <| 42 ] <| Element.none
-                        , [StatelessViews,ReusableViews]
-                                |> List.map
-                                    (\section ->
-                                        (case section of
-                                            ReusableViews ->
-                                                Reusable.view
-                                                    { theme = m.theme
-                                                    , addSnackbar = AddSnackbar
-                                                    }
-
-                                            StatelessViews ->
-                                                Stateless.view
-                                                    { theme = m.theme
-                                                    , msgMapper = StatelessSpecific
-                                                    , model = m.stateless
-                                                    }
-                                        )
-                                            |> (\{ title, description, items } ->
-                                                    [ title
-                                                    |> Element.text
-                                                    |> Element.el ( Heading.h2 )
-                                                    , if m.search.current == "" then
-                                                        description
-                                                            |> Element.text
-                                                            |> List.singleton
-                                                            |> Element.paragraph []
-
-                                                      else
-                                                        Element.none
-                                                    , items
-                                                        |> (if m.search.current /= "" then
-                                                                List.filter
-                                                                    (\( a, _, _ ) ->
-                                                                        a
-                                                                            |> String.toLower
-                                                                            |> String.contains (m.search.current |> String.toLower)
-                                                                    )
-
-                                                            else
-                                                                identity
-                                                           )
-                                                        |> List.map
-                                                            (\( name, elem, more ) ->
-                                                                [ [ Element.text name
-                                                                        |> Element.el (Heading.h3 ++ [ Element.height <| Element.shrink 
-                                                                       , name
-                                                            |> Attributes.id
-                                                            |> Element.htmlAttribute])
-                                                                  , elem
-                                                                  ]
-                                                                    |> Element.column Grid.simple
-                                                                , more
-                                                                    |> Element.el
-                                                                        [ Element.width <| Element.fill
-                                                                        ]
-                                                                ]
-                                                                    |> Widget.column style.cardColumn
-                                                            )
-                                                        |> Element.wrappedRow
-                                                            (Grid.simple
-                                                                ++ [ Element.height <| Element.shrink
-                                                                   ]
-                                                            )
-                                                    ]
-                                                        |> Element.column (Grid.section ++ [ Element.centerX ])
-                                               )
-                                    )
-                               -- |> Element.column Grid.section
-                          --]
-                            |> Element.column (Framework.container ++ style.layout.container)
-                        ]
-                            |> Element.column Grid.compact
-                    )
 
 
 updateLoaded : LoadedMsg -> LoadedModel -> ( LoadedModel, Cmd LoadedMsg )
@@ -414,6 +237,13 @@ updateLoaded msg model =
             , Cmd.none
             )
 
+        ToggledExample example ->
+            ( { model
+                | expanded = model.expanded |> AnySet.toggle example
+              }
+            , Cmd.none
+            )
+
         Idle ->
             ( model, Cmd.none )
 
@@ -440,6 +270,218 @@ subscriptions _ =
         , Events.onResize (\h w -> Resized { height = h, width = w })
         ]
         |> Sub.map LoadedSpecific
+
+
+view : Model -> Html Msg
+view model =
+    case model of
+        Loading ->
+            Element.none |> Framework.responsiveLayout []
+
+        Loaded m ->
+            let
+                style : Style msg
+                style =
+                    Theme.toStyle m.theme
+            in
+            Html.map LoadedSpecific <|
+                Layout.view style.layout
+                    { dialog =
+                        if m.displayDialog then
+                            { text = "This is a dialog window"
+                            , title = Just "Dialog"
+                            , accept =
+                                Just
+                                    { text = "Ok"
+                                    , onPress = Just <| ToggleDialog False
+                                    }
+                            , dismiss =
+                                Just
+                                    { text = "Dismiss"
+                                    , onPress = Just <| ToggleDialog False
+                                    }
+                            }
+                                |> Widget.dialog style.dialog
+                                |> Just
+
+                        else
+                            Nothing
+                    , layout = m.layout
+                    , window = m.window
+                    , menu =
+                        m.scrollingNav
+                            |> ScrollingNav.toSelect
+                                (\int ->
+                                    m.scrollingNav.arrangement
+                                        |> Array.fromList
+                                        |> Array.get int
+                                        |> Maybe.map JumpTo
+                                )
+                    , actions =
+                        [ { onPress = Just <| Load "https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/"
+                          , text = "Docs"
+                          , icon = Icons.book |> Element.html |> Element.el []
+                          }
+                        , { onPress = Just <| Load "https://github.com/Orasund/elm-ui-widgets"
+                          , text = "Github"
+                          , icon = Icons.github |> Element.html |> Element.el []
+                          }
+                        , { onPress =
+                                if m.theme /= Material then
+                                    Just <| SetTheme <| Material
+
+                                else
+                                    Nothing
+                          , text = "Material Theme"
+                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          }
+                        , { onPress =
+                                if m.theme /= DarkMaterial then
+                                    Just <| SetTheme <| DarkMaterial
+
+                                else
+                                    Nothing
+                          , text = "Dark Material Theme"
+                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          }
+                        , { onPress =
+                                if m.theme /= ElmUiFramework then
+                                    Just <| SetTheme <| ElmUiFramework
+
+                                else
+                                    Nothing
+                          , text = "Elm-Ui-Framework Theme"
+                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          }
+                        , { onPress =
+                                if m.theme /= Template then
+                                    Just <| SetTheme <| Template
+
+                                else
+                                    Nothing
+                          , text = "Template Theme"
+                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          }
+                        ]
+                    , onChangedSidebar = ChangedSidebar
+                    , title =
+                        "Elm-Ui-Widgets"
+                            |> Element.text
+                            |> Element.el Heading.h1
+                    , search =
+                        Just
+                            { text = m.search.raw
+                            , onChange = ChangedSearch
+                            , label = "Search"
+                            }
+                    }
+                <|
+                    viewLoaded m
+
+
+viewLoaded : LoadedModel -> Element LoadedMsg
+viewLoaded m =
+    let
+        style : Style msg
+        style =
+            Theme.toStyle m.theme
+    in
+    [ Element.el [ Element.height <| Element.px <| 42 ] <| Element.none
+    , [ StatelessViews, ReusableViews ]
+        |> List.map
+            (\section ->
+                (case section of
+                    ReusableViews ->
+                        Reusable.view
+                            { theme = m.theme
+                            , addSnackbar = AddSnackbar
+                            }
+
+                    StatelessViews ->
+                        Stateless.view
+                            { theme = m.theme
+                            , msgMapper = StatelessSpecific
+                            , model = m.stateless
+                            }
+                )
+                    |> (\{ title, description, items } ->
+                            [ title
+                                |> Element.text
+                                |> Element.el Heading.h2
+                            , if m.search.current == "" then
+                                description
+                                    |> Element.text
+                                    |> List.singleton
+                                    |> Element.paragraph []
+
+                              else
+                                Element.none
+                            , items
+                                |> (if m.search.current /= "" then
+                                        List.filter
+                                            (\( a, _, _ ) ->
+                                                a
+                                                    |> String.toLower
+                                                    |> String.contains (m.search.current |> String.toLower)
+                                            )
+
+                                    else
+                                        identity
+                                   )
+                                |> List.map
+                                    (\( name, elem, more ) ->
+                                        [ [ Element.text name
+                                                |> Element.el
+                                                    (Heading.h3
+                                                        ++ [ Element.height <| Element.shrink
+                                                           , name
+                                                                |> Attributes.id
+                                                                |> Element.htmlAttribute
+                                                           ]
+                                                    )
+                                          , elem
+                                          ]
+                                            |> Element.column Grid.simple
+                                        , 
+                                            Widget.expansionPanel style.expansionPanel
+    
+                                                { onToggle = 
+                                                    always
+                                                    (name
+                                                    |> Example.fromString
+                                                    |> Maybe.map ToggledExample
+                                                    |> Maybe.withDefault Idle
+                                                    )
+                                                , icon = Element.none
+                                                , text =
+                                                    "States"
+                                                , content = more
+                                                , isExpanded =
+                                                    name
+                                                    |> Example.fromString
+                                                    |> Maybe.map
+                                                    (\example ->
+                                                    m.expanded 
+                                                    |> AnySet.member example 
+                                                    )|> Maybe.withDefault False
+                                                    
+
+                                                }
+                                        ]
+                                            |> Widget.column style.cardColumn
+                                    )
+                                |> Element.wrappedRow
+                                    (Grid.simple
+                                        ++ [ Element.height <| Element.shrink
+                                           ]
+                                    )
+                            ]
+                                |> Element.column (Grid.section ++ [ Element.centerX ])
+                       )
+            )
+        |> Element.column (Framework.container ++ style.layout.container)
+    ]
+        |> Element.column Grid.compact
 
 
 main : Program () Model Msg

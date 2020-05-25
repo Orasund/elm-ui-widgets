@@ -13,8 +13,8 @@ type alias Style style msg =
     }
 
 
-type Model =
-    IsOpen Bool
+type Model
+    = IsOpen Bool
 
 
 type Msg
