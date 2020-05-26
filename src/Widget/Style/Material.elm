@@ -1349,8 +1349,10 @@ tab palette =
     , optionRow =
         [ Element.spaceEvenly
         , Border.shadow <| shadow 4
+        , Element.spacing 8
+        , Element.width <| Element.fill
         ]
-    , containerColumn = [ Element.spacing 8 ]
+    , containerColumn = [ Element.spacing 8, Element.width <| Element.fill ]
     , content = [ Element.width <| Element.fill ]
     }
 

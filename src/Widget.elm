@@ -1,10 +1,11 @@
 module Widget exposing
     ( Button, TextButton, iconButton, textButton, button
-    , Select, MultiSelect, selectButton, select, multiSelect
+    , Select, selectButton, select
+    , MultiSelect, multiSelect
     , Dialog, modal, dialog
     , ExpansionPanel, expansionPanel
     , row, column, buttonRow, buttonColumn
-    , SortTable,Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
+    , SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInput, textInput
     , Tab, tab
     )
@@ -13,31 +14,32 @@ module Widget exposing
 
 These widgets should be used by defining the styling seperately:
 
-```
-Widget.button Material.primaryButton
-    { text = "disable me"
-    , icon =
-        FeatherIcons.slash
-            |> FeatherIcons.withSize 16
-            |> FeatherIcons.toHtml []
-            |> Element.html
-            |> Element.el []
-    , onPress =
-        if isButtonEnabled then
-            ChangedButtonStatus False
-                |> Just
+    Widget.button Material.primaryButton
+        { text = "disable me"
+        , icon =
+            FeatherIcons.slash
+                |> FeatherIcons.withSize 16
+                |> FeatherIcons.toHtml []
+                |> Element.html
+                |> Element.el []
+        , onPress =
+            if isButtonEnabled then
+                ChangedButtonStatus False
+                    |> Just
 
-        else
-            Nothing
-    }
-```
+            else
+                Nothing
+        }
 
 Every widgets comes with a type. You can think of the widgets as building blocks.
 You can create you own widgets by sticking widgets types together.
 
+
 # Buttons
 
 ![Button](https://orasund.github.io/elm-ui-widgets/assets/button.png)
+
+[Open in Ellie](https://ellie-app.com/8XDrHsxYkKNa1)
 
 @docs Button, TextButton, iconButton, textButton, button
 
@@ -46,44 +48,58 @@ You can create you own widgets by sticking widgets types together.
 
 ![Select](https://orasund.github.io/elm-ui-widgets/assets/select.png)
 
+[Open in Ellie](https://ellie-app.com/8XDsBDB92Dfa1)
+
 @docs Select, selectButton, select
 
-![multiSelect](https://orasund.github.io/elm-ui-widgets/assets/multiSelect.png)
+![MultiSelect](https://orasund.github.io/elm-ui-widgets/assets/multiSelect.png)
+
+[Open in Ellie](https://ellie-app.com/8XDtW5gVnB3a1)
 
 @docs MultiSelect, multiSelect
 
 
 # Dialog
 
-![dialog](https://orasund.github.io/elm-ui-widgets/assets/dialog.png)
+![Dialog](https://orasund.github.io/elm-ui-widgets/assets/dialog.png)
+
+[Open in Ellie](https://ellie-app.com/8XDvDKrm8R4a1)
 
 @docs Dialog, modal, dialog
 
 
 # Expansion Panel
 
-![expansionPanel](https://orasund.github.io/elm-ui-widgets/assets/expansionPanel.png)
+![ExpansionPanel](https://orasund.github.io/elm-ui-widgets/assets/expansionPanel.png)
+
+[Open in Ellie](https://ellie-app.com/8XDwr7pCZ3Ca1)
 
 @docs ExpansionPanel, expansionPanel
 
 
 # List
 
-![list](https://orasund.github.io/elm-ui-widgets/assets/list.png)
+![List](https://orasund.github.io/elm-ui-widgets/assets/list.png)
+
+[Open in Ellie](https://ellie-app.com/8XDxbpZZbFMa1)
 
 @docs row, column, buttonRow, buttonColumn
 
 
 # Sort Table
 
-![sortTable](https://orasund.github.io/elm-ui-widgets/assets/sortTable.png)
+![SortTable](https://orasund.github.io/elm-ui-widgets/assets/sortTable.png)
 
-@docs SortTable,Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
+[Open in Ellie](https://ellie-app.com/8XDy5mGRd4Xa1)
+
+@docs SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
 
 
 # Text Input
 
 ![textInput](https://orasund.github.io/elm-ui-widgets/assets/textInput.png)
+
+[Open in Ellie](https://ellie-app.com/8XDyZD5VBd6a1)
 
 @docs TextInput, textInput
 
@@ -91,6 +107,8 @@ You can create you own widgets by sticking widgets types together.
 # Tab
 
 ![tab](https://orasund.github.io/elm-ui-widgets/assets/textInput.png)
+
+[Open in Ellie](https://ellie-app.com/8XDzMBgC36wa1)
 
 @docs Tab, tab
 
@@ -107,7 +125,7 @@ import Internal.SortTable as SortTable
 import Internal.Tab as Tab
 import Internal.TextInput as TextInput
 import Set exposing (Set)
-import Widget.Style exposing (ButtonStyle,TextInputStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, RowStyle, SortTableStyle, TabStyle)
+import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, RowStyle, SortTableStyle, TabStyle, TextInputStyle)
 
 
 
@@ -188,7 +206,7 @@ button =
 
 Technical Remark:
 
-* A more suitable name would be "Choice"
+  - A more suitable name would be "Choice"
 
 -}
 type alias Select msg =
@@ -206,7 +224,7 @@ type alias Select msg =
 
 Technical Remark:
 
-* A more suitable name would be "Options"
+  - A more suitable name would be "Options"
 
 -}
 type alias MultiSelect msg =
@@ -268,7 +286,7 @@ type alias Dialog msg =
 
 Technical Remark:
 
-* To stop the screen from scrolling, set the height of the layout to the height of the screen.
+  - To stop the screen from scrolling, set the height of the layout to the height of the screen.
 
 -}
 modal : { onDismiss : Maybe msg, content : Element msg } -> List (Attribute msg)
@@ -296,6 +314,7 @@ dialog =
 - EXPANSION PANEL
 ----------------------------------------------------------}
 
+
 {-| Expansion Panel widget type
 -}
 type alias ExpansionPanel msg =
@@ -307,6 +326,7 @@ type alias ExpansionPanel msg =
     , content : Element msg
     , isExpanded : Bool
     }
+
 
 {-| An expansion Panel
 -}
@@ -329,6 +349,7 @@ expansionPanel =
 - TEXT INPUT
 ----------------------------------------------------------}
 
+
 {-| Text Input widget type
 -}
 type alias TextInput msg =
@@ -339,7 +360,9 @@ type alias TextInput msg =
     , onChange : String -> msg
     }
 
-{-| A text Input that allows to include chips. -}
+
+{-| A text Input that allows to include chips.
+-}
 textInput :
     TextInputStyle msg
     ->
@@ -359,17 +382,20 @@ textInput =
 - LIST
 ----------------------------------------------------------}
 
+
 {-| Replacement of `Element.row`
 -}
 row : RowStyle msg -> List (Element msg) -> Element msg
 row =
     List.row
 
+
 {-| Replacement of `Element.column`
 -}
 column : ColumnStyle msg -> List (Element msg) -> Element msg
 column =
     List.column
+
 
 {-| A row of buttons
 -}
@@ -381,6 +407,7 @@ buttonRow :
     -> Element msg
 buttonRow =
     List.buttonRow
+
 
 {-| A column of buttons
 -}
@@ -405,15 +432,17 @@ buttonColumn =
 type alias Column a =
     SortTable.Column a
 
-{-|  Sort Table widget type
+
+{-| Sort Table widget type
 -}
-type alias SortTable a msg=
+type alias SortTable a msg =
     { content : List a
     , columns : List (Column a)
     , sortBy : String
     , asc : Bool
     , onChange : String -> msg
     }
+
 
 {-| An unsortable Column, when trying to sort by this column, nothing will change.
 -}
@@ -486,6 +515,7 @@ sortTable =
 {----------------------------------------------------------
 - TAB
 ----------------------------------------------------------}
+
 
 {-| Tab widget type
 -}
