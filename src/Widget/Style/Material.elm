@@ -2,12 +2,14 @@ module Widget.Style.Material exposing
     ( Palette, defaultPalette, darkPalette
     , containedButton, outlinedButton, textButton
     , iconButton, toggleButton, buttonRow
+    , cardColumn
     , chip, textInput
     , alertDialog
     , expansionPanel
     , row, column
-    , cardColumn
-    , layout, snackbar, tab, tabButton
+    , snackbar
+    , tab, tabButton
+    , layout
     )
 
 {-| ![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
@@ -26,52 +28,50 @@ If you have any suggestions or improvements, be sure to leave a PR or a Issue ov
 
 You can use the theme by copying the following code:
 
-```
-type alias Style msg =
-    { dialog : DialogStyle msg
-    , expansionPanel : ExpansionPanelStyle msg
-    , button : ButtonStyle msg
-    , primaryButton : ButtonStyle msg
-    , tab : TabStyle msg
-    , textInput : TextInputStyle msg
-    , chipButton : ButtonStyle msg
-    , row : RowStyle msg
-    , buttonRow : RowStyle msg
-    , column : ColumnStyle msg
-    , cardColumn : ColumnStyle msg
-    , sortTable : SortTableStyle msg
-    , selectButton : ButtonStyle msg
-    , layout : LayoutStyle msg
-    }
+    type alias Style msg =
+        { dialog : DialogStyle msg
+        , expansionPanel : ExpansionPanelStyle msg
+        , button : ButtonStyle msg
+        , primaryButton : ButtonStyle msg
+        , tab : TabStyle msg
+        , textInput : TextInputStyle msg
+        , chipButton : ButtonStyle msg
+        , row : RowStyle msg
+        , buttonRow : RowStyle msg
+        , column : ColumnStyle msg
+        , cardColumn : ColumnStyle msg
+        , sortTable : SortTableStyle msg
+        , selectButton : ButtonStyle msg
+        , layout : LayoutStyle msg
+        }
 
-sortTable : Palette -> SortTableStyle msg
-sortTable palette =
-    { containerTable = []
-    , headerButton = Material.textButton palette
-    , ascIcon = Icons.chevronUp |> Element.html |> Element.el []
-    , descIcon = Icons.chevronDown |> Element.html |> Element.el []
-    , defaultIcon = Element.none
-    }
+    sortTable : Palette -> SortTableStyle msg
+    sortTable palette =
+        { containerTable = []
+        , headerButton = Material.textButton palette
+        , ascIcon = Icons.chevronUp |> Element.html |> Element.el []
+        , descIcon = Icons.chevronDown |> Element.html |> Element.el []
+        , defaultIcon = Element.none
+        }
 
+    style : Palette -> Style msg
+    style palette =
+        { sortTable = sortTable palette
+        , row = Material.row
+        , buttonRow = Material.buttonRow
+        , cardColumn = Material.cardColumn palette
+        , column = Material.column
+        , button = Material.outlinedButton palette
+        , primaryButton = Material.containedButton palette
+        , selectButton = Material.toggleButton palette
+        , tab = Material.tab palette
+        , textInput = Material.textInput palette
+        , chipButton = Material.chip palette
+        , expansionPanel = Material.expansionPanel palette
+        , dialog = Material.alertDialog palette
+        , layout = Material.layout palette
+        }
 
-style : Palette -> Style msg
-style palette =
-    { sortTable = sortTable palette
-    , row = Material.row
-    , buttonRow = Material.buttonRow
-    , cardColumn = Material.cardColumn palette
-    , column = Material.column
-    , button = Material.outlinedButton palette
-    , primaryButton = Material.containedButton palette
-    , selectButton = Material.toggleButton palette
-    , tab = Material.tab palette
-    , textInput = Material.textInput palette
-    , chipButton = Material.chip palette
-    , expansionPanel = Material.expansionPanel palette
-    , dialog = Material.alertDialog palette
-    , layout = Material.layout palette
-    }
-```
 
 # Palette
 
@@ -91,6 +91,7 @@ Different styles for buttons have different meanings.
 
 @docs iconButton, toggleButton, buttonRow
 
+
 # Card
 
 In the material design specification the card is not really specified at all.
@@ -99,9 +100,11 @@ Thus for now we only provide a card containing a list.
 
 @docs cardColumn
 
+
 # Chip
 
 @docs chip, textInput
+
 
 # Dialog
 
@@ -119,17 +122,21 @@ The [List widget](https://material.io/components/lists) is a very complex widget
 
 @docs row, column
 
+
 # Snackbar
 
 @docs snackbar
+
 
 # Tab
 
 @docs tab, tabButton
 
+
 # Layout
 
 @docs layout
+
 -}
 
 import Color exposing (Color)
@@ -838,10 +845,6 @@ In the [official documentation](https://material.io/components/chips#types) chip
 
 Technical Remark:
 
-  - There seems to be a bug, where in the mouseOver effects are now visible.
-    This might have something to do with <https://github.com/mdgriffith/elm-ui/issues/47>.
-    This needs to be investigated, but for now i leave it at that.
-
   - Desided against the implementation of an outlined chip.
     Please open a new issue or a PR if you want to have it implemented.
 
@@ -1059,7 +1062,6 @@ cardColumn palette =
 
 _Image taken from [material.io](https://material.io/develop/android/components/buttons/)_
 
-
 -}
 alertDialog : Palette -> DialogStyle msg
 alertDialog palette =
@@ -1270,13 +1272,15 @@ textInput palette =
 -- T A B
 -------------------------------------------------------------------------------}
 
+
 {-| A single Tab button.
 
 Technical Remark:
 
-* The official specification states that the background color should be the surface color,
-   but the pictures and actuall implementations all have no background color.
-   So here the background color is also not set.
+  - The official specification states that the background color should be the surface color,
+    but the pictures and actuall implementations all have no background color.
+    So here the background color is also not set.
+
 -}
 tabButton : Palette -> ButtonStyle msg
 tabButton palette =
@@ -1494,19 +1498,17 @@ drawerButton palette =
 
 {-| The Layout Widget combines the following Material design concepts:
 
-* Top bar
-* Navigation drawer
-* Side Sheet
-* Dialog
-* Snackbar
+  - Top bar
+  - Navigation drawer
+  - Side Sheet
+  - Dialog
+  - Snackbar
 
 Future updates might try to seperate them into there own widgets.
 But for now they are only available as an all-in-one solution.
 
 Technical Remark:
 
-  - Due to [a bug in Elm-Ui](https://github.com/mdgriffith/elm-ui/issues/47) the menu button still behave wierd.
-    I've not found a workaround for it.
   - The Icons are taken from [danmarcab/material-icons](https://dark.elm.dmy.fr/packages/danmarcab/material-icons/latest/).
   - The drawer button as not taken from the specification (This will been to be added later)
 

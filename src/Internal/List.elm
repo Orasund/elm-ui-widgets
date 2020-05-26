@@ -89,8 +89,6 @@ internalButton style list =
                     , otherwise =
                         style.button.otherwise
                     }
-                    --Workaround for https://github.com/mdgriffith/elm-ui/issues/47
-                    >> Element.el []
             )
 
 

@@ -24,7 +24,7 @@
         "elm/time": "1.0.0 <= v < 2.0.0",
         "elm-community/intdict": "3.0.0 <= v < 4.0.0",
         "jasonliang512/elm-heroicons": "1.0.2 <= v < 2.0.0",
-        "mdgriffith/elm-ui": "1.1.5 <= v < 2.0.0",
+        "mdgriffith/elm-ui": "1.1.6 <= v < 2.0.0",
         "noahzgordon/elm-color-extra": "1.0.2 <= v < 2.0.0",
         "turboMaCk/queue": "1.0.2 <= v < 2.0.0",
         "wernerdegroot/listzipper": "4.0.0 <= v < 5.0.0"
