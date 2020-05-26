@@ -106,7 +106,7 @@ You can create you own widgets by sticking widgets types together.
 
 # Tab
 
-![tab](https://orasund.github.io/elm-ui-widgets/assets/textInput.png)
+![tab](https://orasund.github.io/elm-ui-widgets/assets/tab.png)
 
 [Open in Ellie](https://ellie-app.com/8XDzMBgC36wa1)
 
