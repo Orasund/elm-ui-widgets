@@ -483,6 +483,11 @@ floatColumn =
 
 
 {-| A Column containing a String
+
+`value >> toString` field will be used for sorting.
+
+For example `toString = String.toLower` will make the sorting case-insensitive.
+
 -}
 stringColumn :
     { title : String
