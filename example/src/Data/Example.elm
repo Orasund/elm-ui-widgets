@@ -473,7 +473,7 @@ toCardList :
     , style : Style msg
     , model : Model
     }
-    -> List ( String, Element msg, Element msg )
+    -> List ( String, Element msg, List (Element msg ) )
 toCardList { idle, msgMapper, style, model } =
     asList
         |> List.map
@@ -508,10 +508,6 @@ toCardList { idle, msgMapper, style, model } =
                                         , Element.width <| Element.shrink
                                         ]
                                 ]
-                        )
-                    |> Element.column
-                        (Grid.simple
-                            ++ [ Element.width <| Element.fill ]
                         )
                 )
             )

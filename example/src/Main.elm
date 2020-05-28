@@ -430,7 +430,7 @@ viewLoaded m =
                                    )
                                 |> List.map
                                     (\( name, elem, more ) ->
-                                        [ [ Element.text name
+                                        (([ Element.text name
                                                 |> Element.el
                                                     (Heading.h3
                                                         ++ [ Element.height <| Element.shrink
@@ -442,8 +442,11 @@ viewLoaded m =
                                           , elem
                                           ]
                                             |> Element.column Grid.simple
-                                        , 
-                                            Widget.expansionPanel style.expansionPanel
+                                        )
+                                        :: ( if more |> List.isEmpty then
+                                            []
+                                            else
+                                            [Widget.expansionPanel style.expansionPanel
     
                                                 { onToggle = 
                                                     always
@@ -455,7 +458,11 @@ viewLoaded m =
                                                 , icon = Element.none
                                                 , text =
                                                     "States"
-                                                , content = more
+                                                , content = Element.column
+                                                        (Grid.simple
+                                                            ++ [ Element.width <| Element.fill ]
+                                                        )
+                                                        more
                                                 , isExpanded =
                                                     name
                                                     |> Example.fromString
@@ -466,8 +473,8 @@ viewLoaded m =
                                                     )|> Maybe.withDefault False
                                                     
 
-                                                }
-                                        ]
+                                                }]
+                                        ))
                                             |> Widget.column style.cardColumn
                                     )
                                 |> Element.wrappedRow

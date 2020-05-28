@@ -18220,7 +18220,7 @@ var $author$project$Reusable$layout = function (_v0) {
 			_List_Nil,
 			$elm$core$List$singleton(
 				$mdgriffith$elm_ui$Element$text('The layout combines the menu bar, both side bar, the dialog window and the snackbar. Try using all of them and also try resizing the window to see how they interact with each other.'))),
-		$mdgriffith$elm_ui$Element$none);
+		_List_Nil);
 };
 var $author$project$Reusable$scrollingNavCard = function (_v0) {
 	return _Utils_Tuple3(
@@ -18230,7 +18230,7 @@ var $author$project$Reusable$scrollingNavCard = function (_v0) {
 			_List_Nil,
 			$elm$core$List$singleton(
 				$mdgriffith$elm_ui$Element$text('Resize the screen and open the side-menu. Then start scrolling to see the scrolling navigation in action.'))),
-		$mdgriffith$elm_ui$Element$none);
+		_List_Nil);
 };
 var $author$project$Reusable$snackbar = F2(
 	function (style, addSnackbar) {
@@ -18262,7 +18262,7 @@ var $author$project$Reusable$snackbar = F2(
 							text: 'Add Notification with Action'
 						})
 					])),
-			$mdgriffith$elm_ui$Element$none);
+			_List_Nil);
 	});
 var $author$project$Reusable$view = function (_v0) {
 	var theme = _v0.theme;
@@ -20509,43 +20509,35 @@ var $author$project$Data$Example$toCardList = function (_v0) {
 				example(
 					A3($author$project$Data$Example$view, msgMapper, style, model)),
 				A2(
-					$mdgriffith$elm_ui$Element$column,
-					_Utils_ap(
-						$Orasund$elm_ui_framework$Framework$Grid$simple,
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-							])),
-					A2(
-						$elm$core$List$map,
-						function (_v2) {
-							var name = _v2.a;
-							var elem = _v2.b;
-							return A2(
-								$mdgriffith$elm_ui$Element$row,
-								$Orasund$elm_ui_framework$Framework$Grid$spacedEvenly,
-								_List_fromArray(
-									[
-										A2(
-										$mdgriffith$elm_ui$Element$wrappedRow,
-										_List_fromArray(
-											[
-												$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink)
-											]),
-										$elm$core$List$singleton(
-											$mdgriffith$elm_ui$Element$text(name))),
-										A2(
-										$mdgriffith$elm_ui$Element$el,
-										_List_fromArray(
-											[
-												$mdgriffith$elm_ui$Element$paddingEach(
-												{bottom: 0, left: 8, right: 0, top: 0}),
-												$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink)
-											]),
-										elem)
-									]));
-						},
-						A2(test, idle, style))));
+					$elm$core$List$map,
+					function (_v2) {
+						var name = _v2.a;
+						var elem = _v2.b;
+						return A2(
+							$mdgriffith$elm_ui$Element$row,
+							$Orasund$elm_ui_framework$Framework$Grid$spacedEvenly,
+							_List_fromArray(
+								[
+									A2(
+									$mdgriffith$elm_ui$Element$wrappedRow,
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink)
+										]),
+									$elm$core$List$singleton(
+										$mdgriffith$elm_ui$Element$text(name))),
+									A2(
+									$mdgriffith$elm_ui$Element$el,
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$paddingEach(
+											{bottom: 0, left: 8, right: 0, top: 0}),
+											$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink)
+										]),
+									elem)
+								]));
+					},
+					A2(test, idle, style)));
 		},
 		A2(
 			$elm$core$List$map,
@@ -20634,9 +20626,9 @@ var $author$project$Main$viewLoaded = function (m) {
 												return A2(
 													$author$project$Widget$column,
 													style.cardColumn,
-													_List_fromArray(
-														[
-															A2(
+													A2(
+														$elm$core$List$cons,
+														A2(
 															$mdgriffith$elm_ui$Element$column,
 															$Orasund$elm_ui_framework$Framework$Grid$simple,
 															_List_fromArray(
@@ -20654,32 +20646,42 @@ var $author$project$Main$viewLoaded = function (m) {
 																	$mdgriffith$elm_ui$Element$text(name)),
 																	elem
 																])),
-															A2(
-															$author$project$Widget$expansionPanel,
-															style.expansionPanel,
-															{
-																content: more,
-																icon: $mdgriffith$elm_ui$Element$none,
-																isExpanded: A2(
-																	$elm$core$Maybe$withDefault,
-																	false,
-																	A2(
-																		$elm$core$Maybe$map,
-																		function (example) {
-																			return A2($turboMaCk$any_set$Set$Any$member, example, m.expanded);
-																		},
-																		$author$project$Data$Example$fromString(name))),
-																onToggle: $elm$core$Basics$always(
-																	A2(
+														$elm$core$List$isEmpty(more) ? _List_Nil : _List_fromArray(
+															[
+																A2(
+																$author$project$Widget$expansionPanel,
+																style.expansionPanel,
+																{
+																	content: A2(
+																		$mdgriffith$elm_ui$Element$column,
+																		_Utils_ap(
+																			$Orasund$elm_ui_framework$Framework$Grid$simple,
+																			_List_fromArray(
+																				[
+																					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+																				])),
+																		more),
+																	icon: $mdgriffith$elm_ui$Element$none,
+																	isExpanded: A2(
 																		$elm$core$Maybe$withDefault,
-																		$author$project$Main$Idle,
+																		false,
 																		A2(
 																			$elm$core$Maybe$map,
-																			$author$project$Main$ToggledExample,
-																			$author$project$Data$Example$fromString(name)))),
-																text: 'States'
-															})
-														]));
+																			function (example) {
+																				return A2($turboMaCk$any_set$Set$Any$member, example, m.expanded);
+																			},
+																			$author$project$Data$Example$fromString(name))),
+																	onToggle: $elm$core$Basics$always(
+																		A2(
+																			$elm$core$Maybe$withDefault,
+																			$author$project$Main$Idle,
+																			A2(
+																				$elm$core$Maybe$map,
+																				$author$project$Main$ToggledExample,
+																				$author$project$Data$Example$fromString(name)))),
+																	text: 'States'
+																})
+															])));
 											},
 											((m.search.current !== '') ? $elm$core$List$filter(
 												function (_v2) {

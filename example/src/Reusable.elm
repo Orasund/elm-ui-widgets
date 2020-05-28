@@ -7,7 +7,7 @@ import Framework.Grid as Grid
 import Widget
 
 
-snackbar : Style msg -> (( String, Bool ) -> msg) -> ( String, Element msg, Element msg )
+snackbar : Style msg -> (( String, Bool ) -> msg) -> ( String, Element msg, List (Element msg) )
 snackbar style addSnackbar =
     ( "Snackbar"
     , [ Widget.button style.button
@@ -32,27 +32,27 @@ snackbar style addSnackbar =
             }
       ]
         |> Element.column Grid.simple
-    , Element.none
+    ,[]
     )
 
 
-scrollingNavCard : Style msg -> ( String, Element msg, Element msg )
+scrollingNavCard : Style msg -> ( String, Element msg, List (Element msg) )
 scrollingNavCard _ =
     ( "Scrolling Nav"
     , Element.text "Resize the screen and open the side-menu. Then start scrolling to see the scrolling navigation in action."
         |> List.singleton
         |> Element.paragraph []
-    , Element.none
+    , []
     )
 
 
-layout : Style msg -> ( String, Element msg, Element msg )
+layout : Style msg -> ( String, Element msg, List(Element msg) )
 layout _ =
     ( "Layout"
     , Element.text "The layout combines the menu bar, both side bar, the dialog window and the snackbar. Try using all of them and also try resizing the window to see how they interact with each other."
         |> List.singleton
         |> Element.paragraph []
-    , Element.none
+    , []
     )
 
 
@@ -63,7 +63,7 @@ view :
     ->
         { title : String
         , description : String
-        , items : List ( String, Element msg, Element msg )
+        , items : List ( String, Element msg, List (Element msg) )
         }
 view { theme, addSnackbar } =
     let
