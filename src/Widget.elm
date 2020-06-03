@@ -276,7 +276,7 @@ multiSelect =
 -}
 type alias Dialog msg =
     { title : Maybe String
-    , body : Element msg
+    , text : String
     , accept : Maybe (TextButton msg)
     , dismiss : Maybe (TextButton msg)
     }
@@ -321,8 +321,6 @@ type alias ExpansionPanel msg =
     { onToggle : Bool -> msg
     , icon : Element Never
     , text : String
-    , expandIcon : Element Never
-    , collapseIcon : Element Never
     , content : Element msg
     , isExpanded : Bool
     }
