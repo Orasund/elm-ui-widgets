@@ -484,9 +484,11 @@ floatColumn =
 
 {-| A Column containing a String
 
-`value >> toString` field will be used for sorting.
+`value >> toString` field will be used for displaying the content.
 
-For example `toString = String.toLower` will make the sorting case-insensitive.
+`value` will be used for comparing the content
+
+For example `value = String.toLower` will make the sorting case-insensitive.
 
 -}
 stringColumn :
