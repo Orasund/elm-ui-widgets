@@ -132,6 +132,7 @@ For comparison, here are some alternative packages for creating UIs:
     * [afidegnum/elm-tailwind](https://dark.elm.dmy.fr/packages/afidegnum/elm-tailwind/latest/) - Wrapper of Tailwind by including the tailwind stylesheet.
     * [surprisetalk/elm-bulma](https://dark.elm.dmy.fr/packages/surprisetalk/elm-bulma/latest/) - Wrapper for Bulma by  including the bulma stylesheet.
     * [rundis/elm-bootstrap](https://dark.elm.dmy.fr/packages/rundis/elm-bootstrap/latest/) - Wrapper for Bootstrap by including the bootstrap stylesheet.
+    * [supermacro/elm-antd](https://package.elm-lang.org/packages/supermacro/elm-antd/latest/) - Implementation of Ant Design in Elm
 
 ## Motivation
 
