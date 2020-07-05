@@ -1,6 +1,6 @@
 # Elm-Ui-Widgets
 
-This package contains **independend** widgets (no components) written for [Elm-Ui](https://dark.elm.dmy.fr/packages/mdgriffith/elm-ui/latest/). These widgets have no dependencies to other parts of this package. So you can just use as much as you need.
+This package contains **independent** widgets (no components) written for [Elm-Ui](https://dark.elm.dmy.fr/packages/mdgriffith/elm-ui/latest/). These widgets have no dependencies to other parts of this package. So you can just use as much as you need.
 
 It also supports custom themes and has a material design theme already ready to use.
 
