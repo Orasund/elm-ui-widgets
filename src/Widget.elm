@@ -39,7 +39,7 @@ You can create you own widgets by sticking widgets types together.
 
 ![Button](https://orasund.github.io/elm-ui-widgets/assets/button.png)
 
-[Open in Ellie](https://ellie-app.com/8XDrHsxYkKNa1)
+[Open in Ellie](https://ellie-app.com/9p5QGZ3hgPLa1)
 
 @docs Button, TextButton, iconButton, textButton, button
 
@@ -48,13 +48,13 @@ You can create you own widgets by sticking widgets types together.
 
 ![Select](https://orasund.github.io/elm-ui-widgets/assets/select.png)
 
-[Open in Ellie](https://ellie-app.com/8XDsBDB92Dfa1)
+[Open in Ellie](https://ellie-app.com/9p5QSzQDMCca1)
 
 @docs Select, selectButton, select
 
 ![MultiSelect](https://orasund.github.io/elm-ui-widgets/assets/multiSelect.png)
 
-[Open in Ellie](https://ellie-app.com/8XDtW5gVnB3a1)
+[Open in Ellie](https://ellie-app.com/9p5R5crjqfya1)
 
 @docs MultiSelect, multiSelect
 
@@ -63,7 +63,7 @@ You can create you own widgets by sticking widgets types together.
 
 ![Dialog](https://orasund.github.io/elm-ui-widgets/assets/dialog.png)
 
-[Open in Ellie](https://ellie-app.com/8XDvDKrm8R4a1)
+[Open in Ellie](https://ellie-app.com/9p5Rdz625TZa1)
 
 @docs Dialog, modal, dialog
 
@@ -72,7 +72,7 @@ You can create you own widgets by sticking widgets types together.
 
 ![ExpansionPanel](https://orasund.github.io/elm-ui-widgets/assets/expansionPanel.png)
 
-[Open in Ellie](https://ellie-app.com/8XDwr7pCZ3Ca1)
+[Open in Ellie](https://ellie-app.com/9p5Rv5jfVdFa1)
 
 @docs ExpansionPanel, expansionPanel
 
@@ -81,7 +81,7 @@ You can create you own widgets by sticking widgets types together.
 
 ![List](https://orasund.github.io/elm-ui-widgets/assets/list.png)
 
-[Open in Ellie](https://ellie-app.com/8XDxbpZZbFMa1)
+[Open in Ellie](https://ellie-app.com/9p5RJnDVVCKa1)
 
 @docs row, column, buttonRow, buttonColumn
 
@@ -90,7 +90,7 @@ You can create you own widgets by sticking widgets types together.
 
 ![SortTable](https://orasund.github.io/elm-ui-widgets/assets/sortTable.png)
 
-[Open in Ellie](https://ellie-app.com/8XDy5mGRd4Xa1)
+[Open in Ellie](https://ellie-app.com/9p5RXw44B4Ja1)
 
 @docs SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
 
@@ -99,7 +99,7 @@ You can create you own widgets by sticking widgets types together.
 
 ![textInput](https://orasund.github.io/elm-ui-widgets/assets/textInput.png)
 
-[Open in Ellie](https://ellie-app.com/8XDyZD5VBd6a1)
+[Open in Ellie](https://ellie-app.com/9p5S6cvWCmBa1)
 
 @docs TextInput, textInput
 
@@ -108,7 +108,7 @@ You can create you own widgets by sticking widgets types together.
 
 ![tab](https://orasund.github.io/elm-ui-widgets/assets/tab.png)
 
-[Open in Ellie](https://ellie-app.com/8XDzMBgC36wa1)
+[Open in Ellie](https://ellie-app.com/9p5Sdbvp4jZa1)
 
 @docs Tab, tab
 

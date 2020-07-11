@@ -47,7 +47,8 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.none
 
-
+{-| You can remove the msgMapper. But by doing so, make sure to also change `msg` to `Msg` in the line below.
+--}
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
 view msgMapper style (IsEnabled isEnabled) =
     Widget.button style.primaryButton
