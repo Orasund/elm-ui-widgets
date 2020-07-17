@@ -296,8 +296,16 @@ accessibleTextColor color =
             1
                 + (color |> Color.toRgba |> .alpha)
                 * (Accessibility.luminance color - 1)
+
+        ratioBlack : Float
+        ratioBlack =
+            1.05 / (l + 0.05)
+
+        ratioWhite : Float
+        ratioWhite =
+            (l + 0.05) / 0.05
     in
-    if (1.05 / (l + 0.05)) < 7 then
+    if ratioBlack < ratioWhite then
         Color.rgb255 0 0 0
 
     else
