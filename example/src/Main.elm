@@ -317,6 +317,7 @@ view model =
                                         |> Array.get int
                                         |> Maybe.map JumpTo
                                 )
+                    , forceMenuSidebar = False
                     , actions =
                         [ { onPress = Just <| Load "https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/"
                           , text = "Docs"

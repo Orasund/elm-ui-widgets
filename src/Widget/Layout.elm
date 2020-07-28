@@ -94,6 +94,7 @@ view :
         , layout : Layout msg
         , title : Element msg
         , menu : Select msg
+        , forceMenuSidebar : Bool
         , search :
             Maybe
                 { onChange : String -> msg
@@ -105,7 +106,7 @@ view :
         }
     -> Element msg
     -> Html msg
-view style { search, title, onChangedSidebar, menu, actions, window, dialog, layout } content =
+view style { search, title, onChangedSidebar, menu, forceMenuSidebar, actions, window, dialog, layout } content =
     let
         deviceClass : DeviceClass
         deviceClass =
@@ -143,6 +144,7 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                 (deviceClass == Phone)
                     || (deviceClass == Tablet)
                     || ((menu.options |> List.length) > 5)
+                    || forceMenuSidebar
                then
                 [ Widget.iconButton style.menuButton
                     { onPress = Just <| onChangedSidebar <| Just LeftSheet
