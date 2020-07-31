@@ -499,23 +499,26 @@ containedButton palette =
         (baseButton palette |> .container)
             ++ [ Border.shadow <| shadow 2
                , Element.mouseDown <|
-                    (palette.primary
+                    [ palette.primary
                         |> withShade palette.on.primary buttonPressedOpacity
-                        |> textAndBackground
-                    )
-                        ++ [ Border.shadow <| shadow 12 ]
+                        |> fromColor
+                        |> Background.color
+                    , Border.shadow <| shadow 12
+                    ]
                , Element.focused <|
-                    (palette.primary
+                    [ palette.primary
                         |> withShade palette.on.primary buttonFocusOpacity
-                        |> textAndBackground
-                    )
-                        ++ [ Border.shadow <| shadow 6 ]
+                        |> fromColor
+                        |> Background.color
+                    , Border.shadow <| shadow 6
+                    ]
                , Element.mouseOver <|
-                    (palette.primary
+                    [ palette.primary
                         |> withShade palette.on.primary buttonHoverOpacity
-                        |> textAndBackground
-                    )
-                        ++ [ Border.shadow <| shadow 6 ]
+                        |> fromColor
+                        |> Background.color
+                    , Border.shadow <| shadow 6
+                    ]
                ]
     , labelRow =
         (baseButton palette |> .labelRow)
@@ -535,18 +538,30 @@ containedButton palette =
                , Element.focused []
                ]
     , ifActive =
-        palette.primary
+        [ palette.primary
             |> withShade palette.on.primary buttonHoverOpacity
-            |> textAndBackground
+            |> fromColor
+            |> Background.color
+        , palette.primary
+            |> accessibleTextColor
+            |> fromColor
+            |> Font.color
+        ]
     , otherwise =
-        palette.primary
-            |> textAndBackground
+        [ palette.primary
+            |> fromColor
+            |> Background.color
+        , palette.primary
+            |> accessibleTextColor
+            |> fromColor
+            |> Font.color
+        ]
     }
 
 
 {-| A outlined button representing an important action within a group.
 
-![Contained Button](https://material.io/develop/images/content/2b50635d38c5fdec260f09be9aeafb10.svg)
+![Outlined Button](https://material.io/develop/images/content/2b50635d38c5fdec260f09be9aeafb10.svg)
 
 _Image taken from [material.io](https://material.io/develop/android/components/buttons/)_
 
@@ -556,37 +571,29 @@ outlinedButton palette =
     { container =
         (baseButton palette |> .container)
             ++ [ Border.width <| 1
-               , Border.color <| fromColor <| gray
                , Font.color <| fromColor <| palette.primary
+               , palette.on.surface
+                    |> scaleOpacity 0.14
+                    |> withShade palette.primary buttonHoverOpacity
+                    |> fromColor
+                    |> Border.color
                , Element.mouseDown
                     [ palette.primary
                         |> scaleOpacity buttonPressedOpacity
                         |> fromColor
                         |> Background.color
-                    , gray
-                        |> withShade palette.primary buttonPressedOpacity
-                        |> fromColor
-                        |> Border.color
                     ]
                , Element.focused
                     [ palette.primary
                         |> scaleOpacity buttonFocusOpacity
                         |> fromColor
                         |> Background.color
-                    , gray
-                        |> withShade palette.primary buttonFocusOpacity
-                        |> fromColor
-                        |> Border.color
                     ]
                , Element.mouseOver
                     [ palette.primary
                         |> scaleOpacity buttonHoverOpacity
                         |> fromColor
                         |> Background.color
-                    , gray
-                        |> withShade palette.primary buttonHoverOpacity
-                        |> fromColor
-                        |> Border.color
                     ]
                ]
     , labelRow =
@@ -608,10 +615,6 @@ outlinedButton palette =
             |> scaleOpacity buttonHoverOpacity
             |> fromColor
             |> Background.color
-        , gray
-            |> withShade palette.primary buttonHoverOpacity
-            |> fromColor
-            |> Border.color
         ]
     , otherwise =
         []
@@ -695,28 +698,28 @@ toggleButton palette =
                , Element.padding 4
                , Border.width <| 1
                , Element.mouseDown <|
-                    (palette.surface
+                    [ palette.surface
                         |> withShade palette.on.surface buttonPressedOpacity
-                        |> textAndBackground
-                    )
-                        ++ [ palette.on.surface
-                                |> scaleOpacity 0.14
-                                |> withShade palette.on.surface buttonPressedOpacity
-                                |> fromColor
-                                |> Border.color
-                           ]
+                        |> fromColor
+                        |> Background.color
+                    , palette.on.surface
+                        |> scaleOpacity 0.14
+                        |> withShade palette.on.surface buttonPressedOpacity
+                        |> fromColor
+                        |> Border.color
+                    ]
                , Element.focused []
                , Element.mouseOver <|
-                    (palette.surface
+                    [ palette.surface
                         |> withShade palette.on.surface buttonHoverOpacity
-                        |> textAndBackground
-                    )
-                        ++ [ palette.on.surface
-                                |> scaleOpacity 0.14
-                                |> withShade palette.on.surface buttonHoverOpacity
-                                |> fromColor
-                                |> Border.color
-                           ]
+                        |> fromColor
+                        |> Background.color
+                    , palette.on.surface
+                        |> scaleOpacity 0.14
+                        |> withShade palette.on.surface buttonHoverOpacity
+                        |> fromColor
+                        |> Border.color
+                    ]
                ]
     , labelRow =
         [ Element.spacing <| 8
@@ -747,26 +750,34 @@ toggleButton palette =
                , Element.mouseOver []
                ]
     , ifActive =
-        (palette.surface
+        [ palette.surface
             |> withShade palette.on.surface buttonSelectedOpacity
-            |> textAndBackground
-        )
-            ++ [ palette.on.surface
-                    |> scaleOpacity 0.14
-                    |> withShade palette.on.surface buttonSelectedOpacity
-                    |> fromColor
-                    |> Border.color
-               , Element.mouseOver []
-               ]
+            |> fromColor
+            |> Background.color
+        , palette.surface
+            |> accessibleTextColor
+            |> fromColor
+            |> Font.color
+        , palette.on.surface
+            |> scaleOpacity 0.14
+            |> withShade palette.on.surface buttonSelectedOpacity
+            |> fromColor
+            |> Border.color
+        , Element.mouseOver []
+        ]
     , otherwise =
-        (palette.surface
-            |> textAndBackground
-        )
-            ++ [ palette.on.surface
-                    |> scaleOpacity 0.14
-                    |> fromColor
-                    |> Border.color
-               ]
+        [ palette.surface
+            |> fromColor
+            |> Background.color
+        , palette.surface
+            |> accessibleTextColor
+            |> fromColor
+            |> Font.color
+        , palette.on.surface
+            |> scaleOpacity 0.14
+            |> fromColor
+            |> Border.color
+        ]
     }
 
 
@@ -869,23 +880,26 @@ chip palette =
             }
         , Border.rounded <| 16
         , Element.mouseDown <|
-            (palette.on.surface
+            [ palette.on.surface
                 |> scaleOpacity 0.12
                 |> withShade palette.on.surface buttonPressedOpacity
-                |> textAndBackground
-            )
+                |> fromColor
+                |> Background.color
+            ]
         , Element.focused <|
-            (palette.on.surface
+            [ palette.on.surface
                 |> scaleOpacity 0.12
                 |> withShade palette.on.surface buttonFocusOpacity
-                |> textAndBackground
-            )
+                |> fromColor
+                |> Background.color
+            ]
         , Element.mouseOver <|
-            (palette.on.surface
+            [ palette.on.surface
                 |> scaleOpacity 0.12
                 |> withShade palette.on.surface buttonHoverOpacity
-                |> textAndBackground
-            )
+                |> fromColor
+                |> Background.color
+            ]
         ]
     , labelRow = [ Element.spacing 0, Element.centerY ]
     , text =
@@ -908,16 +922,29 @@ chip palette =
                , Element.focused []
                ]
     , ifActive =
-        (palette.on.surface
+        [ palette.on.surface
             |> scaleOpacity 0.12
             |> withShade palette.on.surface buttonSelectedOpacity
-            |> textAndBackground
-        )
-            ++ [ Border.shadow <| shadow 4 ]
-    , otherwise =
-        palette.on.surface
+            |> fromColor
+            |> Background.color
+        , palette.on.surface
             |> scaleOpacity 0.12
-            |> textAndBackground
+            |> accessibleTextColor
+            |> fromColor
+            |> Font.color
+        , Border.shadow <| shadow 4
+        ]
+    , otherwise =
+        [ palette.on.surface
+            |> scaleOpacity 0.12
+            |> fromColor
+            |> Background.color
+        , palette.on.surface
+            |> scaleOpacity 0.12
+            |> accessibleTextColor
+            |> fromColor
+            |> Font.color
+        ]
     }
 
 
