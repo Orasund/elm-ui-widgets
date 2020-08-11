@@ -286,7 +286,14 @@ sortTable =
 
 progressIndicatorStyle : ProgressIndicatorStyle msg
 progressIndicatorStyle =
-    { icon = Element.none
+    { icon =
+        \maybeProgressPercent ->
+            case maybeProgressPercent of
+                Nothing ->
+                    Element.text "Indeterminate progress indicator"
+                Just progressPercent ->
+                    Element.text ("Determinate progress indicator, " ++ String.fromInt progressPercent ++ "% complete")
+
     }
 
 

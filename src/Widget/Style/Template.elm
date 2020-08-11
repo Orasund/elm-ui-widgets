@@ -354,7 +354,7 @@ progressIndicator string =
 -}
 progressIndicator : String -> ProgressIndicatorStyle msg
 progressIndicator string =
-    { icon = icon <| string ++ ":icon"
+    { icon = (\_ -> icon <| string ++ ":icon")
     }
 
 

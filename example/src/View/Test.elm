@@ -515,7 +515,17 @@ list _ style =
 
 progressIndicator : msg -> Style msg -> List ( String, Element msg )
 progressIndicator _ style =
-    [ ( "Circular Progress Indicator"
-      , Widget.circularProgressIndicator style.progressIndicator { progressPercent = Nothing }
+    let
+        determinateIndicators =
+            [ 0, 25, 50, 75, 100 ]
+                |> List.map
+                    (\percent ->
+                        ( "Determinate Progress Indicator, " ++ String.fromInt percent ++ "% complete"
+                          , Widget.circularProgressIndicator style.progressIndicator { maybeProgressPercent = Just percent }
+                        )
+                    )
+    in
+    [ ( "Indeterminate Progress Indicator"
+      , Widget.circularProgressIndicator style.progressIndicator { maybeProgressPercent = Nothing }
       )
-    ]
+    ] ++ determinateIndicators

@@ -6,11 +6,11 @@ import Widget.Style exposing (ProgressIndicatorStyle)
 
 circularProgressIndicator :
     ProgressIndicatorStyle msg
-    -> { progressPercent : Maybe Int }
+    -> { maybeProgressPercent : Maybe Int }
     -> Element msg
-circularProgressIndicator style { progressPercent } =
+circularProgressIndicator style { maybeProgressPercent } =
     -- TODO determinate indicator based on progressPercent
-    style.icon
+    style.icon maybeProgressPercent
 
 
 

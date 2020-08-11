@@ -1272,9 +1272,81 @@ indeterminateCircIcon color attribs =
         |> Element.el attribs
 
 
+determinateCircIcon : Color.Color -> List (Attribute msg) -> Int -> Element msg
+determinateCircIcon color attribs progressPercent =
+    -- With help from https://css-tricks.com/building-progress-ring-quickly/
+    let
+        strokeDashoffset =
+            let
+                clampedProgPrecent = clamp 0 100 progressPercent
+            in
+            -- 188 is circumference of circle in pixels
+            188 - (188 * clampedProgPrecent // 100)
+    in
+    Svg.svg
+        [ Svg.Attributes.height "48px"
+        , Svg.Attributes.width "48px"
+        , Svg.Attributes.viewBox "0 0 66 66"
+        , Svg.Attributes.xmlSpace "http://www.w3.org/2000/svg"
+        ]
+        [ Svg.g []
+            [ {- Svg.animateTransform
+                [ Svg.Attributes.attributeName "transform"
+                , Svg.Attributes.type_ "rotate"
+                , Svg.Attributes.values "0 33 33;270 33 33"
+                , Svg.Attributes.begin "0s"
+                , Svg.Attributes.dur "1.4s"
+                , Svg.Attributes.fill "freeze"
+                , Svg.Attributes.repeatCount "indefinite"
+                ]
+                []
+            , -}Svg.circle
+                [ Svg.Attributes.fill "none"
+                , Svg.Attributes.stroke (Color.toCssString color)
+                , Svg.Attributes.strokeWidth "5"
+                , Svg.Attributes.strokeLinecap "butt"
+                , Svg.Attributes.cx "33"
+                , Svg.Attributes.cy "33"
+                , Svg.Attributes.r "30"
+                , Svg.Attributes.strokeDasharray "188 188"
+                , Svg.Attributes.strokeDashoffset (String.fromInt strokeDashoffset)
+                , Svg.Attributes.transform "rotate(-90 33 33)"
+                ]
+                [ {- Svg.animateTransform
+                    [ Svg.Attributes.attributeName "transform"
+                    , Svg.Attributes.type_ "rotate"
+                    , Svg.Attributes.values "0 33 33;135 33 33;450 33 33"
+                    , Svg.Attributes.begin "0s"
+                    , Svg.Attributes.dur "1.4s"
+                    , Svg.Attributes.fill "freeze"
+                    , Svg.Attributes.repeatCount "indefinite"
+                    ]
+                    []
+                , Svg.animate
+                    [ Svg.Attributes.attributeName "stroke-dashoffset"
+                    , Svg.Attributes.values "187;46.75;187"
+                    , Svg.Attributes.begin "0s"
+                    , Svg.Attributes.dur "1.4s"
+                    , Svg.Attributes.fill "freeze"
+                    , Svg.Attributes.repeatCount "indefinite"
+                    ]
+                    [] -}
+                ]
+            ]
+        ]
+        |> Element.html
+        |> Element.el attribs
+
+
 progressIndicator : Palette -> ProgressIndicatorStyle msg
 progressIndicator palette =
-    { icon = indeterminateCircIcon palette.primary []
+    { icon =
+        \maybeProgressPercent ->
+            case maybeProgressPercent of
+                Nothing ->
+                    indeterminateCircIcon palette.primary []
+                Just progressPercent ->
+                    determinateCircIcon palette.primary [] progressPercent
     }
 
 

@@ -627,12 +627,12 @@ tab =
 
 
 type alias ProgressIndicator =
-    { progressPercent : Maybe Int }
+    { maybeProgressPercent : Maybe Int }
 
 
 circularProgressIndicator :
     ProgressIndicatorStyle msg
-    -> { progressPercent : Maybe Int }
+    -> { maybeProgressPercent : Maybe Int }
     -> Element msg
 circularProgressIndicator =
     ProgressIndicator.circularProgressIndicator

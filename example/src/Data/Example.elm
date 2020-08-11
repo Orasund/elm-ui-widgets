@@ -82,7 +82,7 @@ toString example =
             "List"
 
         ProgressIndicatorExample ->
-            "ProgressIndicator"
+            "Progress Indicator"
 
 
 fromString : String -> Maybe Example
