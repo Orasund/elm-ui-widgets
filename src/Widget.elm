@@ -119,6 +119,15 @@ You can create you own widgets by sticking widgets types together.
 
 @docs Dialog, ExpansionPanel
 
+
+# Progress Indicator
+
+![ProgressIndicator](TODO)
+
+[Open in Ellie](TODO)
+
+@docs ProgressIndicator, progressIndicator
+
 -}
 
 import Element exposing (Attribute, Element, Length)

@@ -1,7 +1,6 @@
 module Widget.Style.Template exposing
     ( box, decoration, icon
-    , button, column, dialog, expansionPanel, layout, row, snackbar, sortTable, tab, textInput
-    , progressIndicator
+    , button, column, dialog, expansionPanel, layout, progressIndicator, row, snackbar, sortTable, tab, textInput
     )
 
 {-| ![Example using the Template style](https://orasund.github.io/elm-ui-widgets/assets/template-style.png)
@@ -346,8 +345,7 @@ sortTable string =
 ```
 progressIndicator : String -> ProgressIndicatorStyle msg
 progressIndicator string =
-    { track = box <| string ++ ":track"
-    , indicator = box <| string ++ ":box"
+    { icon = (\_ -> icon <| string ++ ":icon")
     }
 ```
 

@@ -1,6 +1,4 @@
-module Widget.Style exposing
-    ( ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle
-    )
+module Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle)
 
 {-| This module contains style types for every widget.
 
@@ -136,6 +134,7 @@ type alias LayoutStyle msg =
     }
 
 
+{-| -}
 type alias ProgressIndicatorStyle msg =
     { icon : (Maybe Int -> Element msg)
     }
