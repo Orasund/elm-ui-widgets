@@ -521,11 +521,12 @@ progressIndicator _ style =
                 |> List.map
                     (\percent ->
                         ( "Determinate Progress Indicator, " ++ String.fromInt percent ++ "% complete"
-                          , Widget.circularProgressIndicator style.progressIndicator { maybeProgressPercent = Just percent }
+                        , Widget.circularProgressIndicator style.progressIndicator { maybeProgressPercent = Just percent }
                         )
                     )
     in
     [ ( "Indeterminate Progress Indicator"
       , Widget.circularProgressIndicator style.progressIndicator { maybeProgressPercent = Nothing }
       )
-    ] ++ determinateIndicators
+    ]
+        ++ determinateIndicators

@@ -136,5 +136,5 @@ type alias LayoutStyle msg =
 
 {-| -}
 type alias ProgressIndicatorStyle msg =
-    { icon : (Maybe Int -> Element msg)
+    { icon : Maybe Int -> Element msg
     }

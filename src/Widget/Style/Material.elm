@@ -1278,7 +1278,8 @@ determinateCircularIcon color attribs progressPercent =
     let
         strokeDashoffset =
             let
-                clampedProgPrecent = clamp 0 100 progressPercent
+                clampedProgPrecent =
+                    clamp 0 100 progressPercent
             in
             -- 188 is circumference of circle in pixels
             188 - (188 * clampedProgPrecent // 100)
@@ -1316,6 +1317,7 @@ progressIndicator palette =
             case maybeProgressPercent of
                 Nothing ->
                     indeterminateCircularIcon palette.primary []
+
                 Just progressPercent ->
                     determinateCircularIcon palette.primary [] progressPercent
     }
