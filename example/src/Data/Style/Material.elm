@@ -52,5 +52,6 @@ style palette =
     , chipButton = Material.chip palette
     , expansionPanel = Material.expansionPanel palette
     , dialog = Material.alertDialog palette
+    , progressIndicator = Material.progressIndicator palette
     , layout = Material.layout palette
     }

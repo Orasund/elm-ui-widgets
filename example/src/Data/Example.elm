@@ -8,6 +8,7 @@ import Example.ExpansionPanel as ExpansionPanel
 import Example.List as List
 import Example.Modal as Modal
 import Example.MultiSelect as MultiSelect
+import Example.ProgressIndicator as ProgressIndicator
 import Example.Select as Select
 import Example.SortTable as SortTable
 import Example.Tab as Tab
@@ -27,6 +28,7 @@ type Example
     | DialogExample
     | TextInputExample
     | ListExample
+    | ProgressIndicatorExample
 
 
 asList : List Example
@@ -41,6 +43,7 @@ asList =
     , DialogExample
     , TextInputExample
     , ListExample
+    , ProgressIndicatorExample
     ]
         |> List.sortBy toString
 
@@ -78,6 +81,9 @@ toString example =
         ListExample ->
             "List"
 
+        ProgressIndicatorExample ->
+            "ProgressIndicator"
+
 
 fromString : String -> Maybe Example
 fromString string =
@@ -111,6 +117,9 @@ fromString string =
 
         "List" ->
             Just ListExample
+
+        "Progress Indicator" ->
+            Just ProgressIndicatorExample
 
         _ ->
             Nothing
@@ -149,6 +158,9 @@ get example =
         ListExample ->
             .list
 
+        ProgressIndicatorExample ->
+            .progressIndicator
+
 
 toTests : Example -> msg -> Style msg -> List ( String, Element msg )
 toTests example =
@@ -183,6 +195,9 @@ toTests example =
         ListExample ->
             Test.list
 
+        ProgressIndicatorExample ->
+            Test.progressIndicator
+
 
 type Msg
     = Button Button.Msg
@@ -195,6 +210,7 @@ type Msg
     | Dialog Dialog.Msg
     | TextInput TextInput.Msg
     | List List.Msg
+    | ProgressIndicator ProgressIndicator.Msg
 
 
 type alias Model =
@@ -208,6 +224,7 @@ type alias Model =
     , dialog : Dialog.Model
     , textInput : TextInput.Model
     , list : List.Model
+    , progressIndicator : ProgressIndicator.Model
     }
 
 
@@ -231,6 +248,7 @@ type alias UpgradeCollection =
     , dialog : UpgradeRecord Dialog.Model Dialog.Msg
     , textInput : UpgradeRecord TextInput.Model TextInput.Msg
     , list : UpgradeRecord List.Model List.Msg
+    , progressIndicator : UpgradeRecord ProgressIndicator.Model ProgressIndicator.Msg
     }
 
 
@@ -245,6 +263,7 @@ type alias ExampleView msg =
     , dialog : Element msg
     , textInput : Element msg
     , list : Element msg
+    , progressIndicator : Element msg
     }
 
 
@@ -280,6 +299,9 @@ init =
 
         ( listModel, listMsg ) =
             List.init
+
+        ( progressIndicatorModel, progressIndicatorMsg ) =
+            ProgressIndicator.init
     in
     ( { button = buttonModel
       , select = selectModel
@@ -291,6 +313,7 @@ init =
       , dialog = dialogModel
       , textInput = textInputModel
       , list = listModel
+      , progressIndicator = progressIndicatorModel
       }
     , [ Cmd.map Button buttonMsg
       , Cmd.map Select selectMsg
@@ -302,6 +325,7 @@ init =
       , Cmd.map Dialog dialogMsg
       , Cmd.map TextInput textInputMsg
       , Cmd.map List listMsg
+      , Cmd.map ProgressIndicator progressIndicatorMsg
       ]
         |> Cmd.batch
     )
@@ -379,6 +403,13 @@ upgradeRecord =
         , updateFun = List.update
         , subscriptionsFun = List.subscriptions
         }
+    , progressIndicator =
+        { from = .progressIndicator
+        , to = \model a -> { model | progressIndicator = a }
+        , msgMapper = ProgressIndicator
+        , updateFun = ProgressIndicator.update
+        , subscriptionsFun = ProgressIndicator.subscriptions
+        }
     }
 
 
@@ -414,6 +445,9 @@ update msg model =
 
         List m ->
             updateField .list m
+
+        ProgressIndicator m ->
+            updateField .progressIndicator m
     )
         model
 
@@ -434,6 +468,7 @@ subscriptions model =
     , upgradeRecord.dialog |> subFun
     , upgradeRecord.textInput |> subFun
     , upgradeRecord.list |> subFun
+    , upgradeRecord.progressIndicator |> subFun
     ]
         |> Sub.batch
 
@@ -464,6 +499,8 @@ view msgMapper style model =
         TextInput.view (TextInput >> msgMapper) style (.textInput model)
     , list =
         List.view (List >> msgMapper) style (.list model)
+    , progressIndicator =
+        ProgressIndicator.view (ProgressIndicator >> msgMapper) style (.progressIndicator model)
     }
 
 

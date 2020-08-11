@@ -1,4 +1,4 @@
-module View.Test exposing (button, dialog, expansionPanel, list, modal, multiSelect, select, sortTable, tab, textInput)
+module View.Test exposing (button, dialog, expansionPanel, list, modal, multiSelect, progressIndicator, select, sortTable, tab, textInput)
 
 import Data.Style exposing (Style)
 import Element exposing (Element)
@@ -509,5 +509,13 @@ list _ style =
     , ( "Empty List"
       , []
             |> Widget.column style.cardColumn
+      )
+    ]
+
+
+progressIndicator : msg -> Style msg -> List ( String, Element msg )
+progressIndicator _ style =
+    [ ( "Circular Progress Indicator"
+      , Widget.circularProgressIndicator style.progressIndicator { progressPercent = Nothing }
       )
     ]

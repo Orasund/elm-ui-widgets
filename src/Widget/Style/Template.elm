@@ -1,6 +1,7 @@
 module Widget.Style.Template exposing
     ( box, decoration, icon
     , button, column, dialog, expansionPanel, layout, row, snackbar, sortTable, tab, textInput
+    , progressIndicator
     )
 
 {-| ![Example using the Template style](https://orasund.github.io/elm-ui-widgets/assets/template-style.png)
@@ -69,6 +70,7 @@ import Widget.Style
         , DialogStyle
         , ExpansionPanelStyle
         , LayoutStyle
+        , ProgressIndicatorStyle
         , RowStyle
         , SnackbarStyle
         , SortTableStyle
@@ -336,6 +338,23 @@ sortTable string =
     , ascIcon = icon <| string ++ ":ascIcon"
     , descIcon = icon <| string ++ ":descIcon"
     , defaultIcon = icon <| string ++ ":defaultIcon"
+    }
+
+
+{-|
+
+```
+progressIndicator : String -> ProgressIndicatorStyle msg
+progressIndicator string =
+    { track = box <| string ++ ":track"
+    , indicator = box <| string ++ ":box"
+    }
+```
+
+-}
+progressIndicator : String -> ProgressIndicatorStyle msg
+progressIndicator string =
+    { icon = icon <| string ++ ":icon"
     }
 
 

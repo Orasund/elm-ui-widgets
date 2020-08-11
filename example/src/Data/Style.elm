@@ -7,6 +7,7 @@ import Widget.Style
         , DialogStyle
         , ExpansionPanelStyle
         , LayoutStyle
+        , ProgressIndicatorStyle
         , RowStyle
         , SortTableStyle
         , TabStyle
@@ -28,5 +29,6 @@ type alias Style msg =
     , cardColumn : ColumnStyle msg
     , sortTable : SortTableStyle msg
     , selectButton : ButtonStyle msg
+    , progressIndicator : ProgressIndicatorStyle msg
     , layout : LayoutStyle msg
     }

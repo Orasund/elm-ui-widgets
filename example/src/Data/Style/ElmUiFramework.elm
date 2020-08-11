@@ -20,6 +20,7 @@ import Widget.Style
         , DialogStyle
         , ExpansionPanelStyle
         , LayoutStyle
+        , ProgressIndicatorStyle
         , RowStyle
         , SnackbarStyle
         , SortTableStyle
@@ -283,6 +284,12 @@ sortTable =
     }
 
 
+progressIndicatorStyle : ProgressIndicatorStyle msg
+progressIndicatorStyle =
+    { icon = Element.none
+    }
+
+
 layout : LayoutStyle msg
 layout =
     { container = []
@@ -335,5 +342,6 @@ style =
     , expansionPanel = expansionPanelStyle
     , dialog = dialog
     , selectButton = buttonStyle
+    , progressIndicator = progressIndicatorStyle
     , layout = layout
     }
