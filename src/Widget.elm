@@ -634,11 +634,18 @@ tab =
 - PROGRESS INDICATOR
 ----------------------------------------------------------}
 
+{-| Progress Indicator widget type
 
+If `maybeProgressPercent` is set to `Nothing`, an indeterminate progress indicator (e.g. spinner) will display.
+If `maybeProgressPercent` is set to `Just Int` (where the `Int` is completion percentage between 0 and 100 inclusive), a determinate progress indicator will visualize the completion percentage.
+
+-}
 type alias ProgressIndicator =
     { maybeProgressPercent : Maybe Int }
 
 
+{-| Displays a circular progress indicator
+-}
 circularProgressIndicator :
     ProgressIndicatorStyle msg
     -> { maybeProgressPercent : Maybe Int }
