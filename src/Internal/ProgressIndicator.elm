@@ -6,7 +6,7 @@ import Widget.Style exposing (ProgressIndicatorStyle)
 
 circularProgressIndicator :
     ProgressIndicatorStyle msg
-    -> { maybeProgress : Maybe Float }
+    -> Maybe Float
     -> Element msg
-circularProgressIndicator style { maybeProgress } =
+circularProgressIndicator style maybeProgress =
     style.icon maybeProgress

@@ -521,12 +521,12 @@ progressIndicator _ style =
                 |> List.map
                     (\completeness ->
                         ( "Determinate Progress Indicator, completeness " ++ String.fromFloat completeness
-                        , Widget.circularProgressIndicator style.progressIndicator { maybeProgress = Just completeness }
+                        , Widget.circularProgressIndicator style.progressIndicator (Just completeness)
                         )
                     )
     in
     [ ( "Indeterminate Progress Indicator"
-      , Widget.circularProgressIndicator style.progressIndicator { maybeProgress = Nothing }
+      , Widget.circularProgressIndicator style.progressIndicator Nothing
       )
     ]
         ++ determinateIndicators

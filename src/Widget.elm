@@ -641,14 +641,14 @@ If `maybeProgress` is set to `Just Float` (where the `Float` is proportion of co
 
 -}
 type alias ProgressIndicator =
-    { maybeProgress : Maybe Float }
+    Maybe Float
 
 
 {-| Displays a circular progress indicator
 -}
 circularProgressIndicator :
     ProgressIndicatorStyle msg
-    -> { maybeProgress : Maybe Float }
+    -> Maybe Float
     -> Element msg
 circularProgressIndicator =
     ProgressIndicator.circularProgressIndicator

@@ -52,9 +52,7 @@ subscriptions _ =
 -}
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
 view msgMapper style (MaybeProgress maybeProgress) =
-    Widget.circularProgressIndicator style.progressIndicator
-        { maybeProgress = maybeProgress
-        }
+    Widget.circularProgressIndicator style.progressIndicator maybeProgress
 
 
 main : Program () Model Msg
