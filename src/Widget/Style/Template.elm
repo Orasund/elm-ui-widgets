@@ -352,7 +352,7 @@ progressIndicator string =
 -}
 progressIndicator : String -> ProgressIndicatorStyle msg
 progressIndicator string =
-    { icon = (\_ -> icon <| string ++ ":icon")
+    { containerFunction = (\_ -> icon <| string ++ ":icon")
     }
 
 

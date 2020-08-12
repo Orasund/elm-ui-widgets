@@ -1313,7 +1313,7 @@ determinateCircularIcon color attribs progress =
 
 progressIndicator : Palette -> ProgressIndicatorStyle msg
 progressIndicator palette =
-    { icon =
+    { containerFunction =
         \maybeProgress ->
             case maybeProgress of
                 Nothing ->

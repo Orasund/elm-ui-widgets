@@ -286,7 +286,7 @@ sortTable =
 
 progressIndicatorStyle : ProgressIndicatorStyle msg
 progressIndicatorStyle =
-    { icon =
+    { containerFunction =
         \maybeProgress ->
             case maybeProgress of
                 Nothing ->
