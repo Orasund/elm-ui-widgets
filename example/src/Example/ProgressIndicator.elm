@@ -20,16 +20,16 @@ materialStyle =
 
 
 type Model
-    = MaybeProgressPercent (Maybe Int)
+    = MaybeProgress (Maybe Float)
 
 
 type Msg
-    = ChangedProgressPercent (Maybe Int)
+    = ChangedProgress (Maybe Float)
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( MaybeProgressPercent Nothing
+    ( MaybeProgress Nothing
     , Cmd.none
     )
 
@@ -37,8 +37,8 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg _ =
     case msg of
-        ChangedProgressPercent maybeInt ->
-            ( MaybeProgressPercent maybeInt
+        ChangedProgress maybeFloat ->
+            ( MaybeProgress maybeFloat
             , Cmd.none
             )
 
@@ -51,9 +51,9 @@ subscriptions _ =
 {-| You can remove the msgMapper. But by doing so, make sure to also change `msg` to `Msg` in the line below.
 -}
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
-view msgMapper style (MaybeProgressPercent maybeProgressPercent) =
+view msgMapper style (MaybeProgress maybeProgress) =
     Widget.circularProgressIndicator style.progressIndicator
-        { maybeProgressPercent = maybeProgressPercent
+        { maybeProgress = maybeProgress
         }
 
 

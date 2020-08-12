@@ -1272,17 +1272,18 @@ indeterminateCircularIcon color attribs =
         |> Element.el attribs
 
 
-determinateCircularIcon : Color.Color -> List (Attribute msg) -> Int -> Element msg
-determinateCircularIcon color attribs progressPercent =
+determinateCircularIcon : Color.Color -> List (Attribute msg) -> Float -> Element msg
+determinateCircularIcon color attribs progress =
     -- With help from https://css-tricks.com/building-progress-ring-quickly/
     let
         strokeDashoffset =
             let
-                clampedProgPrecent =
-                    clamp 0 100 progressPercent
+                clampedProgress =
+                    clamp 0 1 progress
             in
             -- 188 is circumference of circle in pixels
-            188 - (188 * clampedProgPrecent // 100)
+            188 - (188 * clampedProgress)
+                |> round
     in
     Svg.svg
         [ Svg.Attributes.height "48px"
@@ -1313,13 +1314,13 @@ determinateCircularIcon color attribs progressPercent =
 progressIndicator : Palette -> ProgressIndicatorStyle msg
 progressIndicator palette =
     { icon =
-        \maybeProgressPercent ->
-            case maybeProgressPercent of
+        \maybeProgress ->
+            case maybeProgress of
                 Nothing ->
                     indeterminateCircularIcon palette.primary []
 
-                Just progressPercent ->
-                    determinateCircularIcon palette.primary [] progressPercent
+                Just progress ->
+                    determinateCircularIcon palette.primary [] progress
     }
 
 
