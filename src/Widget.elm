@@ -9,7 +9,7 @@ module Widget exposing
     , TextInput, textInput
     , Tab, tab
     , Dialog, ExpansionPanel
-    , circularProgressIndicator
+    , ProgressIndicator, circularProgressIndicator
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -122,11 +122,7 @@ You can create you own widgets by sticking widgets types together.
 
 # Progress Indicator
 
-![ProgressIndicator](TODO)
-
-[Open in Ellie](TODO)
-
-@docs ProgressIndicator, progressIndicator
+@docs ProgressIndicator, circularProgressIndicator
 
 -}
 
@@ -633,6 +629,7 @@ tab =
 {----------------------------------------------------------
 - PROGRESS INDICATOR
 ----------------------------------------------------------}
+
 
 {-| Progress Indicator widget type
 

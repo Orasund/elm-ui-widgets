@@ -2,7 +2,7 @@ module Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPa
 
 {-| This module contains style types for every widget.
 
-@docs ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle
+@docs ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle
 
 -}
 

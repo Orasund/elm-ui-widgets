@@ -520,7 +520,7 @@ progressIndicator _ style =
             [ 0, 0.25, 0.50, 0.75, 1 ]
                 |> List.map
                     (\completeness ->
-                        ( "Determinate Progress Indicator, completeness " ++ String.fromFloat completeness
+                        ( "Completeness " ++ String.fromFloat completeness
                         , Widget.circularProgressIndicator style.progressIndicator (Just completeness)
                         )
                     )

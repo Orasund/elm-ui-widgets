@@ -1282,7 +1282,8 @@ determinateCircularIcon color attribs progress =
                     clamp 0 1 progress
             in
             -- 188 is circumference of circle in pixels
-            188 - (188 * clampedProgress)
+            188
+                - (188 * clampedProgress)
                 |> round
     in
     Svg.svg
@@ -1311,6 +1312,8 @@ determinateCircularIcon color attribs progress =
         |> Element.el attribs
 
 
+{-| A circular progress indicator
+-}
 progressIndicator : Palette -> ProgressIndicatorStyle msg
 progressIndicator palette =
     { containerFunction =
