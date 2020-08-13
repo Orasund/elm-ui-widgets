@@ -9,6 +9,7 @@ module Widget exposing
     , TextInput, textInput
     , Tab, tab
     , Dialog, ExpansionPanel
+    , circularProgressIndicator
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -118,6 +119,15 @@ You can create you own widgets by sticking widgets types together.
 
 @docs Dialog, ExpansionPanel
 
+
+# Progress Indicator
+
+![ProgressIndicator](TODO)
+
+[Open in Ellie](TODO)
+
+@docs ProgressIndicator, progressIndicator
+
 -}
 
 import Element exposing (Attribute, Element, Length)
@@ -126,12 +136,13 @@ import Internal.Button as Button
 import Internal.Dialog as Dialog
 import Internal.ExpansionPanel as ExpansionPanel
 import Internal.List as List
+import Internal.ProgressIndicator as ProgressIndicator
 import Internal.Select as Select
 import Internal.SortTable as SortTable
 import Internal.Tab as Tab
 import Internal.TextInput as TextInput
 import Set exposing (Set)
-import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, RowStyle, SortTableStyle, TabStyle, TextInputStyle)
+import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, ProgressIndicatorStyle, RowStyle, SortTableStyle, TabStyle, TextInputStyle)
 
 
 
@@ -616,3 +627,28 @@ tab =
             Tab.tab
     in
     fun
+
+
+
+{----------------------------------------------------------
+- PROGRESS INDICATOR
+----------------------------------------------------------}
+
+{-| Progress Indicator widget type
+
+If `maybeProgress` is set to `Nothing`, an indeterminate progress indicator (e.g. spinner) will display.
+If `maybeProgress` is set to `Just Float` (where the `Float` is proportion of completeness between 0 and 1 inclusive), a determinate progress indicator will visualize the progress.
+
+-}
+type alias ProgressIndicator =
+    Maybe Float
+
+
+{-| Displays a circular progress indicator
+-}
+circularProgressIndicator :
+    ProgressIndicatorStyle msg
+    -> Maybe Float
+    -> Element msg
+circularProgressIndicator =
+    ProgressIndicator.circularProgressIndicator

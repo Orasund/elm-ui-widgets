@@ -21,4 +21,4 @@ _Please only open Pull Requests for existing issues._
 
 **Optional:**
 * [ ] Added a Material design style in `src/Widget/Style/Material.elm`
-* [ ] Added a Ellie to the docs (+ copied it into `example/src/Example/[Your Widget].elm`)
+* [ ] Added an Example in `example/src/Example/[Your Widget].elm`

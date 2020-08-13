@@ -1,4 +1,4 @@
-module View.Test exposing (button, dialog, expansionPanel, list, modal, multiSelect, select, sortTable, tab, textInput)
+module View.Test exposing (button, dialog, expansionPanel, list, modal, multiSelect, progressIndicator, select, sortTable, tab, textInput)
 
 import Data.Style exposing (Style)
 import Element exposing (Element)
@@ -511,3 +511,22 @@ list _ style =
             |> Widget.column style.cardColumn
       )
     ]
+
+
+progressIndicator : msg -> Style msg -> List ( String, Element msg )
+progressIndicator _ style =
+    let
+        determinateIndicators =
+            [ 0, 0.25, 0.50, 0.75, 1 ]
+                |> List.map
+                    (\completeness ->
+                        ( "Determinate Progress Indicator, completeness " ++ String.fromFloat completeness
+                        , Widget.circularProgressIndicator style.progressIndicator (Just completeness)
+                        )
+                    )
+    in
+    [ ( "Indeterminate Progress Indicator"
+      , Widget.circularProgressIndicator style.progressIndicator Nothing
+      )
+    ]
+        ++ determinateIndicators

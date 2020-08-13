@@ -20,6 +20,7 @@ import Widget.Style
         , DialogStyle
         , ExpansionPanelStyle
         , LayoutStyle
+        , ProgressIndicatorStyle
         , RowStyle
         , SnackbarStyle
         , SortTableStyle
@@ -283,6 +284,19 @@ sortTable =
     }
 
 
+progressIndicatorStyle : ProgressIndicatorStyle msg
+progressIndicatorStyle =
+    { containerFunction =
+        \maybeProgress ->
+            case maybeProgress of
+                Nothing ->
+                    Element.text "Indeterminate progress indicator"
+
+                Just progress ->
+                    Element.text ("Determinate progress indicator, " ++ String.fromFloat progress ++ "completeness")
+    }
+
+
 layout : LayoutStyle msg
 layout =
     { container = []
@@ -335,5 +349,6 @@ style =
     , expansionPanel = expansionPanelStyle
     , dialog = dialog
     , selectButton = buttonStyle
+    , progressIndicator = progressIndicatorStyle
     , layout = layout
     }
