@@ -1,8 +1,8 @@
-module Widget.Style exposing (ButtonStyle,ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle)
+module Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle)
 
 {-| This module contains style types for every widget.
 
-@docs ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle
+@docs ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle
 
 -}
 
@@ -131,4 +131,10 @@ type alias LayoutStyle msg =
     , searchIcon : Element Never
     , search : List (Attribute msg)
     , searchFill : List (Attribute msg)
+    }
+
+
+{-| -}
+type alias ProgressIndicatorStyle msg =
+    { containerFunction : Maybe Float -> Element msg
     }

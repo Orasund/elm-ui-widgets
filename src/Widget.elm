@@ -2,12 +2,14 @@ module Widget exposing
     ( Button, TextButton, iconButton, textButton, button
     , Select, selectButton, select
     , MultiSelect, multiSelect
-    , Dialog, modal, dialog
-    , ExpansionPanel, expansionPanel
+    , DialogV2, modal, dialog
+    , ExpansionPanelV2, expansionPanel
     , row, column, buttonRow, buttonColumn
     , SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInput, textInput
     , Tab, tab
+    , Dialog, ExpansionPanel
+    , ProgressIndicator, circularProgressIndicator
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -65,7 +67,7 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5Rdz625TZa1)
 
-@docs Dialog, modal, dialog
+@docs DialogV2, modal, dialog
 
 
 # Expansion Panel
@@ -74,7 +76,7 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5Rv5jfVdFa1)
 
-@docs ExpansionPanel, expansionPanel
+@docs ExpansionPanelV2, expansionPanel
 
 
 # List
@@ -112,6 +114,16 @@ You can create you own widgets by sticking widgets types together.
 
 @docs Tab, tab
 
+
+# DEPRECATED
+
+@docs Dialog, ExpansionPanel
+
+
+# Progress Indicator
+
+@docs ProgressIndicator, circularProgressIndicator
+
 -}
 
 import Element exposing (Attribute, Element, Length)
@@ -120,12 +132,13 @@ import Internal.Button as Button
 import Internal.Dialog as Dialog
 import Internal.ExpansionPanel as ExpansionPanel
 import Internal.List as List
+import Internal.ProgressIndicator as ProgressIndicator
 import Internal.Select as Select
 import Internal.SortTable as SortTable
 import Internal.Tab as Tab
 import Internal.TextInput as TextInput
 import Set exposing (Set)
-import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, RowStyle, SortTableStyle, TabStyle, TextInputStyle)
+import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, ProgressIndicatorStyle, RowStyle, SortTableStyle, TabStyle, TextInputStyle)
 
 
 
@@ -162,7 +175,12 @@ iconButton :
         }
     -> Element msg
 iconButton =
-    Button.iconButton
+    let
+        fun : ButtonStyle msg -> Button msg -> Element msg
+        fun =
+            Button.iconButton
+    in
+    fun
 
 
 {-| A button with just text and not icon.
@@ -176,7 +194,12 @@ textButton :
         }
     -> Element msg
 textButton style { text, onPress } =
-    Button.textButton style
+    let
+        fun : ButtonStyle msg -> TextButton msg -> Element msg
+        fun =
+            Button.textButton
+    in
+    fun style
         { text = text
         , onPress = onPress
         }
@@ -193,7 +216,12 @@ button :
         }
     -> Element msg
 button =
-    Button.button
+    let
+        fun : ButtonStyle msg -> Button msg -> Element msg
+        fun =
+            Button.button
+    in
+    fun
 
 
 
@@ -272,11 +300,24 @@ multiSelect =
 ----------------------------------------------------------}
 
 
-{-| Dialog widget type
+{-| DEPRECATED
+
+Use `DialogV2` instead
+
 -}
 type alias Dialog msg =
     { title : Maybe String
     , body : Element msg
+    , accept : Maybe (TextButton msg)
+    , dismiss : Maybe (TextButton msg)
+    }
+
+
+{-| Dialog widget type
+-}
+type alias DialogV2 msg =
+    { title : Maybe String
+    , text : String
     , accept : Maybe (TextButton msg)
     , dismiss : Maybe (TextButton msg)
     }
@@ -306,7 +347,12 @@ dialog :
         }
     -> List (Attribute msg)
 dialog =
-    Dialog.dialog
+    let
+        fun : DialogStyle msg -> DialogV2 msg -> List (Attribute msg)
+        fun =
+            Dialog.dialog
+    in
+    fun
 
 
 
@@ -315,7 +361,10 @@ dialog =
 ----------------------------------------------------------}
 
 
-{-| Expansion Panel widget type
+{-| DEPRECATED
+
+Use `ExpansionPanelV2` instead
+
 -}
 type alias ExpansionPanel msg =
     { onToggle : Bool -> msg
@@ -323,6 +372,17 @@ type alias ExpansionPanel msg =
     , text : String
     , expandIcon : Element Never
     , collapseIcon : Element Never
+    , content : Element msg
+    , isExpanded : Bool
+    }
+
+
+{-| Expansion Panel widget type
+-}
+type alias ExpansionPanelV2 msg =
+    { onToggle : Bool -> msg
+    , icon : Element Never
+    , text : String
     , content : Element msg
     , isExpanded : Bool
     }
@@ -341,7 +401,12 @@ expansionPanel :
         }
     -> Element msg
 expansionPanel =
-    ExpansionPanel.expansionPanel
+    let
+        fun : ExpansionPanelStyle msg -> ExpansionPanelV2 msg -> Element msg
+        fun =
+            ExpansionPanel.expansionPanel
+    in
+    fun
 
 
 
@@ -374,7 +439,12 @@ textInput :
         }
     -> Element msg
 textInput =
-    TextInput.textInput
+    let
+        fun : TextInputStyle msg -> TextInput msg -> Element msg
+        fun =
+            TextInput.textInput
+    in
+    fun
 
 
 
@@ -515,7 +585,12 @@ sortTable :
         }
     -> Element msg
 sortTable =
-    SortTable.sortTable
+    let
+        fun : SortTableStyle msg -> SortTable a msg -> Element msg
+        fun =
+            SortTable.sortTable
+    in
+    fun
 
 
 
@@ -542,4 +617,35 @@ tab :
         }
     -> Element msg
 tab =
-    Tab.tab
+    let
+        fun : TabStyle msg -> Tab msg -> Element msg
+        fun =
+            Tab.tab
+    in
+    fun
+
+
+
+{----------------------------------------------------------
+- PROGRESS INDICATOR
+----------------------------------------------------------}
+
+
+{-| Progress Indicator widget type
+
+If `maybeProgress` is set to `Nothing`, an indeterminate progress indicator (e.g. spinner) will display.
+If `maybeProgress` is set to `Just Float` (where the `Float` is proportion of completeness between 0 and 1 inclusive), a determinate progress indicator will visualize the progress.
+
+-}
+type alias ProgressIndicator =
+    Maybe Float
+
+
+{-| Displays a circular progress indicator
+-}
+circularProgressIndicator :
+    ProgressIndicatorStyle msg
+    -> Maybe Float
+    -> Element msg
+circularProgressIndicator =
+    ProgressIndicator.circularProgressIndicator
