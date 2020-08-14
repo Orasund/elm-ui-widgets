@@ -9,7 +9,8 @@ import Data.Example as Example exposing (Example)
 import Data.Section as Section exposing (Section(..))
 import Data.Style exposing (Style)
 import Data.Theme as Theme exposing (Theme(..))
-import Element exposing (Element,DeviceClass(..))
+import Element exposing (DeviceClass(..), Element)
+import FeatherIcons
 import Framework
 import Framework.Grid as Grid
 import Framework.Heading as Heading
@@ -24,7 +25,7 @@ import Time
 import Widget
 import Widget.Layout as Layout exposing (Layout, Part)
 import Widget.ScrollingNav as ScrollingNav
-import FeatherIcons
+
 
 type alias LoadedModel =
     { stateless : Stateless.Model
@@ -345,6 +346,15 @@ view model =
                           , icon = Icons.penTool |> Element.html |> Element.el []
                           }
                         , { onPress =
+                                if m.theme /= SemanticUI then
+                                    Just <| SetTheme <| SemanticUI
+
+                                else
+                                    Nothing
+                          , text = "Semantic UI Theme"
+                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          }
+                        , { onPress =
                                 if m.theme /= ElmUiFramework then
                                     Just <| SetTheme <| ElmUiFramework
 
@@ -442,39 +452,41 @@ viewLoaded m =
                                           , elem
                                           ]
                                             |> Element.column Grid.simple
-                                        )
-                                        :: ( if more |> List.isEmpty then
-                                            []
-                                            else
-                                            [Widget.expansionPanel style.expansionPanel
-    
-                                                { onToggle = 
-                                                    always
-                                                    (name
-                                                    |> Example.fromString
-                                                    |> Maybe.map ToggledExample
-                                                    |> Maybe.withDefault Idle
-                                                    )
-                                                , icon = Element.none
-                                                , text =
-                                                    "States"
-                                                , content = Element.column
-                                                        (Grid.simple
-                                                            ++ [ Element.width <| Element.fill ]
-                                                        )
-                                                        more
-                                                , isExpanded =
-                                                    name
-                                                    |> Example.fromString
-                                                    |> Maybe.map
-                                                    (\example ->
-                                                    m.expanded 
-                                                    |> AnySet.member example 
-                                                    )|> Maybe.withDefault False
-                                                    
+                                         )
+                                            :: (if more |> List.isEmpty then
+                                                    []
 
-                                                }]
-                                        ))
+                                                else
+                                                    [ Widget.expansionPanel style.expansionPanel
+                                                        { onToggle =
+                                                            always
+                                                                (name
+                                                                    |> Example.fromString
+                                                                    |> Maybe.map ToggledExample
+                                                                    |> Maybe.withDefault Idle
+                                                                )
+                                                        , icon = Element.none
+                                                        , text =
+                                                            "States"
+                                                        , content =
+                                                            Element.column
+                                                                (Grid.simple
+                                                                    ++ [ Element.width <| Element.fill ]
+                                                                )
+                                                                more
+                                                        , isExpanded =
+                                                            name
+                                                                |> Example.fromString
+                                                                |> Maybe.map
+                                                                    (\example ->
+                                                                        m.expanded
+                                                                            |> AnySet.member example
+                                                                    )
+                                                                |> Maybe.withDefault False
+                                                        }
+                                                    ]
+                                               )
+                                        )
                                             |> Widget.column style.cardColumn
                                     )
                                 |> Element.wrappedRow
@@ -487,6 +499,12 @@ viewLoaded m =
                        )
             )
         |> Element.column (Framework.container ++ style.layout.container)
+    , Html.node "link"
+        [ Attributes.rel "stylesheet"
+        , Attributes.href "https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
+        ]
+        []
+        |> Element.html
     ]
         |> Element.column Grid.compact
 
