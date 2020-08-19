@@ -7,7 +7,7 @@ import Element.Border as Border
 import Element.Font as Font
 import Html
 import Html.Attributes as Attributes
-import Widget.Style exposing (ButtonStyle, ColumnStyle, LayoutStyle, RowStyle)
+import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, ProgressIndicatorStyle, RowStyle, TabStyle, TextInputStyle)
 import Widget.Style.Template as Template
 
 
@@ -62,9 +62,36 @@ primaryButton =
     }
 
 
+chipButton : ButtonStyle msg
+chipButton =
+    { container =
+        [ Attributes.class "ui  label" |> Element.htmlAttribute
+        ]
+    , labelRow = [ Element.spacing 6 ]
+    , text = []
+    , ifDisabled =
+        [ Attributes.class "disabled" |> Element.htmlAttribute
+        ]
+    , ifActive =
+        [ Attributes.class "active" |> Element.htmlAttribute
+        ]
+    , otherwise = []
+    }
+
+
 row : RowStyle msg
 row =
     { containerRow = [ Element.spacing 4 ]
+    , element = []
+    , ifFirst = []
+    , ifLast = []
+    , otherwise = []
+    }
+
+
+column : ColumnStyle msg
+column =
+    { containerColumn = [ Element.spacing 4 ]
     , element = []
     , ifFirst = []
     , ifLast = []
@@ -90,11 +117,112 @@ cardColumn =
         [ Attributes.class "ui card" |> Element.htmlAttribute
         ]
     , element =
-        [ Attributes.class "content" |> Element.htmlAttribute
+        [ Element.width <| Element.fill
+        , Attributes.class "content" |> Element.htmlAttribute
         ]
     , ifFirst = []
-    , ifLast = [ Attributes.class "extra" |> Element.htmlAttribute ]
-    , otherwise = [ Attributes.class "extra" |> Element.htmlAttribute ]
+    , ifLast = []
+    , otherwise = []
+    }
+
+
+expansionPanel : ExpansionPanelStyle msg
+expansionPanel =
+    { containerColumn = [ Attributes.class "ui accordion" |> Element.htmlAttribute ]
+    , panelRow = [ Attributes.class "title" |> Element.htmlAttribute ]
+    , labelRow = []
+    , content = [ Attributes.class "content active" |> Element.htmlAttribute ]
+    , expandIcon =
+        Html.i [ Attributes.class "dropdown icon" ] []
+            |> Element.html
+    , collapseIcon =
+        Html.i [ Attributes.class "dropdown icon" ] []
+            |> Element.html
+    }
+
+
+dialog : DialogStyle msg
+dialog =
+    { containerColumn = [ Attributes.class "ui active modal" |> Element.htmlAttribute ]
+    , title = [ Attributes.class "header" |> Element.htmlAttribute ]
+    , buttonRow = [ Attributes.class "actions" |> Element.htmlAttribute ]
+    , acceptButton =
+        { container =
+            [ Attributes.class "ui positive button" |> Element.htmlAttribute
+            ]
+        , labelRow = [ Element.spacing 6 ]
+        , text = []
+        , ifDisabled =
+            [ Attributes.class "disabled" |> Element.htmlAttribute
+            ]
+        , ifActive =
+            [ Attributes.class "active" |> Element.htmlAttribute
+            ]
+        , otherwise = []
+        }
+    , dismissButton =
+        { container =
+            [ Attributes.class "ui basic button" |> Element.htmlAttribute
+            ]
+        , labelRow = [ Element.spacing 6 ]
+        , text = []
+        , ifDisabled =
+            [ Attributes.class "disabled" |> Element.htmlAttribute
+            ]
+        , ifActive =
+            [ Attributes.class "active" |> Element.htmlAttribute
+            ]
+        , otherwise = []
+        }
+    , text = [ Attributes.class "description" |> Element.htmlAttribute ]
+    }
+
+
+tab : TabStyle msg
+tab =
+    { button =
+        { container =
+            [ Attributes.class "item" |> Element.htmlAttribute
+            ]
+        , labelRow = [ Element.spacing 6 ]
+        , text = []
+        , ifDisabled =
+            [ Attributes.class "disabled" |> Element.htmlAttribute
+            ]
+        , ifActive =
+            [ Attributes.class "active" |> Element.htmlAttribute
+            ]
+        , otherwise = []
+        }
+    , optionRow =
+        [ Attributes.class "ui top attached tabular menu" |> Element.htmlAttribute
+        ]
+    , containerColumn = []
+    , content =
+        [ Attributes.class "ui bottom active attached tab segment" |> Element.htmlAttribute
+        ]
+    }
+
+
+progressIndicator : ProgressIndicatorStyle msg
+progressIndicator =
+    { containerFunction =
+        \maybeProgress ->
+            "progressbar is not supported in Semantic UI"
+                |> Element.text
+                |> List.singleton
+                |> Element.paragraph []
+    }
+
+
+textInput : TextInputStyle msg
+textInput =
+    { chipButton = chipButton
+    , containerRow = [ Element.spacing 4 ]
+    , chipsRow =
+        [ Element.spacing 2
+        ]
+    , input = []
     }
 
 
@@ -124,15 +252,15 @@ style =
     , row = row
     , buttonRow = buttonRow
     , cardColumn = cardColumn
-    , column = Template.column <| "column"
+    , column = column
     , button = button
     , primaryButton = primaryButton
-    , tab = Template.tab <| "tab"
-    , textInput = Template.textInput <| "textInput"
-    , chipButton = Template.button <| "chipButton"
-    , expansionPanel = Template.expansionPanel "expansionPanel"
+    , tab = tab
+    , textInput = textInput
+    , chipButton = chipButton
+    , expansionPanel = expansionPanel
     , selectButton = selectButton
-    , dialog = Template.dialog "dialog"
-    , progressIndicator = Template.progressIndicator "progressIndicator"
+    , dialog = dialog
+    , progressIndicator = progressIndicator
     , layout = Template.layout "layout"
     }
