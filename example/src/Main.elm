@@ -106,7 +106,7 @@ initialModel { viewport } =
             , current = ""
             , remaining = 0
             }
-      , theme = SemanticUI --Material
+      , theme = Material
       , expanded = AnySet.empty Example.toString
       }
     , [ cmd

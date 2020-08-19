@@ -7,8 +7,22 @@ import Element.Border as Border
 import Element.Font as Font
 import Html
 import Html.Attributes as Attributes
-import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, ProgressIndicatorStyle, RowStyle, TabStyle, TextInputStyle)
+import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, ProgressIndicatorStyle, RowStyle, SortTableStyle, TabStyle, TextInputStyle)
 import Widget.Style.Template as Template
+
+
+sortTable : SortTableStyle msg
+sortTable =
+    { containerTable = [ Attributes.class "ui celled table" |> Element.htmlAttribute ]
+    , headerButton = button
+    , ascIcon =
+        Html.i [ Attributes.class "dropdown icon" ] []
+            |> Element.html
+    , descIcon =
+        Html.i [ Attributes.class "dropdown icon" ] []
+            |> Element.html
+    , defaultIcon = Element.none
+    }
 
 
 button : ButtonStyle msg
@@ -248,7 +262,7 @@ layout =
 
 style : Style msg
 style =
-    { sortTable = Template.sortTable <| "sortTable"
+    { sortTable = sortTable
     , row = row
     , buttonRow = buttonRow
     , cardColumn = cardColumn
