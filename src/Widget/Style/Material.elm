@@ -145,6 +145,15 @@ The [List widget](https://material.io/components/lists) is a very complex widget
 
 @docs layout
 
+
+# Advanced
+
+To create your own Material Widgets, here are all internal functions.
+Note that you might want to checkout the [file on GitHub](https://github.com/Orasund/elm-ui-widgets/blob/master/src/Widget/Style/Material.elm) if you want to tweak some internal behaviour.
+
+
+## Typography
+
 -}
 
 import Color exposing (Color)
@@ -170,29 +179,13 @@ import Widget.Style
         , TabStyle
         , TextInputStyle
         )
+import Widget.Style.Material.Color as MaterialColor
+import Widget.Style.Material.Typography as Typography
 
 
-
-{-------------------------------------------------------------------------------
--- T Y P O G R A P H Y
--------------------------------------------------------------------------------}
-
-
-buttonFont : List (Attribute msg)
-buttonFont =
-    [ Element.htmlAttribute <| Attributes.style "text-transform" "uppercase"
-    , Font.size 14
-    , Font.semiBold --medium
-    , Font.letterSpacing 1.25
-    ]
-
-
-h6 : List (Attribute msg)
-h6 =
-    [ Font.size 20
-    , Font.semiBold --medium
-    , Font.letterSpacing 0.15
-    ]
+fromColor : Color -> Element.Color
+fromColor =
+    Color.toRgba >> Element.fromRgb
 
 
 
@@ -272,196 +265,13 @@ darkPalette =
     }
 
 
-buttonHoverOpacity : Float
-buttonHoverOpacity =
-    0.08
-
-
-buttonFocusOpacity : Float
-buttonFocusOpacity =
-    0.24
-
-
-buttonPressedOpacity : Float
-buttonPressedOpacity =
-    0.32
-
-
-buttonDisabledOpacity : Float
-buttonDisabledOpacity =
-    0.38
-
-
-buttonSelectedOpacity : Float
-buttonSelectedOpacity =
-    0.16
-
-
-accessibleTextColor : Color -> Color
-accessibleTextColor color =
-    let
-        l : Float
-        l =
-            1
-                + (color |> Color.toRgba |> .alpha)
-                * (Accessibility.luminance color - 1)
-
-        ratioBlack : Float
-        ratioBlack =
-            1.05 / (l + 0.05)
-
-        ratioWhite : Float
-        ratioWhite =
-            (l + 0.05) / 0.05
-    in
-    if ratioBlack < ratioWhite then
-        Color.rgb255 0 0 0
-
-    else
-        Color.rgb255 255 255 255
-
-
-accessibleWithTextColor : Color -> Color -> Color
-accessibleWithTextColor c color =
-    let
-        l1 : Float
-        l1 =
-            1
-                + (c |> Color.toRgba |> .alpha)
-                * (Accessibility.luminance c - 1)
-
-        l2 : Float
-        l2 =
-            1
-                + (color |> Color.toRgba |> .alpha)
-                * (Accessibility.luminance color - 1)
-
-        newConstrast : Float
-        newConstrast =
-            7
-
-        lighterLuminance : Float
-        lighterLuminance =
-            newConstrast * (l2 + 0.05) - 0.05
-
-        darkerLuminance : Float
-        darkerLuminance =
-            (l2 + 0.05) - 0.05 / newConstrast
-    in
-    c
-        |> (if l1 > l2 then
-                if ((l1 + 0.05) / (l2 + 0.05)) < 7 then
-                    Convert.colorToLab
-                        >> (\col ->
-                                { col | l = 100 * lighterLuminance }
-                           )
-                        >> Convert.labToColor
-
-                else
-                    identity
-
-            else if ((l2 + 0.05) / (l1 + 0.05)) < 7 then
-                Convert.colorToLab
-                    >> (\col ->
-                            { col | l = 100 * darkerLuminance }
-                       )
-                    >> Convert.labToColor
-
-            else
-                identity
-           )
-
-
-toCIELCH : Color -> { l : Float, c : Float, h : Float }
-toCIELCH =
-    Convert.colorToLab
-        >> (\{ l, a, b } ->
-                { l = l
-                , c = sqrt (a * a + b * b)
-                , h = atan2 b a
-                }
-           )
-
-
-fromCIELCH : { l : Float, c : Float, h : Float } -> Color
-fromCIELCH =
-    (\{ l, c, h } ->
-        { l = l
-        , a = c * cos h
-        , b = c * sin h
-        }
-    )
-        >> Convert.labToColor
-
-
-{-| using noahzgordon/elm-color-extra for colors
--}
-withShade : Color -> Float -> Color -> Color
-withShade c2 amount c1 =
-    let
-        alpha =
-            c1
-                |> Color.toRgba
-                |> .alpha
-
-        fun a b =
-            { l = (a.l * (1 - amount) + b.l * amount) / 1
-            , c = (a.c * (1 - amount) + b.c * amount) / 1
-            , h = (a.h * (1 - amount) + b.h * amount) / 1
-            }
-    in
-    fun (toCIELCH c1) (toCIELCH c2)
-        |> fromCIELCH
-        |> Color.toRgba
-        |> (\color -> { color | alpha = alpha })
-        |> Color.fromRgba
-
-
-scaleOpacity : Float -> Color -> Color
-scaleOpacity opacity =
-    Color.toRgba
-        >> (\color -> { color | alpha = color.alpha * opacity })
-        >> Color.fromRgba
-
-
-gray : Color
-gray =
-    Color.rgb255 0x77 0x77 0x77
-
-
-dark : Color
-dark =
-    Color.rgb255 50 50 50
-
-
-fromColor : Color -> Element.Color
-fromColor =
-    Color.toRgba >> Element.fromRgb
-
-
-shadow :
-    Float
-    ->
-        { offset : ( Float, Float )
-        , size : Float
-        , blur : Float
-        , color : Element.Color
-        }
-shadow float =
-    { color = Element.rgba255 0x00 0x00 0x00 0.2
-    , offset = ( 0, float )
-    , size = 0
-    , blur = float
-    }
-
-
 textAndBackground : Color -> List (Element.Attr decorative msg)
 textAndBackground color =
     [ color
         |> fromColor
         |> Background.color
     , color
-        |> accessibleTextColor
+        |> MaterialColor.accessibleTextColor
         |> fromColor
         |> Font.color
     ]
@@ -476,7 +286,7 @@ textAndBackground color =
 baseButton : Palette -> ButtonStyle msg
 baseButton _ =
     { container =
-        buttonFont
+        Typography.button
             ++ [ Element.height <| Element.px 36
                , Element.paddingXY 8 8
                , Border.rounded <| 4
@@ -496,37 +306,32 @@ baseButton _ =
 
 
 {-| A contained button representing the most important action of a group.
-
-![Contained Button](https://material.io/develop/images/content/79e62add1830d33fc90edb22212bce53.svg)
-
-_Image taken from [material.io](https://material.io/develop/android/components/buttons/)_
-
 -}
 containedButton : Palette -> ButtonStyle msg
 containedButton palette =
     { container =
         (baseButton palette |> .container)
-            ++ [ Border.shadow <| shadow 2
+            ++ [ Border.shadow <| MaterialColor.shadow 2
                , Element.mouseDown <|
                     [ palette.primary
-                        |> withShade palette.on.primary buttonPressedOpacity
+                        |> MaterialColor.withShade palette.on.primary MaterialColor.buttonPressedOpacity
                         |> fromColor
                         |> Background.color
-                    , Border.shadow <| shadow 12
+                    , Border.shadow <| MaterialColor.shadow 12
                     ]
                , Element.focused <|
                     [ palette.primary
-                        |> withShade palette.on.primary buttonFocusOpacity
+                        |> MaterialColor.withShade palette.on.primary MaterialColor.buttonFocusOpacity
                         |> fromColor
                         |> Background.color
-                    , Border.shadow <| shadow 6
+                    , Border.shadow <| MaterialColor.shadow 6
                     ]
                , Element.mouseOver <|
                     [ palette.primary
-                        |> withShade palette.on.primary buttonHoverOpacity
+                        |> MaterialColor.withShade palette.on.primary MaterialColor.buttonHoverOpacity
                         |> fromColor
                         |> Background.color
-                    , Border.shadow <| shadow 6
+                    , Border.shadow <| MaterialColor.shadow 6
                     ]
                ]
     , labelRow =
@@ -536,23 +341,23 @@ containedButton palette =
     , text = baseButton palette |> .text
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
-            ++ [ gray
-                    |> scaleOpacity buttonDisabledOpacity
+            ++ [ MaterialColor.gray
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonDisabledOpacity
                     |> fromColor
                     |> Background.color
-               , Font.color <| fromColor <| gray
-               , Border.shadow <| shadow 0
+               , Font.color <| fromColor <| MaterialColor.gray
+               , Border.shadow <| MaterialColor.shadow 0
                , Element.mouseDown []
                , Element.mouseOver []
                , Element.focused []
                ]
     , ifActive =
         [ palette.primary
-            |> withShade palette.on.primary buttonHoverOpacity
+            |> MaterialColor.withShade palette.on.primary MaterialColor.buttonHoverOpacity
             |> fromColor
             |> Background.color
         , palette.primary
-            |> accessibleTextColor
+            |> MaterialColor.accessibleTextColor
             |> fromColor
             |> Font.color
         ]
@@ -561,7 +366,7 @@ containedButton palette =
             |> fromColor
             |> Background.color
         , palette.primary
-            |> accessibleTextColor
+            |> MaterialColor.accessibleTextColor
             |> fromColor
             |> Font.color
         ]
@@ -569,11 +374,6 @@ containedButton palette =
 
 
 {-| A outlined button representing an important action within a group.
-
-![Outlined Button](https://material.io/develop/images/content/2b50635d38c5fdec260f09be9aeafb10.svg)
-
-_Image taken from [material.io](https://material.io/develop/android/components/buttons/)_
-
 -}
 outlinedButton : Palette -> ButtonStyle msg
 outlinedButton palette =
@@ -582,25 +382,25 @@ outlinedButton palette =
             ++ [ Border.width <| 1
                , Font.color <| fromColor <| palette.primary
                , palette.on.surface
-                    |> scaleOpacity 0.14
-                    |> withShade palette.primary buttonHoverOpacity
+                    |> MaterialColor.scaleOpacity 0.14
+                    |> MaterialColor.withShade palette.primary MaterialColor.buttonHoverOpacity
                     |> fromColor
                     |> Border.color
                , Element.mouseDown
                     [ palette.primary
-                        |> scaleOpacity buttonPressedOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
                         |> fromColor
                         |> Background.color
                     ]
                , Element.focused
                     [ palette.primary
-                        |> scaleOpacity buttonFocusOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
                         |> fromColor
                         |> Background.color
                     ]
                , Element.mouseOver
                     [ palette.primary
-                        |> scaleOpacity buttonHoverOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
                         |> fromColor
                         |> Background.color
                     ]
@@ -612,7 +412,7 @@ outlinedButton palette =
     , text = baseButton palette |> .text
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
-            ++ [ gray
+            ++ [ MaterialColor.gray
                     |> fromColor
                     |> Font.color
                , Element.mouseDown []
@@ -621,7 +421,7 @@ outlinedButton palette =
                ]
     , ifActive =
         [ palette.primary
-            |> scaleOpacity buttonHoverOpacity
+            |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
             |> fromColor
             |> Background.color
         ]
@@ -631,11 +431,6 @@ outlinedButton palette =
 
 
 {-| A text button representing a simple action within a group.
-
-![Text Button](https://material.io/develop/images/content/d3079632c6f54d86f9b7093d541c2ee9.svg)
-
-_Image taken from [material.io](https://material.io/develop/android/components/buttons/)_
-
 -}
 textButton : Palette -> ButtonStyle msg
 textButton palette =
@@ -644,19 +439,19 @@ textButton palette =
             ++ [ Font.color <| fromColor <| palette.primary
                , Element.mouseDown
                     [ palette.primary
-                        |> scaleOpacity buttonPressedOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
                         |> fromColor
                         |> Background.color
                     ]
                , Element.focused
                     [ palette.primary
-                        |> scaleOpacity buttonFocusOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
                         |> fromColor
                         |> Background.color
                     ]
                , Element.mouseOver
                     [ palette.primary
-                        |> scaleOpacity buttonHoverOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
                         |> fromColor
                         |> Background.color
                     ]
@@ -665,7 +460,7 @@ textButton palette =
     , text = baseButton palette |> .text
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
-            ++ [ gray
+            ++ [ MaterialColor.gray
                     |> fromColor
                     |> Font.color
                , Element.mouseDown []
@@ -674,7 +469,7 @@ textButton palette =
                ]
     , ifActive =
         [ palette.primary
-            |> scaleOpacity buttonHoverOpacity
+            |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
             |> fromColor
             |> Background.color
         ]
@@ -684,10 +479,6 @@ textButton palette =
 
 
 {-| A ToggleButton. Only use as a group in combination with `buttonRow`.
-
-![Toggle Button](https://material.io/develop/images/content/749a1ba8591d02356fa1d6eea2641d96.svg)
-
-_Image taken from [material.io](https://material.io/develop/android/components/buttons/)_
 
 Toggle buttons should only be used with the `iconButton` widget, else use chips instead.
 
@@ -701,31 +492,31 @@ Technical Remark:
 toggleButton : Palette -> ButtonStyle msg
 toggleButton palette =
     { container =
-        buttonFont
+        Typography.button
             ++ [ Element.width <| Element.px 48
                , Element.height <| Element.px 48
                , Element.padding 4
                , Border.width <| 1
                , Element.mouseDown <|
                     [ palette.surface
-                        |> withShade palette.on.surface buttonPressedOpacity
+                        |> MaterialColor.withShade palette.on.surface MaterialColor.buttonPressedOpacity
                         |> fromColor
                         |> Background.color
                     , palette.on.surface
-                        |> scaleOpacity 0.14
-                        |> withShade palette.on.surface buttonPressedOpacity
+                        |> MaterialColor.scaleOpacity 0.14
+                        |> MaterialColor.withShade palette.on.surface MaterialColor.buttonPressedOpacity
                         |> fromColor
                         |> Border.color
                     ]
                , Element.focused []
                , Element.mouseOver <|
                     [ palette.surface
-                        |> withShade palette.on.surface buttonHoverOpacity
+                        |> MaterialColor.withShade palette.on.surface MaterialColor.buttonHoverOpacity
                         |> fromColor
                         |> Background.color
                     , palette.on.surface
-                        |> scaleOpacity 0.14
-                        |> withShade palette.on.surface buttonHoverOpacity
+                        |> MaterialColor.scaleOpacity 0.14
+                        |> MaterialColor.withShade palette.on.surface MaterialColor.buttonHoverOpacity
                         |> fromColor
                         |> Border.color
                     ]
@@ -738,7 +529,7 @@ toggleButton palette =
         , Element.padding 8
         , Element.focused <|
             (palette.surface
-                |> withShade palette.on.surface buttonFocusOpacity
+                |> MaterialColor.withShade palette.on.surface MaterialColor.buttonFocusOpacity
                 |> textAndBackground
             )
         ]
@@ -749,10 +540,10 @@ toggleButton palette =
                     |> fromColor
                     |> Background.color
                , palette.on.surface
-                    |> scaleOpacity 0.14
+                    |> MaterialColor.scaleOpacity 0.14
                     |> fromColor
                     |> Border.color
-               , gray
+               , MaterialColor.gray
                     |> fromColor
                     |> Font.color
                , Element.mouseDown []
@@ -760,16 +551,16 @@ toggleButton palette =
                ]
     , ifActive =
         [ palette.surface
-            |> withShade palette.on.surface buttonSelectedOpacity
+            |> MaterialColor.withShade palette.on.surface MaterialColor.buttonSelectedOpacity
             |> fromColor
             |> Background.color
         , palette.surface
-            |> accessibleTextColor
+            |> MaterialColor.accessibleTextColor
             |> fromColor
             |> Font.color
         , palette.on.surface
-            |> scaleOpacity 0.14
-            |> withShade palette.on.surface buttonSelectedOpacity
+            |> MaterialColor.scaleOpacity 0.14
+            |> MaterialColor.withShade palette.on.surface MaterialColor.buttonSelectedOpacity
             |> fromColor
             |> Border.color
         , Element.mouseOver []
@@ -779,11 +570,11 @@ toggleButton palette =
             |> fromColor
             |> Background.color
         , palette.surface
-            |> accessibleTextColor
+            |> MaterialColor.accessibleTextColor
             |> fromColor
             |> Font.color
         , palette.on.surface
-            |> scaleOpacity 0.14
+            |> MaterialColor.scaleOpacity 0.14
             |> fromColor
             |> Border.color
         ]
@@ -791,10 +582,6 @@ toggleButton palette =
 
 
 {-| An single selectable icon.
-
-![Icon Button](https://material.io/develop/images/content/9bc212d8a3ef79bb7ed83a5359651505.png)
-
-_Image taken from [material.io](https://material.io/develop/android/components/buttons/)_
 
 Technical Remark:
 
@@ -807,23 +594,21 @@ iconButton palette =
         (baseButton palette |> .container)
             ++ [ Element.height <| Element.px 48
                , Border.rounded 24
-
-               --, Font.color <| fromColor <| palette.primary
                , Element.mouseDown
                     [ palette.surface
-                        |> scaleOpacity buttonPressedOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
                         |> fromColor
                         |> Background.color
                     ]
                , Element.focused
                     [ palette.surface
-                        |> scaleOpacity buttonFocusOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
                         |> fromColor
                         |> Background.color
                     ]
                , Element.mouseOver
                     [ palette.surface
-                        |> scaleOpacity buttonHoverOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
                         |> fromColor
                         |> Background.color
                     ]
@@ -837,7 +622,7 @@ iconButton palette =
     , text = baseButton palette |> .text
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
-            ++ [ gray
+            ++ [ MaterialColor.gray
                     |> fromColor
                     |> Font.color
                , Element.mouseDown []
@@ -846,7 +631,7 @@ iconButton palette =
                ]
     , ifActive =
         [ palette.surface
-            |> scaleOpacity buttonHoverOpacity
+            |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
             |> fromColor
             |> Background.color
         ]
@@ -890,22 +675,22 @@ chip palette =
         , Border.rounded <| 16
         , Element.mouseDown <|
             [ palette.on.surface
-                |> scaleOpacity 0.12
-                |> withShade palette.on.surface buttonPressedOpacity
+                |> MaterialColor.scaleOpacity 0.12
+                |> MaterialColor.withShade palette.on.surface MaterialColor.buttonPressedOpacity
                 |> fromColor
                 |> Background.color
             ]
         , Element.focused <|
             [ palette.on.surface
-                |> scaleOpacity 0.12
-                |> withShade palette.on.surface buttonFocusOpacity
+                |> MaterialColor.scaleOpacity 0.12
+                |> MaterialColor.withShade palette.on.surface MaterialColor.buttonFocusOpacity
                 |> fromColor
                 |> Background.color
             ]
         , Element.mouseOver <|
             [ palette.on.surface
-                |> scaleOpacity 0.12
-                |> withShade palette.on.surface buttonHoverOpacity
+                |> MaterialColor.scaleOpacity 0.12
+                |> MaterialColor.withShade palette.on.surface MaterialColor.buttonHoverOpacity
                 |> fromColor
                 |> Background.color
             ]
@@ -922,8 +707,8 @@ chip palette =
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
             ++ (palette.on.surface
-                    |> scaleOpacity 0.12
-                    |> withShade palette.on.surface buttonDisabledOpacity
+                    |> MaterialColor.scaleOpacity 0.12
+                    |> MaterialColor.withShade palette.on.surface MaterialColor.buttonDisabledOpacity
                     |> textAndBackground
                )
             ++ [ Element.mouseDown []
@@ -932,25 +717,25 @@ chip palette =
                ]
     , ifActive =
         [ palette.on.surface
-            |> scaleOpacity 0.12
-            |> withShade palette.on.surface buttonSelectedOpacity
+            |> MaterialColor.scaleOpacity 0.12
+            |> MaterialColor.withShade palette.on.surface MaterialColor.buttonSelectedOpacity
             |> fromColor
             |> Background.color
         , palette.on.surface
-            |> scaleOpacity 0.12
-            |> accessibleTextColor
+            |> MaterialColor.scaleOpacity 0.12
+            |> MaterialColor.accessibleTextColor
             |> fromColor
             |> Font.color
-        , Border.shadow <| shadow 4
+        , Border.shadow <| MaterialColor.shadow 4
         ]
     , otherwise =
         [ palette.on.surface
-            |> scaleOpacity 0.12
+            |> MaterialColor.scaleOpacity 0.12
             |> fromColor
             |> Background.color
         , palette.on.surface
-            |> scaleOpacity 0.12
-            |> accessibleTextColor
+            |> MaterialColor.scaleOpacity 0.12
+            |> MaterialColor.accessibleTextColor
             |> fromColor
             |> Font.color
         ]
@@ -1039,7 +824,7 @@ cardColumn palette =
     { containerColumn =
         [ Element.width <| Element.fill
         , Element.mouseOver <|
-            [ Border.shadow <| shadow 4 ]
+            [ Border.shadow <| MaterialColor.shadow 4 ]
         , Element.alignTop
         , Border.rounded 4
         ]
@@ -1051,11 +836,11 @@ cardColumn palette =
             |> fromColor
             |> Background.color
         , palette.surface
-            |> accessibleTextColor
+            |> MaterialColor.accessibleTextColor
             |> fromColor
             |> Font.color
         , palette.on.surface
-            |> scaleOpacity 0.14
+            |> MaterialColor.scaleOpacity 0.14
             |> fromColor
             |> Border.color
         , Element.width <| Element.minimum 344 <| Element.fill
@@ -1101,11 +886,6 @@ cardColumn palette =
 
 
 {-| An alert dialog for important decisions. Use a snackbar for less important notification.
-
-![Alert Dialog](https://material.io/develop/images/content/9d61e2d1bd60599344c7fae5e71c9667.png)
-
-_Image taken from [material.io](https://material.io/develop/android/components/buttons/)_
-
 -}
 alertDialog : Palette -> DialogStyle msg
 alertDialog palette =
@@ -1118,7 +898,7 @@ alertDialog palette =
         , Element.height <| Element.minimum 182 <| Element.shrink
         , Background.color <| fromColor <| palette.surface
         ]
-    , title = h6 ++ [ Element.paddingXY 24 20 ]
+    , title = Typography.h6 ++ [ Element.paddingXY 24 20 ]
     , text = [ Element.paddingXY 24 0 ]
     , buttonRow =
         [ Element.paddingXY 8 8
@@ -1195,14 +975,14 @@ expansionPanel palette =
     , expandIcon =
         expand_more
             |> Element.el
-                [ gray
+                [ MaterialColor.gray
                     |> fromColor
                     |> Font.color
                 ]
     , collapseIcon =
         expand_less
             |> Element.el
-                [ gray
+                [ MaterialColor.gray
                     |> fromColor
                     |> Font.color
                 ]
@@ -1335,10 +1115,6 @@ progressIndicator palette =
 
 {-| A typical snackbar
 
-![Snackbar](https://material.io/develop/images/content/f2ec5451582a06af5eb20e3dfb3d27d5.svg)
-
-_Image take from [material.io](https://material.io/develop/android/components/snackbar/)_
-
 Technical Remark:
 
   - The text color of the button was not given in the specification. This implementation
@@ -1348,18 +1124,18 @@ Technical Remark:
 snackbar : Palette -> SnackbarStyle msg
 snackbar palette =
     { containerRow =
-        [ dark
+        [ MaterialColor.dark
             |> fromColor
             |> Background.color
-        , dark
-            |> accessibleTextColor
+        , MaterialColor.dark
+            |> MaterialColor.accessibleTextColor
             |> fromColor
             |> Font.color
         , Border.rounded 4
         , Element.width <| Element.maximum 344 <| Element.fill
         , Element.paddingXY 8 6
         , Element.spacing 8
-        , Border.shadow <| shadow 2
+        , Border.shadow <| MaterialColor.shadow 2
         ]
     , text =
         [ Element.centerX
@@ -1371,8 +1147,8 @@ snackbar palette =
                     { b
                         | container =
                             b.container
-                                ++ [ dark
-                                        |> accessibleWithTextColor palette.primary
+                                ++ [ MaterialColor.dark
+                                        |> MaterialColor.accessibleWithTextColor palette.primary
                                         |> fromColor
                                         |> Font.color
                                    ]
@@ -1407,16 +1183,16 @@ textInput palette =
                , Border.width 1
                , Border.rounded 4
                , palette.on.surface
-                    |> scaleOpacity 0.14
+                    |> MaterialColor.scaleOpacity 0.14
                     |> fromColor
                     |> Border.color
                , Element.focused
-                    [ Border.shadow <| shadow 4
+                    [ Border.shadow <| MaterialColor.shadow 4
                     , palette.primary
                         |> fromColor
                         |> Border.color
                     ]
-               , Element.mouseOver [ Border.shadow <| shadow 2 ]
+               , Element.mouseOver [ Border.shadow <| MaterialColor.shadow 2 ]
                ]
     , input =
         (palette.surface
@@ -1447,7 +1223,7 @@ Technical Remark:
 tabButton : Palette -> ButtonStyle msg
 tabButton palette =
     { container =
-        buttonFont
+        Typography.button
             ++ [ Element.height <| Element.px 48
                , Element.fill
                     |> Element.maximum 360
@@ -1457,19 +1233,19 @@ tabButton palette =
                , Font.color <| fromColor <| palette.primary
                , Element.mouseDown
                     [ palette.primary
-                        |> scaleOpacity buttonPressedOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
                         |> fromColor
                         |> Background.color
                     ]
                , Element.focused
                     [ palette.primary
-                        |> scaleOpacity buttonFocusOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
                         |> fromColor
                         |> Background.color
                     ]
                , Element.mouseOver
                     [ palette.primary
-                        |> scaleOpacity buttonHoverOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
                         |> fromColor
                         |> Background.color
                     ]
@@ -1482,7 +1258,7 @@ tabButton palette =
     , text = []
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
-            ++ [ gray
+            ++ [ MaterialColor.gray
                     |> fromColor
                     |> Font.color
                , Element.mouseDown []
@@ -1510,7 +1286,7 @@ tab palette =
     { button = tabButton palette
     , optionRow =
         [ Element.spaceEvenly
-        , Border.shadow <| shadow 4
+        , Border.shadow <| MaterialColor.shadow 4
         , Element.spacing 8
         , Element.width <| Element.fill
         ]
@@ -1543,7 +1319,7 @@ menu =
 menuTabButton : Palette -> ButtonStyle msg
 menuTabButton palette =
     { container =
-        buttonFont
+        Typography.button
             ++ [ Element.height <| Element.px 56
                , Element.fill
                     |> Element.maximum 360
@@ -1551,25 +1327,25 @@ menuTabButton palette =
                     |> Element.width
                , Element.paddingXY 12 16
                , palette.primary
-                    |> accessibleTextColor
+                    |> MaterialColor.accessibleTextColor
                     |> fromColor
                     |> Font.color
                , Element.alignBottom
                , Element.mouseDown
                     [ palette.primary
-                        |> scaleOpacity buttonPressedOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
                         |> fromColor
                         |> Background.color
                     ]
                , Element.focused
                     [ palette.primary
-                        |> scaleOpacity buttonFocusOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
                         |> fromColor
                         |> Background.color
                     ]
                , Element.mouseOver
                     [ palette.primary
-                        |> scaleOpacity buttonHoverOpacity
+                        |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
                         |> fromColor
                         |> Background.color
                     ]
@@ -1582,7 +1358,7 @@ menuTabButton palette =
     , text = []
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
-            ++ [ gray
+            ++ [ MaterialColor.gray
                     |> fromColor
                     |> Font.color
                , Element.mouseDown []
@@ -1613,24 +1389,24 @@ drawerButton palette =
         , Element.paddingXY 8 8
         , Border.rounded <| 4
         , palette.surface
-            |> accessibleTextColor
+            |> MaterialColor.accessibleTextColor
             |> fromColor
             |> Font.color
         , Element.mouseDown
             [ palette.primary
-                |> scaleOpacity buttonPressedOpacity
+                |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
                 |> fromColor
                 |> Background.color
             ]
         , Element.focused
             [ palette.primary
-                |> scaleOpacity buttonFocusOpacity
+                |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
                 |> fromColor
                 |> Background.color
             ]
         , Element.mouseOver
             [ palette.primary
-                |> scaleOpacity buttonHoverOpacity
+                |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
                 |> fromColor
                 |> Background.color
             ]
@@ -1639,7 +1415,7 @@ drawerButton palette =
     , text = baseButton palette |> .text
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
-            ++ [ gray
+            ++ [ MaterialColor.gray
                     |> fromColor
                     |> Font.color
                , Element.mouseDown []
@@ -1648,7 +1424,7 @@ drawerButton palette =
                ]
     , ifActive =
         [ palette.primary
-            |> scaleOpacity buttonHoverOpacity
+            |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
             |> fromColor
             |> Background.color
         , palette.primary
@@ -1710,7 +1486,7 @@ layout palette =
     , menuIcon = menu
     , moreVerticalIcon = more_vert
     , spacing = 8
-    , title = h6 ++ [ Element.paddingXY 8 0 ]
+    , title = Typography.h6 ++ [ Element.paddingXY 8 0 ]
     , searchIcon = search
     , search =
         (palette.surface |> textAndBackground)
@@ -1720,13 +1496,13 @@ layout palette =
                , Border.width 1
                , Border.rounded 4
                , palette.on.surface
-                    |> scaleOpacity 0.14
+                    |> MaterialColor.scaleOpacity 0.14
                     |> fromColor
                     |> Border.color
                , Element.focused
-                    [ Border.shadow <| shadow 4
+                    [ Border.shadow <| MaterialColor.shadow 4
                     ]
-               , Element.mouseOver [ Border.shadow <| shadow 2 ]
+               , Element.mouseOver [ Border.shadow <| MaterialColor.shadow 2 ]
                , Element.width <| Element.maximum 360 <| Element.fill
                , Element.alignRight
                ]
