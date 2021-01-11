@@ -157,8 +157,6 @@ Note that you might want to checkout the [file on GitHub](https://github.com/Ora
 -}
 
 import Color exposing (Color)
-import Color.Accessibility as Accessibility
-import Color.Convert as Convert
 import Element exposing (Attribute, Element)
 import Element.Background as Background
 import Element.Border as Border

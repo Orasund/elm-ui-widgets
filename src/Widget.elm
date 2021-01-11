@@ -8,8 +8,8 @@ module Widget exposing
     , SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInput, textInput
     , Tab, tab
-    , Dialog, ExpansionPanel
     , ProgressIndicator, circularProgressIndicator
+    , Dialog, ExpansionPanel
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -115,14 +115,14 @@ You can create you own widgets by sticking widgets types together.
 @docs Tab, tab
 
 
-# DEPRECATED
-
-@docs Dialog, ExpansionPanel
-
-
 # Progress Indicator
 
 @docs ProgressIndicator, circularProgressIndicator
+
+
+# DEPRECATED
+
+@docs Dialog, ExpansionPanel
 
 -}
 
