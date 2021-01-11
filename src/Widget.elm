@@ -117,6 +117,10 @@ You can create you own widgets by sticking widgets types together.
 
 # Progress Indicator
 
+![progress Indicator](https://orasund.github.io/elm-ui-widgets/assets/progressIndicator.png)
+
+[Open in Ellie](https://ellie-app.com/c47GJktH2bqa1)
+
 @docs ProgressIndicator, circularProgressIndicator
 
 
