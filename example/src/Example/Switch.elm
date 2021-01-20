@@ -1,16 +1,18 @@
 module Example.Switch exposing (Model, Msg, init, subscriptions, update, view)
 
+import Browser
 import Element exposing (Element)
 import FeatherIcons
 import Widget
-import Widget.Style exposing (SwitchStyle, RowStyle)
+import Widget.Style exposing (RowStyle, SwitchStyle)
 import Widget.Style.Material as Material
-import Browser
+
 
 type alias Style style msg =
     { style
         | switch : SwitchStyle msg
     }
+
 
 materialStyle : Style {} msg
 materialStyle =
@@ -46,18 +48,22 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.none
 
+
 {-| You can remove the msgMapper. But by doing so, make sure to also change `msg` to `Msg` in the line below.
---}
+
+
+-}
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
 view msgMapper style (IsButtonEnabled isButtonEnabled) =
-     Widget.switch style.switch
+    Widget.switch style.switch
         { description = "click me"
         , active = isButtonEnabled
         , onPress =
             ToggledButtonStatus
-                    |> msgMapper
-                    |> Just
+                |> msgMapper
+                |> Just
         }
+
 
 main : Program () Model Msg
 main =

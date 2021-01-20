@@ -333,6 +333,7 @@ layout =
         Color.light ++ Group.center
     }
 
+
 style =
     { sortTable = sortTable
     , row = row

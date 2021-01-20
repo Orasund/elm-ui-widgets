@@ -1,11 +1,12 @@
 module Example.Modal exposing (Model, Msg, init, subscriptions, update, view)
 
+import Browser
 import Element exposing (Element)
 import FeatherIcons
 import Widget
 import Widget.Style exposing (ButtonStyle, ColumnStyle)
 import Widget.Style.Material as Material
-import Browser
+
 
 type alias Style style msg =
     { style
@@ -13,11 +14,13 @@ type alias Style style msg =
         , primaryButton : ButtonStyle msg
     }
 
+
 materialStyle : Style {} msg
 materialStyle =
     { cardColumn = Material.cardColumn Material.defaultPalette
     , primaryButton = Material.containedButton Material.defaultPalette
     }
+
 
 type Model
     = IsEnabled Bool
@@ -47,8 +50,11 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.none
 
+
 {-| You can remove the msgMapper. But by doing so, make sure to also change `msg` to `Msg` in the line below.
---}
+
+
+-}
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
 view msgMapper style (IsEnabled isEnabled) =
     Widget.button style.primaryButton
@@ -93,6 +99,7 @@ view msgMapper style (IsEnabled isEnabled) =
                         []
                    )
             )
+
 
 main : Program () Model Msg
 main =

@@ -73,9 +73,9 @@ import Widget.Style
         , RowStyle
         , SnackbarStyle
         , SortTableStyle
+        , SwitchStyle
         , TabStyle
         , TextInputStyle
-        , SwitchStyle
         )
 
 
@@ -124,6 +124,7 @@ icon string =
                     Element.text string
             ]
 
+
 {-| A boolean switch
 -}
 switch : String -> SwitchStyle msg
@@ -148,6 +149,7 @@ switch string =
             }
         }
     }
+
 
 {-|
 

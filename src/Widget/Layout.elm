@@ -1,23 +1,27 @@
-module Widget.Layout exposing (Layout, Part(..), activate, init, queueMessage, timePassed, view)
+module Widget.Layout exposing
+    ( Layout, Part(..), init, timePassed, view
+    , activate, queueMessage
+    )
 
 {-| Combines multiple concepts from the [material design specification](https://material.io/components/), namely:
 
-* Top App Bar
-* Navigation Draw
-* Side Panel
-* Dialog
-* Snackbar
+  - Top App Bar
+  - Navigation Draw
+  - Side Panel
+  - Dialog
+  - Snackbar
 
 It is responsive and changes view to apply to the [material design guidelines](https://material.io/components/app-bars-top).
+
 
 # Basics
 
 @docs Layout, Part, init, timePassed, view
 
+
 # Actions
 
 @docs activate, queueMessage
-
 
 -}
 
@@ -29,6 +33,7 @@ import Widget exposing (Button, Select)
 import Widget.Snackbar as Snackbar exposing (Message)
 import Widget.Style exposing (LayoutStyle)
 
+
 {-| The currently visible part: either the left sheet, right sheet or the search bar
 -}
 type Part
@@ -36,12 +41,14 @@ type Part
     | RightSheet
     | Search
 
+
 {-| The model of the layout containing the snackbar and the currently active side sheet (or search bar)
 -}
 type alias Layout msg =
     { snackbar : Snackbar.Snackbar (Message msg)
     , active : Maybe Part
     }
+
 
 {-| The initial state of the layout
 -}
@@ -51,6 +58,7 @@ init =
     , active = Nothing
     }
 
+
 {-| Queues a message and displayes it as a snackbar once no other snackbar is visible.
 -}
 queueMessage : Message msg -> Layout msg -> Layout msg
@@ -59,6 +67,7 @@ queueMessage message layout =
         | snackbar = layout.snackbar |> Snackbar.insert message
     }
 
+
 {-| Open either a side sheet or the search bar.
 -}
 activate : Maybe Part -> Layout msg -> Layout msg
@@ -66,6 +75,7 @@ activate part layout =
     { layout
         | active = part
     }
+
 
 {-| Update the model, put this function into your subscription.
 The first argument is the seconds that have passed sice the function was called last.
@@ -83,6 +93,7 @@ timePassed sec layout =
             { layout
                 | snackbar = layout.snackbar |> Snackbar.timePassed sec
             }
+
 
 {-| View the layout. Replacement of `Element.layout`.
 -}

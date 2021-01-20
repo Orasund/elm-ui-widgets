@@ -1,20 +1,23 @@
 module Example.List exposing (Model, Msg, init, subscriptions, update, view)
 
+import Browser
 import Element exposing (Element)
 import Widget
 import Widget.Style exposing (ColumnStyle)
 import Widget.Style.Material as Material
-import Browser
+
 
 type alias Style style msg =
     { style
         | cardColumn : ColumnStyle msg
     }
 
+
 materialStyle : Style {} msg
 materialStyle =
     { cardColumn = Material.cardColumn Material.defaultPalette
     }
+
 
 type alias Model =
     ()
@@ -42,8 +45,11 @@ subscriptions : Model -> Sub Msg
 subscriptions () =
     Sub.none
 
+
 {-| You can remove the msgMapper. But by doing so, make sure to also change `msg` to `Msg` in the line below.
---}
+
+
+-}
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
 view _ style () =
     [ Element.text <| "A"
@@ -51,6 +57,7 @@ view _ style () =
     , Element.text <| "C"
     ]
         |> Widget.column style.cardColumn
+
 
 main : Program () Model Msg
 main =

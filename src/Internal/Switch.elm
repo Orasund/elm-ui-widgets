@@ -18,48 +18,47 @@ switch style { onPress, description, active } =
     Input.button
         (style.containerButton
             ++ [ Region.description description
-                , Element.none
+               , Element.none
                     |> Element.el
                         (style.contentInFront.content.container
-                        ++ (
-                        if active then
-                            style.contentInFront.content.ifActive
+                            ++ (if active then
+                                    style.contentInFront.content.ifActive
 
-                        else if onPress == Nothing then
-                            style.contentInFront.content.ifDisabled
+                                else if onPress == Nothing then
+                                    style.contentInFront.content.ifDisabled
 
-                        else
-                            style.contentInFront.content.otherwise
-                        ))
+                                else
+                                    style.contentInFront.content.otherwise
+                               )
+                        )
                     |> Element.el
                         (style.contentInFront.container
-                        ++ (
-                        if active then
-                            style.contentInFront.ifActive
+                            ++ (if active then
+                                    style.contentInFront.ifActive
 
-                        else if onPress == Nothing then
-                            style.contentInFront.ifDisabled
+                                else if onPress == Nothing then
+                                    style.contentInFront.ifDisabled
 
-                        else
-                            style.contentInFront.otherwise
-                        ))
+                                else
+                                    style.contentInFront.otherwise
+                               )
+                        )
                     |> Element.inFront
-                ]
+               ]
         )
         { onPress = onPress
         , label =
             Element.none
                 |> Element.el
-                    ( style.content.container
-                    ++ (
-                        if active then
-                            style.content.ifActive
+                    (style.content.container
+                        ++ (if active then
+                                style.content.ifActive
 
-                        else if onPress == Nothing then
-                            style.content.ifDisabled
+                            else if onPress == Nothing then
+                                style.content.ifDisabled
 
-                        else
-                            style.content.otherwise
-                        )
+                            else
+                                style.content.otherwise
+                           )
                     )
         }

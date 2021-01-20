@@ -54,7 +54,7 @@ view :
     ->
         { title : String
         , description : String
-        , items : List ( String, Element msg, List (Element msg ) )
+        , items : List ( String, Element msg, List (Element msg) )
         }
 view { theme, msgMapper, model } =
     let

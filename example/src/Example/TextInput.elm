@@ -1,17 +1,19 @@
 module Example.TextInput exposing (Model, Msg, init, subscriptions, update, view)
 
+import Browser
 import Element exposing (Element)
 import Set exposing (Set)
 import Widget
 import Widget.Style exposing (ColumnStyle, TextInputStyle)
 import Widget.Style.Material as Material
-import Browser
+
 
 type alias Style style msg =
     { style
         | textInput : TextInputStyle msg
         , column : ColumnStyle msg
     }
+
 
 materialStyle : Style {} msg
 materialStyle =
@@ -109,6 +111,7 @@ view msgMapper style model =
         |> Element.wrappedRow [ Element.spacing 10 ]
     ]
         |> Widget.column style.column
+
 
 main : Program () Model Msg
 main =

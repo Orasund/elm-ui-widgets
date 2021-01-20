@@ -1,11 +1,8 @@
-module Widget.Style exposing
-    ( ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle
-    , SwitchStyle
-    )
+module Widget.Style exposing (ButtonStyle, SwitchStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle)
 
 {-| This module contains style types for every widget.
 
-@docs ButtonStyle,SwitchStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle
+@docs ButtonStyle, SwitchStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle
 
 -}
 
@@ -27,7 +24,7 @@ type alias SwitchStyle msg =
         , ifDisabled : List (Attribute msg)
         , ifActive : List (Attribute msg)
         , otherwise : List (Attribute msg)
-        , content : 
+        , content :
             { container : List (Attribute msg)
             , ifDisabled : List (Attribute msg)
             , ifActive : List (Attribute msg)

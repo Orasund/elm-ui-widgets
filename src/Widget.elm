@@ -1,5 +1,6 @@
 module Widget exposing
     ( Button, TextButton, iconButton, textButton, button
+    , Switch, switch
     , Select, selectButton, select
     , MultiSelect, multiSelect
     , DialogV2, modal, dialog
@@ -10,7 +11,6 @@ module Widget exposing
     , Tab, tab
     , ProgressIndicator, circularProgressIndicator
     , Dialog, ExpansionPanel
-    , Switch, switch
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -248,6 +248,7 @@ type alias Switch msg =
     , onPress : Maybe msg
     , active : Bool
     }
+
 
 {-| A boolean switch
 -}

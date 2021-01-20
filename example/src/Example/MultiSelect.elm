@@ -1,11 +1,12 @@
 module Example.MultiSelect exposing (Model, Msg, init, subscriptions, update, view)
 
+import Browser
 import Element exposing (Element)
 import Set exposing (Set)
 import Widget
 import Widget.Style exposing (ButtonStyle, RowStyle)
 import Widget.Style.Material as Material
-import Browser
+
 
 type alias Style style msg =
     { style
@@ -13,11 +14,13 @@ type alias Style style msg =
         , selectButton : ButtonStyle msg
     }
 
+
 materialStyle : Style {} msg
 materialStyle =
     { buttonRow = Material.buttonRow
     , selectButton = Material.toggleButton Material.defaultPalette
     }
+
 
 type Model
     = Selected (Set Int)
@@ -54,8 +57,11 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.none
 
+
 {-| You can remove the msgMapper. But by doing so, make sure to also change `msg` to `Msg` in the line below.
---}
+
+
+-}
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
 view msgMapper style (Selected selected) =
     { selected = selected
@@ -74,6 +80,7 @@ view msgMapper style (Selected selected) =
             { list = style.buttonRow
             , button = style.selectButton
             }
+
 
 main : Program () Model Msg
 main =

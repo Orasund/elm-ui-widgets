@@ -32,7 +32,7 @@ snackbar style addSnackbar =
             }
       ]
         |> Element.column Grid.simple
-    ,[]
+    , []
     )
 
 
@@ -46,7 +46,7 @@ scrollingNavCard _ =
     )
 
 
-layout : Style msg -> ( String, Element msg, List(Element msg) )
+layout : Style msg -> ( String, Element msg, List (Element msg) )
 layout _ =
     ( "Layout"
     , Element.text "The layout combines the menu bar, both side bar, the dialog window and the snackbar. Try using all of them and also try resizing the window to see how they interact with each other."

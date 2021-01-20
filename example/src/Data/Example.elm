@@ -3,7 +3,6 @@ module Data.Example exposing (Example, Model, Msg, asList, fromString, init, sub
 import Data.Style exposing (Style)
 import Element exposing (Element)
 import Example.Button as Button
-import Example.Switch as Switch
 import Example.Dialog as Dialog
 import Example.ExpansionPanel as ExpansionPanel
 import Example.List as List
@@ -12,6 +11,7 @@ import Example.MultiSelect as MultiSelect
 import Example.ProgressIndicator as ProgressIndicator
 import Example.Select as Select
 import Example.SortTable as SortTable
+import Example.Switch as Switch
 import Example.Tab as Tab
 import Example.TextInput as TextInput
 import Framework.Grid as Grid
@@ -56,7 +56,7 @@ toString example =
     case example of
         ButtonExample ->
             "Button"
-        
+
         SwitchExample ->
             "Switch"
 
@@ -96,7 +96,7 @@ fromString string =
     case string of
         "Button" ->
             Just ButtonExample
-        
+
         "Switch" ->
             Just SwitchExample
 
@@ -139,7 +139,7 @@ get example =
     case example of
         ButtonExample ->
             .button
-        
+
         SwitchExample ->
             .switch
 
@@ -179,7 +179,7 @@ toTests example =
     case example of
         ButtonExample ->
             Test.button
-        
+
         SwitchExample ->
             Test.switch
 
@@ -291,7 +291,7 @@ init =
     let
         ( buttonModel, buttonMsg ) =
             Button.init
-        
+
         ( switchModel, switchMsg ) =
             Switch.init
 
@@ -449,7 +449,7 @@ update msg model =
     (case msg of
         Button m ->
             updateField .button m
-        
+
         Switch m ->
             updateField .switch m
 
@@ -547,7 +547,7 @@ toCardList :
     , style : Style msg
     , model : Model
     }
-    -> List ( String, Element msg, List (Element msg ) )
+    -> List ( String, Element msg, List (Element msg) )
 toCardList { idle, msgMapper, style, model } =
     asList
         |> List.map

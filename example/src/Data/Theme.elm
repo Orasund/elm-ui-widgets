@@ -3,9 +3,10 @@ module Data.Theme exposing (Theme(..), toStyle)
 import Data.Style exposing (Style)
 import Data.Style.ElmUiFramework
 import Data.Style.Material
+import Data.Style.SemanticUI
 import Data.Style.Template
 import Widget.Style.Material
-import Data.Style.SemanticUI
+
 
 type Theme
     = Template

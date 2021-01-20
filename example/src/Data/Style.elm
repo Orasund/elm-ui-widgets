@@ -10,9 +10,9 @@ import Widget.Style
         , ProgressIndicatorStyle
         , RowStyle
         , SortTableStyle
+        , SwitchStyle
         , TabStyle
         , TextInputStyle
-        , SwitchStyle
         )
 
 
