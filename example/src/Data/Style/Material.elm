@@ -34,7 +34,6 @@ sortTable palette =
         , ascIcon = Icons.chevronUp |> Element.html |> Element.el []
         , descIcon = Icons.chevronDown |> Element.html |> Element.el []
         , defaultIcon = Element.none
-
         }
     }
 

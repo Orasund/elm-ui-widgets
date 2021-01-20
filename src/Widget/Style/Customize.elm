@@ -54,6 +54,7 @@ Widget.textButton
 
 @docs containerTextInput, mapContainerTextInput
 
+
 # Content
 
 @docs content, mapContent
@@ -62,17 +63,19 @@ Widget.textButton
 
 @docs contentInFront, mapContentInFront
 
+
 # Conditional Styling
 
 @docs otherwise, mapOtherwise
 
 @docs ifActive, mapIfActive
 
-@docs ifDisabled, mapIfDisabled 
+@docs ifDisabled, mapIfDisabled
 
-@docs ifFirst, mapIfFirst 
+@docs ifFirst, mapIfFirst
 
-@docs ifLast, mapIfLast 
+@docs ifLast, mapIfLast
+
 -}
 
 --------------------------------------------------------------------------------
@@ -144,6 +147,7 @@ mapContainerTable fun a =
         | containerTable = fun a.containerTable
     }
 
+
 containerTextInput : List b -> { a | containerTextInput : List b } -> { a | containerTextInput : List b }
 containerTextInput list a =
     a
@@ -155,6 +159,7 @@ mapContainerTextInput fun a =
     { a
         | containerTextInput = fun a.containerTextInput
     }
+
 
 
 --------------------------------------------------------------------------------
@@ -174,6 +179,7 @@ mapContent fun a =
         | content = fun a.content
     }
 
+
 contentText : List b -> { a | contentText : List b } -> { a | contentText : List b }
 contentText list a =
     a
@@ -185,7 +191,8 @@ mapContentText fun a =
     { a
         | contentText = fun a.contentText
     }
-  
+
+
 contentInFront : List b -> { a | contentInFront : List b } -> { a | contentInFront : List b }
 contentInFront list a =
     a
@@ -198,25 +205,31 @@ mapContentInFront fun a =
         | contentInFront = fun a.contentInFront
     }
 
+
+
 --------------------------------------------------------------------------------
 -- Conditional Styling
 --------------------------------------------------------------------------------
 
-otherwise  : List b -> { a | otherwise  : List b } -> { a | otherwise  : List b }
-otherwise  list a =
+
+otherwise : List b -> { a | otherwise : List b } -> { a | otherwise : List b }
+otherwise list a =
     a
         |> mapOtherwise (\b -> b ++ list)
 
-mapOtherwise  : (b -> b) -> { a | otherwise  : b } -> { a | otherwise  : b }
+
+mapOtherwise : (b -> b) -> { a | otherwise : b } -> { a | otherwise : b }
 mapOtherwise fun a =
     { a
-        | otherwise  = fun a.otherwise 
+        | otherwise = fun a.otherwise
     }
+
 
 ifActive : List b -> { a | ifActive : List b } -> { a | ifActive : List b }
 ifActive list a =
     a
         |> mapIfActive (\b -> b ++ list)
+
 
 mapIfActive : (b -> b) -> { a | ifActive : b } -> { a | ifActive : b }
 mapIfActive fun a =
@@ -224,10 +237,12 @@ mapIfActive fun a =
         | ifActive = fun a.ifActive
     }
 
+
 ifDisabled : List b -> { a | ifDisabled : List b } -> { a | ifDisabled : List b }
 ifDisabled list a =
     a
         |> mapIfDisabled (\b -> b ++ list)
+
 
 mapIfDisabled : (b -> b) -> { a | ifDisabled : b } -> { a | ifDisabled : b }
 mapIfDisabled fun a =
@@ -235,10 +250,12 @@ mapIfDisabled fun a =
         | ifDisabled = fun a.ifDisabled
     }
 
+
 ifFirst : List b -> { a | ifFirst : List b } -> { a | ifFirst : List b }
 ifFirst list a =
     a
         |> mapIfFirst (\b -> b ++ list)
+
 
 mapIfFirst : (b -> b) -> { a | ifFirst : b } -> { a | ifFirst : b }
 mapIfFirst fun a =
@@ -246,14 +263,15 @@ mapIfFirst fun a =
         | ifFirst = fun a.ifFirst
     }
 
+
 ifLast : List b -> { a | ifLast : List b } -> { a | ifLast : List b }
 ifLast list a =
     a
         |> mapIfLast (\b -> b ++ list)
+
 
 mapIfLast : (b -> b) -> { a | ifLast : b } -> { a | ifLast : b }
 mapIfLast fun a =
     { a
         | ifLast = fun a.ifLast
     }
-

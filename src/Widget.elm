@@ -374,9 +374,8 @@ dialog :
     -> List (Attribute msg)
 dialog =
     let
-
         fun : DialogStyle msg -> Dialog msg -> List (Attribute msg)
-        fun  =
+        fun =
             Dialog.dialog
     in
     fun
@@ -386,9 +385,6 @@ dialog =
 {----------------------------------------------------------
 - EXPANSION PANEL
 ----------------------------------------------------------}
-
-
-
 
 
 {-| Expansion Panel widget type

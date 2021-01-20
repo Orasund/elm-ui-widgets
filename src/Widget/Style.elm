@@ -1,4 +1,4 @@
-module Widget.Style exposing ( ButtonStyle, SwitchStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle)
+module Widget.Style exposing (ButtonStyle, SwitchStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle)
 
 {-| This module contains style types for every widget.
 
@@ -33,6 +33,7 @@ type alias SwitchStyle msg =
         }
     }
 
+
 {-| -}
 type alias ButtonStyle msg =
     { containerButton : List (Attribute msg)
@@ -46,12 +47,11 @@ type alias ButtonStyle msg =
     }
 
 
-
 {-| -}
 type alias DialogStyle msg =
     { containerColumn : List (Attribute msg)
     , content :
-        { title : 
+        { title :
             { contentText : List (Attribute msg)
             }
         , text :
@@ -66,8 +66,6 @@ type alias DialogStyle msg =
             }
         }
     }
-
-
 
 
 {-| Technical Remark:
@@ -88,7 +86,7 @@ type alias ExpansionPanelStyle msg =
                 , expandIcon : Element Never
                 , collapseIcon : Element Never
                 }
-            } 
+            }
         , content :
             { container : List (Attribute msg)
             }
@@ -126,7 +124,7 @@ type alias TextInputStyle msg =
 {-| -}
 type alias TabStyle msg =
     { containerColumn : List (Attribute msg)
-    , content : 
+    , content :
         { tabs :
             { containerRow : List (Attribute msg)
             , content : ButtonStyle msg
@@ -202,4 +200,3 @@ type alias LayoutStyle msg =
 type alias ProgressIndicatorStyle msg =
     { containerFunction : Maybe Float -> Element msg
     }
-

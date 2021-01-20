@@ -192,27 +192,25 @@ toSelect onSelect ({ arrangement, toString, fromString } as model) =
 
 This might be useful at first, but you should consider writing your own view function.
 
-```
-view :
-    (section -> Element msg)
-    -> Model section
-    -> List (Element msg)
-view asElement { toString, arrangement } =
-    arrangement
-        |> List.map
-            (\header ->
-                Element.el
-                    [ header
-                        |> toString
-                        |> Attributes.id
-                        |> Element.htmlAttribute
-                    , Element.width <| Element.fill
-                    ]
-                <|
-                    asElement <|
-                        header
-            )
-```
+    view :
+        (section -> Element msg)
+        -> Model section
+        -> List (Element msg)
+    view asElement { toString, arrangement } =
+        arrangement
+            |> List.map
+                (\header ->
+                    Element.el
+                        [ header
+                            |> toString
+                            |> Attributes.id
+                            |> Element.htmlAttribute
+                        , Element.width <| Element.fill
+                        ]
+                    <|
+                        asElement <|
+                            header
+                )
 
 -}
 view :

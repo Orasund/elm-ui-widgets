@@ -6,6 +6,7 @@ import Internal.Select as Select
 import Widget.Style exposing (ButtonStyle, ColumnStyle, RowStyle)
 import Widget.Style.Customize as Customize
 
+
 internal :
     { list
         | content : List (Attribute msg)
@@ -66,18 +67,19 @@ internalButton style list =
                     (style.button
                         |> Customize.containerButton
                             (style.list.content
-                            ++ (if List.length list == 1 then
-                                    []
+                                ++ (if List.length list == 1 then
+                                        []
 
-                                else if i == 0 then
-                                    style.list.ifFirst
+                                    else if i == 0 then
+                                        style.list.ifFirst
 
-                                else if i == (List.length list - 1) then
-                                    style.list.ifLast
+                                    else if i == (List.length list - 1) then
+                                        style.list.ifLast
 
-                                else
-                                    style.list.otherwise
-                               ))
+                                    else
+                                        style.list.otherwise
+                                   )
+                            )
                     )
             )
 
