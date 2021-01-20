@@ -35,7 +35,7 @@ selectButton :
     -> Element msg
 selectButton style ( selected, b ) =
     Input.button
-        (style.container
+        (style.containerButton
             ++ (if b.onPress == Nothing then
                     style.ifDisabled
 
@@ -48,9 +48,9 @@ selectButton style ( selected, b ) =
         )
         { onPress = b.onPress
         , label =
-            Element.row style.labelRow
+            Element.row style.content.containerRow
                 [ b.icon |> Element.map never
-                , Element.text b.text |> Element.el style.text
+                , Element.text b.text |> Element.el style.content.contentText
                 ]
         }
 

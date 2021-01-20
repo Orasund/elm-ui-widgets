@@ -138,18 +138,18 @@ sortTable style model =
                 |> List.map
                     (\(Column column) ->
                         { header =
-                            Button.button style.headerButton
+                            Button.button style.content.header
                                 { text = column.title
                                 , icon =
                                     if column.title == model.sortBy then
                                         if model.asc then
-                                            style.ascIcon
+                                            style.content.ascIcon
 
                                         else
-                                            style.descIcon
+                                            style.content.descIcon
 
                                     else
-                                        style.defaultIcon
+                                        style.content.defaultIcon
                                 , onPress =
                                     case column.content of
                                         UnsortableColumn _ ->

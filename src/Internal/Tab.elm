@@ -15,10 +15,10 @@ tab : TabStyle msg -> Tab msg -> Element msg
 tab style { tabs, content } =
     [ tabs
         |> Select.select
-        |> List.map (Select.selectButton style.button)
-        |> Element.row style.optionRow
+        |> List.map (Select.selectButton style.content.tabs.content)
+        |> Element.row style.content.tabs.containerRow
     , tabs.selected
         |> content
-        |> Element.el style.content
+        |> Element.el style.content.content
     ]
         |> Element.column style.containerColumn

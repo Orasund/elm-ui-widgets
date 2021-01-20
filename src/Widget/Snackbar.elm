@@ -19,13 +19,13 @@ A [snackbar](https://material.io/components/snackbars/) shows notification, one 
 
 @docs insert, insertFor, dismiss
 
+
 -}
 
 import Element exposing (Element)
 import Queue exposing (Queue)
 import Widget exposing (TextButton)
 import Widget.Style exposing (SnackbarStyle)
-
 
 {-| A message with maybe some action button
 -}
@@ -108,7 +108,6 @@ current : Snackbar a -> Maybe a
 current model =
     model.current |> Maybe.map Tuple.first
 
-
 {-| Views the current Message. (only one at a time)
 -}
 view :
@@ -125,12 +124,13 @@ view style toMessage model =
                         [ text
                             |> Element.text
                             |> List.singleton
-                            |> Element.paragraph style.text
+                            |> Element.paragraph style.content.text.containerText
                         , button
                             |> Maybe.map
-                                (Widget.textButton style.button)
+                                (Widget.textButton style.content.button)
                             |> Maybe.withDefault Element.none
                         ]
                             |> Element.row style.containerRow
                    )
             )
+

@@ -4,11 +4,11 @@ import Element exposing (Attribute, Element)
 import Internal.Button exposing (Button)
 import Internal.Select as Select
 import Widget.Style exposing (ButtonStyle, ColumnStyle, RowStyle)
-
+import Widget.Style.Customize as Customize
 
 internal :
     { list
-        | element : List (Attribute msg)
+        | content : List (Attribute msg)
         , ifFirst : List (Attribute msg)
         , ifLast : List (Attribute msg)
         , otherwise : List (Attribute msg)
@@ -20,7 +20,7 @@ internal style list =
         |> List.indexedMap
             (\i ->
                 Element.el <|
-                    style.element
+                    style.content
                         ++ (if List.length list == 1 then
                                 []
 
@@ -49,7 +49,7 @@ column style =
 internalButton :
     { list :
         { list
-            | element : List (Attribute msg)
+            | content : List (Attribute msg)
             , ifFirst : List (Attribute msg)
             , ifLast : List (Attribute msg)
             , otherwise : List (Attribute msg)
@@ -63,9 +63,9 @@ internalButton style list =
         |> List.indexedMap
             (\i ->
                 Select.selectButton
-                    { container =
-                        style.button.container
-                            ++ style.list.element
+                    (style.button
+                        |> Customize.containerButton
+                            (style.list.content
                             ++ (if List.length list == 1 then
                                     []
 
@@ -77,18 +77,8 @@ internalButton style list =
 
                                 else
                                     style.list.otherwise
-                               )
-                    , labelRow =
-                        style.button.labelRow
-                    , text =
-                        style.button.text
-                    , ifDisabled =
-                        style.button.ifDisabled
-                    , ifActive =
-                        style.button.ifActive
-                    , otherwise =
-                        style.button.otherwise
-                    }
+                               ))
+                    )
             )
 
 

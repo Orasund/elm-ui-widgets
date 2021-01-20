@@ -3,14 +3,13 @@ module Widget exposing
     , Switch, switch
     , Select, selectButton, select
     , MultiSelect, multiSelect
-    , DialogV2, modal, dialog
-    , ExpansionPanelV2, expansionPanel
+    , Dialog, modal, dialog
+    , ExpansionPanel, expansionPanel
     , row, column, buttonRow, buttonColumn
     , SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInput, textInput
     , Tab, tab
     , ProgressIndicator, circularProgressIndicator
-    , Dialog, ExpansionPanel
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -73,7 +72,7 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5Rdz625TZa1)
 
-@docs DialogV2, modal, dialog
+@docs Dialog, modal, dialog
 
 
 # Expansion Panel
@@ -82,7 +81,7 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5Rv5jfVdFa1)
 
-@docs ExpansionPanelV2, expansionPanel
+@docs ExpansionPanel, expansionPanel
 
 
 # List
@@ -128,11 +127,6 @@ You can create you own widgets by sticking widgets types together.
 [Open in Ellie](https://ellie-app.com/c47GJktH2bqa1)
 
 @docs ProgressIndicator, circularProgressIndicator
-
-
-# DEPRECATED
-
-@docs Dialog, ExpansionPanel
 
 -}
 
@@ -345,22 +339,9 @@ multiSelect =
 ----------------------------------------------------------}
 
 
-{-| DEPRECATED
-
-Use `DialogV2` instead
-
--}
-type alias Dialog msg =
-    { title : Maybe String
-    , body : Element msg
-    , accept : Maybe (TextButton msg)
-    , dismiss : Maybe (TextButton msg)
-    }
-
-
 {-| Dialog widget type
 -}
-type alias DialogV2 msg =
+type alias Dialog msg =
     { title : Maybe String
     , text : String
     , accept : Maybe (TextButton msg)
@@ -393,8 +374,9 @@ dialog :
     -> List (Attribute msg)
 dialog =
     let
-        fun : DialogStyle msg -> DialogV2 msg -> List (Attribute msg)
-        fun =
+
+        fun : DialogStyle msg -> Dialog msg -> List (Attribute msg)
+        fun  =
             Dialog.dialog
     in
     fun
@@ -406,25 +388,12 @@ dialog =
 ----------------------------------------------------------}
 
 
-{-| DEPRECATED
 
-Use `ExpansionPanelV2` instead
-
--}
-type alias ExpansionPanel msg =
-    { onToggle : Bool -> msg
-    , icon : Element Never
-    , text : String
-    , expandIcon : Element Never
-    , collapseIcon : Element Never
-    , content : Element msg
-    , isExpanded : Bool
-    }
 
 
 {-| Expansion Panel widget type
 -}
-type alias ExpansionPanelV2 msg =
+type alias ExpansionPanel msg =
     { onToggle : Bool -> msg
     , icon : Element Never
     , text : String
@@ -447,7 +416,7 @@ expansionPanel :
     -> Element msg
 expansionPanel =
     let
-        fun : ExpansionPanelStyle msg -> ExpansionPanelV2 msg -> Element msg
+        fun : ExpansionPanelStyle msg -> ExpansionPanel msg -> Element msg
         fun =
             ExpansionPanel.expansionPanel
     in
@@ -617,7 +586,7 @@ stringColumn =
     SortTable.stringColumn
 
 
-{-| The View
+{-| A Table where the rows can be sorted by columns
 -}
 sortTable :
     SortTableStyle msg

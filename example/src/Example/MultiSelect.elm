@@ -86,7 +86,7 @@ main : Program () Model Msg
 main =
     Browser.element
         { init = always init
-        , view = view identity materialStyle >> Element.layout []
+        , view = \model -> model |> view identity materialStyle |> Element.layout []
         , update = update
         , subscriptions = subscriptions
         }

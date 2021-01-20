@@ -184,6 +184,7 @@ import Widget.Style
         , TabStyle
         , TextInputStyle
         )
+import Widget.Style.Customize as Customize
 import Widget.Style.Material.Color as MaterialColor
 import Widget.Style.Material.Typography as Typography
 
@@ -290,23 +291,25 @@ textAndBackground color =
 
 baseButton : Palette -> ButtonStyle msg
 baseButton _ =
-    { container =
+    { containerButton =
         Typography.button
             ++ [ Element.height <| Element.px 36
                , Element.paddingXY 8 8
                , Border.rounded <| 4
                ]
-    , labelRow =
-        [ Element.spacing <| 8
-        , Element.width <| Element.minimum 32 <| Element.shrink
-        , Element.centerY
-        ]
-    , text = [ Element.centerX ]
     , ifDisabled =
         [ Element.htmlAttribute <| Attributes.style "cursor" "not-allowed"
         ]
     , ifActive = []
     , otherwise = []
+    , content =
+        { containerRow =
+            [ Element.spacing <| 8
+            , Element.width <| Element.minimum 32 <| Element.shrink
+            , Element.centerY
+            ]
+        , contentText = [ Element.centerX ]
+        }
     }
 
 
@@ -314,8 +317,8 @@ baseButton _ =
 -}
 containedButton : Palette -> ButtonStyle msg
 containedButton palette =
-    { container =
-        (baseButton palette |> .container)
+    { containerButton =
+        (baseButton palette |> .containerButton)
             ++ [ Border.shadow <| MaterialColor.shadow 2
                , Element.mouseDown <|
                     [ palette.primary
@@ -339,11 +342,6 @@ containedButton palette =
                     , Border.shadow <| MaterialColor.shadow 6
                     ]
                ]
-    , labelRow =
-        (baseButton palette |> .labelRow)
-            ++ [ Element.paddingXY 8 0
-               ]
-    , text = baseButton palette |> .text
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
             ++ [ MaterialColor.gray
@@ -375,6 +373,12 @@ containedButton palette =
             |> fromColor
             |> Font.color
         ]
+    , content =
+        { containerRow =
+            (baseButton palette |> .content |> .containerRow)
+                ++ [ Element.paddingXY 8 0 ]
+        , contentText = baseButton palette |> .content |> .contentText
+        }
     }
 
 
@@ -382,8 +386,8 @@ containedButton palette =
 -}
 outlinedButton : Palette -> ButtonStyle msg
 outlinedButton palette =
-    { container =
-        (baseButton palette |> .container)
+    { containerButton =
+        (baseButton palette |> .containerButton)
             ++ [ Border.width <| 1
                , Font.color <| fromColor <| palette.primary
                , palette.on.surface
@@ -410,11 +414,6 @@ outlinedButton palette =
                         |> Background.color
                     ]
                ]
-    , labelRow =
-        (baseButton palette |> .labelRow)
-            ++ [ Element.paddingXY 8 0
-               ]
-    , text = baseButton palette |> .text
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
             ++ [ MaterialColor.gray
@@ -432,6 +431,18 @@ outlinedButton palette =
         ]
     , otherwise =
         []
+    , content =
+        { containerRow =
+            (baseButton palette
+                |> .content
+                |> .containerRow
+            )
+                ++ [ Element.paddingXY 8 0 ]
+        , contentText =
+            baseButton palette
+                |> .content
+                |> .contentText
+        }
     }
 
 
@@ -439,8 +450,8 @@ outlinedButton palette =
 -}
 textButton : Palette -> ButtonStyle msg
 textButton palette =
-    { container =
-        (baseButton palette |> .container)
+    { containerButton =
+        (baseButton palette |> .containerButton)
             ++ [ Font.color <| fromColor <| palette.primary
                , Element.mouseDown
                     [ palette.primary
@@ -461,8 +472,6 @@ textButton palette =
                         |> Background.color
                     ]
                ]
-    , labelRow = baseButton palette |> .labelRow
-    , text = baseButton palette |> .text
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
             ++ [ MaterialColor.gray
@@ -480,6 +489,10 @@ textButton palette =
         ]
     , otherwise =
         []
+    , content =
+        { containerRow = baseButton palette |> .content |> .containerRow
+        , contentText = baseButton palette |> .content |> .contentText
+        }
     }
 
 
@@ -496,7 +509,7 @@ Technical Remark:
 -}
 toggleButton : Palette -> ButtonStyle msg
 toggleButton palette =
-    { container =
+    { containerButton =
         Typography.button
             ++ [ Element.width <| Element.px 48
                , Element.height <| Element.px 48
@@ -526,19 +539,6 @@ toggleButton palette =
                         |> Border.color
                     ]
                ]
-    , labelRow =
-        [ Element.spacing <| 8
-        , Element.height Element.fill
-        , Element.width Element.fill
-        , Border.rounded 24
-        , Element.padding 8
-        , Element.focused <|
-            (palette.surface
-                |> MaterialColor.withShade palette.on.surface MaterialColor.buttonFocusOpacity
-                |> textAndBackground
-            )
-        ]
-    , text = [ Element.centerX ]
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
             ++ [ palette.surface
@@ -583,6 +583,21 @@ toggleButton palette =
             |> fromColor
             |> Border.color
         ]
+    , content =
+        { containerRow =
+            [ Element.spacing <| 8
+            , Element.height Element.fill
+            , Element.width Element.fill
+            , Border.rounded 24
+            , Element.padding 8
+            , Element.focused <|
+                (palette.surface
+                    |> MaterialColor.withShade palette.on.surface MaterialColor.buttonFocusOpacity
+                    |> textAndBackground
+                )
+            ]
+        , contentText = [ Element.centerX ]
+        }
     }
 
 
@@ -595,8 +610,8 @@ Technical Remark:
 -}
 iconButton : Palette -> ButtonStyle msg
 iconButton palette =
-    { container =
-        (baseButton palette |> .container)
+    { containerButton =
+        (baseButton palette |> .containerButton)
             ++ [ Element.height <| Element.px 48
                , Border.rounded 24
                , Element.mouseDown
@@ -618,13 +633,6 @@ iconButton palette =
                         |> Background.color
                     ]
                ]
-    , labelRow =
-        [ Element.spacing 8
-        , Element.width <| Element.shrink
-        , Element.centerY
-        , Element.centerX
-        ]
-    , text = baseButton palette |> .text
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
             ++ [ MaterialColor.gray
@@ -642,6 +650,15 @@ iconButton palette =
         ]
     , otherwise =
         []
+    , content =
+        { containerRow =
+            [ Element.spacing 8
+            , Element.width <| Element.shrink
+            , Element.centerY
+            , Element.centerX
+            ]
+        , contentText = baseButton palette |> .content |> .contentText
+        }
     }
 
 
@@ -799,7 +816,7 @@ Technical Remark:
 -}
 chip : Palette -> ButtonStyle msg
 chip palette =
-    { container =
+    { containerButton =
         [ Element.height <| Element.px 32
         , Element.paddingEach
             { top = 0
@@ -829,15 +846,6 @@ chip palette =
                 |> fromColor
                 |> Background.color
             ]
-        ]
-    , labelRow = [ Element.spacing 0, Element.centerY ]
-    , text =
-        [ Element.paddingEach
-            { top = 0
-            , right = 0
-            , bottom = 0
-            , left = 8
-            }
         ]
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
@@ -874,6 +882,17 @@ chip palette =
             |> fromColor
             |> Font.color
         ]
+    , content =
+        { containerRow = [ Element.spacing 0, Element.centerY ]
+        , contentText =
+            [ Element.paddingEach
+                { top = 0
+                , right = 0
+                , bottom = 0
+                , left = 8
+                }
+            ]
+        }
     }
 
 
@@ -891,7 +910,7 @@ row =
         [ Element.paddingXY 0 8
         , Element.spacing 8
         ]
-    , element = []
+    , content = []
     , ifFirst = []
     , ifLast = []
     , otherwise = []
@@ -906,7 +925,7 @@ column =
         [ Element.paddingXY 0 8
         , Element.spacing 8
         ]
-    , element = []
+    , content = []
     , ifFirst = []
     , ifLast = []
     , otherwise = []
@@ -921,7 +940,7 @@ Only use in combination with `toggleButton`
 buttonRow : RowStyle msg
 buttonRow =
     { containerRow = []
-    , element =
+    , content =
         [ Border.rounded 2
         ]
     , ifFirst =
@@ -963,7 +982,7 @@ cardColumn palette =
         , Element.alignTop
         , Border.rounded 4
         ]
-    , element =
+    , content =
         [ Element.padding 16
         , Border.rounded 4
         , Border.width 1
@@ -1033,16 +1052,26 @@ alertDialog palette =
         , Element.height <| Element.minimum 182 <| Element.shrink
         , Background.color <| fromColor <| palette.surface
         ]
-    , title = Typography.h6 ++ [ Element.paddingXY 24 20 ]
-    , text = [ Element.paddingXY 24 0 ]
-    , buttonRow =
-        [ Element.paddingXY 8 8
-        , Element.spacing 8
-        , Element.alignRight
-        , Element.alignBottom
-        ]
-    , acceptButton = containedButton palette
-    , dismissButton = textButton palette
+    , content =
+        { title =
+            { contentText = Typography.h6 ++ [ Element.paddingXY 24 20 ]
+            }
+        , text =
+            { contentText = [ Element.paddingXY 24 0 ]
+            }
+        , buttons =
+            { containerRow =
+                [ Element.paddingXY 8 8
+                , Element.spacing 8
+                , Element.alignRight
+                , Element.alignBottom
+                ]
+            , content =
+                { accept = containedButton palette
+                , dismiss = textButton palette
+                }
+            }
+        }
     }
 
 
@@ -1096,31 +1125,39 @@ expansionPanel palette =
         [ Background.color <| fromColor <| palette.surface
         , Element.width <| Element.fill
         ]
-    , panelRow =
-        [ Element.height <| Element.px 48
-        , Element.spaceEvenly
-        , Element.padding 14
-        , Element.width <| Element.fill
-        ]
-    , labelRow =
-        [ Element.spacing 32
-        ]
     , content =
-        [ Element.padding 14 ]
-    , expandIcon =
-        expand_more
-            |> Element.el
-                [ MaterialColor.gray
-                    |> fromColor
-                    |> Font.color
+        { panel =
+            { containerRow =
+                [ Element.height <| Element.px 48
+                , Element.spaceEvenly
+                , Element.padding 14
+                , Element.width <| Element.fill
                 ]
-    , collapseIcon =
-        expand_less
-            |> Element.el
-                [ MaterialColor.gray
-                    |> fromColor
-                    |> Font.color
-                ]
+            , content =
+                { label =
+                    { containerRow =
+                        [ Element.spacing 32 ]
+                    }
+                , expandIcon =
+                    expand_more
+                        |> Element.el
+                            [ MaterialColor.gray
+                                |> fromColor
+                                |> Font.color
+                            ]
+                , collapseIcon =
+                    expand_less
+                        |> Element.el
+                            [ MaterialColor.gray
+                                |> fromColor
+                                |> Font.color
+                            ]
+                }
+            }
+        , content =
+            { container = [ Element.padding 14 ]
+            }
+        }
     }
 
 
@@ -1272,23 +1309,22 @@ snackbar palette =
         , Element.spacing 8
         , Border.shadow <| MaterialColor.shadow 2
         ]
-    , text =
-        [ Element.centerX
-        , Element.paddingXY 10 8
-        ]
-    , button =
-        textButton palette
-            |> (\b ->
-                    { b
-                        | container =
-                            b.container
-                                ++ [ MaterialColor.dark
-                                        |> MaterialColor.accessibleWithTextColor palette.primary
-                                        |> fromColor
-                                        |> Font.color
-                                   ]
-                    }
-               )
+    , content =
+        { text =
+            { containerText =
+                [ Element.centerX
+                , Element.paddingXY 10 8
+                ]
+            }
+        , button =
+            textButton palette
+                |> Customize.containerButton
+                    [ MaterialColor.dark
+                        |> MaterialColor.accessibleWithTextColor palette.primary
+                        |> fromColor
+                        |> Font.color
+                    ]
+        }
     }
 
 
@@ -1307,9 +1343,7 @@ Technical Remark:
 -}
 textInput : Palette -> TextInputStyle msg
 textInput palette =
-    { chipButton = chip palette
-    , chipsRow = [ Element.spacing 8 ]
-    , containerRow =
+    { containerRow =
         (palette.surface
             |> textAndBackground
         )
@@ -1329,14 +1363,22 @@ textInput palette =
                     ]
                , Element.mouseOver [ Border.shadow <| MaterialColor.shadow 2 ]
                ]
-    , input =
-        (palette.surface
-            |> textAndBackground
-        )
-            ++ [ Border.width 0
-               , Element.mouseOver []
-               , Element.focused []
-               ]
+    , content =
+        { chips =
+            { containerRow = [ Element.spacing 8 ]
+            , content = chip palette
+            }
+        , text =
+            { containerTextInput =
+                (palette.surface
+                    |> textAndBackground
+                )
+                    ++ [ Border.width 0
+                       , Element.mouseOver []
+                       , Element.focused []
+                       ]
+            }
+        }
     }
 
 
@@ -1357,7 +1399,7 @@ Technical Remark:
 -}
 tabButton : Palette -> ButtonStyle msg
 tabButton palette =
-    { container =
+    { containerButton =
         Typography.button
             ++ [ Element.height <| Element.px 48
                , Element.fill
@@ -1385,12 +1427,6 @@ tabButton palette =
                         |> Background.color
                     ]
                ]
-    , labelRow =
-        [ Element.spacing <| 8
-        , Element.centerY
-        , Element.centerX
-        ]
-    , text = []
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
             ++ [ MaterialColor.gray
@@ -1411,6 +1447,14 @@ tabButton palette =
         ]
     , otherwise =
         []
+    , content =
+        { containerRow =
+            [ Element.spacing <| 8
+            , Element.centerY
+            , Element.centerX
+            ]
+        , contentText = []
+        }
     }
 
 
@@ -1418,15 +1462,19 @@ tabButton palette =
 -}
 tab : Palette -> TabStyle msg
 tab palette =
-    { button = tabButton palette
-    , optionRow =
-        [ Element.spaceEvenly
-        , Border.shadow <| MaterialColor.shadow 4
-        , Element.spacing 8
-        , Element.width <| Element.fill
-        ]
-    , containerColumn = [ Element.spacing 8, Element.width <| Element.fill ]
-    , content = [ Element.width <| Element.fill ]
+    { containerColumn = [ Element.spacing 8, Element.width <| Element.fill ]
+    , content =
+        { tabs =
+            { containerRow =
+                [ Element.spaceEvenly
+                , Border.shadow <| MaterialColor.shadow 4
+                , Element.spacing 8
+                , Element.width <| Element.fill
+                ]
+            , content = tabButton palette
+            }
+        , content = [ Element.width <| Element.fill ]
+        }
     }
 
 
@@ -1453,7 +1501,7 @@ menu =
 
 menuTabButton : Palette -> ButtonStyle msg
 menuTabButton palette =
-    { container =
+    { containerButton =
         Typography.button
             ++ [ Element.height <| Element.px 56
                , Element.fill
@@ -1485,12 +1533,6 @@ menuTabButton palette =
                         |> Background.color
                     ]
                ]
-    , labelRow =
-        [ Element.spacing <| 8
-        , Element.centerY
-        , Element.centerX
-        ]
-    , text = []
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
             ++ [ MaterialColor.gray
@@ -1510,12 +1552,20 @@ menuTabButton palette =
         ]
     , otherwise =
         []
+    , content =
+        { containerRow =
+            [ Element.spacing <| 8
+            , Element.centerY
+            , Element.centerX
+            ]
+        , contentText = []
+        }
     }
 
 
 drawerButton : Palette -> ButtonStyle msg
 drawerButton palette =
-    { container =
+    { containerButton =
         [ Font.size 14
         , Font.semiBold
         , Font.letterSpacing 0.25
@@ -1546,8 +1596,6 @@ drawerButton palette =
                 |> Background.color
             ]
         ]
-    , labelRow = baseButton palette |> .labelRow
-    , text = baseButton palette |> .text
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
             ++ [ MaterialColor.gray
@@ -1568,6 +1616,10 @@ drawerButton palette =
         ]
     , otherwise =
         []
+    , content =
+        { containerRow = baseButton palette |> .content |> .containerRow
+        , contentText = baseButton palette |> .content |> .contentText
+        }
     }
 
 

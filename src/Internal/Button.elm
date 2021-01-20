@@ -28,7 +28,7 @@ type alias TextButton msg =
 iconButton : ButtonStyle msg -> Button msg -> Element msg
 iconButton style { onPress, text, icon } =
     Input.button
-        (style.container
+        (style.containerButton
             ++ (if onPress == Nothing then
                     style.ifDisabled
 
@@ -38,7 +38,7 @@ iconButton style { onPress, text, icon } =
             ++ [ Region.description text ]
         )
         { onPress = onPress
-        , label = icon |> Element.map never |> Element.el style.labelRow
+        , label = icon |> Element.map never |> Element.el style.content.containerRow
         }
 
 
@@ -57,7 +57,7 @@ button :
     -> Element msg
 button style { onPress, text, icon } =
     Input.button
-        (style.container
+        (style.containerButton
             ++ (if onPress == Nothing then
                     style.ifDisabled
 
@@ -67,8 +67,8 @@ button style { onPress, text, icon } =
         )
         { onPress = onPress
         , label =
-            Element.row style.labelRow
+            Element.row style.content.containerRow
                 [ icon |> Element.map never
-                , Element.text text |> Element.el style.text
+                , Element.text text |> Element.el style.content.contentText
                 ]
         }

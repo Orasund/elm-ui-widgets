@@ -17,14 +17,22 @@ materialStyle : Style {} msg
 materialStyle =
     { sortTable =
         { containerTable = []
-        , headerButton = Material.textButton Material.defaultPalette
-        , ascIcon =
-            Material.expansionPanel Material.defaultPalette
-                |> .collapseIcon
-        , descIcon =
-            Material.expansionPanel Material.defaultPalette
-                |> .expandIcon
-        , defaultIcon = Element.none
+        , content =
+            { header = Material.textButton Material.defaultPalette
+            , ascIcon =
+                Material.expansionPanel Material.defaultPalette
+                    |> .content
+                    |> .panel
+                    |> .content
+                    |> .collapseIcon
+            , descIcon =
+                Material.expansionPanel Material.defaultPalette
+                    |> .content
+                    |> .panel
+                    |> .content
+                    |> .expandIcon
+            , defaultIcon = Element.none 
+            }
         }
     }
 
@@ -115,7 +123,7 @@ main : Program () Model Msg
 main =
     Browser.element
         { init = always init
-        , view = view identity materialStyle >> Element.layout []
+        , view = \model -> model |> view identity materialStyle |> Element.layout []
         , update = update
         , subscriptions = subscriptions
         }

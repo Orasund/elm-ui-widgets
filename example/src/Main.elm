@@ -345,15 +345,6 @@ view model =
                           , text = "Dark Material Theme"
                           , icon = Icons.penTool |> Element.html |> Element.el []
                           }
-                        , { onPress =
-                                if m.theme /= Template then
-                                    Just <| SetTheme <| Template
-
-                                else
-                                    Nothing
-                          , text = "Template Theme"
-                          , icon = Icons.penTool |> Element.html |> Element.el []
-                          }
                         ]
                     , onChangedSidebar = ChangedSidebar
                     , title =

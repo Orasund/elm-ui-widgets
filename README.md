@@ -6,6 +6,8 @@ It also supports custom themes and has a material design theme already ready to 
 
 [Examples of all widgets can be found here](https://orasund.github.io/elm-ui-widgets/2.0.0/).
 
+Feel free to start an [issue on the repository](https://github.com/Orasund/elm-ui-widgets/issues) if you have any questions.
+
 ![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
 
 ## Concept

@@ -24,9 +24,9 @@ textInput style { chips, placeholder, label, text, onChange } =
           else
             chips
                 |> List.map
-                    (Button.button style.chipButton)
-                |> Element.row style.chipsRow
-        , Input.text style.input
+                    (Button.button style.content.chips.content)
+                |> Element.row style.content.chips.containerRow
+        , Input.text style.content.text.containerTextInput
             { onChange = onChange
             , text = text
             , placeholder = placeholder

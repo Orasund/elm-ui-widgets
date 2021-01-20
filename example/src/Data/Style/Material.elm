@@ -24,16 +24,18 @@ import Widget.Style
         , TextInputStyle
         )
 import Widget.Style.Material as Material exposing (Palette)
-import Widget.Style.Template as Template
 
 
 sortTable : Palette -> SortTableStyle msg
 sortTable palette =
     { containerTable = []
-    , headerButton = Material.textButton palette
-    , ascIcon = Icons.chevronUp |> Element.html |> Element.el []
-    , descIcon = Icons.chevronDown |> Element.html |> Element.el []
-    , defaultIcon = Element.none
+    , content =
+        { header = Material.textButton palette
+        , ascIcon = Icons.chevronUp |> Element.html |> Element.el []
+        , descIcon = Icons.chevronDown |> Element.html |> Element.el []
+        , defaultIcon = Element.none
+
+        }
     }
 
 
