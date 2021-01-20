@@ -1,7 +1,7 @@
 module Widget.Style.Material exposing
     ( Palette, defaultPalette, darkPalette
     , containedButton, outlinedButton, textButton
-    , iconButton, toggleButton, buttonRow
+    , iconButton, toggleButton, buttonRow, switch
     , cardColumn
     , chip, textInput
     , alertDialog
@@ -94,6 +94,10 @@ Different styles for buttons have different meanings.
 
 @docs iconButton, toggleButton, buttonRow
 
+# Switch
+
+@docs switch
+
 
 # Card
 
@@ -174,6 +178,7 @@ import Widget.Style
         , ProgressIndicatorStyle
         , RowStyle
         , SnackbarStyle
+        , SwitchStyle
         , TabStyle
         , TextInputStyle
         )
@@ -635,6 +640,135 @@ iconButton palette =
         ]
     , otherwise =
         []
+    }
+
+
+{-| A boolean switch
+
+Technical Remark:
+
+  - The specification states that the disabled switch should have a color dependend on its activness. This is not implemented.
+-}
+switch : Palette -> SwitchStyle msg
+switch palette =
+    { containerButton =
+        [ Element.height <| Element.px 38
+        , Element.width <| Element.px 58
+        , Element.mouseDown []
+        , Element.focused []
+        , Element.mouseOver []
+        ]
+    , content =
+        { container = 
+            [ Element.height <| Element.px 14
+            , Element.width <| Element.px 34
+            , Border.rounded <| 10
+            ]
+        , ifDisabled = 
+            [ Element.htmlAttribute <| Attributes.style "cursor" "not-allowed"
+            , palette.surface
+                |> MaterialColor.withShade MaterialColor.gray (0.5 * MaterialColor.buttonDisabledOpacity)
+                |> fromColor
+                |> Background.color
+            ]
+        , ifActive = [
+                palette.primary
+                |> MaterialColor.scaleOpacity 0.5
+                |> fromColor
+                |> Background.color
+            ]
+        , otherwise = [
+            MaterialColor.gray
+                |> MaterialColor.scaleOpacity 0.5
+                |> fromColor
+                |> Background.color
+            ]
+        }
+    , contentInFront = 
+        { container = 
+            [ Element.height <| Element.px 38
+            , Element.width <| Element.px 38
+            , Border.rounded <| 19
+            ]
+        , ifDisabled =
+            [ Element.htmlAttribute <| Attributes.style "cursor" "not-allowed" ]
+        , ifActive =
+            [ Element.mouseDown
+                [ palette.primary
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
+                    |> fromColor
+                    |> Background.color
+                ]
+            , Element.focused
+                [ palette.primary
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
+                    |> fromColor
+                    |> Background.color
+                ]
+            , Element.mouseOver
+                [ palette.primary
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
+                    |> fromColor
+                    |> Background.color
+                ]
+            , Element.alignRight
+            ]
+        , otherwise =
+            [ Element.mouseDown
+                [ Color.gray
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
+                    |> fromColor
+                    |> Background.color
+                ]
+            , Element.focused
+                [ Color.gray
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
+                    |> fromColor
+                    |> Background.color
+                ]
+            , Element.mouseOver
+                [ Color.gray
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
+                    |> fromColor
+                    |> Background.color
+                ]
+            , Element.alignLeft
+            ]
+        , content = 
+            { container =
+                [ Element.height <| Element.px 20
+                , Element.width <| Element.px 20
+                , Element.centerY
+                , Element.centerX
+                , Border.rounded <| 10
+                ,Border.shadow <| MaterialColor.shadow 2
+               , palette.surface
+                    |> fromColor
+                    |> Background.color
+                ]
+            , ifDisabled =
+                [ palette.surface
+                    |> MaterialColor.withShade Color.gray MaterialColor.buttonDisabledOpacity
+                    |> fromColor
+                    |> Background.color
+                , Element.mouseDown []
+                , Element.mouseOver []
+                , Element.focused []
+                ]
+            , ifActive =
+                [ palette.primary
+                    |> MaterialColor.withShade palette.on.primary MaterialColor.buttonHoverOpacity
+                    |> fromColor
+                    |> Background.color
+                ]
+            , otherwise =
+                [ palette.surface
+                    |> MaterialColor.withShade palette.on.surface MaterialColor.buttonHoverOpacity
+                    |> fromColor
+                    |> Background.color
+                ]
+            }
+        }
     }
 
 

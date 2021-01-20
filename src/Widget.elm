@@ -10,6 +10,7 @@ module Widget exposing
     , Tab, tab
     , ProgressIndicator, circularProgressIndicator
     , Dialog, ExpansionPanel
+    , Switch, switch
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -44,6 +45,11 @@ You can create you own widgets by sticking widgets types together.
 [Open in Ellie](https://ellie-app.com/9p5QGZ3hgPLa1)
 
 @docs Button, TextButton, iconButton, textButton, button
+
+
+# Switch
+
+@docs Switch, switch
 
 
 # Select
@@ -139,10 +145,11 @@ import Internal.List as List
 import Internal.ProgressIndicator as ProgressIndicator
 import Internal.Select as Select
 import Internal.SortTable as SortTable
+import Internal.Switch as Switch
 import Internal.Tab as Tab
 import Internal.TextInput as TextInput
 import Set exposing (Set)
-import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, ProgressIndicatorStyle, RowStyle, SortTableStyle, TabStyle, TextInputStyle)
+import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, ProgressIndicatorStyle, RowStyle, SortTableStyle, SwitchStyle, TabStyle, TextInputStyle)
 
 
 
@@ -224,6 +231,39 @@ button =
         fun : ButtonStyle msg -> Button msg -> Element msg
         fun =
             Button.button
+    in
+    fun
+
+
+
+{----------------------------------------------------------
+- SWITCH
+----------------------------------------------------------}
+
+
+{-| Switch widget type
+-}
+type alias Switch msg =
+    { description : String
+    , onPress : Maybe msg
+    , active : Bool
+    }
+
+{-| A boolean switch
+-}
+switch :
+    SwitchStyle msg
+    ->
+        { description : String
+        , onPress : Maybe msg
+        , active : Bool
+        }
+    -> Element msg
+switch =
+    let
+        fun : SwitchStyle msg -> Switch msg -> Element msg
+        fun =
+            Switch.switch
     in
     fun
 

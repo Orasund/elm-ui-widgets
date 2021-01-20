@@ -333,8 +333,6 @@ layout =
         Color.light ++ Group.center
     }
 
-
-style : Style msg
 style =
     { sortTable = sortTable
     , row = row

@@ -260,7 +260,6 @@ layout =
     }
 
 
-style : Style msg
 style =
     { sortTable = sortTable
     , row = row
@@ -277,4 +276,5 @@ style =
     , dialog = dialog
     , progressIndicator = progressIndicator
     , layout = Template.layout "layout"
+    , switch = button
     }

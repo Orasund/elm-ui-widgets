@@ -1,13 +1,40 @@
-module Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle)
+module Widget.Style exposing
+    ( ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle
+    , SwitchStyle
+    )
 
 {-| This module contains style types for every widget.
 
-@docs ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle
+@docs ButtonStyle,SwitchStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle
 
 -}
 
 import Element exposing (Attribute, Element)
 import Html exposing (Html)
+
+
+{-| -}
+type alias SwitchStyle msg =
+    { containerButton : List (Attribute msg)
+    , content :
+        { container : List (Attribute msg)
+        , ifDisabled : List (Attribute msg)
+        , ifActive : List (Attribute msg)
+        , otherwise : List (Attribute msg)
+        }
+    , contentInFront :
+        { container : List (Attribute msg)
+        , ifDisabled : List (Attribute msg)
+        , ifActive : List (Attribute msg)
+        , otherwise : List (Attribute msg)
+        , content : 
+            { container : List (Attribute msg)
+            , ifDisabled : List (Attribute msg)
+            , ifActive : List (Attribute msg)
+            , otherwise : List (Attribute msg)
+            }
+        }
+    }
 
 
 {-| -}

@@ -25,4 +25,5 @@ style =
     , dialog = Template.dialog "dialog"
     , progressIndicator = Template.progressIndicator "progressIndicator"
     , layout = Template.layout "layout"
+    , switch = Template.switch <| "switch"
     }

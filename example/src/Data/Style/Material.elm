@@ -54,4 +54,5 @@ style palette =
     , dialog = Material.alertDialog palette
     , progressIndicator = Material.progressIndicator palette
     , layout = Material.layout palette
+    , switch = Material.switch palette
     }

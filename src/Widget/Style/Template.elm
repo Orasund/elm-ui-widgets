@@ -1,6 +1,6 @@
 module Widget.Style.Template exposing
     ( box, decoration, icon
-    , button, column, dialog, expansionPanel, layout, row, snackbar, sortTable, tab, textInput, progressIndicator
+    , button, switch, column, dialog, expansionPanel, layout, row, snackbar, sortTable, tab, textInput, progressIndicator
     )
 
 {-| ![Example using the Template style](https://orasund.github.io/elm-ui-widgets/assets/template-style.png)
@@ -54,7 +54,7 @@ style =
 
 # Mockups
 
-@docs button, column, dialog, expansionPanel, layout, row, snackbar, sortTable, tab, textInput, progressIndicator
+@docs button, switch, column, dialog, expansionPanel, layout, row, snackbar, sortTable, tab, textInput, progressIndicator
 
 -}
 
@@ -75,6 +75,7 @@ import Widget.Style
         , SortTableStyle
         , TabStyle
         , TextInputStyle
+        , SwitchStyle
         )
 
 
@@ -123,6 +124,30 @@ icon string =
                     Element.text string
             ]
 
+{-| A boolean switch
+-}
+switch : String -> SwitchStyle msg
+switch string =
+    { containerButton = box <| string ++ ":containerButton"
+    , content =
+        { container = box <| string ++ ":content:container"
+        , ifDisabled = decoration <| string ++ ":content:ifDisabled"
+        , ifActive = decoration <| string ++ ":content:ifActive"
+        , otherwise = decoration <| string ++ ":content:otherwise"
+        }
+    , contentInFront =
+        { container = box <| string ++ ":contentInFront:container"
+        , ifDisabled = decoration <| string ++ ":contentInFront:ifDisabled"
+        , ifActive = decoration <| string ++ ":contentInFront:ifActive"
+        , otherwise = decoration <| string ++ ":contentInFront:otherwise"
+        , content =
+            { container = box <| string ++ ":contentInFront:content:container"
+            , ifDisabled = decoration <| string ++ ":contentInFront:content:ifDisabled"
+            , ifActive = decoration <| string ++ ":contentInFront:content:ifActive"
+            , otherwise = decoration <| string ++ ":contentInFront:content:otherwise"
+            }
+        }
+    }
 
 {-|
 

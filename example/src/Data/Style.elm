@@ -12,6 +12,7 @@ import Widget.Style
         , SortTableStyle
         , TabStyle
         , TextInputStyle
+        , SwitchStyle
         )
 
 
@@ -19,6 +20,7 @@ type alias Style msg =
     { dialog : DialogStyle msg
     , expansionPanel : ExpansionPanelStyle msg
     , button : ButtonStyle msg
+    , switch : SwitchStyle msg
     , primaryButton : ButtonStyle msg
     , tab : TabStyle msg
     , textInput : TextInputStyle msg

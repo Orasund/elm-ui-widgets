@@ -346,24 +346,6 @@ view model =
                           , icon = Icons.penTool |> Element.html |> Element.el []
                           }
                         , { onPress =
-                                if m.theme /= SemanticUI then
-                                    Just <| SetTheme <| SemanticUI
-
-                                else
-                                    Nothing
-                          , text = "Semantic UI Theme"
-                          , icon = Icons.penTool |> Element.html |> Element.el []
-                          }
-                        , { onPress =
-                                if m.theme /= ElmUiFramework then
-                                    Just <| SetTheme <| ElmUiFramework
-
-                                else
-                                    Nothing
-                          , text = "Elm-Ui-Framework Theme"
-                          , icon = Icons.penTool |> Element.html |> Element.el []
-                          }
-                        , { onPress =
                                 if m.theme /= Template then
                                     Just <| SetTheme <| Template
 

@@ -3,6 +3,7 @@ module Data.Example exposing (Example, Model, Msg, asList, fromString, init, sub
 import Data.Style exposing (Style)
 import Element exposing (Element)
 import Example.Button as Button
+import Example.Switch as Switch
 import Example.Dialog as Dialog
 import Example.ExpansionPanel as ExpansionPanel
 import Example.List as List
@@ -19,6 +20,7 @@ import View.Test as Test
 
 type Example
     = ButtonExample
+    | SwitchExample
     | SelectExample
     | MultiSelectExample
     | ExpansionPanelExample
@@ -34,6 +36,7 @@ type Example
 asList : List Example
 asList =
     [ ButtonExample
+    , SwitchExample
     , SelectExample
     , MultiSelectExample
     , ExpansionPanelExample
@@ -53,6 +56,9 @@ toString example =
     case example of
         ButtonExample ->
             "Button"
+        
+        SwitchExample ->
+            "Switch"
 
         SelectExample ->
             "Select"
@@ -90,6 +96,9 @@ fromString string =
     case string of
         "Button" ->
             Just ButtonExample
+        
+        "Switch" ->
+            Just SwitchExample
 
         "Select" ->
             Just SelectExample
@@ -130,6 +139,9 @@ get example =
     case example of
         ButtonExample ->
             .button
+        
+        SwitchExample ->
+            .switch
 
         SelectExample ->
             .select
@@ -167,6 +179,9 @@ toTests example =
     case example of
         ButtonExample ->
             Test.button
+        
+        SwitchExample ->
+            Test.switch
 
         SelectExample ->
             Test.select
@@ -201,6 +216,7 @@ toTests example =
 
 type Msg
     = Button Button.Msg
+    | Switch Switch.Msg
     | Select Select.Msg
     | MultiSelect MultiSelect.Msg
     | ExpansionPanel ExpansionPanel.Msg
@@ -215,6 +231,7 @@ type Msg
 
 type alias Model =
     { button : Button.Model
+    , switch : Switch.Model
     , select : Select.Model
     , multiSelect : MultiSelect.Model
     , expansionPanel : ExpansionPanel.Model
@@ -239,6 +256,7 @@ type alias UpgradeRecord model msg =
 
 type alias UpgradeCollection =
     { button : UpgradeRecord Button.Model Button.Msg
+    , switch : UpgradeRecord Switch.Model Switch.Msg
     , select : UpgradeRecord Select.Model Select.Msg
     , multiSelect : UpgradeRecord MultiSelect.Model MultiSelect.Msg
     , expansionPanel : UpgradeRecord ExpansionPanel.Model ExpansionPanel.Msg
@@ -254,6 +272,7 @@ type alias UpgradeCollection =
 
 type alias ExampleView msg =
     { button : Element msg
+    , switch : Element msg
     , select : Element msg
     , multiSelect : Element msg
     , expansionPanel : Element msg
@@ -272,6 +291,9 @@ init =
     let
         ( buttonModel, buttonMsg ) =
             Button.init
+        
+        ( switchModel, switchMsg ) =
+            Switch.init
 
         ( selectModel, selectMsg ) =
             Select.init
@@ -304,6 +326,7 @@ init =
             ProgressIndicator.init
     in
     ( { button = buttonModel
+      , switch = switchModel
       , select = selectModel
       , multiSelect = multiSelectModel
       , expansionPanel = expansionPanelModel
@@ -316,6 +339,7 @@ init =
       , progressIndicator = progressIndicatorModel
       }
     , [ Cmd.map Button buttonMsg
+      , Cmd.map Switch switchMsg
       , Cmd.map Select selectMsg
       , Cmd.map MultiSelect multiSelectMsg
       , Cmd.map ExpansionPanel expansionPanelMsg
@@ -339,6 +363,13 @@ upgradeRecord =
         , msgMapper = Button
         , updateFun = Button.update
         , subscriptionsFun = Button.subscriptions
+        }
+    , switch =
+        { from = .switch
+        , to = \model a -> { model | switch = a }
+        , msgMapper = Switch
+        , updateFun = Switch.update
+        , subscriptionsFun = Switch.subscriptions
         }
     , select =
         { from = .select
@@ -418,6 +449,9 @@ update msg model =
     (case msg of
         Button m ->
             updateField .button m
+        
+        Switch m ->
+            updateField .switch m
 
         Select m ->
             updateField .select m
@@ -459,6 +493,7 @@ subscriptions model =
             subscriptionsFun (from model) |> Sub.map msgMapper
     in
     [ upgradeRecord.button |> subFun
+    , upgradeRecord.switch |> subFun
     , upgradeRecord.select |> subFun
     , upgradeRecord.multiSelect |> subFun
     , upgradeRecord.expansionPanel |> subFun
@@ -481,6 +516,8 @@ view :
 view msgMapper style model =
     { button =
         Button.view (Button >> msgMapper) style (.button model)
+    , switch =
+        Switch.view (Switch >> msgMapper) style (.switch model)
     , select =
         Select.view (Select >> msgMapper) style (.select model)
     , multiSelect =

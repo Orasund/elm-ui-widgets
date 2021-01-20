@@ -38,8 +38,7 @@ iconButton style { onPress, text, icon } =
             ++ [ Region.description text ]
         )
         { onPress = onPress
-        , label =
-            icon |> Element.map never |> Element.el style.labelRow
+        , label = icon |> Element.map never |> Element.el style.labelRow
         }
 
 
@@ -73,4 +72,3 @@ button style { onPress, text, icon } =
                 , Element.text text |> Element.el style.text
                 ]
         }
-        

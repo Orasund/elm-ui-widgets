@@ -1,4 +1,4 @@
-module View.Test exposing (button, dialog, expansionPanel, list, modal, multiSelect, progressIndicator, select, sortTable, tab, textInput)
+module View.Test exposing (button,switch, dialog, expansionPanel, list, modal, multiSelect, progressIndicator, select, sortTable, tab, textInput)
 
 import Data.Style exposing (Style)
 import Element exposing (Element)
@@ -57,6 +57,30 @@ button idle style =
       )
     ]
 
+switch : msg -> Style msg -> List ( String, Element msg )
+switch idle style =
+  [ ( "Disabled switch"
+    , Widget.switch style.switch
+      { description = "Disabled switch"
+      , onPress = Nothing
+      , active = False
+      }
+    )
+  , ( "Inactive Select switch"
+    , Widget.switch style.switch
+      { description = "Inactive Select switch"
+      , onPress = Just idle
+      , active = False
+      }
+    )
+  , ( "Active Select switch"
+    , Widget.switch style.switch
+      { description = "Active Select switch"
+      , onPress = Just idle
+      , active = True
+      }
+    )
+  ]
 
 select : msg -> Style msg -> List ( String, Element msg )
 select idle style =

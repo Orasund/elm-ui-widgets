@@ -8,9 +8,7 @@ import Widget.Style.Material
 import Data.Style.SemanticUI
 
 type Theme
-    = ElmUiFramework
-    | SemanticUI
-    | Template
+    = Template
     | Material
     | DarkMaterial
 
@@ -18,12 +16,6 @@ type Theme
 toStyle : Theme -> Style msg
 toStyle theme =
     case theme of
-        ElmUiFramework ->
-            Data.Style.ElmUiFramework.style
-        
-        SemanticUI ->
-            Data.Style.SemanticUI.style
-
         Template ->
             Data.Style.Template.style
 
