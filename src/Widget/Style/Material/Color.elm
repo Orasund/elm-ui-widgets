@@ -111,10 +111,8 @@ accessibleTextColor color =
 
 {-| Returns the first color, adapted to ensure accessibility rules.
 
-```
-accessibleTextColor bgColor
-    = accessibleWithTextColor (Color.rgb255 255 255 255) bgColor
-```
+    accessibleTextColor bgColor =
+        accessibleWithTextColor (Color.rgb255 255 255 255) bgColor
 
 -}
 accessibleWithTextColor : Color -> Color -> Color
@@ -196,13 +194,11 @@ fromCIELCH =
 
 {-| Simulates adding a color in front (subtractive color mixing).
 
-```
---Darkens the color by 50%
-withShade (Color.rgb255 255 255 255) 0.5
+    --Darkens the color by 50%
+    withShade (Color.rgb255 255 255 255) 0.5
 
---Makes the color 50% more red
-withShade (Color.rgb255 255 0 0) 0.5
-```
+    --Makes the color 50% more red
+    withShade (Color.rgb255 255 0 0) 0.5
 
 -}
 withShade : Color -> Float -> Color -> Color
@@ -228,10 +224,8 @@ withShade c2 amount c1 =
 
 {-| Multiply the opacity value by a given value
 
-```
-scaleOpacity (0.25 \* 2) ==
-  scaleOpacity 0.25 >> scaleOpacity 2
-```
+    scaleOpacity (0.25 \* 2) ==
+      scaleOpacity 0.25 >> scaleOpacity 2
 
 -}
 scaleOpacity : Float -> Color -> Color

@@ -23,10 +23,10 @@ import Stateless
 import Task
 import Time
 import Widget
+import Widget.Icon as Icon
 import Widget.Layout as Layout exposing (Layout, Part)
 import Widget.ScrollingNav as ScrollingNav
-import FeatherIcons
-import Widget.Icon as Icon
+
 
 type alias LoadedModel =
     { stateless : Stateless.Model

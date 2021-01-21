@@ -130,6 +130,7 @@ You can create you own widgets by sticking widgets types together.
 
 -}
 
+import Color exposing (Color)
 import Element exposing (Attribute, Element, Length)
 import Element.Input exposing (Placeholder)
 import Internal.Button as Button
@@ -144,17 +145,21 @@ import Internal.Tab as Tab
 import Internal.TextInput as TextInput
 import Set exposing (Set)
 import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, ProgressIndicatorStyle, RowStyle, SortTableStyle, SwitchStyle, TabStyle, TextInputStyle)
-import Color exposing (Color)
+
+
 
 {----------------------------------------------------------
 - ICON
 ----------------------------------------------------------}
+
 
 type alias Icon =
     { size : Int
     , color : Color
     }
     -> Element Never
+
+
 
 {----------------------------------------------------------
 - BUTTON

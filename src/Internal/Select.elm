@@ -4,8 +4,9 @@ import Element exposing (Element)
 import Element.Input as Input
 import Internal.Button exposing (Button)
 import Set exposing (Set)
-import Widget.Style exposing (ButtonStyle)
 import Widget.Icon exposing (Icon)
+import Widget.Style exposing (ButtonStyle)
+
 
 type alias Select msg =
     { selected : Maybe Int
@@ -51,16 +52,15 @@ selectButton style ( selected, b ) =
             Element.row style.content.elementRow
                 [ b.icon
                     (if b.onPress == Nothing then
-                    style.content.content.icon.ifDisabled
+                        style.content.content.icon.ifDisabled
 
-                else if selected then
-                    style.content.content.icon.ifActive
+                     else if selected then
+                        style.content.content.icon.ifActive
 
-                else
-                    style.content.content.icon.otherwise
-               )
-                
-                |> Element.map never
+                     else
+                        style.content.content.icon.otherwise
+                    )
+                    |> Element.map never
                 , Element.text b.text |> Element.el style.content.content.text.contentText
                 ]
         }

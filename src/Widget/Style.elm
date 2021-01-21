@@ -6,15 +6,17 @@ module Widget.Style exposing (ButtonStyle, SwitchStyle, ColumnStyle, DialogStyle
 
 -}
 
+import Color exposing (Color)
 import Element exposing (Attribute, Element)
 import Html exposing (Html)
 import Widget.Icon as Icon exposing (Icon)
-import Color exposing (Color)
+
 
 type alias IconStyle =
     { size : Int
     , color : Color
     }
+
 
 {-| -}
 type alias SwitchStyle msg =
@@ -49,7 +51,7 @@ type alias ButtonStyle msg =
     , content :
         { elementRow : List (Attribute msg)
         , content :
-            { text : {contentText : List (Attribute msg)}
+            { text : { contentText : List (Attribute msg) }
             , icon :
                 { ifDisabled : IconStyle
                 , ifActive : IconStyle
@@ -95,9 +97,9 @@ type alias ExpansionPanelStyle msg =
             , content :
                 { label :
                     { elementRow : List (Attribute msg)
-                    , content : 
+                    , content :
                         { icon : IconStyle
-                        , text : { elementText :  List (Attribute msg)}
+                        , text : { elementText : List (Attribute msg) }
                         }
                     }
                 , expandIcon : Icon

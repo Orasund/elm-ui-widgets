@@ -8,8 +8,10 @@ import Element exposing (Attribute, Element)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
+import FeatherIcons
 import Html.Attributes as Attributes
 import Icons
+import Widget.Icon as Icon
 import Widget.Style
     exposing
         ( ButtonStyle
@@ -24,8 +26,7 @@ import Widget.Style
         , TextInputStyle
         )
 import Widget.Style.Material as Material exposing (Palette)
-import FeatherIcons
-import Widget.Icon as Icon
+
 
 sortTable : Palette -> SortTableStyle msg
 sortTable palette =

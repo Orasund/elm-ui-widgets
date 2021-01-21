@@ -5,8 +5,9 @@ module Internal.ExpansionPanel exposing (ExpansionPanel, expansionPanel)
 
 import Element exposing (Element)
 import Element.Events as Events
-import Widget.Style exposing (ExpansionPanelStyle)
 import Widget.Icon exposing (Icon)
+import Widget.Style exposing (ExpansionPanelStyle)
+
 
 type alias ExpansionPanel msg =
     { onToggle : Bool -> msg
@@ -28,10 +29,10 @@ expansionPanel style model =
                 :: style.content.panel.elementRow
             )
             [ Element.row style.content.panel.content.label.elementRow
-                [ model.icon 
-                        style.content.panel.content.label.content.icon
+                [ model.icon
+                    style.content.panel.content.label.content.icon
                     |> Element.map never
-                , model.text 
+                , model.text
                     |> Element.text
                     |> Element.el style.content.panel.content.label.content.text.elementText
                 ]
@@ -39,7 +40,6 @@ expansionPanel style model =
                 if model.isExpanded then
                     style.content.panel.content.collapseIcon
                         style.content.panel.content.label.content.icon
-
 
                 else
                     style.content.panel.content.expandIcon

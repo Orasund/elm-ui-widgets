@@ -1,13 +1,13 @@
-module View.Test exposing (button, dialog, expansionPanel, list, modal, multiSelect, progressIndicator, select, sortTable, switch, tab, textInput)
+module View.Test exposing (button, dialog, expansionPanel, icon, list, modal, multiSelect, progressIndicator, select, sortTable, switch, tab, textInput)
 
 import Data.Style exposing (Style)
 import Element exposing (Element)
+import FeatherIcons
 import Icons
 import Set
 import Widget
-import Widget.Layout exposing (Part(..))
-import FeatherIcons
 import Widget.Icon as Icon
+import Widget.Layout exposing (Part(..))
 
 
 button : msg -> Style msg -> List ( String, Element msg )
@@ -131,7 +131,7 @@ select idle style =
                 |> List.map
                     (\int ->
                         { text = String.fromInt int
-                        , icon = always  Element.none
+                        , icon = always Element.none
                         }
                     )
         , onSelect = always idle >> Just
@@ -244,7 +244,7 @@ multiSelect idle style =
                 |> List.map
                     (\int ->
                         { text = String.fromInt int
-                        , icon =always Element.none
+                        , icon = always Element.none
                         }
                     )
         , onSelect = always Nothing
@@ -558,3 +558,8 @@ progressIndicator _ style =
       )
     ]
         ++ determinateIndicators
+
+
+icon : msg -> Style msg -> List ( String, Element msg )
+icon _ style =
+    []

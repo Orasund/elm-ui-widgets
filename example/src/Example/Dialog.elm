@@ -4,9 +4,10 @@ import Browser
 import Element exposing (Element)
 import FeatherIcons
 import Widget
+import Widget.Icon as Icon
 import Widget.Style exposing (ButtonStyle, DialogStyle)
 import Widget.Style.Material as Material
-import Widget.Icon as Icon
+
 
 type alias Style style msg =
     { style

@@ -5,6 +5,7 @@ import Element exposing (Element)
 import Example.Button as Button
 import Example.Dialog as Dialog
 import Example.ExpansionPanel as ExpansionPanel
+import Example.Icon as Icon
 import Example.List as List
 import Example.Modal as Modal
 import Example.MultiSelect as MultiSelect
@@ -31,6 +32,7 @@ type Example
     | TextInputExample
     | ListExample
     | ProgressIndicatorExample
+    | IconExample
 
 
 asList : List Example
@@ -47,6 +49,7 @@ asList =
     , TextInputExample
     , ListExample
     , ProgressIndicatorExample
+    , IconExample
     ]
         |> List.sortBy toString
 
@@ -90,6 +93,9 @@ toString example =
         ProgressIndicatorExample ->
             "Progress Indicator"
 
+        IconExample ->
+            "Icon"
+
 
 fromString : String -> Maybe Example
 fromString string =
@@ -129,6 +135,9 @@ fromString string =
 
         "Progress Indicator" ->
             Just ProgressIndicatorExample
+
+        "Icon" ->
+            Just IconExample
 
         _ ->
             Nothing
@@ -173,6 +182,9 @@ get example =
         ProgressIndicatorExample ->
             .progressIndicator
 
+        IconExample ->
+            .icon
+
 
 toTests : Example -> msg -> Style msg -> List ( String, Element msg )
 toTests example =
@@ -213,6 +225,9 @@ toTests example =
         ProgressIndicatorExample ->
             Test.progressIndicator
 
+        IconExample ->
+            Test.icon
+
 
 type Msg
     = Button Button.Msg
@@ -227,6 +242,7 @@ type Msg
     | TextInput TextInput.Msg
     | List List.Msg
     | ProgressIndicator ProgressIndicator.Msg
+    | Icon Icon.Msg
 
 
 type alias Model =
@@ -242,6 +258,7 @@ type alias Model =
     , textInput : TextInput.Model
     , list : List.Model
     , progressIndicator : ProgressIndicator.Model
+    , icon : Icon.Model
     }
 
 
@@ -267,6 +284,7 @@ type alias UpgradeCollection =
     , textInput : UpgradeRecord TextInput.Model TextInput.Msg
     , list : UpgradeRecord List.Model List.Msg
     , progressIndicator : UpgradeRecord ProgressIndicator.Model ProgressIndicator.Msg
+    , icon : UpgradeRecord Icon.Model Icon.Msg
     }
 
 
@@ -283,6 +301,7 @@ type alias ExampleView msg =
     , textInput : Element msg
     , list : Element msg
     , progressIndicator : Element msg
+    , icon : Element msg
     }
 
 
@@ -324,6 +343,9 @@ init =
 
         ( progressIndicatorModel, progressIndicatorMsg ) =
             ProgressIndicator.init
+
+        ( iconModel, iconMsg ) =
+            Icon.init
     in
     ( { button = buttonModel
       , switch = switchModel
@@ -337,6 +359,7 @@ init =
       , textInput = textInputModel
       , list = listModel
       , progressIndicator = progressIndicatorModel
+      , icon = iconModel
       }
     , [ Cmd.map Button buttonMsg
       , Cmd.map Switch switchMsg
@@ -350,6 +373,7 @@ init =
       , Cmd.map TextInput textInputMsg
       , Cmd.map List listMsg
       , Cmd.map ProgressIndicator progressIndicatorMsg
+      , Cmd.map Icon iconMsg
       ]
         |> Cmd.batch
     )
@@ -441,6 +465,13 @@ upgradeRecord =
         , updateFun = ProgressIndicator.update
         , subscriptionsFun = ProgressIndicator.subscriptions
         }
+    , icon =
+        { from = .icon
+        , to = \model a -> { model | icon = a }
+        , msgMapper = Icon
+        , updateFun = Icon.update
+        , subscriptionsFun = Icon.subscriptions
+        }
     }
 
 
@@ -482,6 +513,9 @@ update msg model =
 
         ProgressIndicator m ->
             updateField .progressIndicator m
+
+        Icon m ->
+            updateField .icon m
     )
         model
 
@@ -504,6 +538,7 @@ subscriptions model =
     , upgradeRecord.textInput |> subFun
     , upgradeRecord.list |> subFun
     , upgradeRecord.progressIndicator |> subFun
+    , upgradeRecord.icon |> subFun
     ]
         |> Sub.batch
 
@@ -538,6 +573,8 @@ view msgMapper style model =
         List.view (List >> msgMapper) style (.list model)
     , progressIndicator =
         ProgressIndicator.view (ProgressIndicator >> msgMapper) style (.progressIndicator model)
+    , icon =
+        Icon.view (Icon >> msgMapper) style (.icon model)
     }
 
 
