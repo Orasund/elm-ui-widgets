@@ -75,7 +75,7 @@ view msgMapper style model =
                 |> Set.toList
                 |> List.map
                     (\string ->
-                        { icon = Element.none
+                        { icon = always Element.none
                         , text = string
                         , onPress =
                             string
@@ -105,7 +105,7 @@ view msgMapper style model =
                             |> msgMapper
                             |> Just
                     , text = string
-                    , icon = Element.none
+                    , icon = always Element.none
                     }
             )
         |> Element.wrappedRow [ Element.spacing 10 ]

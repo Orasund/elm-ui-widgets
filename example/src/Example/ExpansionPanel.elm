@@ -54,7 +54,7 @@ view : (Msg -> msg) -> Style style msg -> Model -> Element msg
 view msgMapper style (IsExpanded isExpanded) =
     { onToggle = ToggleCollapsable >> msgMapper
     , isExpanded = isExpanded
-    , icon = Element.none
+    , icon = always Element.none
     , text = "Title"
     , content = Element.text <| "Hello World"
     }

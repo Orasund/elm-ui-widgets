@@ -24,16 +24,17 @@ import Widget.Style
         , TextInputStyle
         )
 import Widget.Style.Material as Material exposing (Palette)
-
+import FeatherIcons
+import Widget.Icon as Icon
 
 sortTable : Palette -> SortTableStyle msg
 sortTable palette =
     { elementTable = []
     , content =
         { header = Material.textButton palette
-        , ascIcon = Icons.chevronUp |> Element.html |> Element.el []
-        , descIcon = Icons.chevronDown |> Element.html |> Element.el []
-        , defaultIcon = Element.none
+        , ascIcon = FeatherIcons.chevronUp |> Icon.elmFeather FeatherIcons.toHtml
+        , descIcon = FeatherIcons.chevronDown |> Icon.elmFeather FeatherIcons.toHtml
+        , defaultIcon = always Element.none
         }
     }
 

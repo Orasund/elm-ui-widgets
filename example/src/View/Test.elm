@@ -6,6 +6,8 @@ import Icons
 import Set
 import Widget
 import Widget.Layout exposing (Part(..))
+import FeatherIcons
+import Widget.Icon as Icon
 
 
 button : msg -> Style msg -> List ( String, Element msg )
@@ -13,7 +15,7 @@ button idle style =
     [ ( "Button"
       , Widget.button style.button
             { text = "Button"
-            , icon = Icons.triangle |> Element.html |> Element.el []
+            , icon = FeatherIcons.triangle |> Icon.elmFeather FeatherIcons.toHtml
             , onPress = Just idle
             }
       )
@@ -26,14 +28,14 @@ button idle style =
     , ( "Icon button"
       , Widget.iconButton style.button
             { text = "Button"
-            , icon = Icons.triangle |> Element.html |> Element.el []
+            , icon = FeatherIcons.triangle |> Icon.elmFeather FeatherIcons.toHtml
             , onPress = Just idle
             }
       )
     , ( "Disabled button"
       , Widget.button style.button
             { text = "Button"
-            , icon = Icons.triangle |> Element.html |> Element.el []
+            , icon = FeatherIcons.triangle |> Icon.elmFeather FeatherIcons.toHtml
             , onPress = Nothing
             }
       )
@@ -41,7 +43,7 @@ button idle style =
       , Widget.selectButton style.button
             ( False
             , { text = "Button"
-              , icon = Icons.triangle |> Element.html |> Element.el []
+              , icon = FeatherIcons.triangle |> Icon.elmFeather FeatherIcons.toHtml
               , onPress = Just idle
               }
             )
@@ -50,7 +52,7 @@ button idle style =
       , Widget.selectButton style.button
             ( True
             , { text = "Button"
-              , icon = Icons.triangle |> Element.html |> Element.el []
+              , icon = FeatherIcons.triangle |> Icon.elmFeather FeatherIcons.toHtml
               , onPress = Just idle
               }
             )
@@ -93,7 +95,7 @@ select idle style =
                 |> List.map
                     (\int ->
                         { text = String.fromInt int
-                        , icon = Element.none
+                        , icon = always Element.none
                         }
                     )
         , onSelect = always idle >> Just
@@ -111,7 +113,7 @@ select idle style =
                 |> List.map
                     (\int ->
                         { text = String.fromInt int
-                        , icon = Element.none
+                        , icon = always Element.none
                         }
                     )
         , onSelect = always idle >> Just
@@ -129,7 +131,7 @@ select idle style =
                 |> List.map
                     (\int ->
                         { text = String.fromInt int
-                        , icon = Element.none
+                        , icon = always  Element.none
                         }
                     )
         , onSelect = always idle >> Just
@@ -147,7 +149,7 @@ select idle style =
                 |> List.map
                     (\int ->
                         { text = String.fromInt int
-                        , icon = Element.none
+                        , icon = always Element.none
                         }
                     )
         , onSelect = always Nothing
@@ -165,7 +167,7 @@ select idle style =
                 |> List.map
                     (\int ->
                         { text = String.fromInt int
-                        , icon = Element.none
+                        , icon = always Element.none
                         }
                     )
         , onSelect = always idle >> Just
@@ -188,7 +190,7 @@ multiSelect idle style =
                 |> List.map
                     (\int ->
                         { text = String.fromInt int
-                        , icon = Element.none
+                        , icon = always Element.none
                         }
                     )
         , onSelect = always idle >> Just
@@ -206,7 +208,7 @@ multiSelect idle style =
                 |> List.map
                     (\int ->
                         { text = String.fromInt int
-                        , icon = Element.none
+                        , icon = always Element.none
                         }
                     )
         , onSelect = always idle >> Just
@@ -224,7 +226,7 @@ multiSelect idle style =
                 |> List.map
                     (\int ->
                         { text = String.fromInt int
-                        , icon = Element.none
+                        , icon = always Element.none
                         }
                     )
         , onSelect = always idle >> Just
@@ -242,7 +244,7 @@ multiSelect idle style =
                 |> List.map
                     (\int ->
                         { text = String.fromInt int
-                        , icon = Element.none
+                        , icon =always Element.none
                         }
                     )
         , onSelect = always Nothing
@@ -260,7 +262,7 @@ multiSelect idle style =
                 |> List.map
                     (\int ->
                         { text = String.fromInt int
-                        , icon = Element.none
+                        , icon = always Element.none
                         }
                     )
         , onSelect = always idle >> Just
@@ -279,7 +281,7 @@ expansionPanel idle style =
     [ ( "Collapsed"
       , { onToggle = always idle
         , isExpanded = False
-        , icon = Icons.triangle |> Element.html |> Element.el []
+        , icon = FeatherIcons.triangle |> Icon.elmFeather FeatherIcons.toHtml
         , text = "Button"
         , content = Element.text <| "Hidden Message"
         }
@@ -288,7 +290,7 @@ expansionPanel idle style =
     , ( "Expanded"
       , { onToggle = always idle
         , isExpanded = True
-        , icon = Icons.triangle |> Element.html |> Element.el []
+        , icon = FeatherIcons.triangle |> Icon.elmFeather FeatherIcons.toHtml
         , text = "Button"
         , content = Element.text <| "Hidden Message"
         }
@@ -308,7 +310,7 @@ tab idle style =
                         |> List.map
                             (\int ->
                                 { text = int |> String.fromInt
-                                , icon = Element.none
+                                , icon = always Element.none
                                 }
                             )
                 , onSelect = always idle >> Just
@@ -334,7 +336,7 @@ tab idle style =
                         |> List.map
                             (\int ->
                                 { text = int |> String.fromInt
-                                , icon = Element.none
+                                , icon = always Element.none
                                 }
                             )
                 , onSelect = always idle >> Just
@@ -492,11 +494,11 @@ textInput idle style =
       )
     , ( "Some chips"
       , { chips =
-            [ { icon = Icons.triangle |> Element.html |> Element.el []
+            [ { icon = FeatherIcons.triangle |> Icon.elmFeather FeatherIcons.toHtml
               , text = "A"
               , onPress = Just idle
               }
-            , { icon = Icons.circle |> Element.html |> Element.el []
+            , { icon = FeatherIcons.circle |> Icon.elmFeather FeatherIcons.toHtml
               , text = "B"
               , onPress = Just idle
               }

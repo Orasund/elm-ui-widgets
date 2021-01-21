@@ -68,7 +68,7 @@ view msgMapper style (Selected selected) =
             |> List.map
                 (\int ->
                     { text = String.fromInt int
-                    , icon = Element.none
+                    , icon = always Element.none
                     }
                 )
     , onSelect = ChangedSelected >> msgMapper >> Just

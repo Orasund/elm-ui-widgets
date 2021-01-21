@@ -10,10 +10,11 @@
         "Widget.Style.Material",
         "Widget.Style.Material.Typography",
         "Widget.Style.Material.Color",
-        "Widget.Style.Template",
+        "Widget.Style.Customize",
         "Widget.Layout",
         "Widget.ScrollingNav",
-        "Widget.Snackbar"
+        "Widget.Snackbar",
+        "Widget.Icon"
     ],
     "elm-version": "0.19.0 <= v < 0.20.0",
     "dependencies": {

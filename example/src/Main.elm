@@ -25,7 +25,8 @@ import Time
 import Widget
 import Widget.Layout as Layout exposing (Layout, Part)
 import Widget.ScrollingNav as ScrollingNav
-
+import FeatherIcons
+import Widget.Icon as Icon
 
 type alias LoadedModel =
     { stateless : Stateless.Model
@@ -321,11 +322,11 @@ view model =
                     , actions =
                         [ { onPress = Just <| Load "https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/"
                           , text = "Docs"
-                          , icon = Icons.book |> Element.html |> Element.el []
+                          , icon = FeatherIcons.book |> Icon.elmFeather FeatherIcons.toHtml
                           }
                         , { onPress = Just <| Load "https://github.com/Orasund/elm-ui-widgets"
                           , text = "Github"
-                          , icon = Icons.github |> Element.html |> Element.el []
+                          , icon = FeatherIcons.github |> Icon.elmFeather FeatherIcons.toHtml
                           }
                         , { onPress =
                                 if m.theme /= Material then
@@ -334,7 +335,7 @@ view model =
                                 else
                                     Nothing
                           , text = "Material Theme"
-                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          , icon = FeatherIcons.penTool |> Icon.elmFeather FeatherIcons.toHtml
                           }
                         , { onPress =
                                 if m.theme /= DarkMaterial then
@@ -343,7 +344,7 @@ view model =
                                 else
                                     Nothing
                           , text = "Dark Material Theme"
-                          , icon = Icons.penTool |> Element.html |> Element.el []
+                          , icon = FeatherIcons.penTool |> Icon.elmFeather FeatherIcons.toHtml
                           }
                         ]
                     , onChangedSidebar = ChangedSidebar
@@ -438,7 +439,7 @@ viewLoaded m =
                                                                     |> Maybe.map ToggledExample
                                                                     |> Maybe.withDefault Idle
                                                                 )
-                                                        , icon = Element.none
+                                                        , icon = always Element.none
                                                         , text =
                                                             "States"
                                                         , content =

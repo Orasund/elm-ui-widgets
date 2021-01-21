@@ -6,7 +6,7 @@ import FeatherIcons
 import Widget
 import Widget.Style exposing (ButtonStyle, RowStyle)
 import Widget.Style.Material as Material
-
+import Widget.Icon as Icon
 
 type alias Style style msg =
     { style
@@ -61,10 +61,7 @@ view msgMapper style (IsButtonEnabled isButtonEnabled) =
         { text = "disable me"
         , icon =
             FeatherIcons.slash
-                |> FeatherIcons.withSize 16
-                |> FeatherIcons.toHtml []
-                |> Element.html
-                |> Element.el []
+                |> Icon.elmFeather FeatherIcons.toHtml
         , onPress =
             if isButtonEnabled then
                 ChangedButtonStatus False
@@ -78,10 +75,7 @@ view msgMapper style (IsButtonEnabled isButtonEnabled) =
         { text = "reset"
         , icon =
             FeatherIcons.repeat
-                |> FeatherIcons.withSize 16
-                |> FeatherIcons.toHtml []
-                |> Element.html
-                |> Element.el []
+                |> Icon.elmFeather FeatherIcons.toHtml
         , onPress =
             ChangedButtonStatus True
                 |> msgMapper

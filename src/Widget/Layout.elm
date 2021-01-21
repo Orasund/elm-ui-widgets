@@ -157,7 +157,7 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                then
                 [ Widget.iconButton style.menuButton
                     { onPress = Just <| onChangedSidebar <| Just LeftSheet
-                    , icon = style.menuIcon |> Element.map never
+                    , icon = style.menuIcon
                     , text = "Menu"
                     }
                 , menu.selected
@@ -334,7 +334,7 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
     content
         |> style.layout
             (List.concat
-                [ style.element
+                [ style.container
                 , [ Element.inFront nav
                   , Element.inFront snackbar
                   ]

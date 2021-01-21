@@ -60,7 +60,7 @@ view msgMapper style (Selected selected) =
                     |> List.map
                         (\int ->
                             { text = "Tab " ++ (int |> String.fromInt)
-                            , icon = Element.none
+                            , icon = always Element.none
                             }
                         )
             , onSelect = ChangedTab >> msgMapper >> Just

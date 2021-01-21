@@ -10,12 +10,12 @@ import Element exposing (Element)
 import Element.Input as Input
 import Element.Region as Region
 import Widget.Style exposing (ButtonStyle)
-
+import Widget.Icon exposing (Icon)
 
 type alias Button msg =
     { text : String
     , onPress : Maybe msg
-    , icon : Element Never
+    , icon : Icon
     }
 
 
@@ -38,7 +38,13 @@ iconButton style { onPress, text, icon } =
             ++ [ Region.description text ]
         )
         { onPress = onPress
-        , label = icon |> Element.map never |> Element.el style.content.elementRow
+        , label = icon 
+            (if onPress == Nothing then
+                            style.content.content.icon.ifDisabled
+
+                        else
+                            style.content.content.icon.otherwise
+                    ) |> Element.map never |> Element.el style.content.elementRow
         }
 
 
@@ -47,7 +53,7 @@ textButton style { onPress, text } =
     button style
         { onPress = onPress
         , text = text
-        , icon = Element.none
+        , icon = always Element.none
         }
 
 
@@ -68,7 +74,13 @@ button style { onPress, text, icon } =
         { onPress = onPress
         , label =
             Element.row style.content.elementRow
-                [ icon |> Element.map never
-                , Element.text text |> Element.el style.content.contentText
+                [ icon 
+                    (if onPress == Nothing then
+                            style.content.content.icon.ifDisabled
+
+                        else
+                            style.content.content.icon.otherwise
+                    ) |> Element.map never
+                , Element.text text |> Element.el style.content.content.text.contentText
                 ]
         }

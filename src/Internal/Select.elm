@@ -5,14 +5,14 @@ import Element.Input as Input
 import Internal.Button exposing (Button)
 import Set exposing (Set)
 import Widget.Style exposing (ButtonStyle)
-
+import Widget.Icon exposing (Icon)
 
 type alias Select msg =
     { selected : Maybe Int
     , options :
         List
             { text : String
-            , icon : Element Never
+            , icon : Icon
             }
     , onSelect : Int -> Maybe msg
     }
@@ -23,7 +23,7 @@ type alias MultiSelect msg =
     , options :
         List
             { text : String
-            , icon : Element Never
+            , icon : Icon
             }
     , onSelect : Int -> Maybe msg
     }
@@ -49,8 +49,19 @@ selectButton style ( selected, b ) =
         { onPress = b.onPress
         , label =
             Element.row style.content.elementRow
-                [ b.icon |> Element.map never
-                , Element.text b.text |> Element.el style.content.contentText
+                [ b.icon
+                    (if b.onPress == Nothing then
+                    style.content.content.icon.ifDisabled
+
+                else if selected then
+                    style.content.content.icon.ifActive
+
+                else
+                    style.content.content.icon.otherwise
+               )
+                
+                |> Element.map never
+                , Element.text b.text |> Element.el style.content.content.text.contentText
                 ]
         }
 

@@ -8,7 +8,13 @@ module Widget.Style exposing (ButtonStyle, SwitchStyle, ColumnStyle, DialogStyle
 
 import Element exposing (Attribute, Element)
 import Html exposing (Html)
+import Widget.Icon as Icon exposing (Icon)
+import Color exposing (Color)
 
+type alias IconStyle =
+    { size : Int
+    , color : Color
+    }
 
 {-| -}
 type alias SwitchStyle msg =
@@ -42,7 +48,14 @@ type alias ButtonStyle msg =
     , otherwise : List (Attribute msg)
     , content :
         { elementRow : List (Attribute msg)
-        , contentText : List (Attribute msg)
+        , content :
+            { text : {contentText : List (Attribute msg)}
+            , icon :
+                { ifDisabled : IconStyle
+                , ifActive : IconStyle
+                , otherwise : IconStyle
+                }
+            }
         }
     }
 
@@ -82,9 +95,14 @@ type alias ExpansionPanelStyle msg =
             , content :
                 { label :
                     { elementRow : List (Attribute msg)
+                    , content : 
+                        { icon : IconStyle
+                        , text : { elementText :  List (Attribute msg)}
+                        }
                     }
-                , expandIcon : Element Never
-                , collapseIcon : Element Never
+                , expandIcon : Icon
+                , collapseIcon : Icon
+                , icon : IconStyle
                 }
             }
         , content :
@@ -164,9 +182,9 @@ type alias SortTableStyle msg =
     { elementTable : List (Attribute msg)
     , content :
         { header : ButtonStyle msg
-        , ascIcon : Element Never
-        , descIcon : Element Never
-        , defaultIcon : Element Never
+        , ascIcon : Icon
+        , descIcon : Icon
+        , defaultIcon : Icon
         }
     }
 
@@ -178,7 +196,7 @@ type alias SortTableStyle msg =
 
 -}
 type alias LayoutStyle msg =
-    { element : List (Attribute msg)
+    { container : List (Attribute msg)
     , snackbar : SnackbarStyle msg
     , layout : List (Attribute msg) -> Element msg -> Html msg
     , header : List (Attribute msg)
@@ -186,11 +204,11 @@ type alias LayoutStyle msg =
     , sheetButton : ButtonStyle msg
     , menuButton : ButtonStyle msg
     , menuTabButton : ButtonStyle msg
-    , menuIcon : Element Never
-    , moreVerticalIcon : Element Never
+    , menuIcon : Icon
+    , moreVerticalIcon : Icon
     , spacing : Int
     , title : List (Attribute msg)
-    , searchIcon : Element Never
+    , searchIcon : Icon
     , search : List (Attribute msg)
     , searchFill : List (Attribute msg)
     }

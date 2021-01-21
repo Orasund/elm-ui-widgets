@@ -187,7 +187,7 @@ import Widget.Style
 import Widget.Style.Customize as Customize
 import Widget.Style.Material.Color as MaterialColor
 import Widget.Style.Material.Typography as Typography
-
+import Widget.Icon as Icon exposing (Icon)
 
 fromColor : Color -> Element.Color
 fromColor =
@@ -308,7 +308,18 @@ baseButton _ =
             , Element.width <| Element.minimum 32 <| Element.shrink
             , Element.centerY
             ]
-        , contentText = [ Element.centerX ]
+        , content = { text = {contentText = [ Element.centerX ]}
+            , icon = {ifDisabled = { size = 18
+                    , color = MaterialColor.gray
+                    }
+            , ifActive = { size = 18
+                    , color = MaterialColor.gray
+                    }
+    , otherwise = { size = 18
+                    , color = MaterialColor.gray
+                    }
+            }
+        }
         }
     }
 
@@ -377,7 +388,24 @@ containedButton palette =
         { elementRow =
             (baseButton palette |> .content |> .elementRow)
                 ++ [ Element.paddingXY 8 0 ]
-        , contentText = baseButton palette |> .content |> .contentText
+        , content = {text = {contentText = baseButton palette |> (\b -> b.content.content.text.contentText) }
+            , icon = 
+                { ifActive =
+                    { size = 18
+                    , color = palette.primary
+            |> MaterialColor.accessibleTextColor
+                    }
+                , ifDisabled =
+                    { size = 18
+                    , color = MaterialColor.gray
+                    }
+                , otherwise =
+                    { size = 18
+                    , color = palette.primary
+            |> MaterialColor.accessibleTextColor
+                    }
+                }
+        }
         }
     }
 
@@ -438,10 +466,30 @@ outlinedButton palette =
                 |> .elementRow
             )
                 ++ [ Element.paddingXY 8 0 ]
-        , contentText =
-            baseButton palette
-                |> .content
-                |> .contentText
+        , content = 
+            { text = 
+                {contentText =
+                    baseButton palette
+                    |> .content
+                    |> .content
+                    |> .text
+                    |> .contentText
+                }
+            , icon =
+                { ifActive =
+                    { size = 18
+                    , color = palette.primary
+                    }
+                , ifDisabled =
+                    { size = 18
+                    , color = MaterialColor.gray
+                    }
+                , otherwise =
+                    { size = 18
+                    , color = palette.primary
+                    }
+                }
+            }
         }
     }
 
@@ -490,8 +538,24 @@ textButton palette =
     , otherwise =
         []
     , content =
-        { elementRow = baseButton palette |> .content |> .elementRow
-        , contentText = baseButton palette |> .content |> .contentText
+        { elementRow = baseButton palette |> (\b -> b.content.elementRow)
+        , content =
+            { text = {contentText = baseButton palette |> (\b -> b.content.content.text.contentText )  }
+            , icon =
+                { ifActive =
+                    { size = 18
+                    , color = palette.primary
+                    }
+                , ifDisabled =
+                    { size = 18
+                    , color = MaterialColor.gray
+                    }
+                , otherwise =
+                    { size = 18
+                    , color = palette.primary
+                    }
+                }
+            }
         }
     }
 
@@ -596,7 +660,26 @@ toggleButton palette =
                     |> textAndBackground
                 )
             ]
-        , contentText = [ Element.centerX ]
+        , content =
+            { text =  {contentText = [ Element.centerX ]}
+            , icon =
+                { ifActive =
+                    { size = 24
+                    , color = palette.surface
+                        |> MaterialColor.accessibleTextColor
+                    }
+                , ifDisabled =
+                    { size = 24
+                    , color = MaterialColor.gray
+                    }
+                , otherwise =
+                    { size = 24
+                    , color = palette.surface
+                        |> MaterialColor.accessibleTextColor
+                    }
+                }
+
+            }
         }
     }
 
@@ -657,7 +740,21 @@ iconButton palette =
             , Element.centerY
             , Element.centerX
             ]
-        , contentText = baseButton palette |> .content |> .contentText
+        , content = { text = {contentText = baseButton palette |> (\b -> b.content.content.text.contentText)}
+            , icon = { ifActive =
+                    { size = 18
+                    , color = palette.primary
+                    }
+                , ifDisabled =
+                    { size = 18
+                    , color = MaterialColor.gray
+                    }
+                , otherwise =
+                    { size = 18
+                    , color = palette.primary
+                    }
+                }
+        }
         }
     }
 
@@ -884,14 +981,37 @@ chip palette =
         ]
     , content =
         { elementRow = [ Element.spacing 0, Element.centerY ]
-        , contentText =
-            [ Element.paddingEach
-                { top = 0
-                , right = 0
-                , bottom = 0
-                , left = 8
+        , content =
+            { text = { contentText =
+                    [ Element.paddingEach
+                        { top = 0
+                        , right = 0
+                        , bottom = 0
+                        , left = 8
+                        }
+                    ]
                 }
-            ]
+            , icon =
+                { ifActive =
+                    { size = 18
+                    , color =  palette.on.surface
+            |> MaterialColor.scaleOpacity 0.12
+            |> MaterialColor.accessibleTextColor
+                    }
+                , ifDisabled =
+                    { size = 18
+                    , color =  palette.on.surface
+            |> MaterialColor.scaleOpacity 0.12
+            |> MaterialColor.accessibleTextColor
+                    }
+                , otherwise =
+                    { size = 18
+                    , color = palette.on.surface
+            |> MaterialColor.scaleOpacity 0.12
+            |> MaterialColor.accessibleTextColor
+                    }
+                }
+            }
         }
     }
 
@@ -1098,14 +1218,18 @@ icon string size =
         >> Element.el []
 
 
-expand_less : Element Never
-expand_less =
-    icon "0 0 48 48" 24 [ Svg.path [ Svg.Attributes.d "M24 16L12 28l2.83 2.83L24 21.66l9.17 9.17L36 28z" ] [] ]
+expand_less : Icon
+expand_less  {size,color}=
+    icon "0 0 48 48" size [ Svg.path [ Svg.Attributes.d "M24 16L12 28l2.83 2.83L24 21.66l9.17 9.17L36 28z"
+    , Svg.Attributes.stroke (Color.toCssString color)
+     ] [] ]
 
 
-expand_more : Element Never
-expand_more =
-    icon "0 0 48 48" 24 [ Svg.path [ Svg.Attributes.d "M33.17 17.17L24 26.34l-9.17-9.17L12 20l12 12 12-12z" ] [] ]
+expand_more : Icon
+expand_more {size,color} =
+    icon "0 0 48 48" size [ Svg.path [ Svg.Attributes.d "M33.17 17.17L24 26.34l-9.17-9.17L12 20l12 12 12-12z"
+    , Svg.Attributes.stroke (Color.toCssString color)
+     ] [] ]
 
 
 {-| The expansion Panel is an outdated part of the material design specification.
@@ -1135,23 +1259,21 @@ expansionPanel palette =
                 ]
             , content =
                 { label =
-                    { elementRow =
-                        [ Element.spacing 32 ]
+                    { elementRow = [ Element.spacing 32 ]
+                    , content =
+                        { icon =
+                            { size = 16
+                            , color = MaterialColor.gray
+                            }
+                        , text = { elementText = []}
+                        }
                     }
-                , expandIcon =
-                    expand_more
-                        |> Element.el
-                            [ MaterialColor.gray
-                                |> fromColor
-                                |> Font.color
-                            ]
-                , collapseIcon =
-                    expand_less
-                        |> Element.el
-                            [ MaterialColor.gray
-                                |> fromColor
-                                |> Font.color
-                            ]
+                , expandIcon = expand_more
+                , collapseIcon = expand_less
+                , icon =
+                    { size = 24
+                    , color = MaterialColor.gray
+                    }
                 }
             }
         , content =
@@ -1453,7 +1575,23 @@ tabButton palette =
             , Element.centerY
             , Element.centerX
             ]
-        , contentText = []
+        , content = 
+            { text = {contentText = []}
+            , icon =
+                { ifActive = 
+                    { size = 18
+                    , color = palette.primary
+                    }
+                , ifDisabled = 
+                    { size = 18
+                    , color = MaterialColor.gray
+                    }
+                , otherwise =
+                    { size = 18
+                    , color = palette.primary
+                    }
+                }
+            }
         }
     }
 
@@ -1484,19 +1622,24 @@ tab palette =
 -------------------------------------------------------------------------------}
 
 
-more_vert : Element Never
-more_vert =
-    icon "0 0 48 48" 24 [ Svg.path [ Svg.Attributes.d "M24 16c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 4c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z" ] [] ]
+more_vert : Icon
+more_vert {size,color}=
+    icon "0 0 48 48" size [ Svg.path [ 
+            Svg.Attributes.d "M24 16c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 4c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z" 
+           ,Svg.Attributes.stroke <| Color.toCssString color
+            ] [] ]
 
 
-search : Element Never
-search =
-    icon "0 0 48 48" 24 [ Svg.path [ Svg.Attributes.d "M31 28h-1.59l-.55-.55C30.82 25.18 32 22.23 32 19c0-7.18-5.82-13-13-13S6 11.82 6 19s5.82 13 13 13c3.23 0 6.18-1.18 8.45-3.13l.55.55V31l10 9.98L40.98 38 31 28zm-12 0c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9z" ] [] ]
+search : Icon
+search  {size,color}=
+    icon "0 0 48 48" size [ Svg.path [ Svg.Attributes.d "M31 28h-1.59l-.55-.55C30.82 25.18 32 22.23 32 19c0-7.18-5.82-13-13-13S6 11.82 6 19s5.82 13 13 13c3.23 0 6.18-1.18 8.45-3.13l.55.55V31l10 9.98L40.98 38 31 28zm-12 0c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9z"
+    ,Svg.Attributes.stroke <| Color.toCssString color ] [] ]
 
 
-menu : Element Never
-menu =
-    icon "0 0 48 48" 24 [ Svg.path [ Svg.Attributes.d "M6 36h36v-4H6v4zm0-10h36v-4H6v4zm0-14v4h36v-4H6z" ] [] ]
+menu : Icon
+menu  {size,color}=
+    icon "0 0 48 48" size [ Svg.path [ Svg.Attributes.d "M6 36h36v-4H6v4zm0-10h36v-4H6v4zm0-14v4h36v-4H6z"
+    ,Svg.Attributes.stroke <| Color.toCssString color ] [] ]
 
 
 menuTabButton : Palette -> ButtonStyle msg
@@ -1558,7 +1701,21 @@ menuTabButton palette =
             , Element.centerY
             , Element.centerX
             ]
-        , contentText = []
+        , content = {text =  {contentText = []}
+        , icon = { ifActive =
+                    { size = 18
+                    , color = palette.primary |> MaterialColor.accessibleTextColor
+                    }
+                , ifDisabled =
+                    { size = 18
+                    , color = MaterialColor.gray
+                    }
+                , otherwise =
+                    { size = 18
+                    , color = palette.primary |> MaterialColor.accessibleTextColor
+                    }
+                }
+        }
         }
     }
 
@@ -1618,7 +1775,22 @@ drawerButton palette =
         []
     , content =
         { elementRow = baseButton palette |> .content |> .elementRow
-        , contentText = baseButton palette |> .content |> .contentText
+        , content = 
+            { text = {contentText = baseButton palette |> (\b -> b.content.content.text.contentText)}
+            , icon = { ifActive =
+                    { size = 18
+                    , color = palette.primary 
+                    }
+                , ifDisabled =
+                    { size = 18
+                    , color = MaterialColor.gray
+                    }
+                , otherwise =
+                    { size = 18
+                    , color = palette.primary |> MaterialColor.accessibleTextColor
+                    }
+                }
+        }
         }
     }
 
@@ -1642,7 +1814,7 @@ Technical Remark:
 -}
 layout : Palette -> LayoutStyle msg
 layout palette =
-    { element =
+    { container =
         (palette.background |> textAndBackground)
             ++ [ Font.family
                     [ Font.typeface "Roboto"

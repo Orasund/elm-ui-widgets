@@ -6,7 +6,7 @@ import FeatherIcons
 import Widget
 import Widget.Style exposing (ButtonStyle, DialogStyle)
 import Widget.Style.Material as Material
-
+import Widget.Icon as Icon
 
 type alias Style style msg =
     { style
@@ -59,10 +59,7 @@ view msgMapper style (IsOpen isOpen) =
         { text = "show Dialog"
         , icon =
             FeatherIcons.eye
-                |> FeatherIcons.withSize 16
-                |> FeatherIcons.toHtml []
-                |> Element.html
-                |> Element.el []
+                |> Icon.elmFeather FeatherIcons.toHtml
         , onPress =
             OpenDialog True
                 |> msgMapper

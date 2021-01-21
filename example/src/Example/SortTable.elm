@@ -31,7 +31,7 @@ materialStyle =
                     |> .panel
                     |> .content
                     |> .expandIcon
-            , defaultIcon = Element.none
+            , defaultIcon = always Element.none
             }
         }
     }

@@ -181,7 +181,7 @@ toSelect onSelect ({ arrangement, toString, fromString } as model) =
             |> List.map
                 (\s ->
                     { text = toString s
-                    , icon = Element.none
+                    , icon = always Element.none
                     }
                 )
     , onSelect = onSelect

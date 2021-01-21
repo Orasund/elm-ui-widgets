@@ -144,8 +144,17 @@ import Internal.Tab as Tab
 import Internal.TextInput as TextInput
 import Set exposing (Set)
 import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, ProgressIndicatorStyle, RowStyle, SortTableStyle, SwitchStyle, TabStyle, TextInputStyle)
+import Color exposing (Color)
 
+{----------------------------------------------------------
+- ICON
+----------------------------------------------------------}
 
+type alias Icon =
+    { size : Int
+    , color : Color
+    }
+    -> Element Never
 
 {----------------------------------------------------------
 - BUTTON
@@ -156,7 +165,7 @@ import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPa
 -}
 type alias Button msg =
     { text : String
-    , icon : Element Never
+    , icon : Icon
     , onPress : Maybe msg
     }
 
@@ -175,7 +184,7 @@ iconButton :
     ButtonStyle msg
     ->
         { text : String
-        , icon : Element Never
+        , icon : Icon
         , onPress : Maybe msg
         }
     -> Element msg
@@ -216,7 +225,7 @@ button :
     ButtonStyle msg
     ->
         { text : String
-        , icon : Element Never
+        , icon : Icon
         , onPress : Maybe msg
         }
     -> Element msg
@@ -281,7 +290,7 @@ type alias Select msg =
     , options :
         List
             { text : String
-            , icon : Element Never
+            , icon : Icon
             }
     , onSelect : Int -> Maybe msg
     }
@@ -299,7 +308,7 @@ type alias MultiSelect msg =
     , options :
         List
             { text : String
-            , icon : Element Never
+            , icon : Icon
             }
     , onSelect : Int -> Maybe msg
     }
@@ -391,7 +400,7 @@ dialog =
 -}
 type alias ExpansionPanel msg =
     { onToggle : Bool -> msg
-    , icon : Element Never
+    , icon : Icon
     , text : String
     , content : Element msg
     , isExpanded : Bool
@@ -404,7 +413,7 @@ expansionPanel :
     ExpansionPanelStyle msg
     ->
         { onToggle : Bool -> msg
-        , icon : Element Never
+        , icon : Icon
         , text : String
         , content : Element msg
         , isExpanded : Bool

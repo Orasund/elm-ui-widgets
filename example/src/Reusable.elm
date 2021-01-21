@@ -18,7 +18,7 @@ snackbar style addSnackbar =
                         , False
                         )
             , text = "Add Notification"
-            , icon = Element.none
+            , icon = always Element.none
             }
       , Widget.button style.button
             { onPress =
@@ -28,7 +28,7 @@ snackbar style addSnackbar =
                         , True
                         )
             , text = "Add Notification with Action"
-            , icon = Element.none
+            , icon = always Element.none
             }
       ]
         |> Element.column Grid.simple
