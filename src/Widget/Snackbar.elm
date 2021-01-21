@@ -125,12 +125,12 @@ view style toMessage model =
                         [ text
                             |> Element.text
                             |> List.singleton
-                            |> Element.paragraph style.content.text.containerText
+                            |> Element.paragraph style.content.text.elementText
                         , button
                             |> Maybe.map
                                 (Widget.textButton style.content.button)
                             |> Maybe.withDefault Element.none
                         ]
-                            |> Element.row style.containerRow
+                            |> Element.row style.elementRow
                    )
             )

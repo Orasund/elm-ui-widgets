@@ -1,9 +1,9 @@
 module Widget.Style.Customize exposing
-    ( container, mapContainer
-    , containerButton, mapContainerButton
-    , containerColumn, mapContainerColumn
-    , containerRow, mapContainerRow
-    , containerTable, mapContainerTable
+    ( element, mapElement
+    , elementButton, mapElementButton
+    , elementColumn, mapElementColumn
+    , elementRow, mapElementRow
+    , elementTable, mapElementTable
     , content, mapContent
     , contentText, mapContentText
     , contentInFront, mapContentInFront
@@ -11,48 +11,44 @@ module Widget.Style.Customize exposing
 
 {-| Each and every widget can be customized by modifing the Style Type.
 
-```
-{- Make a button fill the full width -}
-Widget.textButton
-  ( Material.containedButton
-    |> (\record ->
-         { record
-         | container = record.container ++ [Element.width Element.fill]
-         }
-       )
-  )
-  { onPress = Just PressedButton
-  , text = "Press Button"
-  }
-```
+    {- Make a button fill the full width -}
+    Widget.textButton
+      ( Material.containedButton
+        |> (\record ->
+             { record
+             | element = record.element ++ [Element.width Element.fill]
+             }
+           )
+      )
+      { onPress = Just PressedButton
+      , text = "Press Button"
+      }
 
 This module will contain helpfull functions to make customization easier.
 
-```
-{- Make a button fill the full width -}
-Widget.textButton
-  ( Material.containedButton
-    |> Customize.container [Element.width Element.fill]
-  )
-  { onPress = Just PressedButton
-  , text = "Press Button"
-  }
-```
+    {- Make a button fill the full width -}
+    Widget.textButton
+      ( Material.containedButton
+        |> Customize.element [Element.width Element.fill]
+      )
+      { onPress = Just PressedButton
+      , text = "Press Button"
+      }
 
 
-# Container
+# Element
 
-@docs container, mapContainer
+@docs element, mapElement
 
-@docs containerButton, mapContainerButton
+@docs elementButton, mapElementButton
 
-@docs containerColumn, mapContainerColumn
+@docs elementColumn, mapElementColumn
 
-@docs containerRow, mapContainerRow
+@docs elementRow, mapElementRow
 
-@docs containerTable, mapContainerTable
+@docs elementTable, mapElementTable
 
-@docs containerTextInput, mapContainerTextInput
+@docs elementTextInput, mapElementTextInput
 
 
 # Content
@@ -79,85 +75,85 @@ Widget.textButton
 -}
 
 --------------------------------------------------------------------------------
--- Container
+-- Element
 --------------------------------------------------------------------------------
 
 
-container : List b -> { a | container : List b } -> { a | container : List b }
-container list a =
+element : List b -> { a | element : List b } -> { a | element : List b }
+element list a =
     a
-        |> mapContainer (\b -> b ++ list)
+        |> mapElement (\b -> b ++ list)
 
 
-mapContainer : (b -> b) -> { a | container : b } -> { a | container : b }
-mapContainer fun a =
+mapElement : (b -> b) -> { a | element : b } -> { a | element : b }
+mapElement fun a =
     { a
-        | container = fun a.container
+        | element = fun a.element
     }
 
 
-containerButton : List b -> { a | containerButton : List b } -> { a | containerButton : List b }
-containerButton list a =
+elementButton : List b -> { a | elementButton : List b } -> { a | elementButton : List b }
+elementButton list a =
     a
-        |> mapContainerButton (\b -> b ++ list)
+        |> mapElementButton (\b -> b ++ list)
 
 
-mapContainerButton : (b -> b) -> { a | containerButton : b } -> { a | containerButton : b }
-mapContainerButton fun a =
+mapElementButton : (b -> b) -> { a | elementButton : b } -> { a | elementButton : b }
+mapElementButton fun a =
     { a
-        | containerButton = fun a.containerButton
+        | elementButton = fun a.elementButton
     }
 
 
-containerColumn : List b -> { a | containerColumn : List b } -> { a | containerColumn : List b }
-containerColumn list a =
+elementColumn : List b -> { a | elementColumn : List b } -> { a | elementColumn : List b }
+elementColumn list a =
     a
-        |> mapContainerColumn (\b -> b ++ list)
+        |> mapElementColumn (\b -> b ++ list)
 
 
-mapContainerColumn : (b -> b) -> { a | containerColumn : b } -> { a | containerColumn : b }
-mapContainerColumn fun a =
+mapElementColumn : (b -> b) -> { a | elementColumn : b } -> { a | elementColumn : b }
+mapElementColumn fun a =
     { a
-        | containerColumn = fun a.containerColumn
+        | elementColumn = fun a.elementColumn
     }
 
 
-containerRow : List b -> { a | containerRow : List b } -> { a | containerRow : List b }
-containerRow list a =
+elementRow : List b -> { a | elementRow : List b } -> { a | elementRow : List b }
+elementRow list a =
     a
-        |> mapContainerRow (\b -> b ++ list)
+        |> mapElementRow (\b -> b ++ list)
 
 
-mapContainerRow : (b -> b) -> { a | containerRow : b } -> { a | containerRow : b }
-mapContainerRow fun a =
+mapElementRow : (b -> b) -> { a | elementRow : b } -> { a | elementRow : b }
+mapElementRow fun a =
     { a
-        | containerRow = fun a.containerRow
+        | elementRow = fun a.elementRow
     }
 
 
-containerTable : List b -> { a | containerTable : List b } -> { a | containerTable : List b }
-containerTable list a =
+elementTable : List b -> { a | elementTable : List b } -> { a | elementTable : List b }
+elementTable list a =
     a
-        |> mapContainerTable (\b -> b ++ list)
+        |> mapElementTable (\b -> b ++ list)
 
 
-mapContainerTable : (b -> b) -> { a | containerTable : b } -> { a | containerTable : b }
-mapContainerTable fun a =
+mapElementTable : (b -> b) -> { a | elementTable : b } -> { a | elementTable : b }
+mapElementTable fun a =
     { a
-        | containerTable = fun a.containerTable
+        | elementTable = fun a.elementTable
     }
 
 
-containerTextInput : List b -> { a | containerTextInput : List b } -> { a | containerTextInput : List b }
-containerTextInput list a =
+elementTextInput : List b -> { a | elementTextInput : List b } -> { a | elementTextInput : List b }
+elementTextInput list a =
     a
-        |> mapContainerTextInput (\b -> b ++ list)
+        |> mapElementTextInput (\b -> b ++ list)
 
 
-mapContainerTextInput : (b -> b) -> { a | containerTextInput : b } -> { a | containerTextInput : b }
-mapContainerTextInput fun a =
+mapElementTextInput : (b -> b) -> { a | elementTextInput : b } -> { a | elementTextInput : b }
+mapElementTextInput fun a =
     { a
-        | containerTextInput = fun a.containerTextInput
+        | elementTextInput = fun a.elementTextInput
     }
 
 

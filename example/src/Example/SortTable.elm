@@ -16,7 +16,7 @@ type alias Style style msg =
 materialStyle : Style {} msg
 materialStyle =
     { sortTable =
-        { containerTable = []
+        { elementTable = []
         , content =
             { header = Material.textButton Material.defaultPalette
             , ascIcon =

@@ -22,12 +22,12 @@ expansionPanel :
     -> ExpansionPanel msg
     -> Element msg
 expansionPanel style model =
-    Element.column style.containerColumn <|
+    Element.column style.elementColumn <|
         [ Element.row
             ((Events.onClick <| model.onToggle <| not model.isExpanded)
-                :: style.content.panel.containerRow
+                :: style.content.panel.elementRow
             )
-            [ Element.row style.content.panel.content.label.containerRow
+            [ Element.row style.content.panel.content.label.elementRow
                 [ model.icon |> Element.map never
                 , model.text |> Element.text
                 ]
@@ -39,7 +39,7 @@ expansionPanel style model =
                     style.content.panel.content.expandIcon
             ]
         , if model.isExpanded then
-            Element.el style.content.content.container <| model.content
+            Element.el style.content.content.element <| model.content
 
           else
             Element.none

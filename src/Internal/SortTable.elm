@@ -105,7 +105,7 @@ sortTable style model =
                     else
                         findTitle tail
     in
-    Element.table style.containerTable
+    Element.table style.elementTable
         { data =
             model.content
                 |> (model.columns

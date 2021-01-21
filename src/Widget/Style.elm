@@ -12,20 +12,20 @@ import Html exposing (Html)
 
 {-| -}
 type alias SwitchStyle msg =
-    { containerButton : List (Attribute msg)
+    { elementButton : List (Attribute msg)
     , content :
-        { container : List (Attribute msg)
+        { element : List (Attribute msg)
         , ifDisabled : List (Attribute msg)
         , ifActive : List (Attribute msg)
         , otherwise : List (Attribute msg)
         }
     , contentInFront :
-        { container : List (Attribute msg)
+        { element : List (Attribute msg)
         , ifDisabled : List (Attribute msg)
         , ifActive : List (Attribute msg)
         , otherwise : List (Attribute msg)
         , content :
-            { container : List (Attribute msg)
+            { element : List (Attribute msg)
             , ifDisabled : List (Attribute msg)
             , ifActive : List (Attribute msg)
             , otherwise : List (Attribute msg)
@@ -36,12 +36,12 @@ type alias SwitchStyle msg =
 
 {-| -}
 type alias ButtonStyle msg =
-    { containerButton : List (Attribute msg)
+    { elementButton : List (Attribute msg)
     , ifDisabled : List (Attribute msg)
     , ifActive : List (Attribute msg)
     , otherwise : List (Attribute msg)
     , content :
-        { containerRow : List (Attribute msg)
+        { elementRow : List (Attribute msg)
         , contentText : List (Attribute msg)
         }
     }
@@ -49,7 +49,7 @@ type alias ButtonStyle msg =
 
 {-| -}
 type alias DialogStyle msg =
-    { containerColumn : List (Attribute msg)
+    { elementColumn : List (Attribute msg)
     , content :
         { title :
             { contentText : List (Attribute msg)
@@ -58,7 +58,7 @@ type alias DialogStyle msg =
             { contentText : List (Attribute msg)
             }
         , buttons :
-            { containerRow : List (Attribute msg)
+            { elementRow : List (Attribute msg)
             , content :
                 { accept : ButtonStyle msg
                 , dismiss : ButtonStyle msg
@@ -75,20 +75,20 @@ type alias DialogStyle msg =
 
 -}
 type alias ExpansionPanelStyle msg =
-    { containerColumn : List (Attribute msg)
+    { elementColumn : List (Attribute msg)
     , content :
         { panel :
-            { containerRow : List (Attribute msg)
+            { elementRow : List (Attribute msg)
             , content :
                 { label :
-                    { containerRow : List (Attribute msg)
+                    { elementRow : List (Attribute msg)
                     }
                 , expandIcon : Element Never
                 , collapseIcon : Element Never
                 }
             }
         , content :
-            { container : List (Attribute msg)
+            { element : List (Attribute msg)
             }
         }
     }
@@ -96,10 +96,10 @@ type alias ExpansionPanelStyle msg =
 
 {-| -}
 type alias SnackbarStyle msg =
-    { containerRow : List (Attribute msg)
+    { elementRow : List (Attribute msg)
     , content :
         { text :
-            { containerText : List (Attribute msg)
+            { elementText : List (Attribute msg)
             }
         , button : ButtonStyle msg
         }
@@ -108,14 +108,14 @@ type alias SnackbarStyle msg =
 
 {-| -}
 type alias TextInputStyle msg =
-    { containerRow : List (Attribute msg)
+    { elementRow : List (Attribute msg)
     , content :
         { chips :
-            { containerRow : List (Attribute msg)
+            { elementRow : List (Attribute msg)
             , content : ButtonStyle msg
             }
         , text :
-            { containerTextInput : List (Attribute msg)
+            { elementTextInput : List (Attribute msg)
             }
         }
     }
@@ -123,10 +123,10 @@ type alias TextInputStyle msg =
 
 {-| -}
 type alias TabStyle msg =
-    { containerColumn : List (Attribute msg)
+    { elementColumn : List (Attribute msg)
     , content :
         { tabs :
-            { containerRow : List (Attribute msg)
+            { elementRow : List (Attribute msg)
             , content : ButtonStyle msg
             }
         , content : List (Attribute msg)
@@ -136,7 +136,7 @@ type alias TabStyle msg =
 
 {-| -}
 type alias RowStyle msg =
-    { containerRow : List (Attribute msg)
+    { elementRow : List (Attribute msg)
     , ifFirst : List (Attribute msg)
     , ifLast : List (Attribute msg)
     , otherwise : List (Attribute msg)
@@ -146,7 +146,7 @@ type alias RowStyle msg =
 
 {-| -}
 type alias ColumnStyle msg =
-    { containerColumn : List (Attribute msg)
+    { elementColumn : List (Attribute msg)
     , ifFirst : List (Attribute msg)
     , ifLast : List (Attribute msg)
     , otherwise : List (Attribute msg)
@@ -161,7 +161,7 @@ type alias ColumnStyle msg =
 
 -}
 type alias SortTableStyle msg =
-    { containerTable : List (Attribute msg)
+    { elementTable : List (Attribute msg)
     , content :
         { header : ButtonStyle msg
         , ascIcon : Element Never
@@ -178,7 +178,7 @@ type alias SortTableStyle msg =
 
 -}
 type alias LayoutStyle msg =
-    { container : List (Attribute msg)
+    { element : List (Attribute msg)
     , snackbar : SnackbarStyle msg
     , layout : List (Attribute msg) -> Element msg -> Html msg
     , header : List (Attribute msg)
@@ -198,5 +198,5 @@ type alias LayoutStyle msg =
 
 {-| -}
 type alias ProgressIndicatorStyle msg =
-    { containerFunction : Maybe Float -> Element msg
+    { elementFunction : Maybe Float -> Element msg
     }

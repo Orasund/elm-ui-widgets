@@ -17,7 +17,7 @@ type alias TextInput msg =
 
 textInput : TextInputStyle msg -> TextInput msg -> Element msg
 textInput style { chips, placeholder, label, text, onChange } =
-    Element.row style.containerRow
+    Element.row style.elementRow
         [ if chips |> List.isEmpty then
             Element.none
 
@@ -25,8 +25,8 @@ textInput style { chips, placeholder, label, text, onChange } =
             chips
                 |> List.map
                     (Button.button style.content.chips.content)
-                |> Element.row style.content.chips.containerRow
-        , Input.text style.content.text.containerTextInput
+                |> Element.row style.content.chips.elementRow
+        , Input.text style.content.text.elementTextInput
             { onChange = onChange
             , text = text
             , placeholder = placeholder

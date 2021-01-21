@@ -334,7 +334,7 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
     content
         |> style.layout
             (List.concat
-                [ style.container
+                [ style.element
                 , [ Element.inFront nav
                   , Element.inFront snackbar
                   ]

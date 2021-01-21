@@ -9,4 +9,4 @@ circularProgressIndicator :
     -> Maybe Float
     -> Element msg
 circularProgressIndicator style maybeProgress =
-    style.containerFunction maybeProgress
+    style.elementFunction maybeProgress

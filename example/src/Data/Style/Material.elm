@@ -28,7 +28,7 @@ import Widget.Style.Material as Material exposing (Palette)
 
 sortTable : Palette -> SortTableStyle msg
 sortTable palette =
-    { containerTable = []
+    { elementTable = []
     , content =
         { header = Material.textButton palette
         , ascIcon = Icons.chevronUp |> Element.html |> Element.el []

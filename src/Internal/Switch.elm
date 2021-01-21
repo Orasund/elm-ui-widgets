@@ -16,11 +16,11 @@ type alias Switch msg =
 switch : SwitchStyle msg -> Switch msg -> Element msg
 switch style { onPress, description, active } =
     Input.button
-        (style.containerButton
+        (style.elementButton
             ++ [ Region.description description
                , Element.none
                     |> Element.el
-                        (style.contentInFront.content.container
+                        (style.contentInFront.content.element
                             ++ (if active then
                                     style.contentInFront.content.ifActive
 
@@ -32,7 +32,7 @@ switch style { onPress, description, active } =
                                )
                         )
                     |> Element.el
-                        (style.contentInFront.container
+                        (style.contentInFront.element
                             ++ (if active then
                                     style.contentInFront.ifActive
 
@@ -50,7 +50,7 @@ switch style { onPress, description, active } =
         , label =
             Element.none
                 |> Element.el
-                    (style.content.container
+                    (style.content.element
                         ++ (if active then
                                 style.content.ifActive
 

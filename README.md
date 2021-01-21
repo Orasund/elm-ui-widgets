@@ -35,10 +35,15 @@ button: ButtonStyle msg
 In comparison to Elm-Ui's button, we see  that `List (Attribute msg)` has changed into a _Style Type_.
   ```
   type alias ButtonStyle msg =
-      { container : List (Attribute msg)
-      , labelRow : List (Attribute msg)
+      { element : List (Attribute msg)
+      , content : 
+            { elementRow : List (Attribute msg)
+            , contentText : List (Attribute msg)
+            }
+        }
       , ifDisabled : List (Attribute msg)
       , ifActive : List (Attribute msg)
+      , otherwise : List (Attribute msg)
       }
   ```
 

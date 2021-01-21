@@ -39,12 +39,12 @@ internal style list =
 
 row : RowStyle msg -> List (Element msg) -> Element msg
 row style =
-    internal style >> Element.row style.containerRow
+    internal style >> Element.row style.elementRow
 
 
 column : ColumnStyle msg -> List (Element msg) -> Element msg
 column style =
-    internal style >> Element.column style.containerColumn
+    internal style >> Element.column style.elementColumn
 
 
 internalButton :
@@ -65,7 +65,7 @@ internalButton style list =
             (\i ->
                 Select.selectButton
                     (style.button
-                        |> Customize.containerButton
+                        |> Customize.elementButton
                             (style.list.content
                                 ++ (if List.length list == 1 then
                                         []
@@ -91,7 +91,7 @@ buttonRow :
     -> List ( Bool, Button msg )
     -> Element msg
 buttonRow style =
-    internalButton style >> Element.row style.list.containerRow
+    internalButton style >> Element.row style.list.elementRow
 
 
 buttonColumn :
@@ -101,4 +101,4 @@ buttonColumn :
     -> List ( Bool, Button msg )
     -> Element msg
 buttonColumn style =
-    internalButton style >> Element.column style.list.containerColumn
+    internalButton style >> Element.column style.list.elementColumn

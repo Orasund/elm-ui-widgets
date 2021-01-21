@@ -16,9 +16,9 @@ tab style { tabs, content } =
     [ tabs
         |> Select.select
         |> List.map (Select.selectButton style.content.tabs.content)
-        |> Element.row style.content.tabs.containerRow
+        |> Element.row style.content.tabs.elementRow
     , tabs.selected
         |> content
         |> Element.el style.content.content
     ]
-        |> Element.column style.containerColumn
+        |> Element.column style.elementColumn

@@ -54,7 +54,7 @@ dialog style { title, text, accept, dismiss } =
             ([ Element.centerX
              , Element.centerY
              ]
-                ++ style.containerColumn
+                ++ style.elementColumn
             )
             [ title
                 |> Maybe.map
@@ -70,7 +70,7 @@ dialog style { title, text, accept, dismiss } =
                 ([ Element.alignRight
                  , Element.width <| Element.shrink
                  ]
-                    ++ style.content.buttons.containerRow
+                    ++ style.content.buttons.elementRow
                 )
                 (case ( accept, dismiss ) of
                     ( Just acceptButton, Nothing ) ->
