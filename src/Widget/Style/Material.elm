@@ -6,7 +6,7 @@ module Widget.Style.Material exposing
     , cardColumn
     , chip, textInput
     , alertDialog
-    , expansionPanel
+    , expansionPanel, expansionPanelItem
     , row, column
     , progressIndicator
     , snackbar
@@ -122,7 +122,7 @@ Thus for now we only provide a card containing a list.
 
 # Expansion Panel
 
-@docs expansionPanel
+@docs expansionPanel, expansionPanelItem
 
 
 # List
@@ -1046,10 +1046,13 @@ row =
         [ Element.paddingXY 0 8
         , Element.spacing 8
         ]
-    , content = []
-    , ifFirst = []
-    , ifLast = []
-    , otherwise = []
+    , content =
+        { element = []
+        , ifSingleton = []
+        , ifFirst = []
+        , ifLast = []
+        , otherwise = []
+        }
     }
 
 
@@ -1061,10 +1064,13 @@ column =
         [ Element.paddingXY 0 8
         , Element.spacing 8
         ]
-    , content = []
-    , ifFirst = []
-    , ifLast = []
-    , otherwise = []
+    , content =
+        { element = []
+        , ifSingleton = []
+        , ifFirst = []
+        , ifLast = []
+        , otherwise = []
+        }
     }
 
 
@@ -1077,27 +1083,30 @@ buttonRow : RowStyle msg
 buttonRow =
     { elementRow = []
     , content =
-        [ Border.rounded 2
-        ]
-    , ifFirst =
-        [ Border.roundEach
-            { topLeft = 2
-            , topRight = 0
-            , bottomLeft = 2
-            , bottomRight = 0
-            }
-        ]
-    , ifLast =
-        [ Border.roundEach
-            { topLeft = 0
-            , topRight = 2
-            , bottomLeft = 0
-            , bottomRight = 2
-            }
-        ]
-    , otherwise =
-        [ Border.rounded 0
-        ]
+        { element = []
+        , ifSingleton =
+            [ Border.rounded 2
+            ]
+        , ifFirst =
+            [ Border.roundEach
+                { topLeft = 2
+                , topRight = 0
+                , bottomLeft = 2
+                , bottomRight = 0
+                }
+            ]
+        , ifLast =
+            [ Border.roundEach
+                { topLeft = 0
+                , topRight = 2
+                , bottomLeft = 0
+                , bottomRight = 2
+                }
+            ]
+        , otherwise =
+            [ Border.rounded 0
+            ]
+        }
     }
 
 
@@ -1119,53 +1128,57 @@ cardColumn palette =
         , Border.rounded 4
         ]
     , content =
-        [ Element.padding 16
-        , Border.rounded 4
-        , Border.width 1
-        , palette.surface
-            |> fromColor
-            |> Background.color
-        , palette.surface
-            |> MaterialColor.accessibleTextColor
-            |> fromColor
-            |> Font.color
-        , palette.on.surface
-            |> MaterialColor.scaleOpacity 0.14
-            |> fromColor
-            |> Border.color
-        , Element.width <| Element.minimum 344 <| Element.fill
-        ]
-    , ifFirst =
-        [ Border.roundEach
-            { topLeft = 4
-            , topRight = 4
-            , bottomLeft = 0
-            , bottomRight = 0
-            }
-        ]
-    , ifLast =
-        [ Border.roundEach
-            { topLeft = 0
-            , topRight = 0
-            , bottomLeft = 4
-            , bottomRight = 4
-            }
-        , Border.widthEach
-            { top = 0
-            , left = 1
-            , right = 1
-            , bottom = 1
-            }
-        ]
-    , otherwise =
-        [ Border.rounded 0
-        , Border.widthEach
-            { top = 0
-            , left = 1
-            , right = 1
-            , bottom = 1
-            }
-        ]
+        { element =
+            [ Element.padding 16
+            , Border.width 1
+            , palette.surface
+                |> fromColor
+                |> Background.color
+            , palette.surface
+                |> MaterialColor.accessibleTextColor
+                |> fromColor
+                |> Font.color
+            , palette.on.surface
+                |> MaterialColor.scaleOpacity 0.14
+                |> fromColor
+                |> Border.color
+            , Element.width <| Element.minimum 344 <| Element.fill
+            ]
+        , ifSingleton =
+            [ Border.rounded 4
+            ]
+        , ifFirst =
+            [ Border.roundEach
+                { topLeft = 4
+                , topRight = 4
+                , bottomLeft = 0
+                , bottomRight = 0
+                }
+            ]
+        , ifLast =
+            [ Border.roundEach
+                { topLeft = 0
+                , topRight = 0
+                , bottomLeft = 4
+                , bottomRight = 4
+                }
+            , Border.widthEach
+                { top = 0
+                , left = 1
+                , right = 1
+                , bottom = 1
+                }
+            ]
+        , otherwise =
+            [ Border.rounded 0
+            , Border.widthEach
+                { top = 0
+                , left = 1
+                , right = 1
+                , bottom = 1
+                }
+            ]
+        }
     }
 
 
@@ -1271,16 +1284,46 @@ Technical Remarks:
 -}
 expansionPanel : Palette -> ExpansionPanelStyle msg
 expansionPanel palette =
+    expansionPanelItem palette
+        |> Customize.mapContent
+            (\record ->
+                { record
+                    | panel =
+                        record.panel
+                            |> Customize.elementRow
+                                [ Element.height <| Element.px 48
+                                , Element.padding 14
+                                ]
+                    , content =
+                        record.content
+                            |> Customize.element
+                                [ Element.paddingEach
+                                    { top = 0
+                                    , right = 14
+                                    , bottom = 14
+                                    , left = 14
+                                    }
+                                ]
+                }
+            )
+
+
+{-| A variant on the expansion Panel optimized to be used inside a card.
+
+This is a small workaround to allow expansion panels within cards.
+
+-}
+expansionPanelItem : Palette -> ExpansionPanelStyle msg
+expansionPanelItem palette =
     { elementColumn =
         [ Background.color <| fromColor <| palette.surface
+        , Element.spacing 14
         , Element.width <| Element.fill
         ]
     , content =
         { panel =
             { elementRow =
-                [ Element.height <| Element.px 48
-                , Element.spaceEvenly
-                , Element.padding 14
+                [ Element.spaceEvenly
                 , Element.width <| Element.fill
                 ]
             , content =
@@ -1303,7 +1346,7 @@ expansionPanel palette =
                 }
             }
         , content =
-            { element = [ Element.padding 14 ]
+            { element = [ Element.width <| Element.fill ]
             }
         }
     }
@@ -1511,6 +1554,54 @@ textInput palette =
                     ]
                , Element.mouseOver [ Border.shadow <| MaterialColor.shadow 2 ]
                ]
+    , content =
+        { chips =
+            { elementRow = [ Element.spacing 8 ]
+            , content = chip palette
+            }
+        , text =
+            { elementTextInput =
+                (palette.surface
+                    |> textAndBackground
+                )
+                    ++ [ Border.width 0
+                       , Element.mouseOver []
+                       , Element.focused []
+                       , Element.centerY
+                       ]
+            }
+        }
+    }
+
+
+searchInput : Palette -> TextInputStyle msg
+searchInput palette =
+    textInputBase palette
+        |> Customize.mapElementRow
+            (always
+                [ Element.alignRight
+                , Element.paddingXY 8 8
+                , Border.rounded 4
+                ]
+            )
+        |> Customize.mapContent
+            (\record ->
+                { record
+                    | text =
+                        record.text
+                            |> Customize.elementTextInput
+                                [ Border.width 0
+                                , Element.paddingXY 8 8
+                                , Element.height <| Element.px 32
+                                , Element.width <| Element.maximum 360 <| Element.fill
+                                ]
+                }
+            )
+
+
+textInputBase : Palette -> TextInputStyle msg
+textInputBase palette =
+    { elementRow = palette.surface |> textAndBackground
     , content =
         { chips =
             { elementRow = [ Element.spacing 8 ]
@@ -1824,7 +1915,7 @@ drawerButton palette =
             , icon =
                 { ifActive =
                     { size = 18
-                    , color = palette.primary
+                    , color = palette.surface |> MaterialColor.accessibleTextColor
                     }
                 , ifDisabled =
                     { size = 18
@@ -1832,7 +1923,7 @@ drawerButton palette =
                     }
                 , otherwise =
                     { size = 18
-                    , color = palette.primary |> MaterialColor.accessibleTextColor
+                    , color = palette.surface |> MaterialColor.accessibleTextColor
                     }
                 }
             }
@@ -1878,7 +1969,31 @@ layout palette =
                , Element.padding 16
                , Element.width <| Element.minimum 360 <| Element.fill
                ]
-    , menuButton = iconButton palette
+    , menuButton =
+        iconButton palette
+            |> Customize.mapContent
+                (Customize.mapContent
+                    (\record ->
+                        { record
+                            | icon =
+                                { ifActive =
+                                    { size = record.icon.ifActive.size
+                                    , color =
+                                        palette.primary
+                                            |> MaterialColor.accessibleTextColor
+                                    }
+                                , ifDisabled =
+                                    record.icon.ifDisabled
+                                , otherwise =
+                                    { size = record.icon.otherwise.size
+                                    , color =
+                                        palette.primary
+                                            |> MaterialColor.accessibleTextColor
+                                    }
+                                }
+                        }
+                    )
+                )
     , sheetButton = drawerButton palette
     , menuTabButton = menuTabButton palette
     , sheet =
@@ -1892,24 +2007,6 @@ layout palette =
     , spacing = 8
     , title = Typography.h6 ++ [ Element.paddingXY 8 0 ]
     , searchIcon = search
-    , search =
-        (palette.surface |> textAndBackground)
-            ++ [ Element.spacing 8
-               , Element.paddingXY 8 8
-               , Element.height <| Element.px 32
-               , Border.width 1
-               , Border.rounded 4
-               , palette.on.surface
-                    |> MaterialColor.scaleOpacity 0.14
-                    |> fromColor
-                    |> Border.color
-               , Element.focused
-                    [ Border.shadow <| MaterialColor.shadow 4
-                    ]
-               , Element.mouseOver [ Border.shadow <| MaterialColor.shadow 2 ]
-               , Element.width <| Element.maximum 360 <| Element.fill
-               , Element.alignRight
-               ]
-    , searchFill =
-        palette.surface |> textAndBackground
+    , search = searchInput palette
+    , searchFill = textInputBase palette
     }

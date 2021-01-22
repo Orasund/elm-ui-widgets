@@ -1,8 +1,14 @@
-module Widget.Style exposing (ButtonStyle, SwitchStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle)
+module Widget.Style exposing
+    ( IconStyle, ButtonStyle, SwitchStyle, ColumnStyle, DialogStyle, ItemStyle
+    , ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle
+    , TabStyle, TextInputStyle, ProgressIndicatorStyle, ButtonSheetStyle
+    )
 
 {-| This module contains style types for every widget.
 
-@docs ButtonStyle, SwitchStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle, TabStyle, TextInputStyle, ProgressIndicatorStyle
+@docs IconStyle, ButtonStyle, SwitchStyle, ColumnStyle, DialogStyle, ItemStyle
+@docs ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle
+@docs TabStyle, TextInputStyle, ProgressIndicatorStyle, ButtonSheetStyle
 
 -}
 
@@ -155,22 +161,36 @@ type alias TabStyle msg =
 
 
 {-| -}
-type alias RowStyle msg =
-    { elementRow : List (Attribute msg)
+type alias ItemStyle msg =
+    { element : List (Attribute msg)
     , ifFirst : List (Attribute msg)
     , ifLast : List (Attribute msg)
+    , ifSingleton : List (Attribute msg)
     , otherwise : List (Attribute msg)
-    , content : List (Attribute msg)
+    }
+
+
+{-| -}
+type alias RowStyle msg =
+    { elementRow : List (Attribute msg)
+    , content : ItemStyle msg
     }
 
 
 {-| -}
 type alias ColumnStyle msg =
     { elementColumn : List (Attribute msg)
-    , ifFirst : List (Attribute msg)
-    , ifLast : List (Attribute msg)
-    , otherwise : List (Attribute msg)
-    , content : List (Attribute msg)
+    , content : ItemStyle msg
+    }
+
+
+{-| -}
+type alias ButtonSheetStyle msg =
+    { element : List (Attribute msg)
+    , content :
+        { elementColumn : List (Attribute msg)
+        , content : ButtonStyle msg
+        }
     }
 
 
@@ -211,8 +231,8 @@ type alias LayoutStyle msg =
     , spacing : Int
     , title : List (Attribute msg)
     , searchIcon : Icon
-    , search : List (Attribute msg)
-    , searchFill : List (Attribute msg)
+    , search : TextInputStyle msg
+    , searchFill : TextInputStyle msg
     }
 
 

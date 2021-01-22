@@ -26,7 +26,7 @@ import Widget
 import Widget.Icon as Icon
 import Widget.Layout as Layout exposing (Layout, Part)
 import Widget.ScrollingNav as ScrollingNav
-
+import Element.Input as Input
 
 type alias LoadedModel =
     { stateless : Stateless.Model
@@ -354,9 +354,14 @@ view model =
                             |> Element.el Heading.h1
                     , search =
                         Just
-                            { text = m.search.raw
+                            { chips = []
+                            , text = m.search.raw
                             , onChange = ChangedSearch
                             , label = "Search"
+                            , placeholder =
+                                Just <|
+                                Input.placeholder [] 
+                                    <| Element.text "Search Widgets..."
                             }
                     }
                 <|
@@ -431,7 +436,7 @@ viewLoaded m =
                                                     []
 
                                                 else
-                                                    [ Widget.expansionPanel style.expansionPanel
+                                                    [ Widget.expansionPanel style.expansionPanelItem
                                                         { onToggle =
                                                             always
                                                                 (name

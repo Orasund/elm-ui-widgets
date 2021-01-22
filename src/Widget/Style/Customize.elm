@@ -4,9 +4,15 @@ module Widget.Style.Customize exposing
     , elementColumn, mapElementColumn
     , elementRow, mapElementRow
     , elementTable, mapElementTable
+    , elementTextInput, mapElementTextInput
     , content, mapContent
     , contentText, mapContentText
     , contentInFront, mapContentInFront
+    , otherwise, mapOtherwise
+    , ifActive, mapIfActive
+    , ifDisabled, mapIfDisabled
+    , ifFirst, mapIfFirst
+    , ifLast, mapIfLast
     )
 
 {-| Each and every widget can be customized by modifing the Style Type.
@@ -38,7 +44,28 @@ This module will contain helpfull functions to make customization easier.
 
 # Element
 
+A simple style type would be the following:
+
+    type alias MyStyle =
+        { element : List (Attribute msg) }
+
+    myWidget : MyStyle -> Element msg
+    myWidget style =
+        Element.el style.element <| Element.none
+
 @docs element, mapElement
+
+A styling for a simple Elm-Ui button would be like this:
+
+    type alias MyStyle =
+        { elementButton : List (Attribute msg) }
+
+    myWidget : MyStyle -> Element msg
+    myWidget style =
+        Element.button style.elementButton
+            { onPress = Just Something
+            , label = Element.none
+            }
 
 @docs elementButton, mapElementButton
 
@@ -53,14 +80,83 @@ This module will contain helpfull functions to make customization easier.
 
 # Content
 
+We can also style the content of an element.
+
+    type alias MyStyle =
+        { element : List (Attribute msg)
+        , content : List (Attribute msg)
+        }
+
+    myWidget : MyStyle -> Element msg
+    myWidget style =
+        Element.el style.element <|
+            Element.el style.content <|
+                Element.none
+
 @docs content, mapContent
 
+If the content is just a text (or paragraph), then we use `contentText` instead:
+
+    type alias MyStyle =
+        { element : List (Attribute msg)
+        , contentText : List (Attribute msg)
+        }
+
+    myWidget : MyStyle -> Element msg
+    myWidget style =
+        Element.el style.element <|
+            Element.text style.contentText <|
+                "Hello World"
+
 @docs contentText, mapContentText
+
+If some content is infront, we use `contentInFront`:
+
+    type alias MyStyle =
+        { element : List (Attribute msg)
+        , content : List (Attribute msg)
+        , contentInFront : List (Attribute msg)
+        }
+
+    myWidget : MyStyle -> Element msg
+    myWidget style =
+        Element.el
+            (style.element
+                ++ [ Element.contentInFront <|
+                        Element.el style.contentInFront <|
+                            Element.none
+                   ]
+            )
+        <|
+            Element.el style.contentInFront <|
+                Element.none
 
 @docs contentInFront, mapContentInFront
 
 
 # Conditional Styling
+
+We can include styling that depends on some state.
+
+    type alias MyStyle =
+        { element : List (Attribute msg)
+        , ifDisabled : List (Attribute msg)
+        , otherwise : List (Attribute msg)
+        }
+
+    myWidget : MyStyle -> Bool -> Element msg
+    myWidget style isDisabled =
+        Element.el
+            (style.element
+                ++ (if isDisabled then
+                        style.ifDisabled
+
+                    else
+                        style.otherwise
+                   )
+            )
+        <|
+            Element.none
 
 @docs otherwise, mapOtherwise
 

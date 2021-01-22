@@ -19,6 +19,7 @@ import Widget.Style
 type alias Style msg =
     { dialog : DialogStyle msg
     , expansionPanel : ExpansionPanelStyle msg
+    , expansionPanelItem : ExpansionPanelStyle msg
     , button : ButtonStyle msg
     , switch : SwitchStyle msg
     , primaryButton : ButtonStyle msg

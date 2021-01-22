@@ -140,7 +140,7 @@ view msgMapper style (IsButtonEnabled isButtonEnabled) =
             in
             [ Widget.button (primaryButtonStyle color)
                 { text = colorCode ++ " - Elm UI Widgets"
-                , icon = Element.none
+                , icon = always Element.none
                 , onPress =
                     if isButtonEnabled then
                         Noop

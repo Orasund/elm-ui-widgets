@@ -67,8 +67,8 @@ view msgMapper style (Selected selected) =
     }
         |> Widget.select
         |> Widget.buttonRow
-            { list = style.buttonRow
-            , button = style.selectButton
+            { elementRow = style.buttonRow
+            , content = style.selectButton
             }
 
 

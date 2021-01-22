@@ -2,9 +2,9 @@
 
 This package contains **independent** widgets (no components) written for [Elm-Ui](https://dark.elm.dmy.fr/packages/mdgriffith/elm-ui/latest/). These widgets have no dependencies to other parts of this package. So you can just use as much as you need.
 
-It also supports custom themes and has a material design theme already ready to use.
-
-[Examples of all widgets can be found here](https://orasund.github.io/elm-ui-widgets/2.0.0/).
+* It also supports custom themes and has a material design theme already ready to use.
+* [Examples of all widgets can be found here](https://orasund.github.io/elm-ui-widgets/2.0.0/).
+* It is highly customizable. Checkout [Widget.Style.Customize](https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/Widget-Style-Customize) for more information.
 
 Feel free to start an [issue on the repository](https://github.com/Orasund/elm-ui-widgets/issues) if you have any questions.
 
@@ -26,7 +26,7 @@ Let's look at the button widget.
 button: ButtonStyle msg
     ->
         { text : String
-        , icon : Element Never
+        , icon : Icon
         , onPress : Maybe msg
         }
     -> Element msg
@@ -36,14 +36,17 @@ In comparison to Elm-Ui's button, we see  that `List (Attribute msg)` has change
   ```
   type alias ButtonStyle msg =
       { element : List (Attribute msg)
-      , content : 
-            { elementRow : List (Attribute msg)
-            , contentText : List (Attribute msg)
-            }
-        }
       , ifDisabled : List (Attribute msg)
       , ifActive : List (Attribute msg)
       , otherwise : List (Attribute msg)
+      , content : 
+            { elementRow : List (Attribute msg)
+            , content :
+                { text : { contentText : List (Attribute msg) }
+                , icon : IconStyle
+                }
+            }
+        }
       }
   ```
 
@@ -55,7 +58,7 @@ iconButton :
     ButtonStyle msg
     ->
         { text : String --for screen readers
-        , icon : Element Never
+        , icon : Icon
         , onPress : Maybe msg
         }
     -> Element msg
@@ -75,7 +78,7 @@ button :
     ButtonStyle msg
     ->
         { text : String
-        , icon : Element Never
+        , icon : Icon
         , onPress : Maybe msg
         }
     -> Element msg
@@ -86,7 +89,7 @@ We also have a `Widget Type` for the button:
 ```
 type alias Button msg =
     { text : String
-    , icon : Element Never
+    , icon : Icon
     , onPress : Maybe msg
     }
 ```
@@ -99,7 +102,7 @@ type alias Select msg =
     , options :
         List
             { text : String
-            , icon : Element Never
+            , icon : Icon
             }
     , onSelect : Int -> Maybe msg
     }
@@ -152,4 +155,5 @@ This package tries to solve both of these problems.
 
 ## Changelog
 
+* **Version 3.0.0** - Reworked Style Types making it easier to customize. Added full icon support.
 * **Version 2.0.0** - Complete rewrite of the package. Now including a material design implementation.

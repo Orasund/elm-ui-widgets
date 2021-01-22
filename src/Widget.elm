@@ -10,6 +10,7 @@ module Widget exposing
     , TextInput, textInput
     , Tab, tab
     , ProgressIndicator, circularProgressIndicator
+    , buttonSheet
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -90,7 +91,7 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5RJnDVVCKa1)
 
-@docs row, column, buttonRow, buttonColumn
+@docs row, column, buttonRow, buttonColumn, buttonDrawer
 
 
 # Sort Table
@@ -144,7 +145,20 @@ import Internal.Switch as Switch
 import Internal.Tab as Tab
 import Internal.TextInput as TextInput
 import Set exposing (Set)
-import Widget.Style exposing (ButtonStyle, ColumnStyle, DialogStyle, ExpansionPanelStyle, ProgressIndicatorStyle, RowStyle, SortTableStyle, SwitchStyle, TabStyle, TextInputStyle)
+import Widget.Style
+    exposing
+        ( ButtonSheetStyle
+        , ButtonStyle
+        , ColumnStyle
+        , DialogStyle
+        , ExpansionPanelStyle
+        , ProgressIndicatorStyle
+        , RowStyle
+        , SortTableStyle
+        , SwitchStyle
+        , TabStyle
+        , TextInputStyle
+        )
 
 
 
@@ -494,8 +508,8 @@ column =
 {-| A row of buttons
 -}
 buttonRow :
-    { list : RowStyle msg
-    , button : ButtonStyle msg
+    { elementRow : RowStyle msg
+    , content : ButtonStyle msg
     }
     -> List ( Bool, Button msg )
     -> Element msg
@@ -506,13 +520,28 @@ buttonRow =
 {-| A column of buttons
 -}
 buttonColumn :
-    { list : ColumnStyle msg
-    , button : ButtonStyle msg
+    { elementColumn : ColumnStyle msg
+    , content : ButtonStyle msg
     }
     -> List ( Bool, Button msg )
     -> Element msg
 buttonColumn =
     List.buttonColumn
+
+
+{-| A side sheet containing only buttons. Will use the full hight.
+-}
+buttonSheet :
+    ButtonSheetStyle msg
+    -> List (Button msg)
+    -> Element msg
+buttonSheet style actions =
+    actions
+        |> List.map (button style.content.content)
+        |> Element.column
+            (style.content.elementColumn ++ [ Element.width <| Element.fill ])
+        |> Element.el
+            (style.element ++ [ Element.height <| Element.fill ])
 
 
 
