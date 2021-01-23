@@ -13,13 +13,16 @@ import Widget.Style
         , SwitchStyle
         , TabStyle
         , TextInputStyle
+        , ItemStyle
+        , DividerStyle
+        , TitleStyle
         )
 
 
 type alias Style msg =
     { dialog : DialogStyle msg
     , expansionPanel : ExpansionPanelStyle msg
-    , expansionPanelItem : ExpansionPanelStyle msg
+    , expansionPanelItem : ItemStyle (ExpansionPanelStyle msg)
     , button : ButtonStyle msg
     , switch : SwitchStyle msg
     , primaryButton : ButtonStyle msg
@@ -34,4 +37,9 @@ type alias Style msg =
     , selectButton : ButtonStyle msg
     , progressIndicator : ProgressIndicatorStyle msg
     , layout : LayoutStyle msg
+    , fullBleedDivider : ItemStyle (DividerStyle msg)
+    , insetDivider : ItemStyle (DividerStyle msg)
+    , middleDividers : ItemStyle (DividerStyle msg)
+    , insetTitle : ItemStyle (TitleStyle msg)
+    , fullBleedTitle : ItemStyle (TitleStyle msg)
     }

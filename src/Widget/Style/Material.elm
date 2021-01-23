@@ -7,11 +7,12 @@ module Widget.Style.Material exposing
     , chip, textInput
     , alertDialog
     , expansionPanel, expansionPanelItem
-    , row, column
+    , row, column, fullBleedDivider
     , progressIndicator
     , snackbar
     , tab, tabButton
-    , layout
+    , layout, insetDivider
+    , middleDividers,insetTitle, fullBleedTitle
     )
 
 {-| ![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
@@ -27,55 +28,6 @@ Its recommended to use a font size of 16px width and the [Roboto Font](https://f
 The style are not opaque, so you can change every styling to your needs.
 
 If you have any suggestions or improvements, be sure to leave a PR or a Issue over at the github repos.
-
-You can use the theme by copying the following code:
-
-    type alias Style msg =
-        { dialog : DialogStyle msg
-        , expansionPanel : ExpansionPanelStyle msg
-        , button : ButtonStyle msg
-        , primaryButton : ButtonStyle msg
-        , tab : TabStyle msg
-        , textInput : TextInputStyle msg
-        , chipButton : ButtonStyle msg
-        , row : RowStyle msg
-        , buttonRow : RowStyle msg
-        , column : ColumnStyle msg
-        , cardColumn : ColumnStyle msg
-        , sortTable : SortTableStyle msg
-        , selectButton : ButtonStyle msg
-        , progressIndicator : ProgressIndicatorStyle msg
-        , layout : LayoutStyle msg
-        }
-
-    sortTable : Palette -> SortTableStyle msg
-    sortTable palette =
-        { elementTable = []
-        , headerButton = Material.textButton palette
-        , ascIcon = Icons.chevronUp |> Element.html |> Element.el []
-        , descIcon = Icons.chevronDown |> Element.html |> Element.el []
-        , defaultIcon = Element.none
-        }
-
-    style : Palette -> Style msg
-    style palette =
-        { sortTable = sortTable palette
-        , row = Material.row
-        , buttonRow = Material.buttonRow
-        , cardColumn = Material.cardColumn palette
-        , column = Material.column
-        , button = Material.outlinedButton palette
-        , primaryButton = Material.containedButton palette
-        , selectButton = Material.toggleButton palette
-        , tab = Material.tab palette
-        , textInput = Material.textInput palette
-        , chipButton = Material.chip palette
-        , expansionPanel = Material.expansionPanel palette
-        , dialog = Material.alertDialog palette
-        , progressIndicator = Material.progressIndicator palette
-        , layout = Material.layout palette
-        }
-
 
 # Palette
 
@@ -109,7 +61,6 @@ Thus for now we only provide a card containing a list.
 
 @docs cardColumn
 
-
 # Chip
 
 @docs chip, textInput
@@ -131,6 +82,12 @@ The [List widget](https://material.io/components/lists) is a very complex widget
 
 @docs row, column
 
+# Item
+
+A List is build from items.
+You way want to use special items to visually organize the content of your list.
+
+@docs fullBleedDivider, insetDivider, middleDividers, insetTitle, fullBleedTitle
 
 # Progress Indicator
 
@@ -157,9 +114,6 @@ The [List widget](https://material.io/components/lists) is a very complex widget
 To create your own Material Widgets, here are all internal functions.
 Note that you might want to checkout the [file on GitHub](https://github.com/Orasund/elm-ui-widgets/blob/master/src/Widget/Style/Material.elm) if you want to tweak some internal behaviour.
 
-
-## Typography
-
 -}
 
 import Color exposing (Color)
@@ -177,6 +131,7 @@ import Widget.Style
         , ColumnStyle
         , DialogStyle
         , ExpansionPanelStyle
+        , ItemStyle
         , LayoutStyle
         , ProgressIndicatorStyle
         , RowStyle
@@ -184,6 +139,8 @@ import Widget.Style
         , SwitchStyle
         , TabStyle
         , TextInputStyle
+        , DividerStyle
+        , TitleStyle
         )
 import Widget.Style.Customize as Customize
 import Widget.Style.Material.Color as MaterialColor
@@ -1073,6 +1030,145 @@ column =
         }
     }
 
+{-| A divider covering the full length
+-}
+fullBleedDivider : ItemStyle (DividerStyle msg)
+fullBleedDivider =
+    { element =
+        [ Element.width <| Element.fill
+        , Element.height <| Element.px 1
+        , Element.padding 0
+        , Border.widthEach
+            { bottom = 0
+            , left = 1
+            , right = 1
+            , top = 0
+            }
+        ]
+    , content = { element = [Element.width <| Element.fill, Element.height <| Element.px 1
+    ,Color.gray
+            |> fromColor
+            |> Background.color]
+                }
+    }
+
+{-| A divider covering only parts of the width
+-}
+insetDivider : Palette -> ItemStyle (DividerStyle msg)
+insetDivider palette =
+    { element =
+        [ Element.width <| Element.fill
+        , Element.height <| Element.px 1
+        , Border.widthEach
+            { bottom = 0
+            , left = 1
+            , right = 1
+            , top = 0
+            }
+        , Element.paddingEach
+            { bottom = 0
+            , left = 72
+            , right = 0
+            , top = 0
+            }
+        ]
+    , content = { element = [Element.width <| Element.fill, Element.height <| Element.px 1
+    ,Color.gray
+            |> fromColor
+            |> Background.color]
+                }
+    }
+
+{-| A divider in the center
+-}
+middleDividers : Palette -> ItemStyle (DividerStyle msg)
+middleDividers palette =
+    { element =
+        [ Element.width <| Element.fill
+        , Element.height <| Element.px 1
+        , Border.widthEach
+            { bottom = 0
+            , left = 1
+            , right = 1
+            , top = 0
+            }
+        , Element.paddingEach
+            { bottom = 0
+            , left = 16
+            , right = 16
+            , top = 0
+            }
+        ]
+    , content = { element = [Element.width <| Element.fill, Element.height <| Element.px 1
+    ,Color.gray
+            |> fromColor
+            |> Background.color]
+                }
+    }
+
+{-| A title of a section of a list. Comes with a inset divider.
+-}
+insetTitle : Palette -> ItemStyle (TitleStyle msg)
+insetTitle palette =
+    { element =
+        [ Element.width <| Element.fill
+        , Border.widthEach
+            { bottom = 0
+            , left = 1
+            , right = 1
+            , top = 0
+            }
+        , Element.paddingEach
+            { bottom = 0
+            , left = 72
+            , right = 0
+            , top = 0
+            }
+        ]
+    , content = 
+        { elementColumn = 
+            [ Element.width <| Element.fill
+            , Element.spacing <| 12
+            ]
+        , content =
+            { divider = insetDivider palette
+                |> .content
+            , title = Typography.body2 ++ [MaterialColor.gray
+            |> fromColor
+            |> Font.color]
+            }
+        }
+    }
+
+{-| A title of a section of a list. Comes with a full bleed divider.
+-}
+fullBleedTitle : Palette -> ItemStyle (TitleStyle msg)
+fullBleedTitle palette =
+    { element =
+        [ Element.width <| Element.fill
+        , Element.padding 0
+        , Border.widthEach
+            { bottom = 0
+            , left = 1
+            , right = 1
+            , top = 0
+            }
+        ]
+    , content = 
+        { elementColumn = 
+            [ Element.width <| Element.fill
+            , Element.spacing <| 8
+            ]
+        , content =
+            { divider = insetDivider palette
+                |> .content
+            , title = Typography.caption ++ [MaterialColor.gray
+            |> fromColor
+            |> Font.color
+            , Element.paddingXY 16 0]
+            }
+        }
+    }
 
 {-| a Row of buttons.
 
@@ -1130,7 +1226,6 @@ cardColumn palette =
     , content =
         { element =
             [ Element.padding 16
-            , Border.width 1
             , palette.surface
                 |> fromColor
                 |> Background.color
@@ -1154,6 +1249,12 @@ cardColumn palette =
                 , bottomLeft = 0
                 , bottomRight = 0
                 }
+            , Border.widthEach
+                { top = 1
+                , left = 1
+                , right = 1
+                , bottom = 0
+                }
             ]
         , ifLast =
             [ Border.roundEach
@@ -1175,7 +1276,7 @@ cardColumn palette =
                 { top = 0
                 , left = 1
                 , right = 1
-                , bottom = 1
+                , bottom = 0
                 }
             ]
         }
@@ -1285,6 +1386,7 @@ Technical Remarks:
 expansionPanel : Palette -> ExpansionPanelStyle msg
 expansionPanel palette =
     expansionPanelItem palette
+        |> .content
         |> Customize.mapContent
             (\record ->
                 { record
@@ -1313,40 +1415,43 @@ expansionPanel palette =
 This is a small workaround to allow expansion panels within cards.
 
 -}
-expansionPanelItem : Palette -> ExpansionPanelStyle msg
+expansionPanelItem : Palette -> ItemStyle (ExpansionPanelStyle msg)
 expansionPanelItem palette =
-    { elementColumn =
-        [ Background.color <| fromColor <| palette.surface
-        , Element.spacing 14
-        , Element.width <| Element.fill
-        ]
+    { element = []
     , content =
-        { panel =
-            { elementRow =
-                [ Element.spaceEvenly
-                , Element.width <| Element.fill
-                ]
-            , content =
-                { label =
-                    { elementRow = [ Element.spacing 32 ]
-                    , content =
-                        { icon =
-                            { size = 16
-                            , color = MaterialColor.gray
+        { elementColumn =
+            [ Background.color <| fromColor <| palette.surface
+            , Element.spacing 14
+            , Element.width <| Element.fill
+            ]
+        , content =
+            { panel =
+                { elementRow =
+                    [ Element.spaceEvenly
+                    , Element.width <| Element.fill
+                    ]
+                , content =
+                    { label =
+                        { elementRow = [ Element.spacing 32 ]
+                        , content =
+                            { icon =
+                                { size = 16
+                                , color = MaterialColor.gray
+                                }
+                            , text = { elementText = [] }
                             }
-                        , text = { elementText = [] }
+                        }
+                    , expandIcon = expand_more
+                    , collapseIcon = expand_less
+                    , icon =
+                        { size = 24
+                        , color = MaterialColor.gray
                         }
                     }
-                , expandIcon = expand_more
-                , collapseIcon = expand_less
-                , icon =
-                    { size = 24
-                    , color = MaterialColor.gray
-                    }
                 }
-            }
-        , content =
-            { element = [ Element.width <| Element.fill ]
+            , content =
+                { element = [ Element.width <| Element.fill ]
+                }
             }
         }
     }

@@ -1,13 +1,10 @@
-module Internal.ExpansionPanel exposing (ExpansionPanel, expansionPanel)
-
-{-| Part of Material Design Lists
--}
+module Internal.ExpansionPanel exposing (ExpansionPanel, expansionPanel, expansionPanelItem)
 
 import Element exposing (Element)
 import Element.Events as Events
 import Widget.Icon exposing (Icon)
-import Widget.Style exposing (ExpansionPanelStyle)
-
+import Widget.Style exposing (ExpansionPanelStyle,ItemStyle)
+import Internal.List as List exposing (Item)
 
 type alias ExpansionPanel msg =
     { onToggle : Bool -> msg
@@ -51,3 +48,16 @@ expansionPanel style model =
           else
             Element.none
         ]
+
+expansionPanelItem :
+    ItemStyle (ExpansionPanelStyle msg)
+    ->
+        { onToggle : Bool -> msg
+        , icon : Icon
+        , text : String
+        , content : Element msg
+        , isExpanded : Bool
+        }
+    -> Item msg
+expansionPanelItem style model =
+    List.toItem style (\s -> expansionPanel s model)

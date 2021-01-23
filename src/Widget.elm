@@ -4,13 +4,13 @@ module Widget exposing
     , Select, selectButton, select
     , MultiSelect, multiSelect
     , Dialog, modal, dialog
-    , ExpansionPanel, expansionPanel
-    , row, column, buttonRow, buttonColumn
+    , ExpansionPanel, expansionPanel, expansionPanelItem
+    , row, column, Item, itemList, item, divider, buttonRow, buttonColumn
     , SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInput, textInput
     , Tab, tab
     , ProgressIndicator, circularProgressIndicator
-    , buttonSheet
+    , buttonSheet, headerItem
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -82,7 +82,7 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5Rv5jfVdFa1)
 
-@docs ExpansionPanel, expansionPanel
+@docs ExpansionPanel, expansionPanel, expansionPanelItem
 
 
 # List
@@ -91,7 +91,7 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5RJnDVVCKa1)
 
-@docs row, column, buttonRow, buttonColumn, buttonDrawer
+@docs row, column, Item, itemList, item, divider, buttonRow, buttonColumn, buttonDrawer
 
 
 # Sort Table
@@ -152,12 +152,15 @@ import Widget.Style
         , ColumnStyle
         , DialogStyle
         , ExpansionPanelStyle
+        , ItemStyle
         , ProgressIndicatorStyle
         , RowStyle
         , SortTableStyle
         , SwitchStyle
         , TabStyle
         , TextInputStyle
+        , DividerStyle
+        , TitleStyle
         )
 
 
@@ -447,6 +450,27 @@ expansionPanel =
     fun
 
 
+{-| An expansion Panel
+-}
+expansionPanelItem :
+    ItemStyle (ExpansionPanelStyle msg)
+    ->
+        { onToggle : Bool -> msg
+        , icon : Icon
+        , text : String
+        , content : Element msg
+        , isExpanded : Bool
+        }
+    -> Item msg
+expansionPanelItem =
+    let
+        fun : ItemStyle (ExpansionPanelStyle msg) -> ExpansionPanel msg -> Item msg
+        fun =
+            ExpansionPanel.expansionPanelItem
+    in
+    fun
+
+
 
 {----------------------------------------------------------
 - TEXT INPUT
@@ -491,18 +515,69 @@ textInput =
 ----------------------------------------------------------}
 
 
+{-| Item widget type.
+
+Use `Widget.item` if you want to turn a simple element into an item.
+
+-}
+type alias Item msg =
+    List (Attribute msg) -> Element msg
+
+
+{-| Simple element for a list.
+-}
+item : Element msg -> Item msg
+item =
+    List.item
+
+
+{-| A divider.
+-}
+divider : ItemStyle (DividerStyle msg) -> Item msg
+divider =
+    List.divider
+
+{-| A header for a part of a list.
+-}
+headerItem : ItemStyle (TitleStyle msg) -> String -> Item msg
+headerItem =
+    List.headerItem
+
+
 {-| Replacement of `Element.row`
 -}
 row : RowStyle msg -> List (Element msg) -> Element msg
 row =
-    List.row
+    let
+        fun : RowStyle msg -> List (Element msg) -> Element msg
+        fun =
+            List.row
+    in
+    fun
 
 
 {-| Replacement of `Element.column`
 -}
 column : ColumnStyle msg -> List (Element msg) -> Element msg
 column =
-    List.column
+    let
+        fun : ColumnStyle msg -> List (Element msg) -> Element msg
+        fun =
+            List.column
+    in
+    fun
+
+
+{-| Implementation of the Material design list
+-}
+itemList : ColumnStyle msg -> List (Item msg) -> Element msg
+itemList =
+    let
+        fun : ColumnStyle msg -> List (Item msg) -> Element msg
+        fun =
+            List.itemList
+    in
+    fun
 
 
 {-| A row of buttons

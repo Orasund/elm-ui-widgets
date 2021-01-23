@@ -27,7 +27,6 @@ import Widget.Style
         )
 import Widget.Style.Material as Material exposing (Palette)
 
-
 sortTable : Palette -> SortTableStyle msg
 sortTable palette =
     { elementTable = []
@@ -59,4 +58,9 @@ style palette =
     , progressIndicator = Material.progressIndicator palette
     , layout = Material.layout palette
     , switch = Material.switch palette
+    , fullBleedDivider = Material.fullBleedDivider
+    , insetDivider = Material.insetDivider palette
+    , middleDividers = Material.middleDividers palette
+    , insetTitle = Material.insetTitle palette
+    , fullBleedTitle = Material.fullBleedTitle palette
     }

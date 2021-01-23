@@ -1,14 +1,14 @@
 module Widget.Style exposing
     ( IconStyle, ButtonStyle, SwitchStyle, ColumnStyle, DialogStyle, ItemStyle
     , ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle
-    , TabStyle, TextInputStyle, ProgressIndicatorStyle, ButtonSheetStyle
+    , TabStyle, TextInputStyle, ProgressIndicatorStyle, ButtonSheetStyle, DividerStyle, TitleStyle
     )
 
 {-| This module contains style types for every widget.
 
 @docs IconStyle, ButtonStyle, SwitchStyle, ColumnStyle, DialogStyle, ItemStyle
 @docs ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle
-@docs TabStyle, TextInputStyle, ProgressIndicatorStyle, ButtonSheetStyle
+@docs TabStyle, TextInputStyle, ProgressIndicatorStyle, ButtonSheetStyle, DividerStyle, TitleStyle
 
 -}
 
@@ -161,25 +161,48 @@ type alias TabStyle msg =
 
 
 {-| -}
-type alias ItemStyle msg =
-    { element : List (Attribute msg)
-    , ifFirst : List (Attribute msg)
-    , ifLast : List (Attribute msg)
-    , ifSingleton : List (Attribute msg)
-    , otherwise : List (Attribute msg)
+type alias ItemStyle content =
+    { element : List (Attribute Never)
+    , content : content
     }
 
+{-| -}
+type alias DividerStyle msg =
+    { element : List (Attribute msg)
+    }
+
+{-| -}
+type alias TitleStyle msg =
+    { elementColumn : List (Attribute msg)
+    , content : 
+        { divider : DividerStyle msg
+        , title : List (Attribute msg)
+        }
+    }
 
 {-| -}
 type alias RowStyle msg =
     { elementRow : List (Attribute msg)
+    , content :
+        { element : List (Attribute Never)
+        , ifFirst : List (Attribute Never)
+        , ifLast : List (Attribute Never)
+        , ifSingleton : List (Attribute Never)
+        , otherwise : List (Attribute Never)
+        }
     }
 
 
 {-| -}
 type alias ColumnStyle msg =
     { elementColumn : List (Attribute msg)
-    , content : ItemStyle msg
+    , content :
+        { element : List (Attribute Never)
+        , ifFirst : List (Attribute Never)
+        , ifLast : List (Attribute Never)
+        , ifSingleton : List (Attribute Never)
+        , otherwise : List (Attribute Never)
+        }
     }
 
 

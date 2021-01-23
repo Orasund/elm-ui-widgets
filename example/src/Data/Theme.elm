@@ -2,7 +2,7 @@ module Data.Theme exposing (Theme(..), toStyle)
 
 import Data.Style exposing (Style)
 import Data.Style.Material
-import Widget.Style.Material
+import Widget.Style.Material exposing (Palette)
 
 
 type Theme

@@ -3,19 +3,27 @@ module Example.List exposing (Model, Msg, init, subscriptions, update, view)
 import Browser
 import Element exposing (Element)
 import Widget
-import Widget.Style exposing (ColumnStyle)
+import Widget.Style exposing (ColumnStyle,ItemStyle,DividerStyle,TitleStyle)
 import Widget.Style.Material as Material
 
 
 type alias Style style msg =
     { style
         | cardColumn : ColumnStyle msg
+        , insetDivider : ItemStyle (DividerStyle msg)
+        , middleDividers : ItemStyle (DividerStyle msg)
+        , insetTitle : ItemStyle (TitleStyle msg)
+        , fullBleedTitle : ItemStyle (TitleStyle msg)
     }
 
 
 materialStyle : Style {} msg
 materialStyle =
     { cardColumn = Material.cardColumn Material.defaultPalette
+    , insetDivider = Material.insetDivider Material.defaultPalette
+    , middleDividers = Material.middleDividers Material.defaultPalette
+    , insetTitle = Material.insetTitle Material.defaultPalette
+    , fullBleedTitle = Material.fullBleedTitle Material.defaultPalette
     }
 
 
@@ -50,11 +58,16 @@ subscriptions () =
 -}
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
 view _ style () =
-    [ Element.text <| "A"
-    , Element.text <| "B"
-    , Element.text <| "C"
+    [ "Section 1"
+        |> Widget.headerItem style.fullBleedTitle 
+    , Widget.item <| Element.text <| "A"
+    , "Section 2"
+        |> Widget.headerItem style.fullBleedTitle 
+    , Widget.item <| Element.text <| "B"
+    , Widget.divider style.middleDividers 
+    , Widget.item <| Element.text <| "C"
     ]
-        |> Widget.column style.cardColumn
+        |> Widget.itemList style.cardColumn
 
 
 main : Program () Model Msg

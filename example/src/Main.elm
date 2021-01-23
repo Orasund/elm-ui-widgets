@@ -431,12 +431,14 @@ viewLoaded m =
                                           , elem
                                           ]
                                             |> Element.column Grid.simple
+                                            |> Widget.item 
                                          )
                                             :: (if more |> List.isEmpty then
                                                     []
 
                                                 else
-                                                    [ Widget.expansionPanel style.expansionPanelItem
+                                                    [ Widget.divider style.fullBleedDivider
+                                                    , Widget.expansionPanelItem style.expansionPanelItem
                                                         { onToggle =
                                                             always
                                                                 (name
@@ -466,7 +468,7 @@ viewLoaded m =
                                                     ]
                                                )
                                         )
-                                            |> Widget.column style.cardColumn
+                                            |> Widget.itemList style.cardColumn
                                     )
                                 |> Element.wrappedRow
                                     (Grid.simple
