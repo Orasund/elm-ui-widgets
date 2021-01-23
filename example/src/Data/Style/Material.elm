@@ -27,6 +27,7 @@ import Widget.Style
         )
 import Widget.Style.Material as Material exposing (Palette)
 
+
 sortTable : Palette -> SortTableStyle msg
 sortTable palette =
     { elementTable = []

@@ -3,7 +3,7 @@ module Widget.Style.Material.Color exposing
     , accessibleTextColor, accessibleWithTextColor
     , withShade, scaleOpacity
     , dark, gray
-    , toCIELCH, fromCIELCH, shadow
+    , toCIELCH, fromCIELCH, shadow, fromColor, textAndBackground
     )
 
 {-| This module contains functions to adapt color in various ways.
@@ -38,7 +38,7 @@ then the javascript material design implementation.
 
 ## Utility Functions
 
-@docs toCIELCH, fromCIELCH, shadow
+@docs toCIELCH, fromCIELCH, shadow, fromColor, textAndBackground
 
 -}
 
@@ -46,6 +46,8 @@ import Color exposing (Color)
 import Color.Accessibility as Accessibility
 import Color.Convert as Convert
 import Element
+import Element.Background as Background
+import Element.Font as Font
 
 
 {-| Opacity value for hovering over a button
@@ -265,3 +267,24 @@ shadow float =
     , size = 0
     , blur = float
     }
+
+
+{-| Utillity function to convert from Color to Element.Color
+-}
+fromColor : Color -> Element.Color
+fromColor =
+    Color.toRgba >> Element.fromRgb
+
+
+{-| applies a color the background and ensures that the font color is accessible.
+-}
+textAndBackground : Color -> List (Element.Attr decorative msg)
+textAndBackground color =
+    [ color
+        |> fromColor
+        |> Background.color
+    , color
+        |> accessibleTextColor
+        |> fromColor
+        |> Font.color
+    ]

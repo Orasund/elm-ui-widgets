@@ -151,6 +151,7 @@ import Widget.Style
         , ButtonStyle
         , ColumnStyle
         , DialogStyle
+        , DividerStyle
         , ExpansionPanelStyle
         , ItemStyle
         , ProgressIndicatorStyle
@@ -159,7 +160,6 @@ import Widget.Style
         , SwitchStyle
         , TabStyle
         , TextInputStyle
-        , DividerStyle
         , TitleStyle
         )
 
@@ -536,6 +536,7 @@ item =
 divider : ItemStyle (DividerStyle msg) -> Item msg
 divider =
     List.divider
+
 
 {-| A header for a part of a list.
 -}

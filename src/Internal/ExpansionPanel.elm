@@ -2,9 +2,10 @@ module Internal.ExpansionPanel exposing (ExpansionPanel, expansionPanel, expansi
 
 import Element exposing (Element)
 import Element.Events as Events
-import Widget.Icon exposing (Icon)
-import Widget.Style exposing (ExpansionPanelStyle,ItemStyle)
 import Internal.List as List exposing (Item)
+import Widget.Icon exposing (Icon)
+import Widget.Style exposing (ExpansionPanelStyle, ItemStyle)
+
 
 type alias ExpansionPanel msg =
     { onToggle : Bool -> msg
@@ -48,6 +49,7 @@ expansionPanel style model =
           else
             Element.none
         ]
+
 
 expansionPanelItem :
     ItemStyle (ExpansionPanelStyle msg)

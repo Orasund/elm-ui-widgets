@@ -17,16 +17,14 @@ type alias Icon =
 
 {-| For using [icidasset/elm-material-icons](https://dark.elm.dmy.fr/packages/icidasset/elm-material-icons/latest/)
 
-```
-import Material.Icons exposing (offline_bolt)
-import Material.Icons.Types exposing (Coloring(..))
-import Widget.Icon exposing (Icon)
+    import Material.Icons exposing (offline_bolt)
+    import Material.Icons.Types exposing (Coloring(..))
+    import Widget.Icon exposing (Icon)
 
-check : Widget.Icon
-check =
-  Material.Icons.done
-  |> Widget.Icon.elmMaterialIcons Color
-```
+    check : Widget.Icon
+    check =
+        Material.Icons.done
+            |> Widget.Icon.elmMaterialIcons Color
 
 -}
 elmMaterialIcons : (Color -> coloring) -> (Int -> coloring -> Html Never) -> Icon
@@ -39,15 +37,13 @@ elmMaterialIcons wrapper fun =
 
 {-| For using [danmarcab/material-icons](https://dark.elm.dmy.fr/packages/danmarcab/material-icons/latest/)
 
-```
-import Material.Icons.Action
-import Widget.Icon exposing (Icon)
+    import Material.Icons.Action
+    import Widget.Icon exposing (Icon)
 
-check : Widget.Icon
-check =
-  Material.Icons.Action.done
-  |> Widget.Icon.materialIcons
-```
+    check : Widget.Icon
+    check =
+        Material.Icons.Action.done
+            |> Widget.Icon.materialIcons
 
 -}
 materialIcons : (Color -> Int -> Svg Never) -> Icon
@@ -65,15 +61,13 @@ materialIcons fun =
 
 {-| For using [feathericons/elm-feather](https://dark.elm.dmy.fr/packages/feathericons/elm-feather/latest/)
 
-```
-import FeatherIcons
-import Widget.Icon exposing (Icon)
+    import FeatherIcons
+    import Widget.Icon exposing (Icon)
 
-check : Widget.Icon
-check =
-  FeatherIcons.check
-  |> Widget.Icon.elmFeather FeatherIcons.toHtml
-```
+    check : Widget.Icon
+    check =
+        FeatherIcons.check
+            |> Widget.Icon.elmFeather FeatherIcons.toHtml
 
 -}
 elmFeather : (List (Svg.Attribute Never) -> icon -> Html Never) -> icon -> Icon
@@ -91,17 +85,15 @@ elmFeather fun icon =
 
 {-| For using [lattyware/elm-fontawesome](https://dark.elm.dmy.fr/packages/lattyware/elm-fontawesome/latest)
 
-```
-import FontAwesome.Icon
-import FontAwesome.Solid
-import FontAwesome.Svg
-import Widget.Icon exposing (Icon)
+    import FontAwesome.Icon
+    import FontAwesome.Solid
+    import FontAwesome.Svg
+    import Widget.Icon exposing (Icon)
 
-check : Widget.Icon
-check =
-  FontAwesome.Solid.check
-  |> Widget.Icon.elmFontawesome FontAwesome.Svg.viewIcon
-```
+    check : Widget.Icon
+    check =
+        FontAwesome.Solid.check
+            |> Widget.Icon.elmFontawesome FontAwesome.Svg.viewIcon
 
 -}
 elmFontawesome : (icon -> Svg Never) -> icon -> Icon
@@ -122,15 +114,13 @@ elmFontawesome fun icon =
 
 {-| For using [j-panasiuk/elm-ionicons](https://dark.elm.dmy.fr/packages/j-panasiuk/elm-ionicons/latest/)
 
-```
-import Ionicon
-import Widget.Icon exposing (Icon)
+    import Ionicon
+    import Widget.Icon exposing (Icon)
 
-check : Widget.Icon
-check =
-  Ionicon.checkmark
-  |> Widget.Icon.elmIonicons
-```
+    check : Widget.Icon
+    check =
+        Ionicon.checkmark
+            |> Widget.Icon.elmIonicons
 
 -}
 elmIonicons :
@@ -153,19 +143,17 @@ elmIonicons fun =
 
 {-| For using [capitalist/elm-octicons](https://dark.elm.dmy.fr/packages/capitalist/elm-octicons/latest)
 
-```
-import Octicons
-import Widget.Icon exposing (Icon)
+    import Octicons
+    import Widget.Icon exposing (Icon)
 
-check : Widget.Icon
-check =
-  Octicons.check
-    |> Widget.Icon.elmOcticons
-      { withSize = Octicons.size
-      , withColor = Octicons.color
-      , defaultOptions = Octicons.defaultOptions
-      }
-```
+    check : Widget.Icon
+    check =
+        Octicons.check
+            |> Widget.Icon.elmOcticons
+                { withSize = Octicons.size
+                , withColor = Octicons.color
+                , defaultOptions = Octicons.defaultOptions
+                }
 
 -}
 elmOcticons :
@@ -188,15 +176,13 @@ elmOcticons { withSize, withColor, defaultOptions } fun =
 
 {-| For using [jasonliang-dev/elm-heroicons](https://dark.elm.dmy.fr/packages/jasonliang-dev/elm-heroicons/latest)
 
-```
-import Heroicons.Solid
-import Widget.Icon exposing (Icon)
+    import Heroicons.Solid
+    import Widget.Icon exposing (Icon)
 
-check : Widget.Icon
-check =
-  Heroicons.Solid.check
-    |> Widget.Icon.elmHeroicons
-```
+    check : Widget.Icon
+    check =
+        Heroicons.Solid.check
+            |> Widget.Icon.elmHeroicons
 
 -}
 elmHeroicons : (List (Svg.Attribute Never) -> Html Never) -> Icon
@@ -213,15 +199,13 @@ elmHeroicons fun =
 
 {-| For using [lemol/ant-design-icons-elm](https://dark.elm.dmy.fr/packages/lemol/ant-design-icons-elm/latest)
 
-```
-import Ant.Icons.Svg
-import Widget.Icon exposing (Icon)
+    import Ant.Icons.Svg
+    import Widget.Icon exposing (Icon)
 
-check : Widget.Icon
-check =
-  Ant.Icons.Svg.checkOutlined
-    |> Widget.Icon.antDesignIconsElm
-```
+    check : Widget.Icon
+    check =
+        Ant.Icons.Svg.checkOutlined
+            |> Widget.Icon.antDesignIconsElm
 
 -}
 antDesignIconsElm : (List (Svg.Attribute Never) -> Html Never) -> Icon
@@ -238,15 +222,13 @@ antDesignIconsElm fun =
 
 {-| For using [pehota/elm-zondicons](https://dark.elm.dmy.fr/packages/pehota/elm-zondicons/latest)
 
-```
-import Zondicons
-import Widget.Icon exposing (Icon)
+    import Widget.Icon exposing (Icon)
+    import Zondicons
 
-check : Widget.Icon
-check =
-  Zondicons.checkmark
-    |> Widget.Icon.elmZondicons
-```
+    check : Widget.Icon
+    check =
+        Zondicons.checkmark
+            |> Widget.Icon.elmZondicons
 
 -}
 elmZondicons : (List (Svg.Attribute Never) -> Html Never) -> Icon

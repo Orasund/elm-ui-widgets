@@ -10,6 +10,7 @@ import Data.Section as Section exposing (Section(..))
 import Data.Style exposing (Style)
 import Data.Theme as Theme exposing (Theme(..))
 import Element exposing (DeviceClass(..), Element)
+import Element.Input as Input
 import FeatherIcons
 import Framework
 import Framework.Grid as Grid
@@ -26,7 +27,7 @@ import Widget
 import Widget.Icon as Icon
 import Widget.Layout as Layout exposing (Layout, Part)
 import Widget.ScrollingNav as ScrollingNav
-import Element.Input as Input
+
 
 type alias LoadedModel =
     { stateless : Stateless.Model
@@ -360,8 +361,8 @@ view model =
                             , label = "Search"
                             , placeholder =
                                 Just <|
-                                Input.placeholder [] 
-                                    <| Element.text "Search Widgets..."
+                                    Input.placeholder [] <|
+                                        Element.text "Search Widgets..."
                             }
                     }
                 <|
@@ -431,7 +432,7 @@ viewLoaded m =
                                           , elem
                                           ]
                                             |> Element.column Grid.simple
-                                            |> Widget.item 
+                                            |> Widget.item
                                          )
                                             :: (if more |> List.isEmpty then
                                                     []

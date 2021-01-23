@@ -3,7 +3,7 @@ module Example.List exposing (Model, Msg, init, subscriptions, update, view)
 import Browser
 import Element exposing (Element)
 import Widget
-import Widget.Style exposing (ColumnStyle,ItemStyle,DividerStyle,TitleStyle)
+import Widget.Style exposing (ColumnStyle, DividerStyle, ItemStyle, TitleStyle)
 import Widget.Style.Material as Material
 
 
@@ -59,12 +59,12 @@ subscriptions () =
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
 view _ style () =
     [ "Section 1"
-        |> Widget.headerItem style.fullBleedTitle 
+        |> Widget.headerItem style.fullBleedTitle
     , Widget.item <| Element.text <| "A"
     , "Section 2"
-        |> Widget.headerItem style.fullBleedTitle 
+        |> Widget.headerItem style.fullBleedTitle
     , Widget.item <| Element.text <| "B"
-    , Widget.divider style.middleDividers 
+    , Widget.divider style.middleDividers
     , Widget.item <| Element.text <| "C"
     ]
         |> Widget.itemList style.cardColumn

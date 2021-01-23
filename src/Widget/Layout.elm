@@ -31,7 +31,7 @@ import Element.Input as Input
 import Html exposing (Html)
 import Widget exposing (Button, Select, TextInput)
 import Widget.Snackbar as Snackbar exposing (Message)
-import Widget.Style exposing (ButtonStyle, LayoutStyle, TextInputStyle)
+import Widget.Style exposing (LayoutStyle)
 import Widget.Style.Customize as Customize
 
 

@@ -5,7 +5,9 @@ import Widget.Style
         ( ButtonStyle
         , ColumnStyle
         , DialogStyle
+        , DividerStyle
         , ExpansionPanelStyle
+        , ItemStyle
         , LayoutStyle
         , ProgressIndicatorStyle
         , RowStyle
@@ -13,8 +15,6 @@ import Widget.Style
         , SwitchStyle
         , TabStyle
         , TextInputStyle
-        , ItemStyle
-        , DividerStyle
         , TitleStyle
         )
 

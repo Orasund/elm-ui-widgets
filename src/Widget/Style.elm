@@ -1,21 +1,86 @@
 module Widget.Style exposing
-    ( IconStyle, ButtonStyle, SwitchStyle, ColumnStyle, DialogStyle, ItemStyle
-    , ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle
-    , TabStyle, TextInputStyle, ProgressIndicatorStyle, ButtonSheetStyle, DividerStyle, TitleStyle
+    ( IconStyle
+    , ButtonStyle
+    , SwitchStyle
+    , DialogStyle
+    , ExpansionPanelStyle
+    , ColumnStyle, RowStyle, ItemStyle, TitleStyle, DividerStyle
+    , SortTableStyle
+    , TextInputStyle
+    , TabStyle
+    , ProgressIndicatorStyle
+    , SnackbarStyle
+    , LayoutStyle, ButtonSheetStyle
     )
 
 {-| This module contains style types for every widget.
 
-@docs IconStyle, ButtonStyle, SwitchStyle, ColumnStyle, DialogStyle, ItemStyle
-@docs ExpansionPanelStyle, LayoutStyle, RowStyle, SnackbarStyle, SortTableStyle
-@docs TabStyle, TextInputStyle, ProgressIndicatorStyle, ButtonSheetStyle, DividerStyle, TitleStyle
+
+# Icon
+
+@docs IconStyle
+
+
+# Buttons
+
+@docs ButtonStyle
+
+
+# Switch
+
+@docs SwitchStyle
+
+
+# Dialog
+
+@docs DialogStyle
+
+
+# Expansion Panel
+
+@docs ExpansionPanelStyle
+
+
+# List
+
+@docs ColumnStyle, RowStyle, ItemStyle, TitleStyle, DividerStyle
+
+
+# Sort Table
+
+@docs SortTableStyle
+
+
+# Text Input
+
+@docs TextInputStyle
+
+
+# Tab
+
+@docs TabStyle
+
+
+# Progressbar
+
+@docs ProgressIndicatorStyle
+
+
+# Snackbar
+
+@docs SnackbarStyle
+
+
+# Layout
+
+@docs LayoutStyle, ButtonSheetStyle
 
 -}
 
 import Color exposing (Color)
 import Element exposing (Attribute, Element)
 import Html exposing (Html)
-import Widget.Icon as Icon exposing (Icon)
+import Widget.Icon exposing (Icon)
 
 
 type alias IconStyle =
@@ -166,19 +231,22 @@ type alias ItemStyle content =
     , content : content
     }
 
+
 {-| -}
 type alias DividerStyle msg =
     { element : List (Attribute msg)
     }
 
+
 {-| -}
 type alias TitleStyle msg =
     { elementColumn : List (Attribute msg)
-    , content : 
+    , content :
         { divider : DividerStyle msg
         , title : List (Attribute msg)
         }
     }
+
 
 {-| -}
 type alias RowStyle msg =

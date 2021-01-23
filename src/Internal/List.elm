@@ -1,9 +1,9 @@
-module Internal.List exposing (Item, buttonColumn, headerItem,buttonRow, column, item, itemList, row, toItem,divider)
+module Internal.List exposing (Item, buttonColumn, buttonRow, column, divider, headerItem, item, itemList, row, toItem)
 
 import Element exposing (Attribute, Element)
 import Internal.Button exposing (Button)
 import Internal.Select as Select
-import Widget.Style exposing (TitleStyle,DividerStyle,ButtonStyle, ColumnStyle, ItemStyle, RowStyle)
+import Widget.Style exposing (ButtonStyle, ColumnStyle, DividerStyle, ItemStyle, RowStyle, TitleStyle)
 import Widget.Style.Customize as Customize exposing (content)
 
 
@@ -19,31 +19,32 @@ item element =
         }
         (always element)
 
+
 divider : ItemStyle (DividerStyle msg) -> Item msg
 divider style =
-    toItem style (\{element} -> Element.none |> Element.el element )
+    toItem style (\{ element } -> Element.none |> Element.el element)
+
 
 headerItem : ItemStyle (TitleStyle msg) -> String -> Item msg
 headerItem style title =
     toItem style
-        (\{elementColumn,content} -> 
-            [ Element.none 
+        (\{ elementColumn, content } ->
+            [ Element.none
                 |> Element.el content.divider.element
             , title
-                |> Element.text 
+                |> Element.text
                 |> Element.el content.title
             ]
-            |> Element.column elementColumn
+                |> Element.column elementColumn
         )
+
 
 toItem : ItemStyle style -> (style -> Element msg) -> Item msg
 toItem style element =
     \attr ->
         element style.content
             |> Element.el
-                (attr ++ (style.element |> List.map (Element.mapAttribute never))
-                    
-                )
+                (attr ++ (style.element |> List.map (Element.mapAttribute never)))
 
 
 internal :
