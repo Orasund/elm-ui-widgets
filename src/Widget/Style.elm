@@ -173,7 +173,6 @@ type alias ItemStyle msg =
 {-| -}
 type alias RowStyle msg =
     { elementRow : List (Attribute msg)
-    , content : ItemStyle msg
     }
 
 
