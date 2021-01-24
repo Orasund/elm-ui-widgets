@@ -4,7 +4,7 @@ import Browser
 import Element exposing (Element)
 import Set exposing (Set)
 import Widget
-import Widget.Style exposing (ColumnStyle, TextInputStyle)
+import Widget exposing (ColumnStyle, TextInputStyle)
 import Widget.Style.Material as Material
 
 

@@ -2,6 +2,7 @@ module Internal.SortTable exposing
     ( Column
     , ColumnType
     , SortTable
+    , SortTableStyle
     , floatColumn
     , intColumn
     , sortTable
@@ -9,9 +10,28 @@ module Internal.SortTable exposing
     , unsortableColumn
     )
 
-import Element exposing (Element, Length)
-import Internal.Button as Button
-import Widget.Style exposing (SortTableStyle)
+import Color exposing (Color)
+import Element exposing (Attribute, Element, Length)
+import Html exposing (Html)
+import Internal.Button as Button exposing (ButtonStyle)
+import Widget.Icon exposing (Icon)
+
+
+{-| Technical Remark:
+
+  - If icons are defined in Svg, they might not display correctly.
+    To avoid that, make sure to wrap them in `Element.html >> Element.el []`
+
+-}
+type alias SortTableStyle msg =
+    { elementTable : List (Attribute msg)
+    , content :
+        { header : ButtonStyle msg
+        , ascIcon : Icon
+        , descIcon : Icon
+        , defaultIcon : Icon
+        }
+    }
 
 
 {-| A Sortable list allows you to sort coulmn.

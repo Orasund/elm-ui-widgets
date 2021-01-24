@@ -1,16 +1,30 @@
-module Internal.Button exposing
-    ( Button
-    , TextButton
-    , button
-    , iconButton
-    , textButton
-    )
+module Internal.Button exposing (Button, ButtonStyle, TextButton, button, iconButton, textButton)
 
-import Element exposing (Element)
+import Color exposing (Color)
+import Element exposing (Attribute, Element)
 import Element.Input as Input
 import Element.Region as Region
-import Widget.Icon exposing (Icon)
-import Widget.Style exposing (ButtonStyle)
+import Html exposing (Html)
+import Widget.Icon exposing (Icon, IconStyle)
+
+
+type alias ButtonStyle msg =
+    { elementButton : List (Attribute msg)
+    , ifDisabled : List (Attribute msg)
+    , ifActive : List (Attribute msg)
+    , otherwise : List (Attribute msg)
+    , content :
+        { elementRow : List (Attribute msg)
+        , content :
+            { text : { contentText : List (Attribute msg) }
+            , icon :
+                { ifDisabled : IconStyle
+                , ifActive : IconStyle
+                , otherwise : IconStyle
+                }
+            }
+        }
+    }
 
 
 type alias Button msg =

@@ -1,4 +1,4 @@
-module Widget.Icon exposing (Icon, antDesignIconsElm, elmFeather, elmFontawesome, elmHeroicons, elmIonicons, elmMaterialIcons, elmOcticons, elmZondicons, materialIcons)
+module Widget.Icon exposing (Icon, IconStyle, antDesignIconsElm, elmFeather, elmFontawesome, elmHeroicons, elmIonicons, elmMaterialIcons, elmOcticons, elmZondicons, materialIcons)
 
 import Color exposing (Color)
 import Dict exposing (size)
@@ -6,6 +6,12 @@ import Element exposing (Element)
 import Html exposing (Html)
 import Svg exposing (Svg)
 import Svg.Attributes
+
+
+type alias IconStyle =
+    { size : Int
+    , color : Color
+    }
 
 
 type alias Icon =

@@ -8,11 +8,11 @@ module Widget.Style.Material exposing
     , alertDialog
     , expansionPanel, expansionPanelItem
     , row, column
-    , fullBleedDivider, insetDivider, middleDividers, insetTitle, fullBleedTitle
+    , fullBleedDivider, insetDivider, middleDividers, insetHeader, fullBleedHeader
     , progressIndicator
     , snackbar
     , tab, tabButton
-    , layout
+    , layout,sortTable
     )
 
 {-| ![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
@@ -90,13 +90,16 @@ The [List widget](https://material.io/components/lists) is a very complex widget
 A List is build from items.
 You way want to use special items to visually organize the content of your list.
 
-@docs fullBleedDivider, insetDivider, middleDividers, insetTitle, fullBleedTitle
+@docs fullBleedDivider, insetDivider, middleDividers, insetHeader, fullBleedHeader
 
 
 # Progress Indicator
 
 @docs progressIndicator
 
+# Sort Table
+
+@docs sortTable
 
 # Snackbar
 
@@ -121,6 +124,10 @@ Note that you might want to checkout the [file on GitHub](https://github.com/Ora
 -}
 
 import Color exposing (Color)
+import Internal.Button exposing (ButtonStyle)
+import Internal.Dialog exposing (DialogStyle)
+import Internal.ExpansionPanel exposing (ExpansionPanelStyle)
+import Internal.List exposing (ColumnStyle, DividerStyle, ItemStyle, RowStyle, HeaderStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Chip as Chip
 import Internal.Material.Dialog as Dialog
@@ -133,23 +140,14 @@ import Internal.Material.Snackbar as Snackbar
 import Internal.Material.Switch as Switch
 import Internal.Material.Tab as Tab
 import Internal.Material.TextInput as TextInput
-import Widget.Style
-    exposing
-        ( ButtonStyle
-        , ColumnStyle
-        , DialogStyle
-        , DividerStyle
-        , ExpansionPanelStyle
-        , ItemStyle
-        , LayoutStyle
-        , ProgressIndicatorStyle
-        , RowStyle
-        , SnackbarStyle
-        , SwitchStyle
-        , TabStyle
-        , TextInputStyle
-        , TitleStyle
-        )
+import Internal.Material.SortTable as SortTable
+import Internal.ProgressIndicator exposing (ProgressIndicatorStyle)
+import Internal.Switch exposing (SwitchStyle)
+import Internal.Tab exposing (TabStyle)
+import Internal.TextInput exposing (TextInputStyle)
+import Widget.Layout exposing (LayoutStyle)
+import Widget.Snackbar exposing (SnackbarStyle)
+import Internal.SortTable exposing (SortTableStyle)
 
 
 
@@ -346,18 +344,18 @@ middleDividers =
     List.middleDividers
 
 
-{-| A title of a section of a list. Comes with a inset divider.
+{-| A header of a section of a list. Comes with a inset divider.
 -}
-insetTitle : Palette -> ItemStyle (TitleStyle msg)
-insetTitle =
-    List.insetTitle
+insetHeader : Palette -> ItemStyle (HeaderStyle msg)
+insetHeader =
+    List.insetHeader
 
 
-{-| A title of a section of a list. Comes with a full bleed divider.
+{-| A header of a section of a list. Comes with a full bleed divider.
 -}
-fullBleedTitle : Palette -> ItemStyle (TitleStyle msg)
-fullBleedTitle =
-    List.fullBleedTitle
+fullBleedHeader : Palette -> ItemStyle (HeaderStyle msg)
+fullBleedHeader =
+    List.fullBleedHeader
 
 
 {-| a Row of buttons.
@@ -440,6 +438,13 @@ progressIndicator : Palette -> ProgressIndicatorStyle msg
 progressIndicator =
     ProgressIndicator.progressIndicator
 
+--------------------------------------------------------------------------------
+--  SORT TABLE
+--------------------------------------------------------------------------------
+
+sortTable : Palette -> SortTableStyle msg
+sortTable =
+    SortTable.sortTable
 
 
 {-------------------------------------------------------------------------------

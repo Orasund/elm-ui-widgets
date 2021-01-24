@@ -1,16 +1,16 @@
 module Widget exposing
-    ( Button, TextButton, iconButton, textButton, button
-    , Switch, switch
+    ( ButtonStyle, Button, TextButton, iconButton, textButton, button
+    , SwitchStyle,Switch, switch
     , Select, selectButton, select
     , MultiSelect, multiSelect
-    , Dialog, modal, dialog
-    , ExpansionPanel, expansionPanel, expansionPanelItem
-    , row, column, Item, itemList, item, divider, buttonRow, buttonColumn
-    , SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
-    , TextInput, textInput
-    , Tab, tab
-    , ProgressIndicator, circularProgressIndicator
-    , buttonSheet, headerItem
+    , DialogStyle, Dialog, modal, dialog
+    , ExpansionPanelStyle, ExpansionPanel, expansionPanel, expansionPanelItem
+    , ItemStyle, DividerStyle, HeaderStyle, RowStyle, ColumnStyle, row, column, Item, itemList, item, divider, buttonRow, buttonColumn
+    , SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
+    , TextInputStyle,TextInput, textInput
+    , TabStyle,Tab, tab
+    , ProgressIndicatorStyle,ProgressIndicator, circularProgressIndicator
+    , headerItem
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -44,12 +44,12 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5QGZ3hgPLa1)
 
-@docs Button, TextButton, iconButton, textButton, button
+@docs ButtonStyle, Button, TextButton, iconButton, textButton, button
 
 
 # Switch
 
-@docs Switch, switch
+@docs SwitchStyle, Switch, switch
 
 
 # Select
@@ -73,7 +73,7 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5Rdz625TZa1)
 
-@docs Dialog, modal, dialog
+@docs DialogStyle, Dialog, modal, dialog
 
 
 # Expansion Panel
@@ -82,7 +82,7 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5Rv5jfVdFa1)
 
-@docs ExpansionPanel, expansionPanel, expansionPanelItem
+@docs ExpansionPanelStyle, ExpansionPanel, expansionPanel, expansionPanelItem
 
 
 # List
@@ -91,7 +91,16 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5RJnDVVCKa1)
 
-@docs row, column, Item, itemList, item, divider, buttonRow, buttonColumn, buttonDrawer
+## Row
+
+@docs RowStyle, row, buttonRow
+
+## Column
+@docs ColumnStyle, column, buttonColumn
+
+## Item
+
+@docs ItemStyle, DividerStyle, HeaderStyle, Item,itemList, item, divider, headerItem, buttonDrawer
 
 
 # Sort Table
@@ -100,7 +109,7 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5RXw44B4Ja1)
 
-@docs SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
+@docs SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
 
 
 # Text Input
@@ -109,7 +118,7 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5S6cvWCmBa1)
 
-@docs TextInput, textInput
+@docs TextInputStyle, TextInput, textInput
 
 
 # Tab
@@ -118,7 +127,7 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5Sdbvp4jZa1)
 
-@docs Tab, tab
+@docs TabStyle, Tab, tab
 
 
 # Progress Indicator
@@ -127,13 +136,14 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/c47GJktH2bqa1)
 
-@docs ProgressIndicator, circularProgressIndicator
+@docs ProgressIndicatorStyle,ProgressIndicator, circularProgressIndicator
 
 -}
 
 import Color exposing (Color)
 import Element exposing (Attribute, Element, Length)
 import Element.Input exposing (Placeholder)
+import Html exposing (Html)
 import Internal.Button as Button
 import Internal.Dialog as Dialog
 import Internal.ExpansionPanel as ExpansionPanel
@@ -145,29 +155,20 @@ import Internal.Switch as Switch
 import Internal.Tab as Tab
 import Internal.TextInput as TextInput
 import Set exposing (Set)
-import Widget.Style
-    exposing
-        ( ButtonSheetStyle
-        , ButtonStyle
-        , ColumnStyle
-        , DialogStyle
-        , DividerStyle
-        , ExpansionPanelStyle
-        , ItemStyle
-        , ProgressIndicatorStyle
-        , RowStyle
-        , SortTableStyle
-        , SwitchStyle
-        , TabStyle
-        , TextInputStyle
-        , TitleStyle
-        )
+import Widget.Icon exposing (Icon)
 
 
 
 {----------------------------------------------------------
 - ICON
 ----------------------------------------------------------}
+
+
+{-| -}
+type alias IconStyle =
+    { size : Int
+    , color : Color
+    }
 
 
 type alias Icon =
@@ -181,6 +182,26 @@ type alias Icon =
 {----------------------------------------------------------
 - BUTTON
 ----------------------------------------------------------}
+
+
+{-| -}
+type alias ButtonStyle msg =
+    { elementButton : List (Attribute msg)
+    , ifDisabled : List (Attribute msg)
+    , ifActive : List (Attribute msg)
+    , otherwise : List (Attribute msg)
+    , content :
+        { elementRow : List (Attribute msg)
+        , content :
+            { text : { contentText : List (Attribute msg) }
+            , icon :
+                { ifDisabled : IconStyle
+                , ifActive : IconStyle
+                , otherwise : IconStyle
+                }
+            }
+        }
+    }
 
 
 {-| Button widget type
@@ -264,6 +285,30 @@ button =
 {----------------------------------------------------------
 - SWITCH
 ----------------------------------------------------------}
+
+
+{-| -}
+type alias SwitchStyle msg =
+    { elementButton : List (Attribute msg)
+    , content :
+        { element : List (Attribute msg)
+        , ifDisabled : List (Attribute msg)
+        , ifActive : List (Attribute msg)
+        , otherwise : List (Attribute msg)
+        }
+    , contentInFront :
+        { element : List (Attribute msg)
+        , ifDisabled : List (Attribute msg)
+        , ifActive : List (Attribute msg)
+        , otherwise : List (Attribute msg)
+        , content :
+            { element : List (Attribute msg)
+            , ifDisabled : List (Attribute msg)
+            , ifActive : List (Attribute msg)
+            , otherwise : List (Attribute msg)
+            }
+        }
+    }
 
 
 {-| Switch widget type
@@ -370,6 +415,27 @@ multiSelect =
 ----------------------------------------------------------}
 
 
+{-| -}
+type alias DialogStyle msg =
+    { elementColumn : List (Attribute msg)
+    , content :
+        { title :
+            { contentText : List (Attribute msg)
+            }
+        , text :
+            { contentText : List (Attribute msg)
+            }
+        , buttons :
+            { elementRow : List (Attribute msg)
+            , content :
+                { accept : ButtonStyle msg
+                , dismiss : ButtonStyle msg
+                }
+            }
+        }
+    }
+
+
 {-| Dialog widget type
 -}
 type alias Dialog msg =
@@ -416,6 +482,37 @@ dialog =
 {----------------------------------------------------------
 - EXPANSION PANEL
 ----------------------------------------------------------}
+
+
+{-| Technical Remark:
+
+  - If icons are defined in Svg, they might not display correctly.
+    To avoid that, make sure to wrap them in `Element.html >> Element.el []`
+
+-}
+type alias ExpansionPanelStyle msg =
+    { elementColumn : List (Attribute msg)
+    , content :
+        { panel :
+            { elementRow : List (Attribute msg)
+            , content :
+                { label :
+                    { elementRow : List (Attribute msg)
+                    , content :
+                        { icon : IconStyle
+                        , text : { elementText : List (Attribute msg) }
+                        }
+                    }
+                , expandIcon : Icon
+                , collapseIcon : Icon
+                , icon : IconStyle
+                }
+            }
+        , content :
+            { element : List (Attribute msg)
+            }
+        }
+    }
 
 
 {-| Expansion Panel widget type
@@ -477,6 +574,21 @@ expansionPanelItem =
 ----------------------------------------------------------}
 
 
+{-| -}
+type alias TextInputStyle msg =
+    { elementRow : List (Attribute msg)
+    , content :
+        { chips :
+            { elementRow : List (Attribute msg)
+            , content : ButtonStyle msg
+            }
+        , text :
+            { elementTextInput : List (Attribute msg)
+            }
+        }
+    }
+
+
 {-| Text Input widget type
 -}
 type alias TextInput msg =
@@ -515,6 +627,55 @@ textInput =
 ----------------------------------------------------------}
 
 
+{-| -}
+type alias ItemStyle content =
+    { element : List (Attribute Never)
+    , content : content
+    }
+
+
+{-| -}
+type alias DividerStyle msg =
+    { element : List (Attribute msg)
+    }
+
+
+{-| -}
+type alias HeaderStyle msg =
+    { elementColumn : List (Attribute msg)
+    , content :
+        { divider : DividerStyle msg
+        , title : List (Attribute msg)
+        }
+    }
+
+
+{-| -}
+type alias RowStyle msg =
+    { elementRow : List (Attribute msg)
+    , content :
+        { element : List (Attribute Never)
+        , ifFirst : List (Attribute Never)
+        , ifLast : List (Attribute Never)
+        , ifSingleton : List (Attribute Never)
+        , otherwise : List (Attribute Never)
+        }
+    }
+
+
+{-| -}
+type alias ColumnStyle msg =
+    { elementColumn : List (Attribute msg)
+    , content :
+        { element : List (Attribute Never)
+        , ifFirst : List (Attribute Never)
+        , ifLast : List (Attribute Never)
+        , ifSingleton : List (Attribute Never)
+        , otherwise : List (Attribute Never)
+        }
+    }
+
+
 {-| Item widget type.
 
 Use `Widget.item` if you want to turn a simple element into an item.
@@ -540,7 +701,7 @@ divider =
 
 {-| A header for a part of a list.
 -}
-headerItem : ItemStyle (TitleStyle msg) -> String -> Item msg
+headerItem : ItemStyle (HeaderStyle msg) -> String -> Item msg
 headerItem =
     List.headerItem
 
@@ -605,25 +766,27 @@ buttonColumn =
     List.buttonColumn
 
 
-{-| A side sheet containing only buttons. Will use the full hight.
--}
-buttonSheet :
-    ButtonSheetStyle msg
-    -> List (Button msg)
-    -> Element msg
-buttonSheet style actions =
-    actions
-        |> List.map (button style.content.content)
-        |> Element.column
-            (style.content.elementColumn ++ [ Element.width <| Element.fill ])
-        |> Element.el
-            (style.element ++ [ Element.height <| Element.fill ])
-
-
 
 {----------------------------------------------------------
 - SORT TABLE
 ----------------------------------------------------------}
+
+
+{-| Technical Remark:
+
+  - If icons are defined in Svg, they might not display correctly.
+    To avoid that, make sure to wrap them in `Element.html >> Element.el []`
+
+-}
+type alias SortTableStyle msg =
+    { elementTable : List (Attribute msg)
+    , content :
+        { header : ButtonStyle msg
+        , ascIcon : Icon
+        , descIcon : Icon
+        , defaultIcon : Icon
+        }
+    }
 
 
 {-| Column for the Sort Table widget type
@@ -728,6 +891,19 @@ sortTable =
 ----------------------------------------------------------}
 
 
+{-| -}
+type alias TabStyle msg =
+    { elementColumn : List (Attribute msg)
+    , content :
+        { tabs :
+            { elementRow : List (Attribute msg)
+            , content : ButtonStyle msg
+            }
+        , content : List (Attribute msg)
+        }
+    }
+
+
 {-| Tab widget type
 -}
 type alias Tab msg =
@@ -758,6 +934,12 @@ tab =
 {----------------------------------------------------------
 - PROGRESS INDICATOR
 ----------------------------------------------------------}
+
+
+{-| -}
+type alias ProgressIndicatorStyle msg =
+    { elementFunction : Maybe Float -> Element msg
+    }
 
 
 {-| Progress Indicator widget type

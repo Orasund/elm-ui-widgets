@@ -1,10 +1,40 @@
-module Internal.ExpansionPanel exposing (ExpansionPanel, expansionPanel, expansionPanelItem)
+module Internal.ExpansionPanel exposing (ExpansionPanel, ExpansionPanelStyle, expansionPanel, expansionPanelItem)
 
-import Element exposing (Element)
+import Element exposing (Attribute, Element)
 import Element.Events as Events
-import Internal.List as List exposing (Item)
-import Widget.Icon exposing (Icon)
-import Widget.Style exposing (ExpansionPanelStyle, ItemStyle)
+import Internal.List as List exposing (Item, ItemStyle)
+import Widget.Icon exposing (Icon, IconStyle)
+
+
+{-| Technical Remark:
+
+  - If icons are defined in Svg, they might not display correctly.
+    To avoid that, make sure to wrap them in `Element.html >> Element.el []`
+
+-}
+type alias ExpansionPanelStyle msg =
+    { elementColumn : List (Attribute msg)
+    , content :
+        { panel :
+            { elementRow : List (Attribute msg)
+            , content :
+                { label :
+                    { elementRow : List (Attribute msg)
+                    , content :
+                        { icon : IconStyle
+                        , text : { elementText : List (Attribute msg) }
+                        }
+                    }
+                , expandIcon : Icon
+                , collapseIcon : Icon
+                , icon : IconStyle
+                }
+            }
+        , content :
+            { element : List (Attribute msg)
+            }
+        }
+    }
 
 
 type alias ExpansionPanel msg =

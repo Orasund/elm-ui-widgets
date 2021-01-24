@@ -1,10 +1,58 @@
-module Internal.List exposing (Item, buttonColumn, buttonRow, column, divider, headerItem, item, itemList, row, toItem)
+module Internal.List exposing (ColumnStyle, DividerStyle, Item, ItemStyle, RowStyle, HeaderStyle, buttonColumn, buttonRow, column, divider, headerItem, item, itemList, row, toItem)
 
 import Element exposing (Attribute, Element)
-import Internal.Button exposing (Button)
+import Internal.Button exposing (Button, ButtonStyle)
 import Internal.Select as Select
-import Widget.Style exposing (ButtonStyle, ColumnStyle, DividerStyle, ItemStyle, RowStyle, TitleStyle)
 import Widget.Style.Customize as Customize exposing (content)
+
+
+{-| -}
+type alias ItemStyle content =
+    { element : List (Attribute Never)
+    , content : content
+    }
+
+
+{-| -}
+type alias DividerStyle msg =
+    { element : List (Attribute msg)
+    }
+
+
+{-| -}
+type alias HeaderStyle msg =
+    { elementColumn : List (Attribute msg)
+    , content :
+        { divider : DividerStyle msg
+        , title : List (Attribute msg)
+        }
+    }
+
+
+{-| -}
+type alias RowStyle msg =
+    { elementRow : List (Attribute msg)
+    , content :
+        { element : List (Attribute Never)
+        , ifFirst : List (Attribute Never)
+        , ifLast : List (Attribute Never)
+        , ifSingleton : List (Attribute Never)
+        , otherwise : List (Attribute Never)
+        }
+    }
+
+
+{-| -}
+type alias ColumnStyle msg =
+    { elementColumn : List (Attribute msg)
+    , content :
+        { element : List (Attribute Never)
+        , ifFirst : List (Attribute Never)
+        , ifLast : List (Attribute Never)
+        , ifSingleton : List (Attribute Never)
+        , otherwise : List (Attribute Never)
+        }
+    }
 
 
 type alias Item msg =
@@ -25,7 +73,7 @@ divider style =
     toItem style (\{ element } -> Element.none |> Element.el element)
 
 
-headerItem : ItemStyle (TitleStyle msg) -> String -> Item msg
+headerItem : ItemStyle (HeaderStyle msg) -> String -> Item msg
 headerItem style title =
     toItem style
         (\{ elementColumn, content } ->

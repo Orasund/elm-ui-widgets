@@ -8,16 +8,13 @@ module Internal.Material.ExpansionPanel exposing
 import Color
 import Element
 import Element.Background as Background
+import Internal.ExpansionPanel exposing (ExpansionPanelStyle)
+import Internal.List exposing (ItemStyle)
 import Internal.Material.Icon as Icon
 import Internal.Material.Palette exposing (Palette)
 import Svg
 import Svg.Attributes
 import Widget.Icon as Icon exposing (Icon)
-import Widget.Style
-    exposing
-        ( ExpansionPanelStyle
-        , ItemStyle
-        )
 import Widget.Style.Customize as Customize
 import Widget.Style.Material.Color as MaterialColor
 

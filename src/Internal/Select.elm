@@ -2,10 +2,9 @@ module Internal.Select exposing (MultiSelect, Select, multiSelect, select, selec
 
 import Element exposing (Element)
 import Element.Input as Input
-import Internal.Button exposing (Button)
+import Internal.Button exposing (Button, ButtonStyle)
 import Set exposing (Set)
 import Widget.Icon exposing (Icon)
-import Widget.Style exposing (ButtonStyle)
 
 
 type alias Select msg =

@@ -1,9 +1,35 @@
-module Internal.Switch exposing (Switch, switch)
+module Internal.Switch exposing (Switch, SwitchStyle, switch)
 
-import Element exposing (Element)
+import Color exposing (Color)
+import Element exposing (Attribute, Element)
 import Element.Input as Input
 import Element.Region as Region
-import Widget.Style exposing (SwitchStyle)
+import Html exposing (Html)
+import Widget.Icon exposing (Icon)
+
+
+{-| -}
+type alias SwitchStyle msg =
+    { elementButton : List (Attribute msg)
+    , content :
+        { element : List (Attribute msg)
+        , ifDisabled : List (Attribute msg)
+        , ifActive : List (Attribute msg)
+        , otherwise : List (Attribute msg)
+        }
+    , contentInFront :
+        { element : List (Attribute msg)
+        , ifDisabled : List (Attribute msg)
+        , ifActive : List (Attribute msg)
+        , otherwise : List (Attribute msg)
+        , content :
+            { element : List (Attribute msg)
+            , ifDisabled : List (Attribute msg)
+            , ifActive : List (Attribute msg)
+            , otherwise : List (Attribute msg)
+            }
+        }
+    }
 
 
 type alias Switch msg =

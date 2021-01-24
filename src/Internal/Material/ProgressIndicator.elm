@@ -3,12 +3,9 @@ module Internal.Material.ProgressIndicator exposing (determinateCircularIcon, in
 import Color
 import Element exposing (Attribute, Element)
 import Internal.Material.Palette exposing (Palette)
+import Internal.ProgressIndicator exposing (ProgressIndicatorStyle)
 import Svg
 import Svg.Attributes
-import Widget.Style
-    exposing
-        ( ProgressIndicatorStyle
-        )
 
 
 indeterminateCircularIcon : Color.Color -> List (Attribute msg) -> Element msg

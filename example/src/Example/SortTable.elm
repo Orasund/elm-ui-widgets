@@ -3,7 +3,7 @@ module Example.SortTable exposing (Model, Msg, init, subscriptions, update, view
 import Browser
 import Element exposing (Element)
 import Widget
-import Widget.Style exposing (SortTableStyle)
+import Widget exposing (SortTableStyle)
 import Widget.Style.Material as Material
 
 

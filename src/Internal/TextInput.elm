@@ -1,9 +1,23 @@
-module Internal.TextInput exposing (TextInput, textInput)
+module Internal.TextInput exposing (TextInput, TextInputStyle, textInput)
 
-import Element exposing (Element)
+import Element exposing (Attribute, Element)
 import Element.Input as Input exposing (Placeholder)
-import Internal.Button as Button exposing (Button)
-import Widget.Style exposing (TextInputStyle)
+import Internal.Button as Button exposing (Button, ButtonStyle)
+
+
+{-| -}
+type alias TextInputStyle msg =
+    { elementRow : List (Attribute msg)
+    , content :
+        { chips :
+            { elementRow : List (Attribute msg)
+            , content : ButtonStyle msg
+            }
+        , text :
+            { elementTextInput : List (Attribute msg)
+            }
+        }
+    }
 
 
 type alias TextInput msg =

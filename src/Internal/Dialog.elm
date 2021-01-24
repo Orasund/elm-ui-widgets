@@ -1,10 +1,33 @@
-module Internal.Dialog exposing (Dialog, dialog, modal)
+module Internal.Dialog exposing (Dialog, DialogStyle, dialog, modal)
 
+import Color exposing (Color)
 import Element exposing (Attribute, Element)
 import Element.Background as Background
 import Element.Events as Events
-import Internal.Button as Button exposing (TextButton)
-import Widget.Style exposing (DialogStyle)
+import Html exposing (Html)
+import Internal.Button as Button exposing (ButtonStyle, TextButton)
+import Widget.Icon exposing (Icon)
+
+
+{-| -}
+type alias DialogStyle msg =
+    { elementColumn : List (Attribute msg)
+    , content :
+        { title :
+            { contentText : List (Attribute msg)
+            }
+        , text :
+            { contentText : List (Attribute msg)
+            }
+        , buttons :
+            { elementRow : List (Attribute msg)
+            , content :
+                { accept : ButtonStyle msg
+                , dismiss : ButtonStyle msg
+                }
+            }
+        }
+    }
 
 
 type alias Dialog msg =

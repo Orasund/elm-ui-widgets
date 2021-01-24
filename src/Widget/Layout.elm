@@ -1,6 +1,7 @@
 module Widget.Layout exposing
     ( Layout, Part(..), init, timePassed, view
     , activate, queueMessage
+    , LayoutStyle, buttonSheet
     )
 
 {-| Combines multiple concepts from the [material design specification](https://material.io/components/), namely:
@@ -26,13 +27,67 @@ It is responsive and changes view to apply to the [material design guidelines](h
 -}
 
 import Array
+import Color exposing (Color)
 import Element exposing (Attribute, DeviceClass(..), Element)
 import Element.Input as Input
 import Html exposing (Html)
-import Widget exposing (Button, Select, TextInput)
-import Widget.Snackbar as Snackbar exposing (Message)
-import Widget.Style exposing (LayoutStyle)
+import Internal.Button as Button exposing (Button, ButtonStyle)
+import Internal.Dialog as Dialog
+import Internal.Select as Select exposing (Select)
+import Internal.TextInput as TextInput exposing (TextInput, TextInputStyle)
+import Widget.Icon exposing (Icon, IconStyle)
+import Widget.Snackbar as Snackbar exposing (Message, SnackbarStyle)
 import Widget.Style.Customize as Customize
+
+
+{-| -}
+type alias ButtonSheetStyle msg =
+    { element : List (Attribute msg)
+    , content :
+        { elementColumn : List (Attribute msg)
+        , content : ButtonStyle msg
+        }
+    }
+
+
+{-| A side sheet containing only buttons. Will use the full hight.
+-}
+buttonSheet :
+    ButtonSheetStyle msg
+    -> List (Button msg)
+    -> Element msg
+buttonSheet style actions =
+    actions
+        |> List.map (Button.button style.content.content)
+        |> Element.column
+            (style.content.elementColumn ++ [ Element.width <| Element.fill ])
+        |> Element.el
+            (style.element ++ [ Element.height <| Element.fill ])
+
+
+{-| Technical Remark:
+
+  - If icons are defined in Svg, they might not display correctly.
+    To avoid that, make sure to wrap them in `Element.html >> Element.el []`
+
+-}
+type alias LayoutStyle msg =
+    { container : List (Attribute msg)
+    , snackbar : SnackbarStyle msg
+    , layout : List (Attribute msg) -> Element msg -> Html msg
+    , header : List (Attribute msg)
+    , sheet : List (Attribute msg)
+    , sheetButton : ButtonStyle msg
+    , menuButton : ButtonStyle msg
+    , menuTabButton : ButtonStyle msg
+    , menuIcon : Icon
+    , moreVerticalIcon : Icon
+    , spacing : Int
+    , title : List (Attribute msg)
+    , searchIcon : Icon
+    , search : TextInputStyle msg
+    , searchFill : TextInputStyle msg
+    }
 
 
 {-| The currently visible part: either the left sheet, right sheet or the search bar
@@ -156,7 +211,7 @@ viewNav style { title, menu, deviceClass, onChangedSidebar, primaryActions, more
             || (deviceClass == Tablet)
             || ((menu.options |> List.length) > 5)
        then
-        [ Widget.iconButton style.menuButton
+        [ Button.iconButton style.menuButton
             { onPress = Just <| onChangedSidebar <| Just LeftSheet
             , icon = style.menuIcon
             , text = "Menu"
@@ -176,8 +231,8 @@ viewNav style { title, menu, deviceClass, onChangedSidebar, primaryActions, more
        else
         [ title |> Element.el style.title
         , menu
-            |> Widget.select
-            |> List.map (Widget.selectButton style.menuTabButton)
+            |> Select.select
+            |> List.map (Select.selectButton style.menuTabButton)
             |> Element.row
                 [ Element.width <| Element.shrink
                 ]
@@ -194,7 +249,7 @@ viewNav style { title, menu, deviceClass, onChangedSidebar, primaryActions, more
         search
             |> Maybe.map
                 (\{ onChange, text, label } ->
-                    Widget.textInput style.search
+                    TextInput.textInput style.search
                         { chips = []
                         , onChange = onChange
                         , text = text
@@ -210,7 +265,7 @@ viewNav style { title, menu, deviceClass, onChangedSidebar, primaryActions, more
             |> Maybe.map
                 (\{ label } ->
                     if deviceClass == Tablet then
-                        [ Widget.button style.menuButton
+                        [ Button.button style.menuButton
                             { onPress = Just <| onChangedSidebar <| Just Search
                             , icon = style.searchIcon
                             , text = label
@@ -218,7 +273,7 @@ viewNav style { title, menu, deviceClass, onChangedSidebar, primaryActions, more
                         ]
 
                     else if deviceClass == Phone then
-                        [ Widget.iconButton style.menuButton
+                        [ Button.iconButton style.menuButton
                             { onPress = Just <| onChangedSidebar <| Just Search
                             , icon = style.searchIcon
                             , text = label
@@ -232,16 +287,16 @@ viewNav style { title, menu, deviceClass, onChangedSidebar, primaryActions, more
       , primaryActions
             |> List.map
                 (if deviceClass == Phone then
-                    Widget.iconButton style.menuButton
+                    Button.iconButton style.menuButton
 
                  else
-                    Widget.button style.menuButton
+                    Button.button style.menuButton
                 )
       , if moreActions |> List.isEmpty then
             []
 
         else
-            [ Widget.iconButton style.menuButton
+            [ Button.iconButton style.menuButton
                 { onPress = Just <| onChangedSidebar <| Just RightSheet
                 , icon = style.moreVerticalIcon
                 , text = "More"
@@ -278,9 +333,9 @@ viewLeftSheet style { title, menu } =
     [ [ title
       ]
     , menu
-        |> Widget.select
+        |> Select.select
         |> List.map
-            (Widget.selectButton style.sheetButton)
+            (Select.selectButton style.sheetButton)
     ]
         |> List.concat
         |> Element.column [ Element.width <| Element.fill ]
@@ -351,7 +406,7 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                         }
 
                 Just RightSheet ->
-                    Widget.buttonSheet
+                    buttonSheet
                         { element = style.sheet ++ [ Element.alignRight ]
                         , content =
                             { elementColumn = []
@@ -363,7 +418,7 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                 Just Search ->
                     search
                         |> Maybe.map
-                            (Widget.textInput
+                            (TextInput.textInput
                                 (style.searchFill
                                     |> Customize.mapContent
                                         (\record ->
@@ -400,7 +455,7 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                             dialogConfig
 
                         Nothing ->
-                            Widget.modal
+                            Dialog.modal
                                 { onDismiss =
                                     Nothing
                                         |> onChangedSidebar

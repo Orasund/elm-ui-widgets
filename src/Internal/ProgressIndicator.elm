@@ -1,7 +1,12 @@
-module Internal.ProgressIndicator exposing (circularProgressIndicator)
+module Internal.ProgressIndicator exposing (ProgressIndicatorStyle, circularProgressIndicator)
 
 import Element exposing (Element)
-import Widget.Style exposing (ProgressIndicatorStyle)
+
+
+{-| -}
+type alias ProgressIndicatorStyle msg =
+    { elementFunction : Maybe Float -> Element msg
+    }
 
 
 circularProgressIndicator :

@@ -15,7 +15,7 @@ import Material.Icons.Types exposing (Coloring(..))
 import Octicons
 import Widget
 import Widget.Icon exposing (Icon)
-import Widget.Style exposing (ButtonStyle, RowStyle)
+import Widget exposing (ButtonStyle, RowStyle)
 import Widget.Style.Material as Material
 import Zondicons
 

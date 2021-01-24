@@ -4,7 +4,7 @@ import Browser
 import Element exposing (Element)
 import FeatherIcons
 import Widget
-import Widget.Style exposing (RowStyle, SwitchStyle)
+import Widget exposing (RowStyle, SwitchStyle)
 import Widget.Style.Material as Material
 
 

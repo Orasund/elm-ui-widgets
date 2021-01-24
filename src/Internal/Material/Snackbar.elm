@@ -6,10 +6,7 @@ import Element.Border as Border
 import Element.Font as Font
 import Internal.Material.Button as Button
 import Internal.Material.Palette exposing (Palette)
-import Widget.Style
-    exposing
-        ( SnackbarStyle
-        )
+import Widget.Snackbar exposing (SnackbarStyle)
 import Widget.Style.Customize as Customize
 import Widget.Style.Material.Color as MaterialColor
 

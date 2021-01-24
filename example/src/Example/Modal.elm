@@ -5,7 +5,7 @@ import Element exposing (Element)
 import FeatherIcons
 import Widget
 import Widget.Icon as Icon
-import Widget.Style exposing (ButtonStyle, ColumnStyle)
+import Widget exposing (ButtonStyle, ColumnStyle)
 import Widget.Style.Material as Material
 
 

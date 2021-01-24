@@ -3,7 +3,7 @@ module Example.ExpansionPanel exposing (Model, Msg, init, subscriptions, update,
 import Browser
 import Element exposing (Element)
 import Widget
-import Widget.Style exposing (ExpansionPanelStyle)
+import Widget exposing (ExpansionPanelStyle)
 import Widget.Style.Material as Material
 
 

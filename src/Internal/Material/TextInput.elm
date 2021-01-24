@@ -4,10 +4,7 @@ import Element
 import Element.Border as Border
 import Internal.Material.Chip as Chip
 import Internal.Material.Palette exposing (Palette)
-import Widget.Style
-    exposing
-        ( TextInputStyle
-        )
+import Internal.TextInput exposing (TextInputStyle)
 import Widget.Style.Customize as Customize
 import Widget.Style.Material.Color as MaterialColor
 

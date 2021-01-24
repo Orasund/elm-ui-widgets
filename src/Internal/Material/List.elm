@@ -3,9 +3,9 @@ module Internal.Material.List exposing
     , cardColumn
     , column
     , fullBleedDivider
-    , fullBleedTitle
+    , fullBleedHeader
     , insetDivider
-    , insetTitle
+    , insetHeader
     , middleDividers
     , row
     )
@@ -15,15 +15,15 @@ import Element
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
-import Internal.Material.Palette exposing (Palette)
-import Widget.Style
+import Internal.List
     exposing
         ( ColumnStyle
         , DividerStyle
         , ItemStyle
         , RowStyle
-        , TitleStyle
+        , HeaderStyle
         )
+import Internal.Material.Palette exposing (Palette)
 import Widget.Style.Material.Color as MaterialColor
 import Widget.Style.Material.Typography as Typography
 
@@ -145,8 +145,8 @@ middleDividers _ =
     }
 
 
-insetTitle : Palette -> ItemStyle (TitleStyle msg)
-insetTitle palette =
+insetHeader : Palette -> ItemStyle (HeaderStyle msg)
+insetHeader palette =
     { element =
         [ Element.width <| Element.fill
         , Border.widthEach
@@ -182,8 +182,8 @@ insetTitle palette =
     }
 
 
-fullBleedTitle : Palette -> ItemStyle (TitleStyle msg)
-fullBleedTitle palette =
+fullBleedHeader : Palette -> ItemStyle (HeaderStyle msg)
+fullBleedHeader palette =
     { element =
         [ Element.width <| Element.fill
         , Element.padding 0

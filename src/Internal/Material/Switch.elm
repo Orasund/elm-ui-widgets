@@ -6,10 +6,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Html.Attributes as Attributes
 import Internal.Material.Palette exposing (Palette)
-import Widget.Style
-    exposing
-        ( SwitchStyle
-        )
+import Internal.Switch exposing (SwitchStyle)
 import Widget.Style.Material.Color as MaterialColor
 
 

@@ -5,6 +5,7 @@ import Element
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
+import Internal.Button exposing (ButtonStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Icon as Icon
 import Internal.Material.Palette exposing (Palette)
@@ -13,11 +14,7 @@ import Internal.Material.TextInput as TextInput
 import Svg
 import Svg.Attributes
 import Widget.Icon as Icon exposing (Icon)
-import Widget.Style
-    exposing
-        ( ButtonStyle
-        , LayoutStyle
-        )
+import Widget.Layout exposing (LayoutStyle)
 import Widget.Style.Customize as Customize
 import Widget.Style.Material.Color as MaterialColor
 import Widget.Style.Material.Typography as Typography

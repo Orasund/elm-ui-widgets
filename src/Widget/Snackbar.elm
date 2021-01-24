@@ -1,6 +1,7 @@
 module Widget.Snackbar exposing
     ( Snackbar, Message, init, current, timePassed, view
     , insert, insertFor, dismiss
+    , SnackbarStyle
     )
 
 {-| ![Snackbar](https://orasund.github.io/elm-ui-widgets/assets/snackbar.png)
@@ -21,10 +22,21 @@ A [snackbar](https://material.io/components/snackbars/) shows notification, one 
 
 -}
 
-import Element exposing (Element)
+import Element exposing (Attribute, Element)
+import Internal.Button as Button exposing (ButtonStyle, TextButton)
 import Queue exposing (Queue)
-import Widget exposing (TextButton)
-import Widget.Style exposing (SnackbarStyle)
+
+
+{-| -}
+type alias SnackbarStyle msg =
+    { elementRow : List (Attribute msg)
+    , content :
+        { text :
+            { elementText : List (Attribute msg)
+            }
+        , button : ButtonStyle msg
+        }
+    }
 
 
 {-| A message with maybe some action button
@@ -128,7 +140,7 @@ view style toMessage model =
                             |> Element.paragraph style.content.text.elementText
                         , button
                             |> Maybe.map
-                                (Widget.textButton style.content.button)
+                                (Button.textButton style.content.button)
                             |> Maybe.withDefault Element.none
                         ]
                             |> Element.row style.elementRow

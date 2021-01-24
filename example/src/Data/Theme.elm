@@ -1,7 +1,7 @@
 module Data.Theme exposing (Theme(..), toStyle)
 
-import Data.Style exposing (Style)
-import Data.Style.Material
+import Data.Style as Style exposing (Style)
+import Data.Style
 import Widget.Style.Material exposing (Palette)
 
 
@@ -14,7 +14,7 @@ toStyle : Theme -> Style msg
 toStyle theme =
     case theme of
         Material ->
-            Data.Style.Material.style Widget.Style.Material.defaultPalette
+            Style.style Widget.Style.Material.defaultPalette
 
         DarkMaterial ->
-            Data.Style.Material.style Widget.Style.Material.darkPalette
+            Style.style Widget.Style.Material.darkPalette
