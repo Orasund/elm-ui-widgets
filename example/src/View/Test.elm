@@ -1,4 +1,4 @@
-module View.Test exposing (button, dialog, expansionPanel, icon, list, modal, multiSelect, progressIndicator, select, sortTable, switch, tab, textInput)
+module View.Test exposing (button, dialog, icon, list, modal, multiSelect, progressIndicator, select, sortTable, switch, tab, textInput)
 
 import Data.Style exposing (Style)
 import Element exposing (Element)
@@ -275,28 +275,6 @@ multiSelect idle style =
       )
     ]
 
-
-expansionPanel : msg -> Style msg -> List ( String, Element msg )
-expansionPanel idle style =
-    [ ( "Collapsed"
-      , { onToggle = always idle
-        , isExpanded = False
-        , icon = FeatherIcons.triangle |> Icon.elmFeather FeatherIcons.toHtml
-        , text = "Button"
-        , content = Element.text <| "Hidden Message"
-        }
-            |> Widget.expansionPanel style.expansionPanel
-      )
-    , ( "Expanded"
-      , { onToggle = always idle
-        , isExpanded = True
-        , icon = FeatherIcons.triangle |> Icon.elmFeather FeatherIcons.toHtml
-        , text = "Button"
-        , content = Element.text <| "Hidden Message"
-        }
-            |> Widget.expansionPanel style.expansionPanel
-      )
-    ]
 
 
 tab : msg -> Style msg -> List ( String, Element msg )

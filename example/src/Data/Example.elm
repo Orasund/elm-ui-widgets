@@ -4,7 +4,6 @@ import Data.Style exposing (Style)
 import Element exposing (Element)
 import Example.Button as Button
 import Example.Dialog as Dialog
-import Example.ExpansionPanel as ExpansionPanel
 import Example.Icon as Icon
 import Example.List as List
 import Example.Modal as Modal
@@ -343,7 +342,6 @@ init =
       , Cmd.map Switch switchMsg
       , Cmd.map Select selectMsg
       , Cmd.map MultiSelect multiSelectMsg
-      , Cmd.map ExpansionPanel expansionPanelMsg
       , Cmd.map Tab tabMsg
       , Cmd.map SortTable sortTableMsg
       , Cmd.map Modal modalMsg

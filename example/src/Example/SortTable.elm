@@ -15,25 +15,7 @@ type alias Style style msg =
 
 materialStyle : Style {} msg
 materialStyle =
-    { sortTable =
-        { elementTable = []
-        , content =
-            { header = Material.textButton Material.defaultPalette
-            , ascIcon =
-                Material.expansionPanel Material.defaultPalette
-                    |> .content
-                    |> .panel
-                    |> .content
-                    |> .collapseIcon
-            , descIcon =
-                Material.expansionPanel Material.defaultPalette
-                    |> .content
-                    |> .panel
-                    |> .content
-                    |> .expandIcon
-            , defaultIcon = always Element.none
-            }
-        }
+    { sortTable = Material.sortTable Material.defaultPalette
     }
 
 

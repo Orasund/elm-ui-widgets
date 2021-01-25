@@ -24,7 +24,6 @@ import Widget
         , ColumnStyle
         , DialogStyle
         , DividerStyle
-        , ExpansionPanelStyle
         , ItemStyle
         , ProgressIndicatorStyle
         , RowStyle

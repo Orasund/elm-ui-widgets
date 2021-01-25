@@ -3,7 +3,7 @@ module Example.List exposing (Model, Msg, init, subscriptions, update, view)
 import Browser
 import Element exposing (Element)
 import Widget
-import Widget exposing (ColumnStyle, DividerStyle,ExpansionItemStyle, ItemStyle, HeaderStyle,TextItemStyle,ExpansionPanelStyle)
+import Widget exposing (ColumnStyle, DividerStyle,ExpansionItemStyle, ItemStyle, HeaderStyle,TextItemStyle)
 import Widget.Style.Material as Material
 import FeatherIcons
 import Widget.Icon as Icon
@@ -19,7 +19,6 @@ type alias Style style msg =
         , insetHeader : ItemStyle (HeaderStyle msg)
         , fullBleedHeader : ItemStyle (HeaderStyle msg)
         , textItem : ItemStyle (TextItemStyle msg)
-        , expansionPanelItem : ItemStyle (ExpansionPanelStyle msg)
         , expansionItem : ExpansionItemStyle msg
     }
 
@@ -33,7 +32,6 @@ materialStyle =
     , insetHeader = Material.insetHeader Material.defaultPalette
     , fullBleedHeader = Material.fullBleedHeader Material.defaultPalette
     , textItem = Material.textItem Material.defaultPalette
-    , expansionPanelItem = Material.expansionPanelItem Material.defaultPalette
     , expansionItem = Material.expansionItem Material.defaultPalette
     }
 

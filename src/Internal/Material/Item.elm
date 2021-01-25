@@ -23,7 +23,6 @@ import Widget.Icon exposing (Icon)
 import Widget.Style.Material.Color as MaterialColor
 import Widget.Style.Material.Typography as Typography
 
-
 fullBleedDivider : Palette -> ItemStyle (DividerStyle msg)
 fullBleedDivider _ =
     { element =
@@ -239,37 +238,12 @@ textItem _ =
     }
 
 
-expand_less : Icon
-expand_less { size, color } =
-    Icon.icon {viewBox = "0 0 48 48"
-        , size = size
-        , color = color
-    }
-        [ Svg.path
-            [ Svg.Attributes.d "M24 16L12 28l2.83 2.83L24 21.66l9.17 9.17L36 28z"
 
-            ]
-            []
-        ]
-
-
-expand_more : Icon
-expand_more { size, color } =
-    Icon.icon {viewBox = "0 0 48 48"
-        , size = size
-        , color = color
-    }
-        [ Svg.path
-            [ Svg.Attributes.d "M33.17 17.17L24 26.34l-9.17-9.17L12 20l12 12 12-12z"
-
-            ]
-            []
-        ]
 
 
 expansionItem : Palette -> ExpansionItemStyle msg
 expansionItem palette =
     { item = textItem palette
-    , expandIcon = expand_more
-    , collapseIcon = expand_less
+    , expandIcon = Icon.expand_more
+    , collapseIcon = Icon.expand_less
     }

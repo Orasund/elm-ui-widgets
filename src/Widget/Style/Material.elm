@@ -123,13 +123,11 @@ Note that you might want to checkout the [file on GitHub](https://github.com/Ora
 import Color exposing (Color)
 import Internal.Button exposing (ButtonStyle)
 import Internal.Dialog exposing (DialogStyle)
-import Internal.ExpansionPanel exposing (ExpansionPanelStyle)
 import Internal.Item exposing (DividerStyle, ExpansionItemStyle, HeaderStyle, ItemStyle, TextItemStyle)
 import Internal.List exposing (ColumnStyle, RowStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Chip as Chip
 import Internal.Material.Dialog as Dialog
-import Internal.Material.ExpansionPanel as ExpansionPanel
 import Internal.Material.Item as Item
 import Internal.Material.Layout as Layout
 import Internal.Material.List as List

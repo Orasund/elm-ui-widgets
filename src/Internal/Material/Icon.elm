@@ -1,9 +1,10 @@
-module Internal.Material.Icon exposing (icon)
+module Internal.Material.Icon exposing (icon,expand_less,expand_more)
 
 import Element exposing (Element)
 import Svg exposing (Svg)
 import Svg.Attributes
 import Color exposing (Color)
+import Widget.Icon exposing (Icon)
 
 icon : {viewBox:String,size:Int,color:Color} -> List (Svg Never) -> Element Never
 icon {viewBox,size,color} =
@@ -20,3 +21,30 @@ icon {viewBox,size,color} =
         ]
         >> Element.html
         >> Element.el []
+
+expand_less : Icon
+expand_less { size, color } =
+    icon {viewBox = "0 0 48 48"
+        , size = size
+        , color = color
+    }
+        [ Svg.path
+            [ Svg.Attributes.d "M24 16L12 28l2.83 2.83L24 21.66l9.17 9.17L36 28z"
+
+            ]
+            []
+        ]
+
+
+expand_more : Icon
+expand_more { size, color } =
+    icon {viewBox = "0 0 48 48"
+        , size = size
+        , color = color
+    }
+        [ Svg.path
+            [ Svg.Attributes.d "M33.17 17.17L24 26.34l-9.17-9.17L12 20l12 12 12-12z"
+
+            ]
+            []
+        ]
