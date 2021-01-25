@@ -439,7 +439,7 @@ viewLoaded m =
 
                                                 else
                                                     [ Widget.divider style.fullBleedDivider
-                                                    , Widget.expansionPanelItem style.expansionPanelItem
+                                                    ] ++ Widget.expansionItem style.expansionItem
                                                         { onToggle =
                                                             always
                                                                 (name
@@ -456,6 +456,8 @@ viewLoaded m =
                                                                     ++ [ Element.width <| Element.fill ]
                                                                 )
                                                                 more
+                                                                |> Widget.item
+                                                                |> List.singleton
                                                         , isExpanded =
                                                             name
                                                                 |> Example.fromString
@@ -466,7 +468,7 @@ viewLoaded m =
                                                                     )
                                                                 |> Maybe.withDefault False
                                                         }
-                                                    ]
+                                                    
                                                )
                                         )
                                             |> Widget.itemList style.cardColumn

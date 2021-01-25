@@ -73,33 +73,33 @@ view msgMapper style () =
         |> Element.text
         |> List.singleton
         |> Element.paragraph []
-    , [ Material.Icons.done
-            |> Widget.Icon.elmMaterialIcons Color
-      , Material.Icons.Action.done
-            |> Widget.Icon.materialIcons
-      , FeatherIcons.check
-            |> Widget.Icon.elmFeather FeatherIcons.toHtml
-      , FontAwesome.Solid.check
-            |> Widget.Icon.elmFontawesome FontAwesome.Svg.viewIcon
-      , Ionicon.checkmark
-            |> Widget.Icon.elmIonicons
-      , Octicons.check
+    , [ (Material.Icons.done
+            |> Widget.Icon.elmMaterialIcons Color,"elm-material-icons")
+      , (Material.Icons.Action.done
+            |> Widget.Icon.materialIcons, "material-icons")
+      , (FeatherIcons.check
+            |> Widget.Icon.elmFeather FeatherIcons.toHtml,"elm-feather")
+      , (FontAwesome.Solid.check
+            |> Widget.Icon.elmFontawesome FontAwesome.Svg.viewIcon,"elm-fontawesome")
+      , (Ionicon.checkmark
+            |> Widget.Icon.elmIonicons,"elm-ionicons")
+      , (Octicons.check
             |> Widget.Icon.elmOcticons
                 { withSize = Octicons.size
                 , withColor = Octicons.color
                 , defaultOptions = Octicons.defaultOptions
-                }
-      , Heroicons.Solid.check
-            |> Widget.Icon.elmHeroicons
-      , Ant.Icons.Svg.checkOutlined
-            |> Widget.Icon.antDesignIconsElm
-      , Zondicons.checkmark
-            |> Widget.Icon.elmZondicons
+                },"elm-octicons")
+      , (Heroicons.Solid.check
+            |> Widget.Icon.elmHeroicons,"elm-heroicons")
+      , (Ant.Icons.Svg.checkOutlined
+            |> Widget.Icon.antDesignIconsElm,"ant-design-icons-elm")
+      ,( Zondicons.checkmark
+            |> Widget.Icon.elmZondicons,"elm-zondicons")
       ]
         |> List.map
-            (\icon ->
+            (\(icon,text) ->
                 Widget.button style.primaryButton
-                    { text = "Done"
+                    { text = text
                     , icon = icon
                     , onPress = Just <| msgMapper <| ()
                     }

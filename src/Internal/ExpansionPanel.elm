@@ -2,7 +2,7 @@ module Internal.ExpansionPanel exposing (ExpansionPanel, ExpansionPanelStyle, ex
 
 import Element exposing (Attribute, Element)
 import Element.Events as Events
-import Internal.List as List exposing (Item, ItemStyle)
+import Internal.Item as Item exposing (Item, ItemStyle)
 import Widget.Icon exposing (Icon, IconStyle)
 
 
@@ -30,11 +30,9 @@ type alias ExpansionPanelStyle msg =
                 , icon : IconStyle
                 }
             }
-        , content :
-            { element : List (Attribute msg)
+        , content : {element : List (Attribute msg)}
             }
         }
-    }
 
 
 type alias ExpansionPanel msg =
@@ -67,11 +65,11 @@ expansionPanel style model =
             , Element.map never <|
                 if model.isExpanded then
                     style.content.panel.content.collapseIcon
-                        style.content.panel.content.label.content.icon
+                        style.content.panel.content.icon
 
                 else
                     style.content.panel.content.expandIcon
-                        style.content.panel.content.label.content.icon
+                        style.content.panel.content.icon
             ]
         , if model.isExpanded then
             Element.el style.content.content.element <| model.content
@@ -92,4 +90,4 @@ expansionPanelItem :
         }
     -> Item msg
 expansionPanelItem style model =
-    List.toItem style (\s -> expansionPanel s model)
+    Item.toItem style (\s -> expansionPanel s model)

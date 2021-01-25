@@ -1,12 +1,9 @@
 module Internal.Dialog exposing (Dialog, DialogStyle, dialog, modal)
 
-import Color exposing (Color)
 import Element exposing (Attribute, Element)
 import Element.Background as Background
 import Element.Events as Events
-import Html exposing (Html)
 import Internal.Button as Button exposing (ButtonStyle, TextButton)
-import Widget.Icon exposing (Icon)
 
 
 {-| -}

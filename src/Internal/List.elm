@@ -1,32 +1,10 @@
-module Internal.List exposing (ColumnStyle, DividerStyle, Item, ItemStyle, RowStyle, HeaderStyle, buttonColumn, buttonRow, column, divider, headerItem, item, itemList, row, toItem)
+module Internal.List exposing (ColumnStyle, RowStyle, buttonColumn, buttonRow, column, itemList, row)
 
 import Element exposing (Attribute, Element)
 import Internal.Button exposing (Button, ButtonStyle)
+import Internal.Item as Item exposing (Item)
 import Internal.Select as Select
-import Widget.Style.Customize as Customize exposing (content)
-
-
-{-| -}
-type alias ItemStyle content =
-    { element : List (Attribute Never)
-    , content : content
-    }
-
-
-{-| -}
-type alias DividerStyle msg =
-    { element : List (Attribute msg)
-    }
-
-
-{-| -}
-type alias HeaderStyle msg =
-    { elementColumn : List (Attribute msg)
-    , content :
-        { divider : DividerStyle msg
-        , title : List (Attribute msg)
-        }
-    }
+import Widget.Style.Customize as Customize
 
 
 {-| -}
@@ -53,46 +31,6 @@ type alias ColumnStyle msg =
         , otherwise : List (Attribute Never)
         }
     }
-
-
-type alias Item msg =
-    List (Attribute msg) -> Element msg
-
-
-item : Element msg -> Item msg
-item element =
-    toItem
-        { element = []
-        , content = ()
-        }
-        (always element)
-
-
-divider : ItemStyle (DividerStyle msg) -> Item msg
-divider style =
-    toItem style (\{ element } -> Element.none |> Element.el element)
-
-
-headerItem : ItemStyle (HeaderStyle msg) -> String -> Item msg
-headerItem style title =
-    toItem style
-        (\{ elementColumn, content } ->
-            [ Element.none
-                |> Element.el content.divider.element
-            , title
-                |> Element.text
-                |> Element.el content.title
-            ]
-                |> Element.column elementColumn
-        )
-
-
-toItem : ItemStyle style -> (style -> Element msg) -> Item msg
-toItem style element =
-    \attr ->
-        element style.content
-            |> Element.el
-                (attr ++ (style.element |> List.map (Element.mapAttribute never)))
 
 
 internal :
@@ -131,7 +69,7 @@ row : RowStyle msg -> List (Element msg) -> Element msg
 row style =
     List.map
         (\a ->
-            toItem
+            Item.toItem
                 { element = style.content.element
                 , content = ()
                 }
@@ -145,7 +83,7 @@ column : ColumnStyle msg -> List (Element msg) -> Element msg
 column style =
     List.map
         (\a ->
-            toItem
+            Item.toItem
                 { element = style.content.element
                 , content = ()
                 }

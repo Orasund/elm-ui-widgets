@@ -6,13 +6,13 @@ module Widget.Style.Material exposing
     , cardColumn
     , chip, textInput
     , alertDialog
-    , expansionPanel, expansionPanelItem
     , row, column
-    , fullBleedDivider, insetDivider, middleDividers, insetHeader, fullBleedHeader
+    , fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem, expansionItem
     , progressIndicator
+    , sortTable
     , snackbar
     , tab, tabButton
-    , layout,sortTable
+    , layout
     )
 
 {-| ![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
@@ -73,11 +73,6 @@ Thus for now we only provide a card containing a list.
 @docs alertDialog
 
 
-# Expansion Panel
-
-@docs expansionPanel, expansionPanelItem
-
-
 # List
 
 The [List widget](https://material.io/components/lists) is a very complex widget that sadly only particially made it into this package.
@@ -90,16 +85,18 @@ The [List widget](https://material.io/components/lists) is a very complex widget
 A List is build from items.
 You way want to use special items to visually organize the content of your list.
 
-@docs fullBleedDivider, insetDivider, middleDividers, insetHeader, fullBleedHeader
+@docs fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem, expansionItem
 
 
 # Progress Indicator
 
 @docs progressIndicator
 
+
 # Sort Table
 
 @docs sortTable
+
 
 # Snackbar
 
@@ -127,27 +124,29 @@ import Color exposing (Color)
 import Internal.Button exposing (ButtonStyle)
 import Internal.Dialog exposing (DialogStyle)
 import Internal.ExpansionPanel exposing (ExpansionPanelStyle)
-import Internal.List exposing (ColumnStyle, DividerStyle, ItemStyle, RowStyle, HeaderStyle)
+import Internal.Item exposing (DividerStyle, ExpansionItemStyle, HeaderStyle, ItemStyle, TextItemStyle)
+import Internal.List exposing (ColumnStyle, RowStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Chip as Chip
 import Internal.Material.Dialog as Dialog
 import Internal.Material.ExpansionPanel as ExpansionPanel
+import Internal.Material.Item as Item
 import Internal.Material.Layout as Layout
 import Internal.Material.List as List
 import Internal.Material.Palette as Palette
 import Internal.Material.ProgressIndicator as ProgressIndicator
 import Internal.Material.Snackbar as Snackbar
+import Internal.Material.SortTable as SortTable
 import Internal.Material.Switch as Switch
 import Internal.Material.Tab as Tab
 import Internal.Material.TextInput as TextInput
-import Internal.Material.SortTable as SortTable
 import Internal.ProgressIndicator exposing (ProgressIndicatorStyle)
+import Internal.SortTable exposing (SortTableStyle)
 import Internal.Switch exposing (SwitchStyle)
 import Internal.Tab exposing (TabStyle)
 import Internal.TextInput exposing (TextInputStyle)
 import Widget.Layout exposing (LayoutStyle)
 import Widget.Snackbar exposing (SnackbarStyle)
-import Internal.SortTable exposing (SortTableStyle)
 
 
 
@@ -325,37 +324,49 @@ column =
 
 {-| A divider covering the full length
 -}
-fullBleedDivider : ItemStyle (DividerStyle msg)
+fullBleedDivider : Palette -> ItemStyle (DividerStyle msg)
 fullBleedDivider =
-    List.fullBleedDivider
+    Item.fullBleedDivider
 
 
 {-| A divider covering only parts of the width
 -}
 insetDivider : Palette -> ItemStyle (DividerStyle msg)
 insetDivider =
-    List.insetDivider
+    Item.insetDivider
 
 
 {-| A divider in the center
 -}
-middleDividers : Palette -> ItemStyle (DividerStyle msg)
-middleDividers =
-    List.middleDividers
+middleDivider : Palette -> ItemStyle (DividerStyle msg)
+middleDivider =
+    Item.middleDivider
 
 
 {-| A header of a section of a list. Comes with a inset divider.
 -}
 insetHeader : Palette -> ItemStyle (HeaderStyle msg)
 insetHeader =
-    List.insetHeader
+    Item.insetHeader
 
 
 {-| A header of a section of a list. Comes with a full bleed divider.
 -}
 fullBleedHeader : Palette -> ItemStyle (HeaderStyle msg)
 fullBleedHeader =
-    List.fullBleedHeader
+    Item.fullBleedHeader
+
+
+{-| An expandable item.
+
+Technical Remarks:
+
+  - The Icons are taken from [danmarcab/material-icons](https://dark.elm.dmy.fr/packages/danmarcab/material-icons/latest/).
+
+-}
+expansionItem : Palette -> ExpansionItemStyle msg
+expansionItem =
+    Item.expansionItem
 
 
 {-| a Row of buttons.
@@ -381,6 +392,19 @@ cardColumn =
     List.cardColumn
 
 
+{-| A basic item containg some text, a button and some additional information.
+
+Technical Remark:
+
+There are some conflicting informations about the height of an element in the [Specification](https://material.io/components/lists#specs).
+A normal item should be 48 height, but a item with an icon should be 56. This is confusing, because a normal item can also have an additional icon that is the same size.
+
+-}
+textItem : Palette -> ItemStyle (TextItemStyle msg)
+textItem =
+    Item.textItem
+
+
 
 {-------------------------------------------------------------------------------
 -- D I A L O G
@@ -394,39 +418,6 @@ alertDialog =
     Dialog.alertDialog
 
 
-
-{-------------------------------------------------------------------------------
--- E X P A N S I O N   P A N E L
--------------------------------------------------------------------------------}
-
-
-{-| The expansion Panel is an outdated part of the material design specification.
-In modern implementation it gets replaced with a very sophisticated list widget.
-
-Technical Remarks:
-
-  - The expansion panel is part of an [older version](https://material.io/archive/guidelines/components/expansion-panels.html) of the Material Design.
-    The newer version is part of the List component.
-    The styling is taken from the [new specification](https://material.io/components/lists#specs).
-  - The Icons are taken from [danmarcab/material-icons](https://dark.elm.dmy.fr/packages/danmarcab/material-icons/latest/).
-
--}
-expansionPanel : Palette -> ExpansionPanelStyle msg
-expansionPanel =
-    ExpansionPanel.expansionPanel
-
-
-{-| A variant on the expansion Panel optimized to be used inside a card.
-
-This is a small workaround to allow expansion panels within cards.
-
--}
-expansionPanelItem : Palette -> ItemStyle (ExpansionPanelStyle msg)
-expansionPanelItem =
-    ExpansionPanel.expansionPanelItem
-
-
-
 {-------------------------------------------------------------------------------
 -- P R O G R E S S   I N D I C A T O R
 -------------------------------------------------------------------------------}
@@ -438,13 +429,17 @@ progressIndicator : Palette -> ProgressIndicatorStyle msg
 progressIndicator =
     ProgressIndicator.progressIndicator
 
+
+
 --------------------------------------------------------------------------------
 --  SORT TABLE
 --------------------------------------------------------------------------------
 
+
 sortTable : Palette -> SortTableStyle msg
 sortTable =
     SortTable.sortTable
+
 
 
 {-------------------------------------------------------------------------------

@@ -1,16 +1,16 @@
 module Widget exposing
     ( ButtonStyle, Button, TextButton, iconButton, textButton, button
-    , SwitchStyle,Switch, switch
+    , SwitchStyle, Switch, switch
     , Select, selectButton, select
     , MultiSelect, multiSelect
     , DialogStyle, Dialog, modal, dialog
-    , ExpansionPanelStyle, ExpansionPanel, expansionPanel, expansionPanelItem
-    , ItemStyle, DividerStyle, HeaderStyle, RowStyle, ColumnStyle, row, column, Item, itemList, item, divider, buttonRow, buttonColumn
+    , RowStyle, row, buttonRow
+    , ColumnStyle, column, buttonColumn
+    , ItemStyle, DividerStyle, HeaderStyle, TextItemStyle, ExpansionItemStyle, Item, ExpansionItem, itemList, item, divider, headerItem, textItem, expansionItem
     , SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
-    , TextInputStyle,TextInput, textInput
-    , TabStyle,Tab, tab
-    , ProgressIndicatorStyle,ProgressIndicator, circularProgressIndicator
-    , headerItem
+    , TextInputStyle, TextInput, textInput
+    , TabStyle, Tab, tab
+    , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -76,14 +76,6 @@ You can create you own widgets by sticking widgets types together.
 @docs DialogStyle, Dialog, modal, dialog
 
 
-# Expansion Panel
-
-![ExpansionPanel](https://orasund.github.io/elm-ui-widgets/assets/expansionPanel.png)
-
-[Open in Ellie](https://ellie-app.com/9p5Rv5jfVdFa1)
-
-@docs ExpansionPanelStyle, ExpansionPanel, expansionPanel, expansionPanelItem
-
 
 # List
 
@@ -91,16 +83,20 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/9p5RJnDVVCKa1)
 
+
 ## Row
 
 @docs RowStyle, row, buttonRow
 
+
 ## Column
+
 @docs ColumnStyle, column, buttonColumn
+
 
 ## Item
 
-@docs ItemStyle, DividerStyle, HeaderStyle, Item,itemList, item, divider, headerItem, buttonDrawer
+@docs ItemStyle, DividerStyle, HeaderStyle, TextItemStyle, ExpansionItemStyle, Item, ExpansionItem, itemList, item, divider, headerItem, buttonDrawer, textItem, expansionItem
 
 
 # Sort Table
@@ -136,7 +132,7 @@ You can create you own widgets by sticking widgets types together.
 
 [Open in Ellie](https://ellie-app.com/c47GJktH2bqa1)
 
-@docs ProgressIndicatorStyle,ProgressIndicator, circularProgressIndicator
+@docs ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
 
 -}
 
@@ -147,6 +143,7 @@ import Html exposing (Html)
 import Internal.Button as Button
 import Internal.Dialog as Dialog
 import Internal.ExpansionPanel as ExpansionPanel
+import Internal.Item as Item exposing (TextItem, TextItemStyle)
 import Internal.List as List
 import Internal.ProgressIndicator as ProgressIndicator
 import Internal.Select as Select
@@ -479,95 +476,6 @@ dialog =
 
 
 
-{----------------------------------------------------------
-- EXPANSION PANEL
-----------------------------------------------------------}
-
-
-{-| Technical Remark:
-
-  - If icons are defined in Svg, they might not display correctly.
-    To avoid that, make sure to wrap them in `Element.html >> Element.el []`
-
--}
-type alias ExpansionPanelStyle msg =
-    { elementColumn : List (Attribute msg)
-    , content :
-        { panel :
-            { elementRow : List (Attribute msg)
-            , content :
-                { label :
-                    { elementRow : List (Attribute msg)
-                    , content :
-                        { icon : IconStyle
-                        , text : { elementText : List (Attribute msg) }
-                        }
-                    }
-                , expandIcon : Icon
-                , collapseIcon : Icon
-                , icon : IconStyle
-                }
-            }
-        , content :
-            { element : List (Attribute msg)
-            }
-        }
-    }
-
-
-{-| Expansion Panel widget type
--}
-type alias ExpansionPanel msg =
-    { onToggle : Bool -> msg
-    , icon : Icon
-    , text : String
-    , content : Element msg
-    , isExpanded : Bool
-    }
-
-
-{-| An expansion Panel
--}
-expansionPanel :
-    ExpansionPanelStyle msg
-    ->
-        { onToggle : Bool -> msg
-        , icon : Icon
-        , text : String
-        , content : Element msg
-        , isExpanded : Bool
-        }
-    -> Element msg
-expansionPanel =
-    let
-        fun : ExpansionPanelStyle msg -> ExpansionPanel msg -> Element msg
-        fun =
-            ExpansionPanel.expansionPanel
-    in
-    fun
-
-
-{-| An expansion Panel
--}
-expansionPanelItem :
-    ItemStyle (ExpansionPanelStyle msg)
-    ->
-        { onToggle : Bool -> msg
-        , icon : Icon
-        , text : String
-        , content : Element msg
-        , isExpanded : Bool
-        }
-    -> Item msg
-expansionPanelItem =
-    let
-        fun : ItemStyle (ExpansionPanelStyle msg) -> ExpansionPanel msg -> Item msg
-        fun =
-            ExpansionPanel.expansionPanelItem
-    in
-    fun
-
-
 
 {----------------------------------------------------------
 - TEXT INPUT
@@ -676,6 +584,41 @@ type alias ColumnStyle msg =
     }
 
 
+{-| -}
+type alias TextItemStyle msg =
+    { elementButton : List (Attribute msg)
+    , ifDisabled : List (Attribute msg)
+    , otherwise : List (Attribute msg)
+    , content :
+        { elementRow : List (Attribute msg)
+        , content :
+            { text : { elementText : List (Attribute msg) }
+            , icon :
+                { element : List (Attribute msg)
+                , content : IconStyle
+                }
+            , content : IconStyle
+            }
+        }
+    }
+
+
+type alias ExpansionItemStyle msg =
+    { item : ItemStyle (TextItemStyle msg)
+    , expandIcon : Icon
+    , collapseIcon : Icon
+    }
+
+
+type alias ExpansionItem msg =
+    { icon : Icon
+    , text : String
+    , onToggle : Bool -> msg
+    , content : List (Item msg)
+    , isExpanded : Bool
+    }
+
+
 {-| Item widget type.
 
 Use `Widget.item` if you want to turn a simple element into an item.
@@ -689,21 +632,35 @@ type alias Item msg =
 -}
 item : Element msg -> Item msg
 item =
-    List.item
+    Item.item
 
 
 {-| A divider.
 -}
 divider : ItemStyle (DividerStyle msg) -> Item msg
 divider =
-    List.divider
+    Item.divider
 
 
 {-| A header for a part of a list.
 -}
 headerItem : ItemStyle (HeaderStyle msg) -> String -> Item msg
 headerItem =
-    List.headerItem
+    Item.headerItem
+
+
+{-| A clickable item that contains two spots for icons or additional information and a single line of text.
+-}
+textItem : ItemStyle (TextItemStyle msg) -> TextItem msg -> Item msg
+textItem =
+    Item.textItem
+
+
+{-| An expandable Item
+-}
+expansionItem : ExpansionItemStyle msg -> ExpansionItem msg -> List (Item msg)
+expansionItem =
+    Item.expansionItem
 
 
 {-| Replacement of `Element.row`

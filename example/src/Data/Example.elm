@@ -24,7 +24,6 @@ type Example
     | SwitchExample
     | SelectExample
     | MultiSelectExample
-    | ExpansionPanelExample
     | TabExample
     | SortTableExample
     | ModalExample
@@ -41,7 +40,6 @@ asList =
     , SwitchExample
     , SelectExample
     , MultiSelectExample
-    , ExpansionPanelExample
     , TabExample
     , SortTableExample
     , ModalExample
@@ -68,9 +66,6 @@ toString example =
 
         MultiSelectExample ->
             "Multi Select"
-
-        ExpansionPanelExample ->
-            "ExpansionPanel"
 
         TabExample ->
             "Tab"
@@ -111,9 +106,6 @@ fromString string =
 
         "Multi Select" ->
             Just MultiSelectExample
-
-        "ExpansionPanel" ->
-            Just ExpansionPanelExample
 
         "Tab" ->
             Just TabExample
@@ -158,9 +150,6 @@ get example =
         MultiSelectExample ->
             .multiSelect
 
-        ExpansionPanelExample ->
-            .expansionPanel
-
         TabExample ->
             .tab
 
@@ -201,9 +190,6 @@ toTests example =
         MultiSelectExample ->
             Test.multiSelect
 
-        ExpansionPanelExample ->
-            Test.expansionPanel
-
         TabExample ->
             Test.tab
 
@@ -234,7 +220,6 @@ type Msg
     | Switch Switch.Msg
     | Select Select.Msg
     | MultiSelect MultiSelect.Msg
-    | ExpansionPanel ExpansionPanel.Msg
     | Tab Tab.Msg
     | SortTable SortTable.Msg
     | Modal Modal.Msg
@@ -250,7 +235,6 @@ type alias Model =
     , switch : Switch.Model
     , select : Select.Model
     , multiSelect : MultiSelect.Model
-    , expansionPanel : ExpansionPanel.Model
     , tab : Tab.Model
     , sortTable : SortTable.Model
     , modal : Modal.Model
@@ -276,7 +260,6 @@ type alias UpgradeCollection =
     , switch : UpgradeRecord Switch.Model Switch.Msg
     , select : UpgradeRecord Select.Model Select.Msg
     , multiSelect : UpgradeRecord MultiSelect.Model MultiSelect.Msg
-    , expansionPanel : UpgradeRecord ExpansionPanel.Model ExpansionPanel.Msg
     , tab : UpgradeRecord Tab.Model Tab.Msg
     , sortTable : UpgradeRecord SortTable.Model SortTable.Msg
     , modal : UpgradeRecord Modal.Model Modal.Msg
@@ -293,7 +276,6 @@ type alias ExampleView msg =
     , switch : Element msg
     , select : Element msg
     , multiSelect : Element msg
-    , expansionPanel : Element msg
     , tab : Element msg
     , sortTable : Element msg
     , modal : Element msg
@@ -319,9 +301,6 @@ init =
 
         ( multiSelectModel, multiSelectMsg ) =
             MultiSelect.init
-
-        ( expansionPanelModel, expansionPanelMsg ) =
-            ExpansionPanel.init
 
         ( tabModel, tabMsg ) =
             Tab.init
@@ -351,7 +330,6 @@ init =
       , switch = switchModel
       , select = selectModel
       , multiSelect = multiSelectModel
-      , expansionPanel = expansionPanelModel
       , tab = tabModel
       , sortTable = sortTableModel
       , modal = modalModel
@@ -408,13 +386,6 @@ upgradeRecord =
         , msgMapper = MultiSelect
         , updateFun = MultiSelect.update
         , subscriptionsFun = MultiSelect.subscriptions
-        }
-    , expansionPanel =
-        { from = .expansionPanel
-        , to = \model a -> { model | expansionPanel = a }
-        , msgMapper = ExpansionPanel
-        , updateFun = ExpansionPanel.update
-        , subscriptionsFun = ExpansionPanel.subscriptions
         }
     , tab =
         { from = .tab
@@ -490,9 +461,6 @@ update msg model =
         MultiSelect m ->
             updateField .multiSelect m
 
-        ExpansionPanel m ->
-            updateField .expansionPanel m
-
         Tab m ->
             updateField .tab m
 
@@ -530,7 +498,6 @@ subscriptions model =
     , upgradeRecord.switch |> subFun
     , upgradeRecord.select |> subFun
     , upgradeRecord.multiSelect |> subFun
-    , upgradeRecord.expansionPanel |> subFun
     , upgradeRecord.tab |> subFun
     , upgradeRecord.sortTable |> subFun
     , upgradeRecord.modal |> subFun
@@ -557,8 +524,6 @@ view msgMapper style model =
         Select.view (Select >> msgMapper) style (.select model)
     , multiSelect =
         MultiSelect.view (MultiSelect >> msgMapper) style (.multiSelect model)
-    , expansionPanel =
-        ExpansionPanel.view (ExpansionPanel >> msgMapper) style (.expansionPanel model)
     , tab =
         Tab.view (Tab >> msgMapper) style (.tab model)
     , sortTable =
@@ -577,6 +542,9 @@ view msgMapper style model =
         Icon.view (Icon >> msgMapper) style (.icon model)
     }
 
+--------------------------------------------------------------------------------
+-- DO NOT CHANGE ANYTHING AFTER THIS
+--------------------------------------------------------------------------------
 
 toCardList :
     { idle : msg
@@ -625,8 +593,6 @@ toCardList { idle, msgMapper, style, model } =
 
 
 
-{-------------------------------------------------------------------------------
--------------------------------------------------------------------------------}
 
 
 updateField :

@@ -1,10 +1,8 @@
 module Internal.Button exposing (Button, ButtonStyle, TextButton, button, iconButton, textButton)
 
-import Color exposing (Color)
 import Element exposing (Attribute, Element)
 import Element.Input as Input
 import Element.Region as Region
-import Html exposing (Html)
 import Widget.Icon exposing (Icon, IconStyle)
 
 

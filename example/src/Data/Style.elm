@@ -16,7 +16,6 @@ import Widget
         ( ButtonStyle
         , ColumnStyle
         , DialogStyle
-        , ExpansionPanelStyle
         , RowStyle
         , SortTableStyle
         , TabStyle
@@ -34,6 +33,8 @@ import Widget
         , TabStyle
         , TextInputStyle
         , HeaderStyle
+        , TextItemStyle
+        , ExpansionItemStyle
         )
 import Widget.Snackbar exposing (SnackbarStyle)
 import Widget.Layout exposing (LayoutStyle)
@@ -53,17 +54,17 @@ style palette =
     , tab = Material.tab palette
     , textInput = Material.textInput palette
     , chipButton = Material.chip palette
-    , expansionPanel = Material.expansionPanel palette
-    , expansionPanelItem = Material.expansionPanelItem palette
     , dialog = Material.alertDialog palette
     , progressIndicator = Material.progressIndicator palette
     , layout = Material.layout palette
     , switch = Material.switch palette
-    , fullBleedDivider = Material.fullBleedDivider
+    , fullBleedDivider = Material.fullBleedDivider palette
     , insetDivider = Material.insetDivider palette
-    , middleDividers = Material.middleDividers palette
+    , middleDivider = Material.middleDivider palette
     , insetHeader = Material.insetHeader palette
     , fullBleedHeader = Material.fullBleedHeader palette
+    , textItem = Material.textItem palette
+    , expansionItem = Material.expansionItem Material.defaultPalette
     }
 
 
@@ -72,8 +73,6 @@ style palette =
 
 type alias Style msg =
     { dialog : DialogStyle msg
-    , expansionPanel : ExpansionPanelStyle msg
-    , expansionPanelItem : ItemStyle (ExpansionPanelStyle msg)
     , button : ButtonStyle msg
     , switch : SwitchStyle msg
     , primaryButton : ButtonStyle msg
@@ -88,9 +87,11 @@ type alias Style msg =
     , selectButton : ButtonStyle msg
     , progressIndicator : ProgressIndicatorStyle msg
     , layout : LayoutStyle msg
-    , fullBleedDivider : ItemStyle (DividerStyle msg)
     , insetDivider : ItemStyle (DividerStyle msg)
-    , middleDividers : ItemStyle (DividerStyle msg)
+    , middleDivider : ItemStyle (DividerStyle msg)
+    , fullBleedDivider : ItemStyle (DividerStyle msg)
     , insetHeader : ItemStyle (HeaderStyle msg)
     , fullBleedHeader : ItemStyle (HeaderStyle msg)
+    , textItem : ItemStyle (TextItemStyle msg)
+    , expansionItem : ExpansionItemStyle msg
     }
