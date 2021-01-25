@@ -12,7 +12,7 @@ module Widget.Style.Material exposing
     , sortTable
     , snackbar
     , tab, tabButton
-    , layout
+    , layout, multiLineItem
     )
 
 {-| ![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
@@ -85,7 +85,7 @@ The [List widget](https://material.io/components/lists) is a very complex widget
 A List is build from items.
 You way want to use special items to visually organize the content of your list.
 
-@docs fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem,imageItem, expansionItem
+@docs fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem,multiLineItem,imageItem, expansionItem
 
 
 # Progress Indicator
@@ -123,7 +123,7 @@ Note that you might want to checkout the [file on GitHub](https://github.com/Ora
 import Color exposing (Color)
 import Internal.Button exposing (ButtonStyle)
 import Internal.Dialog exposing (DialogStyle)
-import Internal.Item exposing (DividerStyle, ExpansionItemStyle,ImageItemStyle, HeaderStyle, ItemStyle, TextItemStyle)
+import Internal.Item exposing (DividerStyle, ExpansionItemStyle,ImageItemStyle, HeaderStyle, ItemStyle, TextItemStyle,MultiLineItemStyle)
 import Internal.List exposing (ColumnStyle, RowStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Chip as Chip
@@ -401,6 +401,10 @@ A normal item should be 48 height, but a item with an icon should be 56. This is
 textItem : Palette -> ItemStyle (TextItemStyle msg) msg
 textItem =
     Item.textItem
+
+multiLineItem : Palette -> ItemStyle (MultiLineItemStyle msg) msg
+multiLineItem =
+    Item.multiLineItem
 
 {-| Similar to a textItem but with an image instead of the icon.
 

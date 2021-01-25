@@ -23,6 +23,8 @@ switch palette =
         { element =
             [ Element.height <| Element.px 14
             , Element.width <| Element.px 34
+            , Element.centerY
+        , Element.centerX
             , Border.rounded <| 10
             ]
         , ifDisabled =

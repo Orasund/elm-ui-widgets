@@ -12,6 +12,7 @@ module Widget exposing
     , TabStyle, Tab, tab
     , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator, imageItem
     , ImageItemStyle
+    , MultiLineItemStyle,multiLineItem
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -97,7 +98,7 @@ You can create you own widgets by sticking widgets types together.
 
 ## Item
 
-@docs ItemStyle, DividerStyle, HeaderStyle, TextItemStyle,ImageItemStyle, ExpansionItemStyle, Item, ExpansionItem, itemList, item, divider, headerItem, buttonDrawer, textItem,imageItem, expansionItem
+@docs ItemStyle, DividerStyle, HeaderStyle, TextItemStyle,ImageItemStyle, ExpansionItemStyle,MultiLineItemStyle,Item, ExpansionItem, itemList, item, divider, headerItem, buttonDrawer, textItem,imageItem, expansionItem,multiLineItem 
 
 
 # Sort Table
@@ -604,6 +605,30 @@ type alias TextItemStyle msg =
     }
 
 {-| -}
+type alias MultiLineItemStyle msg =
+    { elementButton : List (Attribute msg)
+    , ifDisabled : List (Attribute msg)
+    , otherwise : List (Attribute msg)
+    , content :
+        { elementRow : List (Attribute msg)
+        , content :
+            { description : 
+                { elementColumn :  List (Attribute msg)
+                , content :
+                    { title : {elementText : List (Attribute msg)}
+                    , text : {elementText : List (Attribute msg)}
+                    }
+                }
+            , icon : 
+                { element : List (Attribute msg)
+                , content : IconStyle
+                }
+            , content : IconStyle
+            }
+        }
+    }
+
+{-| -}
 type alias ImageItemStyle msg =
     { elementButton : List (Attribute msg)
     , ifDisabled : List (Attribute msg)
@@ -628,6 +653,15 @@ type alias ExpansionItemStyle msg =
 {-| -}
 type alias TextItem msg =
     { text : String
+    , onPress : Maybe msg
+    , icon : Icon msg
+    , content : Icon msg
+    }
+
+{-| -}
+type alias MultiLineItem msg =
+    { title : String
+    , text : String
     , onPress : Maybe msg
     , icon : Icon msg
     , content : Icon msg
@@ -691,6 +725,16 @@ textItem : ItemStyle (TextItemStyle msg) msg
     } -> Item msg
 textItem =
     Item.textItem
+
+multiLineItem : ItemStyle (MultiLineItemStyle msg) msg 
+    -> { title : String
+    , text : String
+    , onPress : Maybe msg
+    , icon : Icon msg
+    , content : Icon msg
+    } -> Item msg
+multiLineItem =
+    Item.multiLineItem
 
 {-| A clickable item that contains a image , a line of text and some additonal information
 -}

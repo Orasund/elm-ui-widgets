@@ -7,6 +7,7 @@ module Internal.Material.Item exposing
     , middleDivider
     , textItem
     , imageItem
+    , multiLineItem
     )
 
 import Color
@@ -15,7 +16,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Html.Attributes as Attributes
-import Internal.Item exposing (DividerStyle, ImageItemStyle , ExpansionItemStyle, HeaderStyle, ItemStyle, TextItemStyle)
+import Internal.Item exposing (DividerStyle,MultiLineItemStyle, ImageItemStyle , ExpansionItemStyle, HeaderStyle, ItemStyle, TextItemStyle)
 import Internal.Material.Icon as Icon
 import Internal.Material.Palette exposing (Palette)
 import Svg
@@ -219,6 +220,75 @@ textItem _ =
             { elementRow = [ Element.spacing 16, Element.width Element.fill ]
             , content =
                 { text = { elementText = [ Element.width Element.fill ] }
+                , icon =
+                    { element =
+                        [ Element.width <| Element.px 40
+                        , Element.height <| Element.px 24
+                        ]
+                    , content =
+                        { size = 24
+                        , color = MaterialColor.gray
+                        }
+                    }
+                , content =
+                    { size = 24
+                    , color = MaterialColor.gray
+                    }
+                }
+            }
+        }
+    }
+
+
+multiLineItem : Palette -> ItemStyle ( MultiLineItemStyle msg) msg
+multiLineItem _ =
+    { element = [ Element.padding 0 ]
+    , content =
+        { elementButton =
+            [ Element.width Element.fill
+            , Element.padding 16
+            ]
+        , ifDisabled =
+            [ Element.mouseDown []
+            , Element.mouseOver []
+            , Element.focused []
+            , Element.htmlAttribute <| Attributes.style "cursor" "default"
+            ]
+        , otherwise =
+            [ Element.mouseDown <|
+                [ MaterialColor.gray
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
+                    |> MaterialColor.fromColor
+                    |> Background.color
+                ]
+            , Element.focused <|
+                [ MaterialColor.gray
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
+                    |> MaterialColor.fromColor
+                    |> Background.color
+                ]
+            , Element.mouseOver <|
+                [ MaterialColor.gray
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
+                    |> MaterialColor.fromColor
+                    |> Background.color
+                ]
+            ]
+        , content =
+            { elementRow = [ Element.spacing 16, Element.width Element.fill ]
+            , content =
+                { description =
+                    { elementColumn = [ Element.width Element.fill 
+                    , Element.spacing 4
+                    ]
+                    , content =
+                        { title = {elementText = Typography.body1}
+                        , text = {elementText = Typography.body2 
+                            ++ [MaterialColor.gray
+                                |> MaterialColor.fromColor
+                                |> Font.color]}
+                        }
+                    }
                 , icon =
                     { element =
                         [ Element.width <| Element.px 40

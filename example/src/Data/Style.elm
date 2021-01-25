@@ -34,6 +34,7 @@ import Widget
         , HeaderStyle
         , TextItemStyle
         , ImageItemStyle
+        , MultiLineItemStyle
         , ExpansionItemStyle
         )
 import Widget.Snackbar exposing (SnackbarStyle)
@@ -64,6 +65,7 @@ style palette =
     , insetHeader = Material.insetHeader palette
     , fullBleedHeader = Material.fullBleedHeader palette
     , textItem = Material.textItem palette
+    , multiLineItem = Material.multiLineItem palette
     , imageItem = Material.imageItem palette
     , expansionItem = Material.expansionItem Material.defaultPalette
     }
@@ -94,6 +96,7 @@ type alias Style msg =
     , insetHeader : ItemStyle (HeaderStyle msg) msg
     , fullBleedHeader : ItemStyle (HeaderStyle msg) msg
     , textItem : ItemStyle (TextItemStyle msg) msg
+    , multiLineItem : ItemStyle (MultiLineItemStyle msg) msg
     , imageItem : ItemStyle (ImageItemStyle msg) msg
     , expansionItem : ExpansionItemStyle msg
     }

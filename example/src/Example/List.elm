@@ -3,7 +3,7 @@ module Example.List exposing (Model, Msg, init, subscriptions, update, view)
 import Browser
 import Element exposing (Element)
 import Widget
-import Widget exposing (ColumnStyle,SwitchStyle, DividerStyle,ExpansionItemStyle,ImageItemStyle, ItemStyle, HeaderStyle,TextItemStyle)
+import Widget exposing (ColumnStyle,SwitchStyle, DividerStyle,ExpansionItemStyle,MultiLineItemStyle,ImageItemStyle, ItemStyle, HeaderStyle,TextItemStyle)
 import Widget.Style.Material as Material
 import FeatherIcons
 import Widget.Icon as Icon
@@ -22,6 +22,7 @@ type alias Style style msg =
         , imageItem : ItemStyle (ImageItemStyle msg) msg
         , expansionItem : ExpansionItemStyle msg
         , switch : SwitchStyle msg
+        , multiLineItem : ItemStyle (MultiLineItemStyle msg) msg
     }
 
 
@@ -37,6 +38,7 @@ materialStyle =
     , imageItem = Material.imageItem Material.defaultPalette
     , expansionItem = Material.expansionItem Material.defaultPalette
     , switch = Material.switch Material.defaultPalette
+    , multiLineItem = Material.multiLineItem Material.defaultPalette
     }
 
 
@@ -118,11 +120,16 @@ view msgMapper style (IsExpanded isExpanded) =
                 ,Font.size size
                 ]
         }
-    , Widget.textItem style.textItem
-        { onPress = Nothing
-        , icon = 
-            FeatherIcons.triangle
-            |> Icon.elmFeather FeatherIcons.toHtml
+    , Widget.multiLineItem style.multiLineItem
+        { title = "Item"
+        , text = "Description"
+        , onPress = Nothing
+        , icon = always Element.none
+        , content = always Element.none
+        }
+    , Widget.imageItem style.imageItem
+        { onPress = not isExpanded |>ToggleCollapsable |> msgMapper |> Just
+        , image = Element.none
         , text = "Clickable Item with Switch"
         , content = \{size,color} ->
             Widget.switch style.switch
