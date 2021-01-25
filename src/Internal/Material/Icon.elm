@@ -6,7 +6,7 @@ import Svg.Attributes
 import Color exposing (Color)
 import Widget.Icon exposing (Icon)
 
-icon : {viewBox:String,size:Int,color:Color} -> List (Svg Never) -> Element Never
+icon : {viewBox:String,size:Int,color:Color} -> List (Svg msg) -> Element msg
 icon {viewBox,size,color} =
     Svg.svg
         [ Svg.Attributes.height <| String.fromInt size
@@ -22,7 +22,7 @@ icon {viewBox,size,color} =
         >> Element.html
         >> Element.el []
 
-expand_less : Icon
+expand_less : Icon msg
 expand_less { size, color } =
     icon {viewBox = "0 0 48 48"
         , size = size
@@ -36,7 +36,7 @@ expand_less { size, color } =
         ]
 
 
-expand_more : Icon
+expand_more : Icon msg
 expand_more { size, color } =
     icon {viewBox = "0 0 48 48"
         , size = size

@@ -20,7 +20,7 @@ import Widget.Style.Material.Color as MaterialColor
 import Widget.Style.Material.Typography as Typography
 
 
-more_vert : Icon
+more_vert : Icon msg
 more_vert { size, color } =
     Icon.icon {viewBox = "0 0 48 48"
         , size = size
@@ -33,7 +33,7 @@ more_vert { size, color } =
         ]
 
 
-search : Icon
+search : Icon msg
 search { size, color } =
     Icon.icon {viewBox = "0 0 48 48"
         , size = size
@@ -46,7 +46,7 @@ search { size, color } =
         ]
 
 
-menu : Icon
+menu : Icon msg
 menu { size, color } =
     Icon.icon {viewBox = "0 0 48 48"
         , size = size

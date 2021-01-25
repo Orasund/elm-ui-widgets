@@ -28,7 +28,7 @@ type alias ButtonStyle msg =
 type alias Button msg =
     { text : String
     , onPress : Maybe msg
-    , icon : Icon
+    , icon : Icon msg
     }
 
 
@@ -59,7 +59,6 @@ iconButton style { onPress, text, icon } =
                  else
                     style.content.content.icon.otherwise
                 )
-                |> Element.map never
                 |> Element.el style.content.elementRow
         }
 
@@ -97,7 +96,6 @@ button style { onPress, text, icon } =
                      else
                         style.content.content.icon.otherwise
                     )
-                    |> Element.map never
                 , Element.text text |> Element.el style.content.content.text.contentText
                 ]
         }

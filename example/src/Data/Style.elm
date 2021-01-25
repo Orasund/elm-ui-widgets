@@ -33,6 +33,7 @@ import Widget
         , TextInputStyle
         , HeaderStyle
         , TextItemStyle
+        , ImageItemStyle
         , ExpansionItemStyle
         )
 import Widget.Snackbar exposing (SnackbarStyle)
@@ -63,6 +64,7 @@ style palette =
     , insetHeader = Material.insetHeader palette
     , fullBleedHeader = Material.fullBleedHeader palette
     , textItem = Material.textItem palette
+    , imageItem = Material.imageItem palette
     , expansionItem = Material.expansionItem Material.defaultPalette
     }
 
@@ -86,11 +88,12 @@ type alias Style msg =
     , selectButton : ButtonStyle msg
     , progressIndicator : ProgressIndicatorStyle msg
     , layout : LayoutStyle msg
-    , insetDivider : ItemStyle (DividerStyle msg)
-    , middleDivider : ItemStyle (DividerStyle msg)
-    , fullBleedDivider : ItemStyle (DividerStyle msg)
-    , insetHeader : ItemStyle (HeaderStyle msg)
-    , fullBleedHeader : ItemStyle (HeaderStyle msg)
-    , textItem : ItemStyle (TextItemStyle msg)
+    , insetDivider : ItemStyle (DividerStyle msg) msg
+    , middleDivider : ItemStyle (DividerStyle msg) msg
+    , fullBleedDivider : ItemStyle (DividerStyle msg) msg
+    , insetHeader : ItemStyle (HeaderStyle msg) msg
+    , fullBleedHeader : ItemStyle (HeaderStyle msg) msg
+    , textItem : ItemStyle (TextItemStyle msg) msg
+    , imageItem : ItemStyle (ImageItemStyle msg) msg
     , expansionItem : ExpansionItemStyle msg
     }

@@ -80,11 +80,11 @@ type alias LayoutStyle msg =
     , sheetButton : ButtonStyle msg
     , menuButton : ButtonStyle msg
     , menuTabButton : ButtonStyle msg
-    , menuIcon : Icon
-    , moreVerticalIcon : Icon
+    , menuIcon : Icon msg
+    , moreVerticalIcon : Icon msg
     , spacing : Int
     , title : List (Attribute msg)
-    , searchIcon : Icon
+    , searchIcon : Icon msg
     , search : TextInputStyle msg
     , searchFill : TextInputStyle msg
     }

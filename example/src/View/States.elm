@@ -1,4 +1,4 @@
-module View.Test exposing (button, dialog, icon, list, modal, multiSelect, progressIndicator, select, sortTable, switch, tab, textInput)
+module View.States exposing (button, dialog, icon, list, modal, multiSelect, progressIndicator, select, sortTable, switch, tab, textInput)
 
 import Data.Style exposing (Style)
 import Element exposing (Element)

@@ -10,7 +10,8 @@ module Widget exposing
     , SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInputStyle, TextInput, textInput
     , TabStyle, Tab, tab
-    , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
+    , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator, imageItem
+    , ImageItemStyle
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -96,7 +97,7 @@ You can create you own widgets by sticking widgets types together.
 
 ## Item
 
-@docs ItemStyle, DividerStyle, HeaderStyle, TextItemStyle, ExpansionItemStyle, Item, ExpansionItem, itemList, item, divider, headerItem, buttonDrawer, textItem, expansionItem
+@docs ItemStyle, DividerStyle, HeaderStyle, TextItemStyle,ImageItemStyle, ExpansionItemStyle, Item, ExpansionItem, itemList, item, divider, headerItem, buttonDrawer, textItem,imageItem, expansionItem
 
 
 # Sort Table
@@ -143,7 +144,7 @@ import Html exposing (Html)
 import Internal.Button as Button
 import Internal.Dialog as Dialog
 import Internal.ExpansionPanel as ExpansionPanel
-import Internal.Item as Item exposing (TextItem, TextItemStyle)
+import Internal.Item as Item 
 import Internal.List as List
 import Internal.ProgressIndicator as ProgressIndicator
 import Internal.Select as Select
@@ -168,11 +169,11 @@ type alias IconStyle =
     }
 
 
-type alias Icon =
+type alias Icon msg =
     { size : Int
     , color : Color
     }
-    -> Element Never
+    -> Element msg
 
 
 
@@ -205,7 +206,7 @@ type alias ButtonStyle msg =
 -}
 type alias Button msg =
     { text : String
-    , icon : Icon
+    , icon : Icon msg
     , onPress : Maybe msg
     }
 
@@ -224,7 +225,7 @@ iconButton :
     ButtonStyle msg
     ->
         { text : String
-        , icon : Icon
+        , icon : Icon msg
         , onPress : Maybe msg
         }
     -> Element msg
@@ -265,7 +266,7 @@ button :
     ButtonStyle msg
     ->
         { text : String
-        , icon : Icon
+        , icon : Icon msg
         , onPress : Maybe msg
         }
     -> Element msg
@@ -354,7 +355,7 @@ type alias Select msg =
     , options :
         List
             { text : String
-            , icon : Icon
+            , icon : Icon msg
             }
     , onSelect : Int -> Maybe msg
     }
@@ -372,7 +373,7 @@ type alias MultiSelect msg =
     , options :
         List
             { text : String
-            , icon : Icon
+            , icon : Icon msg
             }
     , onSelect : Int -> Maybe msg
     }
@@ -536,8 +537,8 @@ textInput =
 
 
 {-| -}
-type alias ItemStyle content =
-    { element : List (Attribute Never)
+type alias ItemStyle content msg=
+    { element : List (Attribute msg)
     , content : content
     }
 
@@ -562,11 +563,11 @@ type alias HeaderStyle msg =
 type alias RowStyle msg =
     { elementRow : List (Attribute msg)
     , content :
-        { element : List (Attribute Never)
-        , ifFirst : List (Attribute Never)
-        , ifLast : List (Attribute Never)
-        , ifSingleton : List (Attribute Never)
-        , otherwise : List (Attribute Never)
+        { element : List (Attribute msg)
+        , ifFirst : List (Attribute msg)
+        , ifLast : List (Attribute msg)
+        , ifSingleton : List (Attribute msg)
+        , otherwise : List (Attribute msg)
         }
     }
 
@@ -575,11 +576,11 @@ type alias RowStyle msg =
 type alias ColumnStyle msg =
     { elementColumn : List (Attribute msg)
     , content :
-        { element : List (Attribute Never)
-        , ifFirst : List (Attribute Never)
-        , ifLast : List (Attribute Never)
-        , ifSingleton : List (Attribute Never)
-        , otherwise : List (Attribute Never)
+        { element : List (Attribute msg)
+        , ifFirst : List (Attribute msg)
+        , ifLast : List (Attribute msg)
+        , ifSingleton : List (Attribute msg)
+        , otherwise : List (Attribute msg)
         }
     }
 
@@ -602,16 +603,47 @@ type alias TextItemStyle msg =
         }
     }
 
-
-type alias ExpansionItemStyle msg =
-    { item : ItemStyle (TextItemStyle msg)
-    , expandIcon : Icon
-    , collapseIcon : Icon
+{-| -}
+type alias ImageItemStyle msg =
+    { elementButton : List (Attribute msg)
+    , ifDisabled : List (Attribute msg)
+    , otherwise : List (Attribute msg)
+    , content :
+        { elementRow : List (Attribute msg)
+        , content :
+            { text : { elementText : List (Attribute msg) }
+            , image : { element : List (Attribute msg) }
+            , content : IconStyle
+            }
+        }
     }
 
+{-| -}
+type alias ExpansionItemStyle msg =
+    { item : ItemStyle (TextItemStyle msg) msg
+    , expandIcon : Icon msg
+    , collapseIcon : Icon msg
+    }
 
+{-| -}
+type alias TextItem msg =
+    { text : String
+    , onPress : Maybe msg
+    , icon : Icon msg
+    , content : Icon msg
+    }
+
+{-| -}
+type alias ImageItem msg =
+    { text : String
+    , onPress : Maybe msg
+    , image : Element msg
+    , content : Icon msg
+    }
+
+{-| -}
 type alias ExpansionItem msg =
-    { icon : Icon
+    { icon : Icon msg
     , text : String
     , onToggle : Bool -> msg
     , content : List (Item msg)
@@ -637,28 +669,49 @@ item =
 
 {-| A divider.
 -}
-divider : ItemStyle (DividerStyle msg) -> Item msg
+divider : ItemStyle (DividerStyle msg) msg -> Item msg
 divider =
     Item.divider
 
 
 {-| A header for a part of a list.
 -}
-headerItem : ItemStyle (HeaderStyle msg) -> String -> Item msg
+headerItem : ItemStyle (HeaderStyle msg) msg -> String -> Item msg
 headerItem =
     Item.headerItem
 
 
 {-| A clickable item that contains two spots for icons or additional information and a single line of text.
 -}
-textItem : ItemStyle (TextItemStyle msg) -> TextItem msg -> Item msg
+textItem : ItemStyle (TextItemStyle msg) msg
+    -> { text : String
+    , onPress : Maybe msg
+    , icon : Icon msg
+    , content : Icon msg
+    } -> Item msg
 textItem =
     Item.textItem
 
+{-| A clickable item that contains a image , a line of text and some additonal information
+-}
+imageItem : ItemStyle (ImageItemStyle msg) msg
+    -> { text : String
+    , onPress : Maybe msg
+    , image : Element msg
+    , content : Icon msg
+    } -> Item msg
+imageItem =
+    Item.imageItem
 
 {-| An expandable Item
 -}
-expansionItem : ExpansionItemStyle msg -> ExpansionItem msg -> List (Item msg)
+expansionItem : ExpansionItemStyle msg 
+    -> { icon : Icon msg
+    , text : String
+    , onToggle : Bool -> msg
+    , content : List (Item msg)
+    , isExpanded : Bool
+    } -> List (Item msg)
 expansionItem =
     Item.expansionItem
 
@@ -739,9 +792,9 @@ type alias SortTableStyle msg =
     { elementTable : List (Attribute msg)
     , content :
         { header : ButtonStyle msg
-        , ascIcon : Icon
-        , descIcon : Icon
-        , defaultIcon : Icon
+        , ascIcon : Icon msg
+        , descIcon : Icon msg
+        , defaultIcon : Icon msg
         }
     }
 

@@ -11,11 +11,11 @@ import Widget.Style.Customize as Customize
 type alias RowStyle msg =
     { elementRow : List (Attribute msg)
     , content :
-        { element : List (Attribute Never)
-        , ifFirst : List (Attribute Never)
-        , ifLast : List (Attribute Never)
-        , ifSingleton : List (Attribute Never)
-        , otherwise : List (Attribute Never)
+        { element : List (Attribute msg)
+        , ifFirst : List (Attribute msg)
+        , ifLast : List (Attribute msg)
+        , ifSingleton : List (Attribute msg)
+        , otherwise : List (Attribute msg)
         }
     }
 
@@ -24,21 +24,21 @@ type alias RowStyle msg =
 type alias ColumnStyle msg =
     { elementColumn : List (Attribute msg)
     , content :
-        { element : List (Attribute Never)
-        , ifFirst : List (Attribute Never)
-        , ifLast : List (Attribute Never)
-        , ifSingleton : List (Attribute Never)
-        , otherwise : List (Attribute Never)
+        { element : List (Attribute msg)
+        , ifFirst : List (Attribute msg)
+        , ifLast : List (Attribute msg)
+        , ifSingleton : List (Attribute msg)
+        , otherwise : List (Attribute msg)
         }
     }
 
 
 internal :
-    { element : List (Attribute Never)
-    , ifFirst : List (Attribute Never)
-    , ifLast : List (Attribute Never)
-    , ifSingleton : List (Attribute Never)
-    , otherwise : List (Attribute Never)
+    { element : List (Attribute msg)
+    , ifFirst : List (Attribute msg)
+    , ifLast : List (Attribute msg)
+    , ifSingleton : List (Attribute msg)
+    , otherwise : List (Attribute msg)
     }
     -> List (Item msg)
     -> List (Element msg)
@@ -60,7 +60,6 @@ internal style list =
                             else
                                 style.otherwise
                            )
-                        |> List.map (Element.mapAttribute never)
                     )
             )
 
@@ -142,19 +141,14 @@ buttonRow style =
     internalButton
         { element =
             style.elementRow.content.element
-                |> List.map (Element.mapAttribute never)
         , ifSingleton =
             style.elementRow.content.ifSingleton
-                |> List.map (Element.mapAttribute never)
         , ifFirst =
             style.elementRow.content.ifFirst
-                |> List.map (Element.mapAttribute never)
         , ifLast =
             style.elementRow.content.ifLast
-                |> List.map (Element.mapAttribute never)
         , otherwise =
             style.elementRow.content.otherwise
-                |> List.map (Element.mapAttribute never)
         , content = style.content
         }
         >> Element.row style.elementRow.elementRow
@@ -170,19 +164,14 @@ buttonColumn style =
     internalButton
         { element =
             style.elementColumn.content.element
-                |> List.map (Element.mapAttribute never)
         , ifSingleton =
             style.elementColumn.content.ifSingleton
-                |> List.map (Element.mapAttribute never)
         , ifFirst =
             style.elementColumn.content.ifFirst
-                |> List.map (Element.mapAttribute never)
         , ifLast =
             style.elementColumn.content.ifLast
-                |> List.map (Element.mapAttribute never)
         , otherwise =
             style.elementColumn.content.otherwise
-                |> List.map (Element.mapAttribute never)
         , content = style.content
         }
         >> Element.column style.elementColumn.elementColumn

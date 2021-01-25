@@ -3,7 +3,7 @@ module Example.List exposing (Model, Msg, init, subscriptions, update, view)
 import Browser
 import Element exposing (Element)
 import Widget
-import Widget exposing (ColumnStyle, DividerStyle,ExpansionItemStyle, ItemStyle, HeaderStyle,TextItemStyle)
+import Widget exposing (ColumnStyle,SwitchStyle, DividerStyle,ExpansionItemStyle,ImageItemStyle, ItemStyle, HeaderStyle,TextItemStyle)
 import Widget.Style.Material as Material
 import FeatherIcons
 import Widget.Icon as Icon
@@ -13,13 +13,15 @@ import Widget.Style.Material.Color as MaterialColor
 type alias Style style msg =
     { style
         | cardColumn : ColumnStyle msg
-        , insetDivider : ItemStyle (DividerStyle msg)
-        , middleDivider : ItemStyle (DividerStyle msg)
-        , fullBleedDivider : ItemStyle (DividerStyle msg)
-        , insetHeader : ItemStyle (HeaderStyle msg)
-        , fullBleedHeader : ItemStyle (HeaderStyle msg)
-        , textItem : ItemStyle (TextItemStyle msg)
+        , insetDivider : ItemStyle (DividerStyle msg) msg
+        , middleDivider : ItemStyle (DividerStyle msg) msg
+        , fullBleedDivider : ItemStyle (DividerStyle msg) msg
+        , insetHeader : ItemStyle (HeaderStyle msg) msg
+        , fullBleedHeader : ItemStyle (HeaderStyle msg) msg
+        , textItem : ItemStyle (TextItemStyle msg) msg
+        , imageItem : ItemStyle (ImageItemStyle msg) msg
         , expansionItem : ExpansionItemStyle msg
+        , switch : SwitchStyle msg
     }
 
 
@@ -32,7 +34,9 @@ materialStyle =
     , insetHeader = Material.insetHeader Material.defaultPalette
     , fullBleedHeader = Material.fullBleedHeader Material.defaultPalette
     , textItem = Material.textItem Material.defaultPalette
+    , imageItem = Material.imageItem Material.defaultPalette
     , expansionItem = Material.expansionItem Material.defaultPalette
+    , switch = Material.switch Material.defaultPalette
     }
 
 
@@ -63,6 +67,8 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.none
 
+    
+
 {-| You can remove the msgMapper. But by doing so, make sure to also change `msg` to `Msg` in the line below.
 -}
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
@@ -80,6 +86,16 @@ view msgMapper style (IsExpanded isExpanded) =
             FeatherIcons.triangle
             |> Icon.elmFeather FeatherIcons.toHtml
         , text = "Item with Icon"
+        , content = \{size,color} ->
+            Element.none
+        }
+    , Widget.imageItem style.imageItem
+        { onPress = Nothing
+        , image = Element.image [Element.width <| Element.px <| 40, Element.height <| Element.px <| 40]
+            { src = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Elm_logo.svg/1024px-Elm_logo.svg.png"
+       , description = "Elm logo"
+       }
+        , text = "Item with Image"
         , content = \{size,color} ->
             "1."
             |> Element.text
@@ -101,6 +117,23 @@ view msgMapper style (IsExpanded isExpanded) =
                 [Font.color <| MaterialColor.fromColor color
                 ,Font.size size
                 ]
+        }
+    , Widget.textItem style.textItem
+        { onPress = Nothing
+        , icon = 
+            FeatherIcons.triangle
+            |> Icon.elmFeather FeatherIcons.toHtml
+        , text = "Clickable Item with Switch"
+        , content = \{size,color} ->
+            Widget.switch style.switch
+                { description = "Click Me"
+                , active = isExpanded
+                , onPress =
+                    not isExpanded 
+                    |> ToggleCollapsable
+                    |> msgMapper
+                    |> Just
+                }
         }
     , Widget.divider style.fullBleedDivider
     ]++ (Widget.expansionItem style.expansionItem

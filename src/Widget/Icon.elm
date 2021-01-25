@@ -14,11 +14,11 @@ type alias IconStyle =
     }
 
 
-type alias Icon =
+type alias Icon msg =
     { size : Int
     , color : Color
     }
-    -> Element Never
+    -> Element msg
 
 
 {-| For using [icidasset/elm-material-icons](https://dark.elm.dmy.fr/packages/icidasset/elm-material-icons/latest/)
@@ -33,7 +33,7 @@ type alias Icon =
             |> Widget.Icon.elmMaterialIcons Color
 
 -}
-elmMaterialIcons : (Color -> coloring) -> (Int -> coloring -> Html Never) -> Icon
+elmMaterialIcons : (Color -> coloring) -> (Int -> coloring -> Html msg) -> Icon msg
 elmMaterialIcons wrapper fun =
     \{ size, color } ->
         fun size (wrapper color)
@@ -52,7 +52,7 @@ elmMaterialIcons wrapper fun =
             |> Widget.Icon.materialIcons
 
 -}
-materialIcons : (Color -> Int -> Svg Never) -> Icon
+materialIcons : (Color -> Int -> Svg msg) -> Icon msg
 materialIcons fun =
     \{ size, color } ->
         fun color size
@@ -76,7 +76,7 @@ materialIcons fun =
             |> Widget.Icon.elmFeather FeatherIcons.toHtml
 
 -}
-elmFeather : (List (Svg.Attribute Never) -> icon -> Html Never) -> icon -> Icon
+elmFeather : (List (Svg.Attribute msg) -> icon -> Html msg) -> icon -> Icon msg
 elmFeather fun icon =
     \{ size, color } ->
         icon
@@ -102,7 +102,7 @@ elmFeather fun icon =
             |> Widget.Icon.elmFontawesome FontAwesome.Svg.viewIcon
 
 -}
-elmFontawesome : (icon -> Svg Never) -> icon -> Icon
+elmFontawesome : (icon -> Svg msg) -> icon -> Icon msg
 elmFontawesome fun icon =
     \{ size, color } ->
         icon
@@ -137,9 +137,9 @@ elmIonicons :
         , blue : Float
         , alpha : Float
         }
-     -> Html Never
+     -> Html msg
     )
-    -> Icon
+    -> Icon msg
 elmIonicons fun =
     \{ size, color } ->
         fun size (Color.toRgba color)
@@ -167,8 +167,8 @@ elmOcticons :
     , withColor : String -> options -> options
     , defaultOptions : options
     }
-    -> (options -> Html Never)
-    -> Icon
+    -> (options -> Html msg)
+    -> Icon msg
 elmOcticons { withSize, withColor, defaultOptions } fun =
     \{ size, color } ->
         (defaultOptions
@@ -191,7 +191,7 @@ elmOcticons { withSize, withColor, defaultOptions } fun =
             |> Widget.Icon.elmHeroicons
 
 -}
-elmHeroicons : (List (Svg.Attribute Never) -> Html Never) -> Icon
+elmHeroicons : (List (Svg.Attribute msg) -> Html msg) -> Icon msg
 elmHeroicons fun =
     \{ size, color } ->
         fun
@@ -214,7 +214,7 @@ elmHeroicons fun =
             |> Widget.Icon.antDesignIconsElm
 
 -}
-antDesignIconsElm : (List (Svg.Attribute Never) -> Html Never) -> Icon
+antDesignIconsElm : (List (Svg.Attribute msg) -> Html msg) -> Icon msg
 antDesignIconsElm fun =
     \{ size, color } ->
         fun
@@ -237,7 +237,7 @@ antDesignIconsElm fun =
             |> Widget.Icon.elmZondicons
 
 -}
-elmZondicons : (List (Svg.Attribute Never) -> Html Never) -> Icon
+elmZondicons : (List (Svg.Attribute msg) -> Html msg) -> Icon msg
 elmZondicons fun =
     \{ size, color } ->
         fun

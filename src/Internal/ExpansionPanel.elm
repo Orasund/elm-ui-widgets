@@ -25,8 +25,8 @@ type alias ExpansionPanelStyle msg =
                         , text : { elementText : List (Attribute msg) }
                         }
                     }
-                , expandIcon : Icon
-                , collapseIcon : Icon
+                , expandIcon : Icon msg
+                , collapseIcon : Icon msg
                 , icon : IconStyle
                 }
             }
@@ -37,7 +37,7 @@ type alias ExpansionPanelStyle msg =
 
 type alias ExpansionPanel msg =
     { onToggle : Bool -> msg
-    , icon : Icon
+    , icon : Icon msg
     , text : String
     , content : Element msg
     , isExpanded : Bool
@@ -57,13 +57,11 @@ expansionPanel style model =
             [ Element.row style.content.panel.content.label.elementRow
                 [ model.icon
                     style.content.panel.content.label.content.icon
-                    |> Element.map never
                 , model.text
                     |> Element.text
                     |> Element.el style.content.panel.content.label.content.text.elementText
                 ]
-            , Element.map never <|
-                if model.isExpanded then
+            , if model.isExpanded then
                     style.content.panel.content.collapseIcon
                         style.content.panel.content.icon
 
@@ -80,10 +78,10 @@ expansionPanel style model =
 
 
 expansionPanelItem :
-    ItemStyle (ExpansionPanelStyle msg)
+    ItemStyle (ExpansionPanelStyle msg) msg
     ->
         { onToggle : Bool -> msg
-        , icon : Icon
+        , icon : Icon msg
         , text : String
         , content : Element msg
         , isExpanded : Bool

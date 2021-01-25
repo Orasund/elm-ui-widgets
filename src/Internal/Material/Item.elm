@@ -6,6 +6,7 @@ module Internal.Material.Item exposing
     , insetHeader
     , middleDivider
     , textItem
+    , imageItem
     )
 
 import Color
@@ -14,7 +15,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Html.Attributes as Attributes
-import Internal.Item exposing (DividerStyle, ExpansionItemStyle, HeaderStyle, ItemStyle, TextItemStyle)
+import Internal.Item exposing (DividerStyle, ImageItemStyle , ExpansionItemStyle, HeaderStyle, ItemStyle, TextItemStyle)
 import Internal.Material.Icon as Icon
 import Internal.Material.Palette exposing (Palette)
 import Svg
@@ -23,7 +24,7 @@ import Widget.Icon exposing (Icon)
 import Widget.Style.Material.Color as MaterialColor
 import Widget.Style.Material.Typography as Typography
 
-fullBleedDivider : Palette -> ItemStyle (DividerStyle msg)
+fullBleedDivider : Palette -> ItemStyle (DividerStyle msg) msg
 fullBleedDivider _ =
     { element =
         [ Element.width <| Element.fill
@@ -48,7 +49,7 @@ fullBleedDivider _ =
     }
 
 
-insetDivider : Palette -> ItemStyle (DividerStyle msg)
+insetDivider : Palette -> ItemStyle (DividerStyle msg) msg
 insetDivider _ =
     { element =
         [ Element.width <| Element.fill
@@ -78,7 +79,7 @@ insetDivider _ =
     }
 
 
-middleDivider : Palette -> ItemStyle (DividerStyle msg)
+middleDivider : Palette -> ItemStyle (DividerStyle msg) msg
 middleDivider _ =
     { element =
         [ Element.width <| Element.fill
@@ -108,7 +109,7 @@ middleDivider _ =
     }
 
 
-insetHeader : Palette -> ItemStyle (HeaderStyle msg)
+insetHeader : Palette -> ItemStyle (HeaderStyle msg) msg
 insetHeader palette =
     { element =
         [ Element.width <| Element.fill
@@ -146,7 +147,7 @@ insetHeader palette =
     }
 
 
-fullBleedHeader : Palette -> ItemStyle (HeaderStyle msg)
+fullBleedHeader : Palette -> ItemStyle (HeaderStyle msg) msg
 fullBleedHeader palette =
     { element =
         [ Element.width <| Element.fill
@@ -180,7 +181,7 @@ fullBleedHeader palette =
     }
 
 
-textItem : Palette -> ItemStyle (TextItemStyle msg)
+textItem : Palette -> ItemStyle (TextItemStyle msg) msg
 textItem _ =
     { element = [ Element.padding 0 ]
     , content =
@@ -237,6 +238,59 @@ textItem _ =
         }
     }
 
+imageItem : Palette -> ItemStyle (ImageItemStyle msg) msg
+imageItem _ =
+    { element = [ Element.padding 0 ]
+    , content =
+        { elementButton =
+            [ Element.width Element.fill
+            , Element.paddingXY 16 8
+            ]
+        , ifDisabled =
+            [ Element.mouseDown []
+            , Element.mouseOver []
+            , Element.focused []
+            , Element.htmlAttribute <| Attributes.style "cursor" "default"
+            ]
+        , otherwise =
+            [ Element.mouseDown <|
+                [ MaterialColor.gray
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
+                    |> MaterialColor.fromColor
+                    |> Background.color
+                ]
+            , Element.focused <|
+                [ MaterialColor.gray
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
+                    |> MaterialColor.fromColor
+                    |> Background.color
+                ]
+            , Element.mouseOver <|
+                [ MaterialColor.gray
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
+                    |> MaterialColor.fromColor
+                    |> Background.color
+                ]
+            ]
+        , content =
+            { elementRow = [ Element.spacing 16, Element.width Element.fill ]
+            , content =
+                { text = { elementText = [ Element.width Element.fill
+                    ] }
+                , image =
+                    { element =
+                        [ Element.width <| Element.px 40
+                        , Element.height <| Element.px 40
+                        ]
+                    }
+                , content =
+                    { size = 24
+                    , color = MaterialColor.gray
+                    }
+                }
+            }
+        }
+    }
 
 
 

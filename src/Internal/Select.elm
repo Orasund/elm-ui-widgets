@@ -12,7 +12,7 @@ type alias Select msg =
     , options :
         List
             { text : String
-            , icon : Icon
+            , icon : Icon msg
             }
     , onSelect : Int -> Maybe msg
     }
@@ -23,7 +23,7 @@ type alias MultiSelect msg =
     , options :
         List
             { text : String
-            , icon : Icon
+            , icon : Icon msg
             }
     , onSelect : Int -> Maybe msg
     }
@@ -59,7 +59,6 @@ selectButton style ( selected, b ) =
                      else
                         style.content.content.icon.otherwise
                     )
-                    |> Element.map never
                 , Element.text b.text |> Element.el style.content.content.text.contentText
                 ]
         }

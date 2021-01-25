@@ -27,9 +27,9 @@ type alias SortTableStyle msg =
     { elementTable : List (Attribute msg)
     , content :
         { header : ButtonStyle msg
-        , ascIcon : Icon
-        , descIcon : Icon
-        , defaultIcon : Icon
+        , ascIcon : Icon msg
+        , descIcon : Icon msg
+        , defaultIcon : Icon msg
         }
     }
 

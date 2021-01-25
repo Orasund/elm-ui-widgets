@@ -15,7 +15,7 @@ import Example.Switch as Switch
 import Example.Tab as Tab
 import Example.TextInput as TextInput
 import Framework.Grid as Grid
-import View.Test as Test
+import View.States as States
 
 
 type Example
@@ -178,40 +178,40 @@ toTests : Example -> msg -> Style msg -> List ( String, Element msg )
 toTests example =
     case example of
         ButtonExample ->
-            Test.button
+            States.button
 
         SwitchExample ->
-            Test.switch
+            States.switch
 
         SelectExample ->
-            Test.select
+            States.select
 
         MultiSelectExample ->
-            Test.multiSelect
+            States.multiSelect
 
         TabExample ->
-            Test.tab
+            States.tab
 
         SortTableExample ->
-            Test.sortTable
+            States.sortTable
 
         ModalExample ->
-            Test.modal
+            States.modal
 
         DialogExample ->
-            Test.dialog
+            States.dialog
 
         TextInputExample ->
-            Test.textInput
+            States.textInput
 
         ListExample ->
-            Test.list
+            States.list
 
         ProgressIndicatorExample ->
-            Test.progressIndicator
+            States.progressIndicator
 
         IconExample ->
-            Test.icon
+            States.icon
 
 
 type Msg

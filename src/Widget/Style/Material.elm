@@ -8,7 +8,7 @@ module Widget.Style.Material exposing
     , alertDialog
     , row, column
     , fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem, expansionItem
-    , progressIndicator
+    , progressIndicator,imageItem
     , sortTable
     , snackbar
     , tab, tabButton
@@ -85,7 +85,7 @@ The [List widget](https://material.io/components/lists) is a very complex widget
 A List is build from items.
 You way want to use special items to visually organize the content of your list.
 
-@docs fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem, expansionItem
+@docs fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem,imageItem, expansionItem
 
 
 # Progress Indicator
@@ -123,7 +123,7 @@ Note that you might want to checkout the [file on GitHub](https://github.com/Ora
 import Color exposing (Color)
 import Internal.Button exposing (ButtonStyle)
 import Internal.Dialog exposing (DialogStyle)
-import Internal.Item exposing (DividerStyle, ExpansionItemStyle, HeaderStyle, ItemStyle, TextItemStyle)
+import Internal.Item exposing (DividerStyle, ExpansionItemStyle,ImageItemStyle, HeaderStyle, ItemStyle, TextItemStyle)
 import Internal.List exposing (ColumnStyle, RowStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Chip as Chip
@@ -322,35 +322,35 @@ column =
 
 {-| A divider covering the full length
 -}
-fullBleedDivider : Palette -> ItemStyle (DividerStyle msg)
+fullBleedDivider : Palette -> ItemStyle (DividerStyle msg) msg
 fullBleedDivider =
     Item.fullBleedDivider
 
 
 {-| A divider covering only parts of the width
 -}
-insetDivider : Palette -> ItemStyle (DividerStyle msg)
+insetDivider : Palette -> ItemStyle (DividerStyle msg) msg
 insetDivider =
     Item.insetDivider
 
 
 {-| A divider in the center
 -}
-middleDivider : Palette -> ItemStyle (DividerStyle msg)
+middleDivider : Palette -> ItemStyle (DividerStyle msg) msg
 middleDivider =
     Item.middleDivider
 
 
 {-| A header of a section of a list. Comes with a inset divider.
 -}
-insetHeader : Palette -> ItemStyle (HeaderStyle msg)
+insetHeader : Palette -> ItemStyle (HeaderStyle msg) msg
 insetHeader =
     Item.insetHeader
 
 
 {-| A header of a section of a list. Comes with a full bleed divider.
 -}
-fullBleedHeader : Palette -> ItemStyle (HeaderStyle msg)
+fullBleedHeader : Palette -> ItemStyle (HeaderStyle msg) msg
 fullBleedHeader =
     Item.fullBleedHeader
 
@@ -398,11 +398,17 @@ There are some conflicting informations about the height of an element in the [S
 A normal item should be 48 height, but a item with an icon should be 56. This is confusing, because a normal item can also have an additional icon that is the same size.
 
 -}
-textItem : Palette -> ItemStyle (TextItemStyle msg)
+textItem : Palette -> ItemStyle (TextItemStyle msg) msg
 textItem =
     Item.textItem
 
+{-| Similar to a textItem but with an image instead of the icon.
 
+If the image is bigger then 40x40, the size of the item will change.
+-}
+imageItem : Palette -> ItemStyle (ImageItemStyle msg) msg
+imageItem  =
+    Item.imageItem
 
 {-------------------------------------------------------------------------------
 -- D I A L O G
