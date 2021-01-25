@@ -14,7 +14,7 @@ switch : Palette -> SwitchStyle msg
 switch palette =
     { elementButton =
         [ Element.height <| Element.px 38
-        , Element.width <| Element.px 58
+        , Element.width <| Element.px <| 58 - 18
         , Element.mouseDown []
         , Element.focused []
         , Element.mouseOver []
@@ -73,6 +73,8 @@ switch palette =
                     |> Background.color
                 ]
             , Element.alignRight
+            
+            , Element.moveRight 8
             ]
         , otherwise =
             [ Element.mouseDown
@@ -94,6 +96,7 @@ switch palette =
                     |> Background.color
                 ]
             , Element.alignLeft
+            , Element.moveLeft 8
             ]
         , content =
             { element =
