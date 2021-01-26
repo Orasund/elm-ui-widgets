@@ -3,7 +3,6 @@ module Example.MultiSelect exposing (Model, Msg, init, subscriptions, update, vi
 import Browser
 import Element exposing (Element)
 import Set exposing (Set)
-import Widget
 import Widget exposing (ButtonStyle, RowStyle)
 import Widget.Style.Material as Material
 

@@ -6,13 +6,18 @@ module Widget exposing
     , DialogStyle, Dialog, modal, dialog
     , RowStyle, row, buttonRow
     , ColumnStyle, column, buttonColumn
-    , ItemStyle, DividerStyle, HeaderStyle, TextItemStyle, ExpansionItemStyle, Item, ExpansionItem, itemList, item, divider, headerItem, textItem, expansionItem
+    , ItemStyle, Item, item
+    , TextItemStyle, TextItem, textItem
+    , ExpansionItemStyle, ExpansionItem, expansionItem
+    , ImageItemStyle, ImageItem, imageItem
+    , MultiLineItemStyle, MultiLineItem, multiLineItem
+    , HeaderStyle, headerItem
+    , DividerStyle, divider
+    , itemList
     , SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInputStyle, TextInput, textInput
     , TabStyle, Tab, tab
-    , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator, imageItem
-    , ImageItemStyle
-    , MultiLineItemStyle,multiLineItem
+    , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -78,7 +83,6 @@ You can create you own widgets by sticking widgets types together.
 @docs DialogStyle, Dialog, modal, dialog
 
 
-
 # List
 
 ![List](https://orasund.github.io/elm-ui-widgets/assets/list.png)
@@ -98,7 +102,14 @@ You can create you own widgets by sticking widgets types together.
 
 ## Item
 
-@docs ItemStyle, DividerStyle, HeaderStyle, TextItemStyle,ImageItemStyle, ExpansionItemStyle,MultiLineItemStyle,Item, ExpansionItem, itemList, item, divider, headerItem, buttonDrawer, textItem,imageItem, expansionItem,multiLineItem 
+@docs ItemStyle, Item, item
+@docs TextItemStyle, TextItem, textItem
+@docs ExpansionItemStyle, ExpansionItem, expansionItem
+@docs ImageItemStyle, ImageItem, imageItem
+@docs MultiLineItemStyle, MultiLineItem, multiLineItem
+@docs HeaderStyle, headerItem
+@docs DividerStyle, divider
+@docs itemList, buttonDrawer
 
 
 # Sort Table
@@ -141,11 +152,9 @@ You can create you own widgets by sticking widgets types together.
 import Color exposing (Color)
 import Element exposing (Attribute, Element, Length)
 import Element.Input exposing (Placeholder)
-import Html exposing (Html)
 import Internal.Button as Button
 import Internal.Dialog as Dialog
-import Internal.ExpansionPanel as ExpansionPanel
-import Internal.Item as Item 
+import Internal.Item as Item
 import Internal.List as List
 import Internal.ProgressIndicator as ProgressIndicator
 import Internal.Select as Select
@@ -221,6 +230,18 @@ type alias TextButton msg =
 
 
 {-| A button containing only an icon, the text is used for screenreaders.
+
+    import Widget.Style.Material as Material
+
+    type Msg
+    = Like
+
+    iconButton (Material.iconButton Material.defaultPalette)
+        { text = Like
+        , icon = MaterialIcons.hearth |> Icon.elmMaterialIcons Color
+        , onPress = Just Like
+        }
+
 -}
 iconButton :
     ButtonStyle msg
@@ -478,7 +499,6 @@ dialog =
 
 
 
-
 {----------------------------------------------------------
 - TEXT INPUT
 ----------------------------------------------------------}
@@ -538,7 +558,7 @@ textInput =
 
 
 {-| -}
-type alias ItemStyle content msg=
+type alias ItemStyle content msg =
     { element : List (Attribute msg)
     , content : content
     }
@@ -604,6 +624,7 @@ type alias TextItemStyle msg =
         }
     }
 
+
 {-| -}
 type alias MultiLineItemStyle msg =
     { elementButton : List (Attribute msg)
@@ -612,14 +633,14 @@ type alias MultiLineItemStyle msg =
     , content :
         { elementRow : List (Attribute msg)
         , content :
-            { description : 
-                { elementColumn :  List (Attribute msg)
+            { description :
+                { elementColumn : List (Attribute msg)
                 , content :
-                    { title : {elementText : List (Attribute msg)}
-                    , text : {elementText : List (Attribute msg)}
+                    { title : { elementText : List (Attribute msg) }
+                    , text : { elementText : List (Attribute msg) }
                     }
                 }
-            , icon : 
+            , icon :
                 { element : List (Attribute msg)
                 , content : IconStyle
                 }
@@ -627,6 +648,7 @@ type alias MultiLineItemStyle msg =
             }
         }
     }
+
 
 {-| -}
 type alias ImageItemStyle msg =
@@ -643,12 +665,14 @@ type alias ImageItemStyle msg =
         }
     }
 
+
 {-| -}
 type alias ExpansionItemStyle msg =
     { item : ItemStyle (TextItemStyle msg) msg
     , expandIcon : Icon msg
     , collapseIcon : Icon msg
     }
+
 
 {-| -}
 type alias TextItem msg =
@@ -657,6 +681,7 @@ type alias TextItem msg =
     , icon : Icon msg
     , content : Icon msg
     }
+
 
 {-| -}
 type alias MultiLineItem msg =
@@ -667,6 +692,7 @@ type alias MultiLineItem msg =
     , content : Icon msg
     }
 
+
 {-| -}
 type alias ImageItem msg =
     { text : String
@@ -674,6 +700,7 @@ type alias ImageItem msg =
     , image : Element msg
     , content : Icon msg
     }
+
 
 {-| -}
 type alias ExpansionItem msg =
@@ -717,45 +744,60 @@ headerItem =
 
 {-| A clickable item that contains two spots for icons or additional information and a single line of text.
 -}
-textItem : ItemStyle (TextItemStyle msg) msg
-    -> { text : String
-    , onPress : Maybe msg
-    , icon : Icon msg
-    , content : Icon msg
-    } -> Item msg
+textItem :
+    ItemStyle (TextItemStyle msg) msg
+    ->
+        { text : String
+        , onPress : Maybe msg
+        , icon : Icon msg
+        , content : Icon msg
+        }
+    -> Item msg
 textItem =
     Item.textItem
 
-multiLineItem : ItemStyle (MultiLineItemStyle msg) msg 
-    -> { title : String
-    , text : String
-    , onPress : Maybe msg
-    , icon : Icon msg
-    , content : Icon msg
-    } -> Item msg
+
+multiLineItem :
+    ItemStyle (MultiLineItemStyle msg) msg
+    ->
+        { title : String
+        , text : String
+        , onPress : Maybe msg
+        , icon : Icon msg
+        , content : Icon msg
+        }
+    -> Item msg
 multiLineItem =
     Item.multiLineItem
 
+
 {-| A clickable item that contains a image , a line of text and some additonal information
 -}
-imageItem : ItemStyle (ImageItemStyle msg) msg
-    -> { text : String
-    , onPress : Maybe msg
-    , image : Element msg
-    , content : Icon msg
-    } -> Item msg
+imageItem :
+    ItemStyle (ImageItemStyle msg) msg
+    ->
+        { text : String
+        , onPress : Maybe msg
+        , image : Element msg
+        , content : Icon msg
+        }
+    -> Item msg
 imageItem =
     Item.imageItem
 
+
 {-| An expandable Item
 -}
-expansionItem : ExpansionItemStyle msg 
-    -> { icon : Icon msg
-    , text : String
-    , onToggle : Bool -> msg
-    , content : List (Item msg)
-    , isExpanded : Bool
-    } -> List (Item msg)
+expansionItem :
+    ExpansionItemStyle msg
+    ->
+        { icon : Icon msg
+        , text : String
+        , onToggle : Bool -> msg
+        , content : List (Item msg)
+        , isExpanded : Bool
+        }
+    -> List (Item msg)
 expansionItem =
     Item.expansionItem
 

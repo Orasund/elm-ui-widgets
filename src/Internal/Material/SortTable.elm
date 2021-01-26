@@ -2,9 +2,10 @@ module Internal.Material.SortTable exposing (sortTable)
 
 import Element
 import Internal.Material.Button as Button
+import Internal.Material.Icon as Icon
 import Internal.Material.Palette exposing (Palette)
 import Internal.SortTable exposing (SortTableStyle)
-import Internal.Material.Icon as Icon
+
 
 sortTable : Palette -> SortTableStyle msg
 sortTable palette =

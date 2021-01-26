@@ -7,12 +7,12 @@ module Widget.Style.Material exposing
     , chip, textInput
     , alertDialog
     , row, column
-    , fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem, expansionItem
-    , progressIndicator,imageItem
+    , fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem, multiLineItem, imageItem, expansionItem
+    , progressIndicator
     , sortTable
     , snackbar
     , tab, tabButton
-    , layout, multiLineItem
+    , layout
     )
 
 {-| ![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
@@ -85,7 +85,7 @@ The [List widget](https://material.io/components/lists) is a very complex widget
 A List is build from items.
 You way want to use special items to visually organize the content of your list.
 
-@docs fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem,multiLineItem,imageItem, expansionItem
+@docs fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem, multiLineItem, imageItem, expansionItem
 
 
 # Progress Indicator
@@ -123,7 +123,7 @@ Note that you might want to checkout the [file on GitHub](https://github.com/Ora
 import Color exposing (Color)
 import Internal.Button exposing (ButtonStyle)
 import Internal.Dialog exposing (DialogStyle)
-import Internal.Item exposing (DividerStyle, ExpansionItemStyle,ImageItemStyle, HeaderStyle, ItemStyle, TextItemStyle,MultiLineItemStyle)
+import Internal.Item exposing (DividerStyle, ExpansionItemStyle, HeaderStyle, ImageItemStyle, ItemStyle, MultiLineItemStyle, TextItemStyle)
 import Internal.List exposing (ColumnStyle, RowStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Chip as Chip
@@ -402,17 +402,22 @@ textItem : Palette -> ItemStyle (TextItemStyle msg) msg
 textItem =
     Item.textItem
 
+
 multiLineItem : Palette -> ItemStyle (MultiLineItemStyle msg) msg
 multiLineItem =
     Item.multiLineItem
 
+
 {-| Similar to a textItem but with an image instead of the icon.
 
 If the image is bigger then 40x40, the size of the item will change.
+
 -}
 imageItem : Palette -> ItemStyle (ImageItemStyle msg) msg
-imageItem  =
+imageItem =
     Item.imageItem
+
+
 
 {-------------------------------------------------------------------------------
 -- D I A L O G
@@ -424,6 +429,7 @@ imageItem  =
 alertDialog : Palette -> DialogStyle msg
 alertDialog =
     Dialog.alertDialog
+
 
 
 {-------------------------------------------------------------------------------

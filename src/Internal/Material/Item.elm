@@ -2,12 +2,12 @@ module Internal.Material.Item exposing
     ( expansionItem
     , fullBleedDivider
     , fullBleedHeader
+    , imageItem
     , insetDivider
     , insetHeader
     , middleDivider
-    , textItem
-    , imageItem
     , multiLineItem
+    , textItem
     )
 
 import Color
@@ -16,7 +16,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Html.Attributes as Attributes
-import Internal.Item exposing (DividerStyle,MultiLineItemStyle, ImageItemStyle , ExpansionItemStyle, HeaderStyle, ItemStyle, TextItemStyle)
+import Internal.Item exposing (DividerStyle, ExpansionItemStyle, HeaderStyle, ImageItemStyle, ItemStyle, MultiLineItemStyle, TextItemStyle)
 import Internal.Material.Icon as Icon
 import Internal.Material.Palette exposing (Palette)
 import Svg
@@ -24,6 +24,7 @@ import Svg.Attributes
 import Widget.Icon exposing (Icon)
 import Widget.Style.Material.Color as MaterialColor
 import Widget.Style.Material.Typography as Typography
+
 
 fullBleedDivider : Palette -> ItemStyle (DividerStyle msg) msg
 fullBleedDivider _ =
@@ -240,7 +241,7 @@ textItem _ =
     }
 
 
-multiLineItem : Palette -> ItemStyle ( MultiLineItemStyle msg) msg
+multiLineItem : Palette -> ItemStyle (MultiLineItemStyle msg) msg
 multiLineItem _ =
     { element = [ Element.padding 0 ]
     , content =
@@ -278,15 +279,20 @@ multiLineItem _ =
             { elementRow = [ Element.spacing 16, Element.width Element.fill ]
             , content =
                 { description =
-                    { elementColumn = [ Element.width Element.fill 
-                    , Element.spacing 4
-                    ]
+                    { elementColumn =
+                        [ Element.width Element.fill
+                        , Element.spacing 4
+                        ]
                     , content =
-                        { title = {elementText = Typography.body1}
-                        , text = {elementText = Typography.body2 
-                            ++ [MaterialColor.gray
-                                |> MaterialColor.fromColor
-                                |> Font.color]}
+                        { title = { elementText = Typography.body1 }
+                        , text =
+                            { elementText =
+                                Typography.body2
+                                    ++ [ MaterialColor.gray
+                                            |> MaterialColor.fromColor
+                                            |> Font.color
+                                       ]
+                            }
                         }
                     }
                 , icon =
@@ -307,6 +313,7 @@ multiLineItem _ =
             }
         }
     }
+
 
 imageItem : Palette -> ItemStyle (ImageItemStyle msg) msg
 imageItem _ =
@@ -345,8 +352,11 @@ imageItem _ =
         , content =
             { elementRow = [ Element.spacing 16, Element.width Element.fill ]
             , content =
-                { text = { elementText = [ Element.width Element.fill
-                    ] }
+                { text =
+                    { elementText =
+                        [ Element.width Element.fill
+                        ]
+                    }
                 , image =
                     { element =
                         [ Element.width <| Element.px 40
@@ -361,8 +371,6 @@ imageItem _ =
             }
         }
     }
-
-
 
 
 expansionItem : Palette -> ExpansionItemStyle msg

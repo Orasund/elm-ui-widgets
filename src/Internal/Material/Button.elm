@@ -427,6 +427,7 @@ iconButton palette =
     { elementButton =
         (baseButton palette |> .elementButton)
             ++ [ Element.height <| Element.px 48
+               , Element.width <| Element.minimum 48 <| Element.shrink
                , Border.rounded 24
                , Element.mouseDown
                     [ palette.surface

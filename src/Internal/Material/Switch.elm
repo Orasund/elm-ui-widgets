@@ -24,7 +24,7 @@ switch palette =
             [ Element.height <| Element.px 14
             , Element.width <| Element.px 34
             , Element.centerY
-        , Element.centerX
+            , Element.centerX
             , Border.rounded <| 10
             ]
         , ifDisabled =
@@ -75,7 +75,6 @@ switch palette =
                     |> Background.color
                 ]
             , Element.alignRight
-            
             , Element.moveRight 8
             ]
         , otherwise =

@@ -30,9 +30,9 @@ type alias ExpansionPanelStyle msg =
                 , icon : IconStyle
                 }
             }
-        , content : {element : List (Attribute msg)}
-            }
+        , content : { element : List (Attribute msg) }
         }
+    }
 
 
 type alias ExpansionPanel msg =
@@ -62,12 +62,12 @@ expansionPanel style model =
                     |> Element.el style.content.panel.content.label.content.text.elementText
                 ]
             , if model.isExpanded then
-                    style.content.panel.content.collapseIcon
-                        style.content.panel.content.icon
+                style.content.panel.content.collapseIcon
+                    style.content.panel.content.icon
 
-                else
-                    style.content.panel.content.expandIcon
-                        style.content.panel.content.icon
+              else
+                style.content.panel.content.expandIcon
+                    style.content.panel.content.icon
             ]
         , if model.isExpanded then
             Element.el style.content.content.element <| model.content

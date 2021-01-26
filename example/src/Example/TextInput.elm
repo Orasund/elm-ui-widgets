@@ -3,7 +3,6 @@ module Example.TextInput exposing (Model, Msg, init, subscriptions, update, view
 import Browser
 import Element exposing (Element)
 import Set exposing (Set)
-import Widget
 import Widget exposing (ColumnStyle, TextInputStyle)
 import Widget.Style.Material as Material
 

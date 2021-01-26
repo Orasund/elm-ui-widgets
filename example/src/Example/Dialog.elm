@@ -3,9 +3,8 @@ module Example.Dialog exposing (Model, Msg, init, subscriptions, update, view)
 import Browser
 import Element exposing (Element)
 import FeatherIcons
-import Widget
-import Widget.Icon as Icon
 import Widget exposing (ButtonStyle, DialogStyle)
+import Widget.Icon as Icon
 import Widget.Style.Material as Material
 
 

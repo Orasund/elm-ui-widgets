@@ -439,36 +439,36 @@ viewLoaded m =
 
                                                 else
                                                     [ Widget.divider style.fullBleedDivider
-                                                    ] ++ Widget.expansionItem style.expansionItem
-                                                        { onToggle =
-                                                            always
-                                                                (name
-                                                                    |> Example.fromString
-                                                                    |> Maybe.map ToggledExample
-                                                                    |> Maybe.withDefault Idle
-                                                                )
-                                                        , icon = always Element.none
-                                                        , text =
-                                                            "States"
-                                                        , content =
-                                                            Element.column
-                                                                (Grid.simple
-                                                                    ++ [ Element.width <| Element.fill ]
-                                                                )
-                                                                more
-                                                                |> Widget.item
-                                                                |> List.singleton
-                                                        , isExpanded =
-                                                            name
-                                                                |> Example.fromString
-                                                                |> Maybe.map
-                                                                    (\example ->
-                                                                        m.expanded
-                                                                            |> AnySet.member example
+                                                    ]
+                                                        ++ Widget.expansionItem style.expansionItem
+                                                            { onToggle =
+                                                                always
+                                                                    (name
+                                                                        |> Example.fromString
+                                                                        |> Maybe.map ToggledExample
+                                                                        |> Maybe.withDefault Idle
                                                                     )
-                                                                |> Maybe.withDefault False
-                                                        }
-                                                    
+                                                            , icon = always Element.none
+                                                            , text =
+                                                                "States"
+                                                            , content =
+                                                                Element.column
+                                                                    (Grid.simple
+                                                                        ++ [ Element.width <| Element.fill ]
+                                                                    )
+                                                                    more
+                                                                    |> Widget.item
+                                                                    |> List.singleton
+                                                            , isExpanded =
+                                                                name
+                                                                    |> Example.fromString
+                                                                    |> Maybe.map
+                                                                        (\example ->
+                                                                            m.expanded
+                                                                                |> AnySet.member example
+                                                                        )
+                                                                    |> Maybe.withDefault False
+                                                            }
                                                )
                                         )
                                             |> Widget.itemList style.cardColumn

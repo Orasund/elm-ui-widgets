@@ -540,9 +540,12 @@ view msgMapper style model =
         Icon.view (Icon >> msgMapper) style (.icon model)
     }
 
+
+
 --------------------------------------------------------------------------------
 -- DO NOT CHANGE ANYTHING AFTER THIS
 --------------------------------------------------------------------------------
+
 
 toCardList :
     { idle : msg
@@ -588,9 +591,6 @@ toCardList { idle, msgMapper, style, model } =
                         )
                 )
             )
-
-
-
 
 
 updateField :

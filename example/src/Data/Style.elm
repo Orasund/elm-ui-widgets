@@ -1,4 +1,4 @@
-module Data.Style exposing (Style,style)
+module Data.Style exposing (Style, style)
 
 import Color exposing (Color)
 import Color.Accessibility as Accessibility
@@ -10,41 +10,38 @@ import Element.Font as Font
 import FeatherIcons
 import Html.Attributes as Attributes
 import Icons
-import Widget.Icon as Icon
 import Widget
     exposing
         ( ButtonStyle
         , ColumnStyle
         , DialogStyle
-        , RowStyle
-        , SortTableStyle
-        , TabStyle
-        , TextInputStyle
-        , ButtonStyle
-        , ColumnStyle
-        , DialogStyle
         , DividerStyle
+        , ExpansionItemStyle
+        , HeaderStyle
+        , ImageItemStyle
         , ItemStyle
+        , MultiLineItemStyle
         , ProgressIndicatorStyle
         , RowStyle
         , SortTableStyle
         , SwitchStyle
         , TabStyle
         , TextInputStyle
-        , HeaderStyle
         , TextItemStyle
-        , ImageItemStyle
-        , MultiLineItemStyle
-        , ExpansionItemStyle
         )
-import Widget.Snackbar exposing (SnackbarStyle)
+import Widget.Icon as Icon
 import Widget.Layout exposing (LayoutStyle)
+import Widget.Snackbar exposing (SnackbarStyle)
 import Widget.Style.Material as Material exposing (Palette)
 
 
 style : Palette -> Style msg
 style palette =
-    { sortTable = Material.sortTable palette
+    { containedButton = Material.containedButton Material.defaultPalette
+    , outlinedButton = Material.outlinedButton Material.defaultPalette
+    , textButton = Material.textButton Material.defaultPalette
+    , iconButton = Material.iconButton Material.defaultPalette
+    , sortTable = Material.sortTable palette
     , row = Material.row
     , buttonRow = Material.buttonRow
     , cardColumn = Material.cardColumn palette
@@ -71,11 +68,12 @@ style palette =
     }
 
 
-
-
-
 type alias Style msg =
-    { dialog : DialogStyle msg
+    { containedButton : ButtonStyle msg
+    , outlinedButton : ButtonStyle msg
+    , textButton : ButtonStyle msg
+    , iconButton : ButtonStyle msg
+    , dialog : DialogStyle msg
     , button : ButtonStyle msg
     , switch : SwitchStyle msg
     , primaryButton : ButtonStyle msg

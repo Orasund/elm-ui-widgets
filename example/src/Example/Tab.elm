@@ -2,7 +2,6 @@ module Example.Tab exposing (Model, Msg, init, subscriptions, update, view)
 
 import Browser
 import Element exposing (Element)
-import Widget
 import Widget exposing (TabStyle)
 import Widget.Style.Material as Material
 

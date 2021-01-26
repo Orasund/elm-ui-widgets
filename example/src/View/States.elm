@@ -276,7 +276,6 @@ multiSelect idle style =
     ]
 
 
-
 tab : msg -> Style msg -> List ( String, Element msg )
 tab idle style =
     [ ( "Nothing selected"
@@ -505,14 +504,21 @@ list _ style =
         , Element.text "B"
         , Element.text "C"
         ]
+            |> Widget.column style.column
+      )
+    , ( "Column as Card"
+      , [ Element.text "A"
+        , Element.text "B"
+        , Element.text "C"
+        ]
             |> Widget.column style.cardColumn
       )
-    , ( "Singleton List"
+    , ( "Singleton List as Card"
       , [ Element.text "A"
         ]
             |> Widget.column style.cardColumn
       )
-    , ( "Empty List"
+    , ( "Empty List as Card"
       , []
             |> Widget.column style.cardColumn
       )

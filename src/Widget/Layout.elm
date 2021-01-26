@@ -27,7 +27,6 @@ It is responsive and changes view to apply to the [material design guidelines](h
 -}
 
 import Array
-import Color exposing (Color)
 import Element exposing (Attribute, DeviceClass(..), Element)
 import Element.Input as Input
 import Html exposing (Html)
@@ -35,7 +34,7 @@ import Internal.Button as Button exposing (Button, ButtonStyle)
 import Internal.Dialog as Dialog
 import Internal.Select as Select exposing (Select)
 import Internal.TextInput as TextInput exposing (TextInput, TextInputStyle)
-import Widget.Icon exposing (Icon, IconStyle)
+import Widget.Icon exposing (Icon)
 import Widget.Snackbar as Snackbar exposing (Message, SnackbarStyle)
 import Widget.Style.Customize as Customize
 

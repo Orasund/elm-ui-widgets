@@ -8,8 +8,7 @@ import Element.Background
 import Element.Border
 import Element.Font
 import Element.Input
-import Widget
-import Widget.Style exposing (ButtonStyle, ColumnStyle, RowStyle)
+import Widget exposing (ButtonStyle, ColumnStyle, RowStyle)
 import Widget.Style.Material as Material exposing (Palette)
 
 

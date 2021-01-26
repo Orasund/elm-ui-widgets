@@ -6,7 +6,6 @@
     "version": "2.3.0",
     "exposed-modules": [
         "Widget",
-        "Widget.Style",
         "Widget.Style.Material",
         "Widget.Style.Material.Typography",
         "Widget.Style.Material.Color",

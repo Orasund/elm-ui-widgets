@@ -1,0 +1,1 @@
+elm-verify-examples --run-tests

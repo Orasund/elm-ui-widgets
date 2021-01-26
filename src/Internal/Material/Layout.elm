@@ -22,10 +22,11 @@ import Widget.Style.Material.Typography as Typography
 
 more_vert : Icon msg
 more_vert { size, color } =
-    Icon.icon {viewBox = "0 0 48 48"
+    Icon.icon
+        { viewBox = "0 0 48 48"
         , size = size
         , color = color
-    }
+        }
         [ Svg.path
             [ Svg.Attributes.d "M24 16c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 4c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"
             ]
@@ -35,10 +36,11 @@ more_vert { size, color } =
 
 search : Icon msg
 search { size, color } =
-    Icon.icon {viewBox = "0 0 48 48"
+    Icon.icon
+        { viewBox = "0 0 48 48"
         , size = size
         , color = color
-    }
+        }
         [ Svg.path
             [ Svg.Attributes.d "M31 28h-1.59l-.55-.55C30.82 25.18 32 22.23 32 19c0-7.18-5.82-13-13-13S6 11.82 6 19s5.82 13 13 13c3.23 0 6.18-1.18 8.45-3.13l.55.55V31l10 9.98L40.98 38 31 28zm-12 0c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9z"
             ]
@@ -48,10 +50,11 @@ search { size, color } =
 
 menu : Icon msg
 menu { size, color } =
-    Icon.icon {viewBox = "0 0 48 48"
+    Icon.icon
+        { viewBox = "0 0 48 48"
         , size = size
         , color = color
-    }
+        }
         [ Svg.path
             [ Svg.Attributes.d "M6 36h36v-4H6v4zm0-10h36v-4H6v4zm0-14v4h36v-4H6z"
             ]

@@ -1,4 +1,4 @@
-module Internal.Item exposing (DividerStyle, HeaderStyle, ImageItemStyle, ImageItem, MultiLineItemStyle,multiLineItem,imageItem, ExpansionItemStyle,ExpansionItem, Item, ItemStyle, TextItem, TextItemStyle,expansionItem, divider, headerItem, item, textItem, toItem)
+module Internal.Item exposing (DividerStyle, ExpansionItem, ExpansionItemStyle, HeaderStyle, ImageItem, ImageItemStyle, Item, ItemStyle, MultiLineItemStyle, TextItem, TextItemStyle, divider, expansionItem, headerItem, imageItem, item, multiLineItem, textItem, toItem)
 
 import Element exposing (Attribute, Element)
 import Element.Input as Input
@@ -34,7 +34,7 @@ type alias TextItemStyle msg =
         { elementRow : List (Attribute msg)
         , content :
             { text : { elementText : List (Attribute msg) }
-            , icon : 
+            , icon :
                 { element : List (Attribute msg)
                 , content : IconStyle
                 }
@@ -43,6 +43,7 @@ type alias TextItemStyle msg =
         }
     }
 
+
 type alias MultiLineItemStyle msg =
     { elementButton : List (Attribute msg)
     , ifDisabled : List (Attribute msg)
@@ -50,14 +51,14 @@ type alias MultiLineItemStyle msg =
     , content :
         { elementRow : List (Attribute msg)
         , content :
-            { description : 
-                { elementColumn :  List (Attribute msg)
+            { description :
+                { elementColumn : List (Attribute msg)
                 , content :
-                    { title : {elementText : List (Attribute msg)}
-                    , text : {elementText : List (Attribute msg)}
+                    { title : { elementText : List (Attribute msg) }
+                    , text : { elementText : List (Attribute msg) }
                     }
                 }
-            , icon : 
+            , icon :
                 { element : List (Attribute msg)
                 , content : IconStyle
                 }
@@ -65,6 +66,7 @@ type alias MultiLineItemStyle msg =
             }
         }
     }
+
 
 type alias ImageItemStyle msg =
     { elementButton : List (Attribute msg)
@@ -80,11 +82,13 @@ type alias ImageItemStyle msg =
         }
     }
 
+
 type alias ExpansionItemStyle msg =
     { item : ItemStyle (TextItemStyle msg) msg
     , expandIcon : Icon msg
     , collapseIcon : Icon msg
     }
+
 
 type alias Item msg =
     List (Attribute msg) -> Element msg
@@ -97,12 +101,14 @@ type alias TextItem msg =
     , content : Icon msg
     }
 
+
 type alias ImageItem msg =
     { text : String
     , onPress : Maybe msg
     , image : Element msg
     , content : Icon msg
     }
+
 
 type alias ExpansionItem msg =
     { icon : Icon msg
@@ -112,6 +118,7 @@ type alias ExpansionItem msg =
     , isExpanded : Bool
     }
 
+
 type alias MultiLineItem msg =
     { title : String
     , text : String
@@ -119,6 +126,7 @@ type alias MultiLineItem msg =
     , icon : Icon msg
     , content : Icon msg
     }
+
 
 item : Element msg -> Item msg
 item element =
@@ -152,12 +160,15 @@ textItem : ItemStyle (TextItemStyle msg) msg -> TextItem msg -> Item msg
 textItem s { onPress, text, icon, content } =
     toItem s
         (\style ->
-            Input.button (style.elementButton ++ (if onPress == Nothing then
-                    style.ifDisabled
+            Input.button
+                (style.elementButton
+                    ++ (if onPress == Nothing then
+                            style.ifDisabled
 
-                else
-                    style.otherwise
-               ))
+                        else
+                            style.otherwise
+                       )
+                )
                 { onPress = onPress
                 , label =
                     [ icon style.content.content.icon.content
@@ -173,19 +184,23 @@ textItem s { onPress, text, icon, content } =
                 }
         )
 
+
 imageItem : ItemStyle (ImageItemStyle msg) msg -> ImageItem msg -> Item msg
 imageItem s { onPress, text, image, content } =
     toItem s
         (\style ->
-            Input.button (style.elementButton ++ (if onPress == Nothing then
-                    style.ifDisabled
+            Input.button
+                (style.elementButton
+                    ++ (if onPress == Nothing then
+                            style.ifDisabled
 
-                else
-                    style.otherwise
-               ))
+                        else
+                            style.otherwise
+                       )
+                )
                 { onPress = onPress
                 , label =
-                    [ image 
+                    [ image
                         |> Element.el style.content.content.image.element
                     , text
                         |> Element.text
@@ -199,46 +214,53 @@ imageItem s { onPress, text, image, content } =
         )
 
 
-
 expansionItem : ExpansionItemStyle msg -> ExpansionItem msg -> List (Item msg)
-expansionItem s { icon, text,onToggle,content,isExpanded} =
-    (textItem s.item
-         { text = text
+expansionItem s { icon, text, onToggle, content, isExpanded } =
+    textItem s.item
+        { text = text
         , onPress = Just <| onToggle <| not isExpanded
         , icon = icon
         , content =
-            (if isExpanded then 
-                s.collapseIcon 
-            else 
-                s.expandIcon )
-        
+            if isExpanded then
+                s.collapseIcon
+
+            else
+                s.expandIcon
         }
-    )
-        :: (if isExpanded then content else [])
+        :: (if isExpanded then
+                content
+
+            else
+                []
+           )
+
 
 multiLineItem : ItemStyle (MultiLineItemStyle msg) msg -> MultiLineItem msg -> Item msg
-multiLineItem s { onPress, title,text, icon, content } =
+multiLineItem s { onPress, title, text, icon, content } =
     toItem s
         (\style ->
-            Input.button (style.elementButton ++ (if onPress == Nothing then
-                    style.ifDisabled
+            Input.button
+                (style.elementButton
+                    ++ (if onPress == Nothing then
+                            style.ifDisabled
 
-                else
-                    style.otherwise
-               ))
+                        else
+                            style.otherwise
+                       )
+                )
                 { onPress = onPress
                 , label =
                     [ icon style.content.content.icon.content
                         |> Element.el style.content.content.icon.element
-                    ,   [ title
+                    , [ title
                             |> Element.text
                             |> List.singleton
                             |> Element.paragraph style.content.content.description.content.title.elementText
-                        , text
+                      , text
                             |> Element.text
                             |> List.singleton
                             |> Element.paragraph style.content.content.description.content.text.elementText
-                        ]
+                      ]
                         |> Element.column style.content.content.description.elementColumn
                     , content style.content.content.content
                     ]
@@ -246,9 +268,10 @@ multiLineItem s { onPress, title,text, icon, content } =
                 }
         )
 
+
 toItem : ItemStyle style msg -> (style -> Element msg) -> Item msg
 toItem style element =
     \attr ->
         element style.content
             |> Element.el
-                (attr ++ (style.element))
+                (attr ++ style.element)
