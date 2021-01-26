@@ -9,7 +9,7 @@ import Element.Border
 import Element.Font
 import Element.Input
 import Widget exposing (ButtonStyle, ColumnStyle, RowStyle)
-import Widget.Style.Material as Material exposing (Palette)
+import Widget.Material as Material exposing (Palette)
 
 
 type alias Style style msg =

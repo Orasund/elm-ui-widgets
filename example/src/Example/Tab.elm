@@ -3,7 +3,7 @@ module Example.Tab exposing (Model, Msg, init, subscriptions, update, view)
 import Browser
 import Element exposing (Element)
 import Widget exposing (TabStyle)
-import Widget.Style.Material as Material
+import Widget.Material as Material
 
 
 type alias Style style msg =

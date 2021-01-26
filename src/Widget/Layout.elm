@@ -34,9 +34,9 @@ import Internal.Button as Button exposing (Button, ButtonStyle)
 import Internal.Dialog as Dialog
 import Internal.Select as Select exposing (Select)
 import Internal.TextInput as TextInput exposing (TextInput, TextInputStyle)
+import Widget.Customize as Customize
 import Widget.Icon exposing (Icon)
 import Widget.Snackbar as Snackbar exposing (Message, SnackbarStyle)
-import Widget.Style.Customize as Customize
 
 
 {-| -}

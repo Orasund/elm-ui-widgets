@@ -6,7 +6,7 @@ import FeatherIcons
 import Time
 import Widget exposing (ButtonStyle, ColumnStyle, RowStyle, SnackbarStyle)
 import Widget.Snackbar as Snackbar exposing (Snackbar)
-import Widget.Style.Material as Material
+import Widget.Material as Material
 
 
 type alias Style style msg =

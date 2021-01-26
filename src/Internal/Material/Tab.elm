@@ -8,8 +8,8 @@ import Internal.Button exposing (ButtonStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Palette exposing (Palette)
 import Internal.Tab exposing (TabStyle)
-import Widget.Style.Material.Color as MaterialColor
-import Widget.Style.Material.Typography as Typography
+import Widget.Material.Color as MaterialColor
+import Widget.Material.Typography as Typography
 
 
 tabButton : Palette -> ButtonStyle msg

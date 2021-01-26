@@ -6,8 +6,8 @@ import Element.Font as Font
 import FeatherIcons
 import Widget exposing (ColumnStyle, DividerStyle, ExpansionItemStyle, HeaderStyle, ImageItemStyle, ItemStyle, MultiLineItemStyle, SwitchStyle, TextItemStyle)
 import Widget.Icon as Icon
-import Widget.Style.Material as Material
-import Widget.Style.Material.Color as MaterialColor
+import Widget.Material as Material
+import Widget.Material.Color as MaterialColor
 
 
 type alias Style style msg =

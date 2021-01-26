@@ -7,8 +7,8 @@ import Element.Font as Font
 import Html.Attributes as Attributes
 import Internal.Button exposing (ButtonStyle)
 import Internal.Material.Palette exposing (Palette)
-import Widget.Style.Material.Color as MaterialColor
-import Widget.Style.Material.Typography as Typography
+import Widget.Material.Color as MaterialColor
+import Widget.Material.Typography as Typography
 
 
 baseButton : Palette -> ButtonStyle msg

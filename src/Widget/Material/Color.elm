@@ -1,4 +1,4 @@
-module Widget.Style.Material.Color exposing
+module Widget.Material.Color exposing
     ( buttonHoverOpacity, buttonFocusOpacity, buttonPressedOpacity, buttonDisabledOpacity, buttonSelectedOpacity
     , accessibleTextColor, accessibleWithTextColor
     , withShade, scaleOpacity

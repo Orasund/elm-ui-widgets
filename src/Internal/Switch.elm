@@ -1,11 +1,8 @@
 module Internal.Switch exposing (Switch, SwitchStyle, switch)
 
-import Color exposing (Color)
 import Element exposing (Attribute, Element)
 import Element.Input as Input
 import Element.Region as Region
-import Html exposing (Html)
-import Widget.Icon exposing (Icon)
 
 
 {-| -}

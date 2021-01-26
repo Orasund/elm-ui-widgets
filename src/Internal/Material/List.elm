@@ -11,7 +11,7 @@ import Element.Border as Border
 import Element.Font as Font
 import Internal.List exposing (ColumnStyle, RowStyle)
 import Internal.Material.Palette exposing (Palette)
-import Widget.Style.Material.Color as MaterialColor
+import Widget.Material.Color as MaterialColor
 
 
 row : RowStyle msg

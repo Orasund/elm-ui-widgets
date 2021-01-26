@@ -1,11 +1,8 @@
 module Internal.Tab exposing (Tab, TabStyle, tab)
 
-import Color exposing (Color)
 import Element exposing (Attribute, Element)
-import Html exposing (Html)
 import Internal.Button exposing (ButtonStyle)
 import Internal.Select as Select exposing (Select)
-import Widget.Icon exposing (Icon)
 
 
 {-| -}

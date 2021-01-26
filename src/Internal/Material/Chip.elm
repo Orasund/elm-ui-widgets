@@ -7,7 +7,7 @@ import Element.Font as Font
 import Internal.Button exposing (ButtonStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Palette exposing (Palette)
-import Widget.Style.Material.Color as MaterialColor
+import Widget.Material.Color as MaterialColor
 
 
 chip : Palette -> ButtonStyle msg

@@ -7,7 +7,7 @@ import Element.Border as Border
 import Html.Attributes as Attributes
 import Internal.Material.Palette exposing (Palette)
 import Internal.Switch exposing (SwitchStyle)
-import Widget.Style.Material.Color as MaterialColor
+import Widget.Material.Color as MaterialColor
 
 
 switch : Palette -> SwitchStyle msg

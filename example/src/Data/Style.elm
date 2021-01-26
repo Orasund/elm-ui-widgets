@@ -32,7 +32,7 @@ import Widget
 import Widget.Icon as Icon
 import Widget.Layout exposing (LayoutStyle)
 import Widget.Snackbar exposing (SnackbarStyle)
-import Widget.Style.Material as Material exposing (Palette)
+import Widget.Material as Material exposing (Palette)
 
 
 style : Palette -> Style msg

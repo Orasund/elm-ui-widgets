@@ -4,7 +4,7 @@ import Element exposing (Attribute, Element)
 import Internal.Button exposing (Button, ButtonStyle)
 import Internal.Item as Item exposing (Item)
 import Internal.Select as Select
-import Widget.Style.Customize as Customize
+import Widget.Customize as Customize
 
 
 {-| -}

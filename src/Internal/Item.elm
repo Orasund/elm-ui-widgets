@@ -2,8 +2,8 @@ module Internal.Item exposing (DividerStyle, ExpansionItem, ExpansionItemStyle, 
 
 import Element exposing (Attribute, Element)
 import Element.Input as Input
-import Widget.Icon as Icon exposing (Icon, IconStyle)
-import Widget.Style.Customize exposing (content)
+import Widget.Customize exposing (content)
+import Widget.Icon exposing (Icon, IconStyle)
 
 
 type alias ItemStyle content msg =

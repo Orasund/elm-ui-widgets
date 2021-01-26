@@ -3,7 +3,7 @@ module Example.ProgressIndicator exposing (Model, Msg, init, subscriptions, upda
 import Browser
 import Element exposing (Element)
 import Widget exposing (ProgressIndicatorStyle)
-import Widget.Style.Material as Material
+import Widget.Material as Material
 
 
 type alias Style style msg =

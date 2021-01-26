@@ -1,6 +1,5 @@
 module Internal.Material.Layout exposing (drawerButton, layout, menu, menuTabButton, more_vert, search)
 
-import Color
 import Element
 import Element.Background as Background
 import Element.Border as Border
@@ -13,11 +12,11 @@ import Internal.Material.Snackbar as Snackbar
 import Internal.Material.TextInput as TextInput
 import Svg
 import Svg.Attributes
+import Widget.Customize as Customize
 import Widget.Icon as Icon exposing (Icon)
 import Widget.Layout exposing (LayoutStyle)
-import Widget.Style.Customize as Customize
-import Widget.Style.Material.Color as MaterialColor
-import Widget.Style.Material.Typography as Typography
+import Widget.Material.Color as MaterialColor
+import Widget.Material.Typography as Typography
 
 
 more_vert : Icon msg

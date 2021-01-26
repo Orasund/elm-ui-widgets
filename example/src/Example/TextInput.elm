@@ -4,7 +4,7 @@ import Browser
 import Element exposing (Element)
 import Set exposing (Set)
 import Widget exposing (ColumnStyle, TextInputStyle)
-import Widget.Style.Material as Material
+import Widget.Material as Material
 
 
 type alias Style style msg =

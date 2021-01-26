@@ -10,9 +10,7 @@ module Internal.SortTable exposing
     , unsortableColumn
     )
 
-import Color exposing (Color)
 import Element exposing (Attribute, Element, Length)
-import Html exposing (Html)
 import Internal.Button as Button exposing (ButtonStyle)
 import Widget.Icon exposing (Icon)
 

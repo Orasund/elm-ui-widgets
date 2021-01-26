@@ -1,4 +1,4 @@
-module Widget.Style.Material exposing
+module Widget.Material exposing
     ( Palette, defaultPalette, darkPalette
     , containedButton, outlinedButton, textButton
     , iconButton, toggleButton, buttonRow

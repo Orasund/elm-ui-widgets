@@ -8,10 +8,10 @@ import Material.Icons as MaterialIcons
 import Material.Icons.Types exposing (Coloring(..))
 import Widget exposing (ButtonStyle, ColumnStyle, RowStyle)
 import Widget.Icon as Icon
-import Widget.Style.Customize as Customize
-import Widget.Style.Material as Material
-import Widget.Style.Material.Color as MaterialColor
-import Widget.Style.Material.Typography as Typography
+import Widget.Customize as Customize
+import Widget.Material as Material
+import Widget.Material.Color as MaterialColor
+import Widget.Material.Typography as Typography
 
 
 type alias Style style msg =

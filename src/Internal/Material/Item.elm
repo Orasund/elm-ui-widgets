@@ -19,11 +19,8 @@ import Html.Attributes as Attributes
 import Internal.Item exposing (DividerStyle, ExpansionItemStyle, HeaderStyle, ImageItemStyle, ItemStyle, MultiLineItemStyle, TextItemStyle)
 import Internal.Material.Icon as Icon
 import Internal.Material.Palette exposing (Palette)
-import Svg
-import Svg.Attributes
-import Widget.Icon exposing (Icon)
-import Widget.Style.Material.Color as MaterialColor
-import Widget.Style.Material.Typography as Typography
+import Widget.Material.Color as MaterialColor
+import Widget.Material.Typography as Typography
 
 
 fullBleedDivider : Palette -> ItemStyle (DividerStyle msg) msg

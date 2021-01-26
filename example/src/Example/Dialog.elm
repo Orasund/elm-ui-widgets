@@ -5,7 +5,7 @@ import Element exposing (Element)
 import FeatherIcons
 import Widget exposing (ButtonStyle, DialogStyle)
 import Widget.Icon as Icon
-import Widget.Style.Material as Material
+import Widget.Material as Material
 
 
 type alias Style style msg =

@@ -1,4 +1,4 @@
-module Widget.Style.Customize exposing
+module Widget.Customize exposing
     ( element, mapElement
     , elementButton, mapElementButton
     , elementColumn, mapElementColumn
