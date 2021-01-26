@@ -1,1 +1,1 @@
-elm-verify-examples --run-tests
+elm-verify-examples && elm-test

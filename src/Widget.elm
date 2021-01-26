@@ -231,16 +231,20 @@ type alias TextButton msg =
 
 {-| A button containing only an icon, the text is used for screenreaders.
 
-    import Widget.Style.Material as Material
+    import Widget.Material as Material
+    import Material.Icons as MaterialIcons
+    import Material.Icons.Types exposing (Coloring(..))
+    import Widget.Icon as Icon
 
     type Msg
-    = Like
+        = Like
 
     iconButton (Material.iconButton Material.defaultPalette)
-        { text = Like
-        , icon = MaterialIcons.hearth |> Icon.elmMaterialIcons Color
+        { text = "Like"
+        , icon = MaterialIcons.favorite |> Icon.elmMaterialIcons Color
         , onPress = Just Like
         }
+        |> always "Ignore this line" --> "Ignore this line"
 
 -}
 iconButton :
@@ -261,6 +265,19 @@ iconButton =
 
 
 {-| A button with just text and not icon.
+
+    import Widget.Material as Material
+    import Material.Icons as MaterialIcons
+
+    type Msg
+        = Like
+
+    textButton (Material.textButton Material.defaultPalette)
+        { text = "Like"
+        , onPress = Just Like
+        }
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 textButton :
     ButtonStyle msg
@@ -283,6 +300,22 @@ textButton style { text, onPress } =
 
 
 {-| A button containing a text and an icon.
+
+    import Widget.Material as Material
+    import Material.Icons as MaterialIcons
+    import Material.Icons.Types exposing (Coloring(..))
+    import Widget.Icon as Icon
+
+    type Msg
+        = Submit
+
+    button (Material.containedButton Material.defaultPalette)
+        { text = "Submit"
+        , icon = MaterialIcons.favorite |> Icon.elmMaterialIcons Color
+        , onPress = Just Submit
+        }
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 button :
     ButtonStyle msg
@@ -341,6 +374,20 @@ type alias Switch msg =
 
 
 {-| A boolean switch
+
+    import Widget.Material as Material
+    import Material.Icons as MaterialIcons
+
+    type Msg
+        = Activate
+
+    switch (Material.switch Material.defaultPalette)
+        { description = "Activate Dark Mode"
+        , onPress = Just Activate
+        , active = False
+        }
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 switch :
     SwitchStyle msg
@@ -402,6 +449,32 @@ type alias MultiSelect msg =
 
 
 {-| A simple button that can be selected.
+
+    import Widget.Material as Material
+    import Material.Icons as MaterialIcons
+    import Element
+
+    type Msg
+        = ChangedSelected Int
+
+    { selected = Just 1
+    , options =
+        [ 1, 2, 42 ]
+            |> List.map
+                (\int ->
+                    { text = String.fromInt int
+                    , icon = always Element.none
+                    }
+                )
+    , onSelect = (\i -> Just <| ChangedSelected i)
+    }
+        |> Widget.select
+        |> Widget.buttonRow
+            { elementRow = Material.buttonRow
+            , content = Material.toggleButton Material.defaultPalette
+            }
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 selectButton :
     ButtonStyle msg
@@ -412,6 +485,32 @@ selectButton =
 
 
 {-| Selects one out of multiple options. This can be used for radio buttons or Menus.
+
+    import Widget.Material as Material
+    import Material.Icons as MaterialIcons
+    import Element
+
+    type Msg
+        = ChangedSelected Int
+
+    { selected = Just 1
+    , options =
+        [ 1, 2, 42 ]
+            |> List.map
+                (\int ->
+                    { text = String.fromInt int
+                    , icon = always Element.none
+                    }
+                )
+    , onSelect = (\i -> Just <| ChangedSelected i)
+    }
+        |> Widget.select
+        |> Widget.buttonRow
+            { elementRow = Material.buttonRow
+            , content = Material.toggleButton Material.defaultPalette
+            }
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 select :
     Select msg
@@ -421,6 +520,33 @@ select =
 
 
 {-| Selects multible options. This can be used for checkboxes.
+
+    import Widget.Material as Material
+    import Material.Icons as MaterialIcons
+    import Set
+    import Element
+
+    type Msg
+        = ChangedSelected Int
+
+    { selected = [1,2] |> Set.fromList
+    , options =
+        [ 1, 2, 42 ]
+            |> List.map
+                (\int ->
+                    { text = String.fromInt int
+                    , icon = always Element.none
+                    }
+                )
+    , onSelect = (\i -> Just <| ChangedSelected i)
+    }
+        |> Widget.multiSelect
+        |> Widget.buttonRow
+            { elementRow = Material.buttonRow
+            , content = Material.toggleButton Material.defaultPalette
+            }
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 multiSelect :
     MultiSelect msg
@@ -468,6 +594,22 @@ type alias Dialog msg =
 
 {-| A modal.
 
+    import Widget.Material as Material
+    import Element
+
+    type Msg
+        = Submit
+        | Close
+
+    Element.layout
+        (modal
+            { onDismiss = Just Close
+            , content =
+                Element.text "Click outside this window to close it."
+            }
+        )
+        |> always "Ignore this line" --> "Ignore this line"
+
 Technical Remark:
 
   - To stop the screen from scrolling, set the height of the layout to the height of the screen.
@@ -479,6 +621,32 @@ modal =
 
 
 {-| A Dialog Window.
+
+    import Widget.Material as Material
+    import Element
+
+    type Msg
+        = Submit
+        | Close
+
+    Element.layout
+        (dialog (Material.alertDialog Material.defaultPalette)
+            { title = Just "Accept"
+            , text = "Are you sure?"
+            , accept =
+                { text = "Accept"
+                , onPress = Just Submit
+                }
+                |> Just
+            , dismiss =
+                { text = "Cancel"
+                , onPress = Just Close
+                }
+                |> Just
+            }
+        )
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 dialog :
     DialogStyle msg
