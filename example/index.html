@@ -8601,13 +8601,32 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 			[
 				A2($mdgriffith$elm_ui$Internal$Style$Prop, 'display', 'block'),
 				A2(
-				$mdgriffith$elm_ui$Internal$Style$Child,
-				'img',
+				$mdgriffith$elm_ui$Internal$Style$Descriptor,
+				$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.heightFill),
 				_List_fromArray(
 					[
-						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'max-height', '100%'),
-						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'max-width', '100%'),
-						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'object-fit', 'cover')
+						A2(
+						$mdgriffith$elm_ui$Internal$Style$Child,
+						'img',
+						_List_fromArray(
+							[
+								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'max-height', '100%'),
+								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'object-fit', 'cover')
+							]))
+					])),
+				A2(
+				$mdgriffith$elm_ui$Internal$Style$Descriptor,
+				$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.widthFill),
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Internal$Style$Child,
+						'img',
+						_List_fromArray(
+							[
+								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'max-width', '100%'),
+								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'object-fit', 'cover')
+							]))
 					]))
 			])),
 		A2(
@@ -16225,6 +16244,32 @@ var $author$project$Internal$Material$TextInput$searchInput = function (palette)
 					])),
 			$author$project$Internal$Material$TextInput$textInputBase(palette)));
 };
+var $author$project$Internal$Material$Sheet$sheet = function (palette) {
+	return {
+		content: {
+			content: {
+				element: _List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+					]),
+				ifFirst: _List_Nil,
+				ifLast: _List_Nil,
+				ifSingleton: _List_Nil,
+				otherwise: _List_Nil
+			},
+			elementColumn: _Utils_ap(
+				$author$project$Widget$Material$Color$textAndBackground(palette.surface),
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$width(
+						A2($mdgriffith$elm_ui$Element$maximum, 360, $mdgriffith$elm_ui$Element$fill)),
+						$mdgriffith$elm_ui$Element$padding(8),
+						$mdgriffith$elm_ui$Element$spacing(8)
+					]))
+		},
+		element: _List_Nil
+	};
+};
 var $author$project$Widget$Material$Color$accessibleWithTextColor = F2(
 	function (c, color) {
 		var newConstrast = 7;
@@ -16363,15 +16408,7 @@ var $author$project$Internal$Material$Layout$layout = function (palette) {
 		search: $author$project$Internal$Material$TextInput$searchInput(palette),
 		searchFill: $author$project$Internal$Material$TextInput$textInputBase(palette),
 		searchIcon: $author$project$Internal$Material$Layout$search,
-		sheet: _Utils_ap(
-			$author$project$Widget$Material$Color$textAndBackground(palette.surface),
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$width(
-					A2($mdgriffith$elm_ui$Element$maximum, 360, $mdgriffith$elm_ui$Element$fill)),
-					$mdgriffith$elm_ui$Element$padding(8),
-					$mdgriffith$elm_ui$Element$spacing(8)
-				])),
+		sheet: $author$project$Internal$Material$Sheet$sheet(palette),
 		sheetButton: $author$project$Internal$Material$Layout$drawerButton(palette),
 		snackbar: $author$project$Internal$Material$Snackbar$snackbar(palette),
 		spacing: 8,
@@ -17235,28 +17272,104 @@ var $author$project$Data$Theme$toStyle = function (theme) {
 		return $author$project$Data$Style$style($author$project$Widget$Material$darkPalette);
 	}
 };
-var $author$project$Widget$Layout$buttonSheet = F2(
-	function (style, actions) {
+var $author$project$Internal$Item$toItem = F2(
+	function (style, element) {
+		return function (attr) {
+			return A2(
+				$mdgriffith$elm_ui$Element$el,
+				_Utils_ap(attr, style.element),
+				element(style.content));
+		};
+	});
+var $author$project$Internal$Item$item = function (element) {
+	return A2(
+		$author$project$Internal$Item$toItem,
+		{content: _Utils_Tuple0, element: _List_Nil},
+		$elm$core$Basics$always(element));
+};
+var $author$project$Widget$Customize$mapElementColumn = F2(
+	function (fun, a) {
+		return _Utils_update(
+			a,
+			{
+				elementColumn: fun(a.elementColumn)
+			});
+	});
+var $author$project$Widget$Customize$elementColumn = F2(
+	function (list, a) {
 		return A2(
-			$mdgriffith$elm_ui$Element$el,
+			$author$project$Widget$Customize$mapElementColumn,
+			function (b) {
+				return _Utils_ap(b, list);
+			},
+			a);
+	});
+var $author$project$Internal$List$internal = F2(
+	function (style, list) {
+		return A2(
+			$elm$core$List$indexedMap,
+			F2(
+				function (i, fun) {
+					return fun(
+						_Utils_ap(
+							style.element,
+							($elm$core$List$length(list) === 1) ? style.ifSingleton : ((!i) ? style.ifFirst : (_Utils_eq(
+								i,
+								$elm$core$List$length(list) - 1) ? style.ifLast : style.otherwise))));
+				}),
+			list);
+	});
+var $author$project$Internal$List$itemList = function (style) {
+	return A2(
+		$elm$core$Basics$composeR,
+		$author$project$Internal$List$internal(style.content),
+		$mdgriffith$elm_ui$Element$column(style.elementColumn));
+};
+var $author$project$Internal$Sheet$sheet = function (style) {
+	return A2(
+		$elm$core$Basics$composeR,
+		$author$project$Internal$List$itemList(
+			A2(
+				$author$project$Widget$Customize$elementColumn,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+					]),
+				style.content)),
+		$mdgriffith$elm_ui$Element$el(
 			_Utils_ap(
 				style.element,
 				_List_fromArray(
 					[
 						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
-					])),
+					]))));
+};
+var $author$project$Widget$Layout$buttonSheet = function (style) {
+	return A2(
+		$elm$core$Basics$composeR,
+		$elm$core$List$map(
 			A2(
-				$mdgriffith$elm_ui$Element$column,
-				_Utils_ap(
-					style.content.elementColumn,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-						])),
-				A2(
-					$elm$core$List$map,
-					$author$project$Internal$Button$button(style.content.content),
-					actions)));
+				$elm$core$Basics$composeR,
+				$author$project$Internal$Button$button(style.button),
+				$author$project$Internal$Item$item)),
+		$author$project$Internal$Sheet$sheet(style.sheet));
+};
+var $author$project$Widget$Customize$mapElement = F2(
+	function (fun, a) {
+		return _Utils_update(
+			a,
+			{
+				element: fun(a.element)
+			});
+	});
+var $author$project$Widget$Customize$element = F2(
+	function (list, a) {
+		return A2(
+			$author$project$Widget$Customize$mapElement,
+			function (b) {
+				return _Utils_ap(b, list);
+			},
+			a);
 	});
 var $mdgriffith$elm_ui$Element$BigDesktop = {$: 'BigDesktop'};
 var $mdgriffith$elm_ui$Element$Desktop = {$: 'Desktop'};
@@ -18359,30 +18472,29 @@ var $author$project$Widget$Layout$viewLeftSheet = F2(
 		var title = _v0.title;
 		var menu = _v0.menu;
 		return A2(
-			$mdgriffith$elm_ui$Element$el,
-			_Utils_ap(
-				style.sheet,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-						$mdgriffith$elm_ui$Element$alignLeft
-					])),
+			$author$project$Internal$Sheet$sheet,
 			A2(
-				$mdgriffith$elm_ui$Element$column,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-					]),
-				$elm$core$List$concat(
+				$author$project$Widget$Customize$mapContent,
+				$author$project$Widget$Customize$elementColumn(
 					_List_fromArray(
 						[
-							_List_fromArray(
-							[title]),
-							A2(
-							$elm$core$List$map,
-							$author$project$Internal$Select$selectButton(style.sheetButton),
-							$author$project$Internal$Select$select(menu))
-						]))));
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+						])),
+				A2(
+					$author$project$Widget$Customize$element,
+					_List_fromArray(
+						[$mdgriffith$elm_ui$Element$alignLeft]),
+					style.sheet)),
+			A2(
+				$elm$core$List$cons,
+				$author$project$Internal$Item$item(title),
+				A2(
+					$elm$core$List$map,
+					A2(
+						$elm$core$Basics$composeR,
+						$author$project$Internal$Select$selectButton(style.sheetButton),
+						$author$project$Internal$Item$item),
+					$author$project$Internal$Select$select(menu))));
 	});
 var $author$project$Widget$Layout$LeftSheet = {$: 'LeftSheet'};
 var $author$project$Widget$Layout$RightSheet = {$: 'RightSheet'};
@@ -18520,8 +18632,8 @@ var $author$project$Widget$Layout$viewNav = F2(
 					$mdgriffith$elm_ui$Element$row,
 					_List_fromArray(
 						[
-							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-							$mdgriffith$elm_ui$Element$alignRight
+							$mdgriffith$elm_ui$Element$alignRight,
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink)
 						]),
 					$elm$core$List$concat(
 						_List_fromArray(
@@ -18622,11 +18734,12 @@ var $author$project$Widget$Layout$view = F3(
 						return A2(
 							$author$project$Widget$Layout$buttonSheet,
 							{
-								content: {content: style.sheetButton, elementColumn: _List_Nil},
-								element: _Utils_ap(
-									style.sheet,
+								button: style.sheetButton,
+								sheet: A2(
+									$author$project$Widget$Customize$element,
 									_List_fromArray(
-										[$mdgriffith$elm_ui$Element$alignRight]))
+										[$mdgriffith$elm_ui$Element$alignRight]),
+									style.sheet)
 							},
 							moreActions);
 					default:
@@ -18725,15 +18838,6 @@ var $Orasund$elm_ui_framework$Framework$container = _List_fromArray(
 		$mdgriffith$elm_ui$Element$Background$color(
 		A3($mdgriffith$elm_ui$Element$rgb255, 255, 255, 255))
 	]);
-var $author$project$Internal$Item$toItem = F2(
-	function (style, element) {
-		return function (attr) {
-			return A2(
-				$mdgriffith$elm_ui$Element$el,
-				_Utils_ap(attr, style.element),
-				element(style.content));
-		};
-	});
 var $author$project$Internal$Item$divider = function (style) {
 	return A2(
 		$author$project$Internal$Item$toItem,
@@ -18814,34 +18918,7 @@ var $elm$html$Html$Attributes$href = function (url) {
 		_VirtualDom_noJavaScriptUri(url));
 };
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
-var $author$project$Internal$Item$item = function (element) {
-	return A2(
-		$author$project$Internal$Item$toItem,
-		{content: _Utils_Tuple0, element: _List_Nil},
-		$elm$core$Basics$always(element));
-};
 var $author$project$Widget$item = $author$project$Internal$Item$item;
-var $author$project$Internal$List$internal = F2(
-	function (style, list) {
-		return A2(
-			$elm$core$List$indexedMap,
-			F2(
-				function (i, fun) {
-					return fun(
-						_Utils_ap(
-							style.element,
-							($elm$core$List$length(list) === 1) ? style.ifSingleton : ((!i) ? style.ifFirst : (_Utils_eq(
-								i,
-								$elm$core$List$length(list) - 1) ? style.ifLast : style.otherwise))));
-				}),
-			list);
-	});
-var $author$project$Internal$List$itemList = function (style) {
-	return A2(
-		$elm$core$Basics$composeR,
-		$author$project$Internal$List$internal(style.content),
-		$mdgriffith$elm_ui$Element$column(style.elementColumn));
-};
 var $author$project$Widget$itemList = function () {
 	var fun = $author$project$Internal$List$itemList;
 	return fun;
@@ -20436,40 +20513,6 @@ var $icidasset$elm_material_icons$Material$Icons$add = A2(
 				]),
 			_List_Nil)
 		]));
-var $author$project$Widget$Customize$mapElement = F2(
-	function (fun, a) {
-		return _Utils_update(
-			a,
-			{
-				element: fun(a.element)
-			});
-	});
-var $author$project$Widget$Customize$element = F2(
-	function (list, a) {
-		return A2(
-			$author$project$Widget$Customize$mapElement,
-			function (b) {
-				return _Utils_ap(b, list);
-			},
-			a);
-	});
-var $author$project$Widget$Customize$mapElementColumn = F2(
-	function (fun, a) {
-		return _Utils_update(
-			a,
-			{
-				elementColumn: fun(a.elementColumn)
-			});
-	});
-var $author$project$Widget$Customize$elementColumn = F2(
-	function (list, a) {
-		return A2(
-			$author$project$Widget$Customize$mapElementColumn,
-			function (b) {
-				return _Utils_ap(b, list);
-			},
-			a);
-	});
 var $author$project$Widget$Customize$elementRow = F2(
 	function (list, a) {
 		return A2(

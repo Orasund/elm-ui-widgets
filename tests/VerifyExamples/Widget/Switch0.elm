@@ -7,7 +7,6 @@ import Test
 import Expect
 
 import Widget exposing (..)
-import Material.Icons as MaterialIcons
 import Widget.Material as Material
 
 type Msg

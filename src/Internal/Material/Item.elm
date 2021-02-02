@@ -7,6 +7,7 @@ module Internal.Material.Item exposing
     , insetHeader
     , middleDivider
     , multiLineItem
+    , selectItem
     , textItem
     )
 
@@ -19,9 +20,11 @@ import Html.Attributes as Attributes
 import Internal.Item exposing (DividerStyle, ExpansionItemStyle, HeaderStyle, ImageItemStyle, ItemStyle, MultiLineItemStyle, TextItemStyle)
 import Internal.Material.Icon as Icon
 import Internal.Material.Palette exposing (Palette)
+import Internal.Material.Button as Button 
+import Internal.Button exposing (ButtonStyle)
 import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
-
+import Internal.Material.List as List
 
 fullBleedDivider : Palette -> ItemStyle (DividerStyle msg) msg
 fullBleedDivider _ =
@@ -375,4 +378,88 @@ expansionItem palette =
     { item = textItem palette
     , expandIcon = Icon.expand_more
     , collapseIcon = Icon.expand_less
+    }
+
+selectItem : Palette -> ItemStyle (ButtonStyle msg) msg
+selectItem palette =
+    { element = []
+    , content =
+        { elementButton =
+            [ Font.size 14
+            , Font.semiBold
+            , Font.letterSpacing 0.25
+            , Element.height <| Element.px 36
+            , Element.width <| Element.fill
+            , Element.paddingXY 8 8
+            , Border.rounded <| 4
+            , palette.surface
+                |> MaterialColor.accessibleTextColor
+                |> MaterialColor.fromColor
+                |> Font.color
+            , Element.mouseDown
+                [ palette.primary
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
+                    |> MaterialColor.fromColor
+                    |> Background.color
+                ]
+            , Element.focused
+                [ palette.primary
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
+                    |> MaterialColor.fromColor
+                    |> Background.color
+                ]
+            , Element.mouseOver
+                [ palette.primary
+                    |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
+                    |> MaterialColor.fromColor
+                    |> Background.color
+                ]
+            ]
+        , ifDisabled =
+            (Button.baseButton palette |> .ifDisabled)
+                ++ [ MaterialColor.gray
+                        |> MaterialColor.fromColor
+                        |> Font.color
+                , Element.mouseDown []
+                , Element.mouseOver []
+                , Element.focused []
+                ]
+        , ifActive =
+            [ palette.primary
+                |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
+                |> MaterialColor.fromColor
+                |> Background.color
+            , palette.primary
+                |> MaterialColor.fromColor
+                |> Font.color
+            ]
+        , otherwise =
+            []
+        , content =
+            { elementRow =
+                [ Element.spacing <| 8
+                , Element.width <| Element.minimum 32 <| Element.shrink
+                , Element.centerY
+                ]
+            , content =
+                { text = 
+                    { contentText = [ Element.centerX ]
+                    }
+                , icon =
+                    { ifActive =
+                        { size = 18
+                        , color = palette.surface |> MaterialColor.accessibleTextColor
+                        }
+                    , ifDisabled =
+                        { size = 18
+                        , color = MaterialColor.gray
+                        }
+                    , otherwise =
+                        { size = 18
+                        , color = palette.surface |> MaterialColor.accessibleTextColor
+                        }
+                    }
+                }
+            }
+        }
     }

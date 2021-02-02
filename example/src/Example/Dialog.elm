@@ -56,7 +56,7 @@ subscriptions _ =
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
 view msgMapper style (IsOpen isOpen) =
     Widget.button style.primaryButton
-        { text = "show Dialog"
+        { text = "Show Dialog"
         , icon =
             FeatherIcons.eye
                 |> Icon.elmFeather FeatherIcons.toHtml
@@ -90,6 +90,8 @@ view msgMapper style (IsOpen isOpen) =
                                 }
                         }
                             |> Widget.dialog style.dialog
+                            |> List.singleton
+                            |> Widget.singleModal
 
                     else
                         []

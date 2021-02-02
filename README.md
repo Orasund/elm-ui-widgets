@@ -1,26 +1,26 @@
 # Elm-Ui-Widgets
 
-This package contains **independent** widgets (no components) written for [Elm-Ui](https://dark.elm.dmy.fr/packages/mdgriffith/elm-ui/latest/). These widgets have no dependencies to other parts of this package. So you can just use as much as you need.
+This package contains **independent** widgets (no components) written for [Elm-Ui](https://package.elm-lang.org/packages/mdgriffith/elm-ui/latest/). These widgets have no dependencies to other parts of this package. So you can just use as much as you need.
 
 * It also supports custom themes and has a material design theme already ready to use.
-* [Examples of all widgets can be found here](https://orasund.github.io/elm-ui-widgets/2.0.0/).
-* It is highly customizable. Checkout [Widget.Style.Customize](https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/Widget-Style-Customize) for more information.
+* [Examples of all widgets can be found here](https://orasund.github.io/elm-ui-widgets/3.0.0/).
+* It is highly customizable. Checkout [Widget.Customize](https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/Widget-Customize) for more information.
 
 Feel free to start an [issue on the repository](https://github.com/Orasund/elm-ui-widgets/issues) if you have any questions.
 
 ![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
 
-## Concept
-
-**Summary**
+## Summary
 
 * Each widget comes with a _Widget Type_ and a _Style Type_. The Widget Type is an abstract representation of the widget and the Style Type has all styling attributes.
 * Widget Types can be used as building Blocks for more complicated Widgets
    (Button -> Select Buttons -> Menu -> Layout)
 
-**Example**
+## Example
 
 Let's look at the button widget.
+
+** Style Type**
 
 ```elm
 button: ButtonStyle msg
@@ -32,7 +32,7 @@ button: ButtonStyle msg
     -> Element msg
 ```
 
-In comparison to Elm-Ui's button, we see  that `List (Attribute msg)` has changed into a _Style Type_.
+In comparison to Elm-Ui's button, we see  that `List (Attribute msg)` has changed into a _Style Type_. Furthermore, the Style type mirrors the implementation. `element` corresponds to `Element.element`, `elementRow` corresponds to `Element.row` and so on.
   ```
   type alias ButtonStyle msg =
       { element : List (Attribute msg)
@@ -49,6 +49,8 @@ In comparison to Elm-Ui's button, we see  that `List (Attribute msg)` has change
         }
       }
   ```
+
+** Style Implementation **
 
 For actually displaying the button we have a few different implementations:
 
@@ -84,6 +86,8 @@ button :
     -> Element msg
 ```
 
+** Widget Type **
+
 We also have a `Widget Type` for the button:
 
 ```
@@ -117,13 +121,12 @@ selectButton :
     -> Element msg
 ```
 
+Checkout the examples in [Widget](https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/Widget) for more details.
+
 ## Reusable Views vs. Components
 
 In Elm we like to use reusable views instead of components.
-At first this packages had a few components, but they where so complicated to use in comparison, so they got slowly turned into reusable views one by one.
-
-Most could be reduced even further into _view functions_: reusable views without a model.
-Currently we have only three reusable views: `Widget.Layout`, `Widget.ScrollingNav` and `Widget.Snackbar`.
+At first this packages had a few components, but they where more complicated in comparison. They got slowly turned into reusable views one by one. Most could be reduced even further into _view functions_: Reusable views without a model. All function in [Widget](https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/Widget) are view functions.
 
 ## Alternatives
 
@@ -149,7 +152,7 @@ For comparison, here are some alternative packages for creating UIs:
 After looking at the current packages that implement various reusable views (and components) I noticed two things:
 
 * There are (nearly) no widgets for Elm-Ui, and that's a problem because while going from `Element` to `Html` is easy, the opposite is not always possible (as a lot of styling in Elm-Ui would not be adapted to the `Html` element.)
-* There is collection of widgets, all in one place. A lot of components get reimplemented over and over again. It's hard to keep track of what package is currently the best.
+* There is no collection of widgets, all in one place. A lot of components get reimplemented over and over again. It's hard to keep track of what package is currently the best.
 
 This package tries to solve both of these problems.
 

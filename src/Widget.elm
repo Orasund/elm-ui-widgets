@@ -3,7 +3,8 @@ module Widget exposing
     , SwitchStyle, Switch, switch
     , Select, selectButton, select
     , MultiSelect, multiSelect
-    , DialogStyle, Dialog, modal, dialog
+    , Modal, singleModal, multiModal
+    , DialogStyle, Dialog, dialog
     , RowStyle, row, buttonRow
     , ColumnStyle, column, buttonColumn
     , ItemStyle, Item, item
@@ -14,6 +15,7 @@ module Widget exposing
     , HeaderStyle, headerItem
     , DividerStyle, divider
     , itemList
+    , SheetStyle, sheet
     , SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInputStyle, TextInput, textInput
     , TabStyle, Tab, tab
@@ -74,13 +76,18 @@ You can create you own widgets by sticking widgets types together.
 @docs MultiSelect, multiSelect
 
 
+# Modal
+
+@docs Modal, singleModal, multiModal
+
+
 # Dialog
 
 ![Dialog](https://orasund.github.io/elm-ui-widgets/assets/dialog.png)
 
 [Open in Ellie](https://ellie-app.com/9p5Rdz625TZa1)
 
-@docs DialogStyle, Dialog, modal, dialog
+@docs DialogStyle, Dialog, dialog
 
 
 # List
@@ -109,7 +116,12 @@ You can create you own widgets by sticking widgets types together.
 @docs MultiLineItemStyle, MultiLineItem, multiLineItem
 @docs HeaderStyle, headerItem
 @docs DividerStyle, divider
-@docs itemList, buttonDrawer
+@docs selectItem
+@docs itemList
+
+# Sheet
+
+@docs SheetStyle, sheet
 
 
 # Sort Table
@@ -156,8 +168,10 @@ import Internal.Button as Button
 import Internal.Dialog as Dialog
 import Internal.Item as Item
 import Internal.List as List
+import Internal.Modal as Modal
 import Internal.ProgressIndicator as ProgressIndicator
 import Internal.Select as Select
+import Internal.Sheet as Sheet
 import Internal.SortTable as SortTable
 import Internal.Switch as Switch
 import Internal.Tab as Tab
@@ -267,7 +281,6 @@ iconButton =
 {-| A button with just text and not icon.
 
     import Widget.Material as Material
-    import Material.Icons as MaterialIcons
 
     type Msg
         = Like
@@ -376,7 +389,6 @@ type alias Switch msg =
 {-| A boolean switch
 
     import Widget.Material as Material
-    import Material.Icons as MaterialIcons
 
     type Msg
         = Activate
@@ -451,7 +463,6 @@ type alias MultiSelect msg =
 {-| A simple button that can be selected.
 
     import Widget.Material as Material
-    import Material.Icons as MaterialIcons
     import Element
 
     type Msg
@@ -487,7 +498,6 @@ selectButton =
 {-| Selects one out of multiple options. This can be used for radio buttons or Menus.
 
     import Widget.Material as Material
-    import Material.Icons as MaterialIcons
     import Element
 
     type Msg
@@ -522,7 +532,6 @@ select =
 {-| Selects multible options. This can be used for checkboxes.
 
     import Widget.Material as Material
-    import Material.Icons as MaterialIcons
     import Set
     import Element
 
@@ -553,6 +562,56 @@ multiSelect :
     -> List ( Bool, Button msg )
 multiSelect =
     Select.multiSelect
+
+
+
+{----------------------------------------------------------
+- MODAL
+----------------------------------------------------------}
+
+
+type alias Modal msg =
+    { onDismiss : Maybe msg
+    , content : Element msg
+    }
+
+
+{-| A modal showing a single element.
+
+Material design only allows one element at a time to be viewed as a modal.
+To make things easier, this widget only views the first element of the list.
+This way you can see the list as a queue of modals.
+
+    import Element
+
+    type Msg
+        = Close
+
+    Element.layout
+        (modal
+            [ { onDismiss = Just Close
+              , content =
+                  Element.text "Click outside this window to close it."
+              }
+            ]
+        )
+        |> always "Ignore this line" --> "Ignore this line"
+
+Technical Remark:
+
+  - To stop the screen from scrolling, set the height of the layout to the height of the screen.
+
+-}
+singleModal : List { onDismiss : Maybe msg, content : Element msg } -> List (Attribute msg)
+singleModal =
+    Modal.singleModal
+
+
+{-| Same implementation as `singleModal` but also displays the "queued" modals.
+-}
+multiModal : List { onDismiss : Maybe msg, content : Element msg } -> List (Attribute msg)
+multiModal =
+    Modal.multiModal
 
 
 
@@ -592,34 +651,6 @@ type alias Dialog msg =
     }
 
 
-{-| A modal.
-
-    import Widget.Material as Material
-    import Element
-
-    type Msg
-        = Submit
-        | Close
-
-    Element.layout
-        (modal
-            { onDismiss = Just Close
-            , content =
-                Element.text "Click outside this window to close it."
-            }
-        )
-        |> always "Ignore this line" --> "Ignore this line"
-
-Technical Remark:
-
-  - To stop the screen from scrolling, set the height of the layout to the height of the screen.
-
--}
-modal : { onDismiss : Maybe msg, content : Element msg } -> List (Attribute msg)
-modal =
-    Dialog.modal
-
-
 {-| A Dialog Window.
 
     import Widget.Material as Material
@@ -644,6 +675,8 @@ modal =
                 }
                 |> Just
             }
+            |> List.singleton
+            |> singleModal
         )
         |> always "Ignore this line" --> "Ignore this line"
 
@@ -656,10 +689,10 @@ dialog :
         , accept : Maybe (TextButton msg)
         , dismiss : Maybe (TextButton msg)
         }
-    -> List (Attribute msg)
+    -> Modal msg
 dialog =
     let
-        fun : DialogStyle msg -> Dialog msg -> List (Attribute msg)
+        fun : DialogStyle msg -> Dialog msg -> Modal msg
         fun =
             Dialog.dialog
     in
@@ -699,6 +732,37 @@ type alias TextInput msg =
 
 
 {-| A text Input that allows to include chips.
+
+    import Element
+    import Widget.Material as Material
+
+    type Msg =
+        ToggleTextInputChip String
+        | SetTextInput String
+
+    {text = "Hello World"}
+        |> (\model ->
+                { chips =
+                    [ "Cat", "Fish", "Dog"]
+                        |> List.map
+                            (\string ->
+                                { icon = always Element.none
+                                , text = string
+                                , onPress =
+                                    string
+                                        |> ToggleTextInputChip
+                                        |> Just
+                                }
+                            )
+                , text = model.text
+                , placeholder = Nothing
+                , label = "Chips"
+                , onChange = SetTextInput
+                }
+            )
+        |> Widget.textInput (Material.textInput Material.defaultPalette)
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 textInput :
     TextInputStyle msg
@@ -890,6 +954,16 @@ type alias Item msg =
 
 
 {-| Simple element for a list.
+
+    import Element
+    import Widget.Material as Material
+
+    Element.text "Just a text"
+        |> Widget.item
+        |> List.singleton
+        |> Widget.itemList (Material.cardColumn Material.defaultPalette)
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 item : Element msg -> Item msg
 item =
@@ -897,6 +971,31 @@ item =
 
 
 {-| A divider.
+
+    import Element
+    import Widget.Material as Material
+
+    [ Widget.textItem (Material.textItem Material.defaultPalette)
+        { onPress = Nothing
+        , icon = always Element.none
+        , text = "Item"
+        , content =
+            \{ size, color } ->
+                Element.none
+        }
+    , Widget.divider (Material.insetDivider Material.defaultPalette )
+    , Widget.textItem (Material.textItem Material.defaultPalette)
+        { onPress = Nothing
+        , icon = always Element.none
+        , text = "Item"
+        , content =
+            \{ size, color } ->
+                Element.none
+        }
+    ]
+        |> Widget.itemList (Material.cardColumn Material.defaultPalette)
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 divider : ItemStyle (DividerStyle msg) msg -> Item msg
 divider =
@@ -904,6 +1003,32 @@ divider =
 
 
 {-| A header for a part of a list.
+
+    import Element
+    import Widget.Material as Material
+
+    [ Widget.textItem (Material.textItem Material.defaultPalette)
+        { onPress = Nothing
+        , icon = always Element.none
+        , text = "Item"
+        , content =
+            \{ size, color } ->
+                Element.none
+        }
+    , "Header"
+        |> Widget.headerItem (Material.insetHeader Material.defaultPalette )
+    , Widget.textItem (Material.textItem Material.defaultPalette)
+        { onPress = Nothing
+        , icon = always Element.none
+        , text = "Item"
+        , content =
+            \{ size, color } ->
+                Element.none
+        }
+    ]
+        |> Widget.itemList (Material.cardColumn Material.defaultPalette)
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 headerItem : ItemStyle (HeaderStyle msg) msg -> String -> Item msg
 headerItem =
@@ -911,6 +1036,31 @@ headerItem =
 
 
 {-| A clickable item that contains two spots for icons or additional information and a single line of text.
+
+    import Element
+    import Widget.Material as Material
+
+    [ Widget.textItem (Material.textItem Material.defaultPalette)
+        { onPress = Nothing
+        , icon = always Element.none
+        , text = "Item"
+        , content =
+            \{ size, color } ->
+                Element.none
+        }
+    , Widget.divider (Material.insetDivider Material.defaultPalette )
+    , Widget.textItem (Material.textItem Material.defaultPalette)
+        { onPress = Nothing
+        , icon = always Element.none
+        , text = "Item"
+        , content =
+            \{ size, color } ->
+                Element.none
+        }
+    ]
+        |> Widget.itemList (Material.cardColumn Material.defaultPalette)
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 textItem :
     ItemStyle (TextItemStyle msg) msg
@@ -925,6 +1075,25 @@ textItem =
     Item.textItem
 
 
+{-| A item contining a text running over multiple lines.
+
+    import Element
+    import Widget.Material as Material
+
+    [ Widget.multiLineItem (Material.multiLineItem Material.defaultPalette)
+        { title = "Title"
+        , onPress = Nothing
+        , icon = always Element.none
+        , text = "Item"
+        , content =
+            \{ size, color } ->
+                Element.none
+        }
+    ]
+        |> Widget.itemList (Material.cardColumn Material.defaultPalette)
+        |> always "Ignore this line" --> "Ignore this line"
+
+-}
 multiLineItem :
     ItemStyle (MultiLineItemStyle msg) msg
     ->
@@ -940,6 +1109,33 @@ multiLineItem =
 
 
 {-| A clickable item that contains a image , a line of text and some additonal information
+
+    import Element
+    import Widget.Material as Material
+    import Widget.Material.Color as MaterialColor
+    import Element.Font as Font
+
+    [ Widget.imageItem (Material.imageItem Material.defaultPalette)
+        { onPress = Nothing
+        , image =
+            Element.image [ Element.width <| Element.px <| 40, Element.height <| Element.px <| 40 ]
+                { src = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Elm_logo.svg/1024px-Elm_logo.svg.png"
+                , description = "Elm logo"
+                }
+        , text = "Item with Image"
+        , content =
+            \{ size, color } ->
+                "1."
+                    |> Element.text
+                    |> Element.el
+                        [ Font.color <| MaterialColor.fromColor color
+                        , Font.size size
+                        ]
+        }
+    ]
+        |> Widget.itemList (Material.cardColumn Material.defaultPalette)
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 imageItem :
     ItemStyle (ImageItemStyle msg) msg
@@ -955,6 +1151,49 @@ imageItem =
 
 
 {-| An expandable Item
+
+    import Element
+    import Widget.Material as Material
+    import Widget.Material.Color as MaterialColor
+    import Element.Font as Font
+
+    type Msg =
+        Toggle Bool
+
+    let
+        isExpanded : Bool
+        isExpanded =
+            True
+    in
+    (   [ Widget.textItem (Material.textItem Material.defaultPalette)
+            { onPress = Nothing
+            , icon = always Element.none
+            , text = "Item with Icon"
+            , content =
+                \{ size, color } ->
+                    Element.none
+            }
+        ]
+        ++ Widget.expansionItem (Material.expansionItem Material.defaultPalette )
+            { onToggle = Toggle
+            , isExpanded = isExpanded
+            , icon = always Element.none
+            , text = "Expandable Item"
+            , content =
+                [ Widget.textItem (Material.textItem Material.defaultPalette)
+                { onPress = Nothing
+                , icon = always Element.none
+                , text = "Item with Icon"
+                , content =
+                    \{ size, color } ->
+                        Element.none
+                }
+                ]
+            }
+    )
+        |> Widget.itemList (Material.cardColumn Material.defaultPalette)
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 expansionItem :
     ExpansionItemStyle msg
@@ -969,8 +1208,23 @@ expansionItem :
 expansionItem =
     Item.expansionItem
 
+{-| Displays a selection of Buttons as a item list. This is intended to be used as a menu.
+-}
+selectItem : ItemStyle (ButtonStyle msg) msg -> Select msg -> List (Item msg)
+selectItem =
+    Item.selectItem
 
 {-| Replacement of `Element.row`
+
+    import Element
+    import Widget.Material as Material
+
+    [ Element.text "Text 1"
+    , Element.text "Text 2"
+    ]
+        |> Widget.row Material.row
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 row : RowStyle msg -> List (Element msg) -> Element msg
 row =
@@ -983,6 +1237,16 @@ row =
 
 
 {-| Replacement of `Element.column`
+
+    import Element
+    import Widget.Material as Material
+
+    [ Element.text "Text 1"
+    , Element.text "Text 2"
+    ]
+        |> Widget.column Material.column
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 column : ColumnStyle msg -> List (Element msg) -> Element msg
 column =
@@ -995,6 +1259,32 @@ column =
 
 
 {-| Implementation of the Material design list
+
+    import Element
+    import Widget.Material as Material
+
+    [ Widget.textItem (Material.textItem Material.defaultPalette)
+        { onPress = Nothing
+        , icon = always Element.none
+        , text = "Item"
+        , content =
+            \{ size, color } ->
+                Element.none
+        }
+    , "Header"
+        |> Widget.headerItem (Material.insetHeader Material.defaultPalette )
+    , Widget.textItem (Material.textItem Material.defaultPalette)
+        { onPress = Nothing
+        , icon = always Element.none
+        , text = "Item"
+        , content =
+            \{ size, color } ->
+                Element.none
+        }
+    ]
+        |> Widget.itemList (Material.cardColumn Material.defaultPalette)
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 itemList : ColumnStyle msg -> List (Item msg) -> Element msg
 itemList =
@@ -1007,6 +1297,35 @@ itemList =
 
 
 {-| A row of buttons
+
+    import Element
+    import Widget.Material as Material
+
+    type Msg =
+        Select Int
+
+    selected : Maybe Int
+    selected =
+        Just 0
+
+    Widget.select
+        { selected = selected
+        , options =
+            [ 1, 2, 42 ]
+                |> List.map
+                    (\int ->
+                        { text = String.fromInt int
+                        , icon = always Element.none
+                        }
+                    )
+        , onSelect = (\i -> Just (Select i ))
+        }
+        |> Widget.buttonRow
+            { elementRow = Material.row
+            , content = Material.toggleButton Material.defaultPalette
+            }
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 buttonRow :
     { elementRow : RowStyle msg
@@ -1028,6 +1347,25 @@ buttonColumn :
     -> Element msg
 buttonColumn =
     List.buttonColumn
+
+
+
+--------------------------------------------------------------------------------
+-- SHEET
+--------------------------------------------------------------------------------
+
+
+type alias SheetStyle msg =
+    { element : List (Attribute msg)
+    , content : ColumnStyle msg
+    }
+
+
+{-| A sheet is similar to
+-}
+sheet : SheetStyle msg -> List (Item msg) -> Element msg
+sheet =
+    Sheet.sheet
 
 
 
@@ -1128,7 +1466,60 @@ stringColumn =
     SortTable.stringColumn
 
 
-{-| A Table where the rows can be sorted by columns
+{-| A table where the rows can be sorted by columns
+
+    import Widget.Material as Material
+    import Element
+
+    type Msg =
+        ChangedSorting String
+
+    sortBy : String
+    sortBy =
+        "Id"
+
+    asc : Bool
+    asc =
+        True
+
+    Widget.sortTable (Material.sortTable Material.defaultPalette)
+        { content =
+            [ { id = 1, name = "Antonio", rating = 2.456, hash = Nothing }
+            , { id = 2, name = "Ana", rating = 1.34, hash = Just "45jf" }
+            , { id = 3, name = "Alfred", rating = 4.22, hash = Just "6fs1" }
+            , { id = 4, name = "Thomas", rating = 3, hash = Just "k52f" }
+            ]
+        , columns =
+            [ Widget.intColumn
+                { title = "Id"
+                , value = .id
+                , toString = \int -> "#" ++ String.fromInt int
+                , width = Element.fill
+                }
+            , Widget.stringColumn
+                { title = "Name"
+                , value = .name
+                , toString = identity
+                , width = Element.fill
+                }
+            , Widget.floatColumn
+                { title = "Rating"
+                , value = .rating
+                , toString = String.fromFloat
+                , width = Element.fill
+                }
+            , Widget.unsortableColumn
+                { title = "Hash"
+                , toString = (\{hash} -> hash |> Maybe.withDefault "None")
+                , width = Element.fill
+                }
+            ]
+        , asc = asc
+        , sortBy = sortBy
+        , onChange = ChangedSorting
+        }
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 sortTable :
     SortTableStyle msg
@@ -1177,6 +1568,51 @@ type alias Tab msg =
 
 
 {-| Displayes a list of contents in a tab
+
+    import Element
+    import Widget.Material as Material
+
+    type Msg =
+        ChangedTab Int
+
+    selected : Maybe Int
+    selected =
+        Just 0
+
+    Widget.tab (Material.tab Material.defaultPalette)
+        { tabs =
+            { selected = selected
+            , options =
+                [ 1, 2, 3 ]
+                    |> List.map
+                        (\int ->
+                            { text = "Tab " ++ (int |> String.fromInt)
+                            , icon = always Element.none
+                            }
+                        )
+            , onSelect =
+                (\s ->
+                    if s >= 0 && s <= 2 then
+                        Just (ChangedTab s)
+                    else
+                        Nothing
+                )
+            }
+        , content =
+            (\s ->
+                case s of
+                    Just 0 ->
+                        "This is Tab 1" |> Element.text
+                    Just 1 ->
+                        "This is the second tab" |> Element.text
+                    Just 2 ->
+                        "The thrid and last tab" |> Element.text
+                    _ ->
+                        "Please select a tab" |> Element.text
+            )
+        }
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 tab :
     TabStyle msg
@@ -1217,6 +1653,13 @@ type alias ProgressIndicator =
 
 
 {-| Displays a circular progress indicator
+
+    import Widget.Material as Material
+
+    Just 0.75
+    |> Widget.circularProgressIndicator (Material.progressIndicator Material.defaultPalette)
+    |> always "Ignore this line" --> "Ignore this line"
+
 -}
 circularProgressIndicator :
     ProgressIndicatorStyle msg

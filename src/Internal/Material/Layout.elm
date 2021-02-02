@@ -1,4 +1,4 @@
-module Internal.Material.Layout exposing (drawerButton, layout, menu, menuTabButton, more_vert, search)
+module Internal.Material.Layout exposing ( layout, menu, menuTabButton, more_vert, search)
 
 import Element
 import Element.Background as Background
@@ -8,8 +8,11 @@ import Internal.Button exposing (ButtonStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Icon as Icon
 import Internal.Material.Palette exposing (Palette)
+import Internal.Material.Sheet as Sheet
 import Internal.Material.Snackbar as Snackbar
 import Internal.Material.TextInput as TextInput
+import Internal.Material.Item as Item
+import Internal.Item exposing (ItemStyle)
 import Svg
 import Svg.Attributes
 import Widget.Customize as Customize
@@ -141,82 +144,6 @@ menuTabButton palette =
     }
 
 
-drawerButton : Palette -> ButtonStyle msg
-drawerButton palette =
-    { elementButton =
-        [ Font.size 14
-        , Font.semiBold
-        , Font.letterSpacing 0.25
-        , Element.height <| Element.px 36
-        , Element.width <| Element.fill
-        , Element.paddingXY 8 8
-        , Border.rounded <| 4
-        , palette.surface
-            |> MaterialColor.accessibleTextColor
-            |> MaterialColor.fromColor
-            |> Font.color
-        , Element.mouseDown
-            [ palette.primary
-                |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
-                |> MaterialColor.fromColor
-                |> Background.color
-            ]
-        , Element.focused
-            [ palette.primary
-                |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
-                |> MaterialColor.fromColor
-                |> Background.color
-            ]
-        , Element.mouseOver
-            [ palette.primary
-                |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
-                |> MaterialColor.fromColor
-                |> Background.color
-            ]
-        ]
-    , ifDisabled =
-        (Button.baseButton palette |> .ifDisabled)
-            ++ [ MaterialColor.gray
-                    |> MaterialColor.fromColor
-                    |> Font.color
-               , Element.mouseDown []
-               , Element.mouseOver []
-               , Element.focused []
-               ]
-    , ifActive =
-        [ palette.primary
-            |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
-            |> MaterialColor.fromColor
-            |> Background.color
-        , palette.primary
-            |> MaterialColor.fromColor
-            |> Font.color
-        ]
-    , otherwise =
-        []
-    , content =
-        { elementRow = Button.baseButton palette |> .content |> .elementRow
-        , content =
-            { text = { contentText = Button.baseButton palette |> (\b -> b.content.content.text.contentText) }
-            , icon =
-                { ifActive =
-                    { size = 18
-                    , color = palette.surface |> MaterialColor.accessibleTextColor
-                    }
-                , ifDisabled =
-                    { size = 18
-                    , color = MaterialColor.gray
-                    }
-                , otherwise =
-                    { size = 18
-                    , color = palette.surface |> MaterialColor.accessibleTextColor
-                    }
-                }
-            }
-        }
-    }
-
-
 layout : Palette -> LayoutStyle msg
 layout palette =
     { container =
@@ -263,14 +190,9 @@ layout palette =
                         }
                     )
                 )
-    , sheetButton = drawerButton palette
+    , sheetButton = Item.selectItem palette
     , menuTabButton = menuTabButton palette
-    , sheet =
-        (palette.surface |> MaterialColor.textAndBackground)
-            ++ [ Element.width <| Element.maximum 360 <| Element.fill
-               , Element.padding 8
-               , Element.spacing 8
-               ]
+    , sheet = Sheet.sheet palette
     , menuIcon = menu
     , moreVerticalIcon = more_vert
     , spacing = 8
@@ -278,4 +200,6 @@ layout palette =
     , searchIcon = search
     , search = TextInput.searchInput palette
     , searchFill = TextInput.textInputBase palette
+        |> Customize.elementRow [ Element.height <| Element.px 56 ]
+    , textItem = Item.textItem palette
     }

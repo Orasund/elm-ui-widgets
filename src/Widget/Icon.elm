@@ -1,4 +1,17 @@
-module Widget.Icon exposing (Icon, IconStyle, antDesignIconsElm, elmFeather, elmFontawesome, elmHeroicons, elmIonicons, elmMaterialIcons, elmOcticons, elmZondicons, materialIcons)
+module Widget.Icon exposing
+    ( IconStyle, Icon
+    , antDesignIconsElm, elmFeather, elmFontawesome, elmHeroicons, elmIonicons, elmMaterialIcons, elmOcticons, elmZondicons, materialIcons
+    )
+
+{-| This module ensures that every icon package on package.elm-lang.org is supported.
+
+Just look for the function with the name of the package and copy&paste the respective example.
+
+@docs IconStyle, Icon
+
+@docs antDesignIconsElm, elmFeather, elmFontawesome, elmHeroicons, elmIonicons, elmMaterialIcons, elmOcticons, elmZondicons, materialIcons
+
+-}
 
 import Color exposing (Color)
 import Dict exposing (size)
@@ -8,12 +21,14 @@ import Svg exposing (Svg)
 import Svg.Attributes
 
 
+{-| -}
 type alias IconStyle =
     { size : Int
     , color : Color
     }
 
 
+{-| -}
 type alias Icon msg =
     { size : Int
     , color : Color

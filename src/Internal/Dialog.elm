@@ -1,9 +1,10 @@
-module Internal.Dialog exposing (Dialog, DialogStyle, dialog, modal)
+module Internal.Dialog exposing (Dialog, DialogStyle, dialog)
 
 import Element exposing (Attribute, Element)
 import Element.Background as Background
 import Element.Events as Events
 import Internal.Button as Button exposing (ButtonStyle, TextButton)
+import Internal.Modal as Modal exposing (Modal)
 
 
 {-| -}
@@ -35,29 +36,10 @@ type alias Dialog msg =
     }
 
 
-modal : { onDismiss : Maybe msg, content : Element msg } -> List (Attribute msg)
-modal { onDismiss, content } =
-    [ Element.none
-        |> Element.el
-            ([ Element.width <| Element.fill
-             , Element.height <| Element.fill
-             , Background.color <| Element.rgba255 0 0 0 0.5
-             ]
-                ++ (onDismiss
-                        |> Maybe.map (Events.onClick >> List.singleton)
-                        |> Maybe.withDefault []
-                   )
-            )
-        |> Element.inFront
-    , content |> Element.inFront
-    , Element.clip
-    ]
-
-
 dialog :
     DialogStyle msg
     -> Dialog msg
-    -> List (Attribute msg)
+    -> Modal msg
 dialog style { title, text, accept, dismiss } =
     { onDismiss =
         case ( accept, dismiss ) of
@@ -110,4 +92,3 @@ dialog style { title, text, accept, dismiss } =
                 )
             ]
     }
-        |> modal

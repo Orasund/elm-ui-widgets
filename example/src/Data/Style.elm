@@ -28,6 +28,7 @@ import Widget
         , TabStyle
         , TextInputStyle
         , TextItemStyle
+        , SheetStyle
         )
 import Widget.Icon as Icon
 import Widget.Layout exposing (LayoutStyle)
@@ -64,7 +65,8 @@ style palette =
     , textItem = Material.textItem palette
     , multiLineItem = Material.multiLineItem palette
     , imageItem = Material.imageItem palette
-    , expansionItem = Material.expansionItem Material.defaultPalette
+    , expansionItem = Material.expansionItem palette
+    , sheet = Material.sheet palette
     }
 
 
@@ -97,4 +99,5 @@ type alias Style msg =
     , multiLineItem : ItemStyle (MultiLineItemStyle msg) msg
     , imageItem : ItemStyle (ImageItemStyle msg) msg
     , expansionItem : ExpansionItemStyle msg
+    , sheet : SheetStyle msg
     }

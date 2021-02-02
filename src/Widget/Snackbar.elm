@@ -1,7 +1,6 @@
 module Widget.Snackbar exposing
-    ( Snackbar, Message, init, current, timePassed, view
+    ( SnackbarStyle, Snackbar, Message, init, current, timePassed, view
     , insert, insertFor, dismiss
-    , SnackbarStyle
     )
 
 {-| ![Snackbar](https://orasund.github.io/elm-ui-widgets/assets/snackbar.png)
@@ -13,7 +12,7 @@ A [snackbar](https://material.io/components/snackbars/) shows notification, one 
 
 # Basics
 
-@docs Snackbar, Message, init, current, timePassed, view
+@docs SnackbarStyle, Snackbar, Message, init, current, timePassed, view
 
 
 # Operations

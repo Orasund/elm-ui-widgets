@@ -1,7 +1,7 @@
 module Widget.Layout exposing
-    ( Layout, Part(..), init, timePassed, view
+    ( LayoutStyle, Layout, Part(..), init, timePassed, view
     , activate, queueMessage
-    , LayoutStyle, buttonSheet
+    , getDeviceClass, partitionActions, getModals
     )
 
 {-| Combines multiple concepts from the [material design specification](https://material.io/components/), namely:
@@ -17,12 +17,17 @@ It is responsive and changes view to apply to the [material design guidelines](h
 
 # Basics
 
-@docs Layout, Part, init, timePassed, view
+@docs LayoutStyle, Layout, Part, init, timePassed, view
 
 
 # Actions
 
 @docs activate, queueMessage
+
+
+# Views
+
+@docs getDeviceClass, partitionActions, getModals
 
 -}
 
@@ -32,36 +37,14 @@ import Element.Input as Input
 import Html exposing (Html)
 import Internal.Button as Button exposing (Button, ButtonStyle)
 import Internal.Dialog as Dialog
+import Internal.Item as Item exposing (ItemStyle,TextItemStyle)
+import Internal.Modal as Modal exposing (Modal)
 import Internal.Select as Select exposing (Select)
+import Internal.Sheet as Sheet exposing (SheetStyle)
 import Internal.TextInput as TextInput exposing (TextInput, TextInputStyle)
 import Widget.Customize as Customize
 import Widget.Icon exposing (Icon)
 import Widget.Snackbar as Snackbar exposing (Message, SnackbarStyle)
-
-
-{-| -}
-type alias ButtonSheetStyle msg =
-    { element : List (Attribute msg)
-    , content :
-        { elementColumn : List (Attribute msg)
-        , content : ButtonStyle msg
-        }
-    }
-
-
-{-| A side sheet containing only buttons. Will use the full hight.
--}
-buttonSheet :
-    ButtonSheetStyle msg
-    -> List (Button msg)
-    -> Element msg
-buttonSheet style actions =
-    actions
-        |> List.map (Button.button style.content.content)
-        |> Element.column
-            (style.content.elementColumn ++ [ Element.width <| Element.fill ])
-        |> Element.el
-            (style.element ++ [ Element.height <| Element.fill ])
 
 
 {-| Technical Remark:
@@ -75,8 +58,8 @@ type alias LayoutStyle msg =
     , snackbar : SnackbarStyle msg
     , layout : List (Attribute msg) -> Element msg -> Html msg
     , header : List (Attribute msg)
-    , sheet : List (Attribute msg)
-    , sheetButton : ButtonStyle msg
+    , sheet : SheetStyle msg
+    , sheetButton : ItemStyle (ButtonStyle msg) msg
     , menuButton : ButtonStyle msg
     , menuTabButton : ButtonStyle msg
     , menuIcon : Icon msg
@@ -86,6 +69,7 @@ type alias LayoutStyle msg =
     , searchIcon : Icon msg
     , search : TextInputStyle msg
     , searchFill : TextInputStyle msg
+    , textItem : ItemStyle (TextItemStyle msg) msg
     }
 
 
@@ -156,6 +140,11 @@ timePassed sec layout =
 --------------------------------------------------------------------------------
 
 
+{-| obtain the Device Calss from a given window.
+
+Checkout Element.classifyDevice for more information.
+
+-}
 getDeviceClass : { height : Int, width : Int } -> DeviceClass
 getDeviceClass window =
     window
@@ -163,6 +152,11 @@ getDeviceClass window =
         |> .class
 
 
+{-| partitions actions into primary and additional actions.
+
+It is intended to hide the additional actions in a side menu.
+
+-}
 partitionActions : List (Button msg) -> { primaryActions : List (Button msg), moreActions : List (Button msg) }
 partitionActions actions =
     { primaryActions =
@@ -289,7 +283,11 @@ viewNav style { title, menu, deviceClass, onChangedSidebar, primaryActions, more
                     Button.iconButton style.menuButton
 
                  else
-                    Button.button style.menuButton
+                    Button.button
+                        (style.menuButton
+                            --FIX FOR ISSUE #30
+                            |> Customize.elementButton [ Element.width Element.shrink ]
+                        )
                 )
       , if moreActions |> List.isEmpty then
             []
@@ -304,8 +302,8 @@ viewNav style { title, menu, deviceClass, onChangedSidebar, primaryActions, more
       ]
         |> List.concat
         |> Element.row
-            [ Element.width <| Element.shrink
-            , Element.alignRight
+            [ Element.alignRight
+            , Element.width Element.shrink
             ]
     ]
         |> Element.row
@@ -319,31 +317,106 @@ viewNav style { title, menu, deviceClass, onChangedSidebar, primaryActions, more
             )
 
 
-{-| left sheet.
+{-| Material design only allows one element at a time to be visible as modal.
+
+The order from most important to least important is as follows:
+dialog -> top sheet -> bottom sheet -> left sheet -> right sheet
+
 -}
-viewLeftSheet :
-    LayoutStyle msg
+getModals :
+    { button : ItemStyle (ButtonStyle msg) msg
+    , sheet : SheetStyle msg
+    , searchFill : TextInputStyle msg
+    , textItem : ItemStyle (TextItemStyle msg) msg
+    }
     ->
-        { title : Element msg
+        { window : { height : Int, width : Int }
+        , dialog : Maybe (Modal msg)
+        , active : Maybe Part
+        , title : Element msg
+        , search : Maybe (TextInput msg)
         , menu : Select msg
+        , onChangedSidebar : Maybe Part -> msg
+        , moreActions : List (Button msg)
         }
-    -> Element msg
-viewLeftSheet style { title, menu } =
-    [ [ title
-      ]
-    , menu
-        |> Select.select
-        |> List.map
-            (Select.selectButton style.sheetButton)
-    ]
-        |> List.concat
-        |> Element.column [ Element.width <| Element.fill ]
-        |> Element.el
-            (style.sheet
-                ++ [ Element.height <| Element.fill
-                   , Element.alignLeft
-                   ]
+    -> List (Modal msg)
+getModals style { search, title, onChangedSidebar, menu, moreActions, dialog, active } =
+    let
+        asModal sheet =
+            { onDismiss =
+                Nothing
+                    |> onChangedSidebar
+                    |> Just
+            , content = sheet
+            }
+    in
+    [ dialog
+    , active
+        |> Maybe.andThen
+            (\part ->
+                case part of
+                    LeftSheet ->
+                        (title |> Item.item)
+                            :: (menu
+                                    |> Item.selectItem style.button
+                                
+                               )
+                            |> Sheet.sheet
+                                (style.sheet
+                                    |> Customize.element [ Element.alignLeft ]
+                                    |> Customize.mapContent
+                                        (Customize.elementColumn [ Element.width <| Element.fill ])
+                                )
+                            |> asModal
+                            |> Just
+
+                    RightSheet ->
+                        moreActions
+                            |> List.map (\{onPress,text,icon} -> 
+                                Item.textItem 
+                                    style.textItem
+                                    { text = text
+                                    , onPress = onPress
+                                    , icon = icon
+                                    , content = always Element.none
+                                    }
+                            )
+                            |> Sheet.sheet 
+                                (style.sheet
+                                    |> Customize.element [ Element.alignRight ]
+                                )
+                            |> asModal
+                            |> Just
+
+                    Search ->
+                        search
+                            |> Maybe.map
+                                (TextInput.textInput
+                                    (style.searchFill
+                                        |> Customize.elementRow 
+                                                                
+                                                                
+                                                                
+                                            [ Element.width <| Element.fill 
+                                            ]
+                                        |> Customize.mapContent
+                                            (\record ->
+                                                { record
+                                                    | text =
+                                                        record.text
+                                                            
+                                                }
+                                            )
+                                    )
+                                    >> Element.el
+                                        [ Element.alignTop
+                                        , Element.width <| Element.fill
+                                        ]
+                                    >> asModal
+                                )
             )
+    ]
+        |> List.filterMap identity
 
 
 {-| View the layout.
@@ -352,7 +425,7 @@ view :
     LayoutStyle msg
     ->
         { window : { height : Int, width : Int }
-        , dialog : Maybe (List (Attribute msg))
+        , dialog : Maybe (Modal msg)
         , layout : Layout msg
         , title : Element msg
         , menu : Select msg
@@ -395,49 +468,6 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                         ]
                     )
                 |> Maybe.withDefault Element.none
-
-        sheet =
-            case layout.active of
-                Just LeftSheet ->
-                    viewLeftSheet style
-                        { title = title
-                        , menu = menu
-                        }
-
-                Just RightSheet ->
-                    buttonSheet
-                        { element = style.sheet ++ [ Element.alignRight ]
-                        , content =
-                            { elementColumn = []
-                            , content = style.sheetButton
-                            }
-                        }
-                        moreActions
-
-                Just Search ->
-                    search
-                        |> Maybe.map
-                            (TextInput.textInput
-                                (style.searchFill
-                                    |> Customize.mapContent
-                                        (\record ->
-                                            { record
-                                                | text =
-                                                    record.text
-                                                        |> Customize.elementTextInput
-                                                            [ Element.width <| Element.fill ]
-                                            }
-                                        )
-                                )
-                                >> Element.el
-                                    [ Element.alignTop
-                                    , Element.width <| Element.fill
-                                    ]
-                            )
-                        |> Maybe.withDefault Element.none
-
-                Nothing ->
-                    Element.none
     in
     content
         |> style.layout
@@ -446,23 +476,21 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                 , [ Element.inFront nav
                   , Element.inFront snackbar
                   ]
-                , if (layout.active /= Nothing) || (dialog /= Nothing) then
-                    --(Element.height <| Element.px <| window.height)
-                    --    ::
-                    case dialog of
-                        Just dialogConfig ->
-                            dialogConfig
-
-                        Nothing ->
-                            Dialog.modal
-                                { onDismiss =
-                                    Nothing
-                                        |> onChangedSidebar
-                                        |> Just
-                                , content = sheet
-                                }
-
-                  else
-                    []
+                , getModals
+                    { button = style.sheetButton
+                    , sheet = style.sheet
+                    , searchFill = style.searchFill
+                    , textItem = style.textItem
+                    }
+                    { window = window
+                    , dialog = dialog
+                    , active = layout.active
+                    , title = title
+                    , menu = menu
+                    , onChangedSidebar = onChangedSidebar
+                    , moreActions = moreActions
+                    , search = search
+                    }
+                    |> Modal.singleModal
                 ]
             )

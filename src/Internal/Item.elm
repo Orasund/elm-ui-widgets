@@ -1,10 +1,12 @@
-module Internal.Item exposing (DividerStyle, ExpansionItem, ExpansionItemStyle, HeaderStyle, ImageItem, ImageItemStyle, Item, ItemStyle, MultiLineItemStyle, TextItem, TextItemStyle, divider, expansionItem, headerItem, imageItem, item, multiLineItem, textItem, toItem)
+module Internal.Item exposing (DividerStyle,selectItem, ExpansionItem, ExpansionItemStyle, HeaderStyle, ImageItem, ImageItemStyle, Item, ItemStyle, MultiLineItemStyle, TextItem, TextItemStyle, divider, expansionItem, headerItem, imageItem, item, multiLineItem, textItem, toItem)
 
 import Element exposing (Attribute, Element)
 import Element.Input as Input
 import Widget.Customize exposing (content)
 import Widget.Icon exposing (Icon, IconStyle)
-
+import Internal.Button exposing (ButtonStyle)
+import Internal.Grid exposing (ColumnStyle)
+import Internal.Select as Select exposing (Select)
 
 type alias ItemStyle content msg =
     { element : List (Attribute msg)
@@ -268,6 +270,15 @@ multiLineItem s { onPress, title, text, icon, content } =
                 }
         )
 
+selectItem : ItemStyle (ButtonStyle msg) msg -> Select msg -> List (Item msg)
+selectItem s select =
+    select
+    |> Select.select
+    |> List.map (\b ->  toItem s (\style -> b |> Select.selectButton style) )
+
+--------------------------------------------------------------------------------
+-- Internal
+--------------------------------------------------------------------------------
 
 toItem : ItemStyle style msg -> (style -> Element msg) -> Item msg
 toItem style element =

@@ -473,7 +473,7 @@ iconButton palette =
             , Element.centerX
             ]
         , content =
-            { text = { contentText = baseButton palette |> (\b -> b.content.content.text.contentText) }
+            { text = { contentText = [Element.centerX] }
             , icon =
                 { ifActive =
                     { size = 18

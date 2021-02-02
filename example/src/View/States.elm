@@ -1,4 +1,4 @@
-module View.States exposing (button, dialog, icon, list, modal, multiSelect, progressIndicator, select, sortTable, switch, tab, textInput)
+module View.States exposing (button, sheet,dialog, icon, list, modal, multiSelect, progressIndicator, select, sortTable, switch, tab, textInput)
 
 import Data.Style exposing (Style)
 import Element exposing (Element)
@@ -546,4 +546,8 @@ progressIndicator _ style =
 
 icon : msg -> Style msg -> List ( String, Element msg )
 icon _ style =
+    []
+
+sheet : msg -> Style msg -> List ( String, Element msg )
+sheet _ style =
     []

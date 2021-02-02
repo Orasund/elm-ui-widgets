@@ -14,6 +14,7 @@ import Example.SortTable as SortTable
 import Example.Switch as Switch
 import Example.Tab as Tab
 import Example.TextInput as TextInput
+import Example.Sheet as Sheet
 import Framework.Grid as Grid
 import View.States as States
 
@@ -31,6 +32,7 @@ type Example
     | ListExample
     | ProgressIndicatorExample
     | IconExample
+    | SheetExample
 
 
 asList : List Example
@@ -47,6 +49,7 @@ asList =
     , ListExample
     , ProgressIndicatorExample
     , IconExample
+    , SheetExample
     ]
         |> List.sortBy toString
 
@@ -89,6 +92,8 @@ toString example =
 
         IconExample ->
             "Icon"
+        SheetExample ->
+            "Sheet"
 
 
 fromString : String -> Maybe Example
@@ -129,6 +134,9 @@ fromString string =
 
         "Icon" ->
             Just IconExample
+        
+        "Sheet" ->
+            Just SheetExample
 
         _ ->
             Nothing
@@ -172,6 +180,9 @@ get example =
 
         IconExample ->
             .icon
+        
+        SheetExample ->
+            .sheet
 
 
 toTests : Example -> msg -> Style msg -> List ( String, Element msg )
@@ -212,6 +223,9 @@ toTests example =
 
         IconExample ->
             States.icon
+        
+        SheetExample ->
+            States.sheet
 
 
 type Msg
@@ -227,6 +241,7 @@ type Msg
     | List List.Msg
     | ProgressIndicator ProgressIndicator.Msg
     | Icon Icon.Msg
+    | Sheet Sheet.Msg
 
 
 type alias Model =
@@ -242,6 +257,7 @@ type alias Model =
     , list : List.Model
     , progressIndicator : ProgressIndicator.Model
     , icon : Icon.Model
+    , sheet : Sheet.Model
     }
 
 
@@ -267,6 +283,7 @@ type alias UpgradeCollection =
     , list : UpgradeRecord List.Model List.Msg
     , progressIndicator : UpgradeRecord ProgressIndicator.Model ProgressIndicator.Msg
     , icon : UpgradeRecord Icon.Model Icon.Msg
+    , sheet : UpgradeRecord Sheet.Model Sheet.Msg
     }
 
 
@@ -283,6 +300,7 @@ type alias ExampleView msg =
     , list : Element msg
     , progressIndicator : Element msg
     , icon : Element msg
+    , sheet : Element msg
     }
 
 
@@ -324,6 +342,9 @@ init =
 
         ( iconModel, iconMsg ) =
             Icon.init
+        
+        ( sheetModel, sheetMsg ) =
+            Sheet.init
     in
     ( { button = buttonModel
       , switch = switchModel
@@ -337,6 +358,7 @@ init =
       , list = listModel
       , progressIndicator = progressIndicatorModel
       , icon = iconModel
+      , sheet = sheetModel
       }
     , [ Cmd.map Button buttonMsg
       , Cmd.map Switch switchMsg
@@ -350,6 +372,7 @@ init =
       , Cmd.map List listMsg
       , Cmd.map ProgressIndicator progressIndicatorMsg
       , Cmd.map Icon iconMsg
+      , Cmd.map Sheet sheetMsg
       ]
         |> Cmd.batch
     )
@@ -441,6 +464,13 @@ upgradeRecord =
         , updateFun = Icon.update
         , subscriptionsFun = Icon.subscriptions
         }
+    , sheet =
+        { from = .sheet
+        , to = \model a -> { model | sheet = a }
+        , msgMapper = Sheet
+        , updateFun = Sheet.update
+        , subscriptionsFun = Sheet.subscriptions
+        }
     }
 
 
@@ -482,6 +512,9 @@ update msg model =
 
         Icon m ->
             updateField .icon m
+        
+        Sheet m ->
+            updateField .sheet m
     )
         model
 
@@ -504,6 +537,7 @@ subscriptions model =
     , upgradeRecord.list |> subFun
     , upgradeRecord.progressIndicator |> subFun
     , upgradeRecord.icon |> subFun
+    , upgradeRecord.sheet |> subFun
     ]
         |> Sub.batch
 
@@ -538,6 +572,8 @@ view msgMapper style model =
         ProgressIndicator.view (ProgressIndicator >> msgMapper) style (.progressIndicator model)
     , icon =
         Icon.view (Icon >> msgMapper) style (.icon model)
+    , sheet =
+        Sheet.view (Sheet >> msgMapper) style (.sheet model)
     }
 
 

@@ -5,32 +5,14 @@ import Internal.Button exposing (Button, ButtonStyle)
 import Internal.Item as Item exposing (Item)
 import Internal.Select as Select
 import Widget.Customize as Customize
+import Internal.Grid as Grid exposing (ColumnStyle, RowStyle)
 
+type alias ColumnStyle msg=
+    Grid.ColumnStyle msg
 
-{-| -}
 type alias RowStyle msg =
-    { elementRow : List (Attribute msg)
-    , content :
-        { element : List (Attribute msg)
-        , ifFirst : List (Attribute msg)
-        , ifLast : List (Attribute msg)
-        , ifSingleton : List (Attribute msg)
-        , otherwise : List (Attribute msg)
-        }
-    }
+    Grid.RowStyle msg
 
-
-{-| -}
-type alias ColumnStyle msg =
-    { elementColumn : List (Attribute msg)
-    , content :
-        { element : List (Attribute msg)
-        , ifFirst : List (Attribute msg)
-        , ifLast : List (Attribute msg)
-        , ifSingleton : List (Attribute msg)
-        , otherwise : List (Attribute msg)
-        }
-    }
 
 
 internal :

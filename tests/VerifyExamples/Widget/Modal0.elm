@@ -8,11 +8,9 @@ import Expect
 
 import Widget exposing (..)
 import Element
-import Widget.Material as Material
 
 type Msg
-    = Submit
-    | Close
+    = Close
 
 
 

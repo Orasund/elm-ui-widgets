@@ -13,6 +13,7 @@ module Widget.Material exposing
     , snackbar
     , tab, tabButton
     , layout
+    , sheet, selectItem
     )
 
 {-| ![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
@@ -75,17 +76,18 @@ Thus for now we only provide a card containing a list.
 
 # List
 
-The [List widget](https://material.io/components/lists) is a very complex widget that sadly only particially made it into this package.
-
 @docs row, column
 
+# Sheet
+
+@docs sheet
 
 # Item
 
 A List is build from items.
 You way want to use special items to visually organize the content of your list.
 
-@docs fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem, multiLineItem, imageItem, expansionItem
+@docs fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem, multiLineItem, imageItem, expansionItem, selectItem
 
 
 # Progress Indicator
@@ -138,11 +140,13 @@ import Internal.Material.SortTable as SortTable
 import Internal.Material.Switch as Switch
 import Internal.Material.Tab as Tab
 import Internal.Material.TextInput as TextInput
+import Internal.Material.Sheet as Sheet
 import Internal.ProgressIndicator exposing (ProgressIndicatorStyle)
 import Internal.SortTable exposing (SortTableStyle)
 import Internal.Switch exposing (SwitchStyle)
 import Internal.Tab exposing (TabStyle)
 import Internal.TextInput exposing (TextInputStyle)
+import Internal.Sheet exposing (SheetStyle)
 import Widget.Layout exposing (LayoutStyle)
 import Widget.Snackbar exposing (SnackbarStyle)
 
@@ -299,7 +303,13 @@ chip : Palette -> ButtonStyle msg
 chip =
     Chip.chip
 
+{-------------------------------------------------------------------------------
+-- SHEET
+-------------------------------------------------------------------------------}
 
+sheet : Palette -> SheetStyle msg
+sheet  =
+    Sheet.sheet
 
 {-------------------------------------------------------------------------------
 -- L I S T
@@ -403,6 +413,8 @@ textItem =
     Item.textItem
 
 
+{-| A text item allowing for more text.
+-}
 multiLineItem : Palette -> ItemStyle (MultiLineItemStyle msg) msg
 multiLineItem =
     Item.multiLineItem
@@ -417,7 +429,11 @@ imageItem : Palette -> ItemStyle (ImageItemStyle msg) msg
 imageItem =
     Item.imageItem
 
-
+{-| Displays a selection. This should be combined with Widget.selectItem
+-}
+selectItem : Palette -> ItemStyle (ButtonStyle msg) msg
+selectItem =
+    Item.selectItem
 
 {-------------------------------------------------------------------------------
 -- D I A L O G
@@ -450,6 +466,8 @@ progressIndicator =
 --------------------------------------------------------------------------------
 
 
+{-| A sortable table
+-}
 sortTable : Palette -> SortTableStyle msg
 sortTable =
     SortTable.sortTable
