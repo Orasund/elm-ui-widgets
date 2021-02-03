@@ -7,13 +7,15 @@ module Widget.Material exposing
     , chip, textInput
     , alertDialog
     , row, column
-    , fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem, multiLineItem, imageItem, expansionItem
+    , sideSheet
+    , fullBleedItem, insetItem, multiLineItem, imageItem, expansionItem, selectItem
+    , fullBleedDivider, insetDivider, middleDivider
+    , insetHeader, fullBleedHeader
     , progressIndicator
     , sortTable
     , snackbar
     , tab, tabButton
     , layout
-    , sheet, selectItem
     )
 
 {-| ![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
@@ -78,16 +80,20 @@ Thus for now we only provide a card containing a list.
 
 @docs row, column
 
+
 # Sheet
 
-@docs sheet
+@docs sideSheet
+
 
 # Item
 
 A List is build from items.
 You way want to use special items to visually organize the content of your list.
 
-@docs fullBleedDivider, insetDivider, middleDivider, insetHeader, fullBleedHeader, textItem, multiLineItem, imageItem, expansionItem, selectItem
+@docs fullBleedItem, insetItem, multiLineItem, imageItem, expansionItem, selectItem
+@docs fullBleedDivider, insetDivider, middleDivider
+@docs fullBleedHeader, insetHeader
 
 
 # Progress Indicator
@@ -125,7 +131,8 @@ Note that you might want to checkout the [file on GitHub](https://github.com/Ora
 import Color exposing (Color)
 import Internal.Button exposing (ButtonStyle)
 import Internal.Dialog exposing (DialogStyle)
-import Internal.Item exposing (DividerStyle, ExpansionItemStyle, HeaderStyle, ImageItemStyle, ItemStyle, MultiLineItemStyle, TextItemStyle)
+import Internal.Item exposing (DividerStyle
+    , ExpansionItemStyle, FullBleedItemStyle, HeaderStyle, ImageItemStyle, ItemStyle, MultiLineItemStyle, InsetItemStyle)
 import Internal.List exposing (ColumnStyle, RowStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Chip as Chip
@@ -135,18 +142,18 @@ import Internal.Material.Layout as Layout
 import Internal.Material.List as List
 import Internal.Material.Palette as Palette
 import Internal.Material.ProgressIndicator as ProgressIndicator
+import Internal.Material.Sheet as Sheet
 import Internal.Material.Snackbar as Snackbar
 import Internal.Material.SortTable as SortTable
 import Internal.Material.Switch as Switch
 import Internal.Material.Tab as Tab
 import Internal.Material.TextInput as TextInput
-import Internal.Material.Sheet as Sheet
 import Internal.ProgressIndicator exposing (ProgressIndicatorStyle)
+import Internal.Sheet exposing (SideSheetStyle)
 import Internal.SortTable exposing (SortTableStyle)
 import Internal.Switch exposing (SwitchStyle)
 import Internal.Tab exposing (TabStyle)
 import Internal.TextInput exposing (TextInputStyle)
-import Internal.Sheet exposing (SheetStyle)
 import Widget.Layout exposing (LayoutStyle)
 import Widget.Snackbar exposing (SnackbarStyle)
 
@@ -303,13 +310,18 @@ chip : Palette -> ButtonStyle msg
 chip =
     Chip.chip
 
+
+
 {-------------------------------------------------------------------------------
 -- SHEET
 -------------------------------------------------------------------------------}
 
-sheet : Palette -> SheetStyle msg
-sheet  =
-    Sheet.sheet
+
+sideSheet : Palette -> SideSheetStyle msg
+sideSheet =
+    Sheet.sideSheet
+
+
 
 {-------------------------------------------------------------------------------
 -- L I S T
@@ -400,6 +412,11 @@ cardColumn =
     List.cardColumn
 
 
+fullBleedItem : Palette -> ItemStyle (FullBleedItemStyle msg) msg
+fullBleedItem =
+    Item.fullBleedItem
+
+
 {-| A basic item containg some text, a button and some additional information.
 
 Technical Remark:
@@ -408,9 +425,9 @@ There are some conflicting informations about the height of an element in the [S
 A normal item should be 48 height, but a item with an icon should be 56. This is confusing, because a normal item can also have an additional icon that is the same size.
 
 -}
-textItem : Palette -> ItemStyle (TextItemStyle msg) msg
-textItem =
-    Item.textItem
+insetItem : Palette -> ItemStyle (InsetItemStyle msg) msg
+insetItem =
+    Item.insetItem
 
 
 {-| A text item allowing for more text.
@@ -429,11 +446,14 @@ imageItem : Palette -> ItemStyle (ImageItemStyle msg) msg
 imageItem =
     Item.imageItem
 
+
 {-| Displays a selection. This should be combined with Widget.selectItem
 -}
 selectItem : Palette -> ItemStyle (ButtonStyle msg) msg
 selectItem =
     Item.selectItem
+
+
 
 {-------------------------------------------------------------------------------
 -- D I A L O G

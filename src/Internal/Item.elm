@@ -1,12 +1,13 @@
-module Internal.Item exposing (DividerStyle,selectItem, ExpansionItem, ExpansionItemStyle, HeaderStyle, ImageItem, ImageItemStyle, Item, ItemStyle, MultiLineItemStyle, TextItem, TextItemStyle, divider, expansionItem, headerItem, imageItem, item, multiLineItem, textItem, toItem)
+module Internal.Item exposing (DividerStyle
+    , ExpansionItem, ExpansionItemStyle, FullBleedItemStyle, HeaderStyle, ImageItem, ImageItemStyle, Item, ItemStyle, MultiLineItemStyle, InsetItem, InsetItemStyle, asItem, divider, expansionItem, fullBleedItem, headerItem, imageItem, multiLineItem, selectItem, insetItem, toItem)
 
 import Element exposing (Attribute, Element)
 import Element.Input as Input
+import Internal.Button exposing (Button, ButtonStyle)
+import Internal.Select as Select exposing (Select)
 import Widget.Customize exposing (content)
 import Widget.Icon exposing (Icon, IconStyle)
-import Internal.Button exposing (ButtonStyle)
-import Internal.Grid exposing (ColumnStyle)
-import Internal.Select as Select exposing (Select)
+
 
 type alias ItemStyle content msg =
     { element : List (Attribute msg)
@@ -28,7 +29,21 @@ type alias HeaderStyle msg =
     }
 
 
-type alias TextItemStyle msg =
+type alias FullBleedItemStyle msg =
+    { elementButton : List (Attribute msg)
+    , ifDisabled : List (Attribute msg)
+    , otherwise : List (Attribute msg)
+    , content :
+        { elementRow : List (Attribute msg)
+        , content :
+            { text : { elementText : List (Attribute msg) }
+            , icon : IconStyle
+            }
+        }
+    }
+
+
+type alias InsetItemStyle msg =
     { elementButton : List (Attribute msg)
     , ifDisabled : List (Attribute msg)
     , otherwise : List (Attribute msg)
@@ -86,7 +101,7 @@ type alias ImageItemStyle msg =
 
 
 type alias ExpansionItemStyle msg =
-    { item : ItemStyle (TextItemStyle msg) msg
+    { item : ItemStyle (InsetItemStyle msg) msg
     , expandIcon : Icon msg
     , collapseIcon : Icon msg
     }
@@ -96,7 +111,7 @@ type alias Item msg =
     List (Attribute msg) -> Element msg
 
 
-type alias TextItem msg =
+type alias InsetItem msg =
     { text : String
     , onPress : Maybe msg
     , icon : Icon msg
@@ -130,8 +145,35 @@ type alias MultiLineItem msg =
     }
 
 
-item : Element msg -> Item msg
-item element =
+fullBleedItem : ItemStyle (FullBleedItemStyle msg) msg -> Button msg -> Item msg
+fullBleedItem s { onPress, text, icon } =
+    toItem s
+        (\style ->
+            Input.button
+                (style.elementButton
+                    ++ (if onPress == Nothing then
+                            style.ifDisabled
+
+                        else
+                            style.otherwise
+                       )
+                )
+                { onPress = onPress
+                , label =
+                    [ text
+                        |> Element.text
+                        |> List.singleton
+                        |> Element.paragraph []
+                        |> Element.el style.content.content.text.elementText
+                    , icon style.content.content.icon
+                    ]
+                        |> Element.row style.content.elementRow
+                }
+        )
+
+
+asItem : Element msg -> Item msg
+asItem element =
     toItem
         { element = []
         , content = ()
@@ -158,8 +200,8 @@ headerItem style title =
         )
 
 
-textItem : ItemStyle (TextItemStyle msg) msg -> TextItem msg -> Item msg
-textItem s { onPress, text, icon, content } =
+insetItem : ItemStyle (InsetItemStyle msg) msg -> InsetItem msg -> Item msg
+insetItem s { onPress, text, icon, content } =
     toItem s
         (\style ->
             Input.button
@@ -218,7 +260,7 @@ imageItem s { onPress, text, image, content } =
 
 expansionItem : ExpansionItemStyle msg -> ExpansionItem msg -> List (Item msg)
 expansionItem s { icon, text, onToggle, content, isExpanded } =
-    textItem s.item
+    insetItem s.item
         { text = text
         , onPress = Just <| onToggle <| not isExpanded
         , icon = icon
@@ -270,15 +312,19 @@ multiLineItem s { onPress, title, text, icon, content } =
                 }
         )
 
+
 selectItem : ItemStyle (ButtonStyle msg) msg -> Select msg -> List (Item msg)
 selectItem s select =
     select
-    |> Select.select
-    |> List.map (\b ->  toItem s (\style -> b |> Select.selectButton style) )
+        |> Select.select
+        |> List.map (\b -> toItem s (\style -> b |> Select.selectButton style))
+
+
 
 --------------------------------------------------------------------------------
 -- Internal
 --------------------------------------------------------------------------------
+
 
 toItem : ItemStyle style msg -> (style -> Element msg) -> Item msg
 toItem style element =

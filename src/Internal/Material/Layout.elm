@@ -1,4 +1,4 @@
-module Internal.Material.Layout exposing ( layout, menu, menuTabButton, more_vert, search)
+module Internal.Material.Layout exposing (layout, menu, menuTabButton, more_vert, search)
 
 import Element
 import Element.Background as Background
@@ -7,12 +7,11 @@ import Element.Font as Font
 import Internal.Button exposing (ButtonStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Icon as Icon
+import Internal.Material.Item as Item
 import Internal.Material.Palette exposing (Palette)
 import Internal.Material.Sheet as Sheet
 import Internal.Material.Snackbar as Snackbar
 import Internal.Material.TextInput as TextInput
-import Internal.Material.Item as Item
-import Internal.Item exposing (ItemStyle)
 import Svg
 import Svg.Attributes
 import Widget.Customize as Customize
@@ -192,14 +191,15 @@ layout palette =
                 )
     , sheetButton = Item.selectItem palette
     , menuTabButton = menuTabButton palette
-    , sheet = Sheet.sheet palette
+    , sheet = Sheet.sideSheet palette
     , menuIcon = menu
     , moreVerticalIcon = more_vert
     , spacing = 8
     , title = Typography.h6 ++ [ Element.paddingXY 8 0 ]
     , searchIcon = search
     , search = TextInput.searchInput palette
-    , searchFill = TextInput.textInputBase palette
-        |> Customize.elementRow [ Element.height <| Element.px 56 ]
-    , textItem = Item.textItem palette
+    , searchFill =
+        TextInput.textInputBase palette
+            |> Customize.elementRow [ Element.height <| Element.px 56 ]
+    , insetItem = Item.insetItem palette
     }

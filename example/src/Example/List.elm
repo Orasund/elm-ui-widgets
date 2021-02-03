@@ -4,7 +4,7 @@ import Browser
 import Element exposing (Element)
 import Element.Font as Font
 import FeatherIcons
-import Widget exposing (ColumnStyle, DividerStyle, ExpansionItemStyle, HeaderStyle, ImageItemStyle, ItemStyle, MultiLineItemStyle, SwitchStyle, TextItemStyle)
+import Widget exposing (ButtonStyle,ColumnStyle,FullBleedItemStyle, DividerStyle, ExpansionItemStyle, HeaderStyle, ImageItemStyle, ItemStyle, MultiLineItemStyle, SwitchStyle, InsetItemStyle)
 import Widget.Icon as Icon
 import Widget.Material as Material
 import Widget.Material.Color as MaterialColor
@@ -18,11 +18,13 @@ type alias Style style msg =
         , fullBleedDivider : ItemStyle (DividerStyle msg) msg
         , insetHeader : ItemStyle (HeaderStyle msg) msg
         , fullBleedHeader : ItemStyle (HeaderStyle msg) msg
-        , textItem : ItemStyle (TextItemStyle msg) msg
+        , insetItem : ItemStyle (InsetItemStyle msg) msg
         , imageItem : ItemStyle (ImageItemStyle msg) msg
         , expansionItem : ExpansionItemStyle msg
         , switch : SwitchStyle msg
         , multiLineItem : ItemStyle (MultiLineItemStyle msg) msg
+        , fullBleedItem : ItemStyle (FullBleedItemStyle msg) msg
+        , selectItem : ItemStyle (ButtonStyle msg) msg
     }
 
 
@@ -34,11 +36,13 @@ materialStyle =
     , fullBleedDivider = Material.fullBleedDivider Material.defaultPalette
     , insetHeader = Material.insetHeader Material.defaultPalette
     , fullBleedHeader = Material.fullBleedHeader Material.defaultPalette
-    , textItem = Material.textItem Material.defaultPalette
+    , insetItem = Material.insetItem Material.defaultPalette
     , imageItem = Material.imageItem Material.defaultPalette
     , expansionItem = Material.expansionItem Material.defaultPalette
     , switch = Material.switch Material.defaultPalette
     , multiLineItem = Material.multiLineItem Material.defaultPalette
+    , fullBleedItem = Material.fullBleedItem Material.defaultPalette
+    , selectItem = Material.selectItem Material.defaultPalette
     }
 
 
@@ -77,12 +81,18 @@ view : (Msg -> msg) -> Style style msg -> Model -> Element msg
 view msgMapper style (IsExpanded isExpanded) =
     [ "Section 1"
         |> Widget.headerItem style.fullBleedHeader
-    , Widget.item <| Element.text <| "Custom Item"
+    , Widget.asItem <| Element.text <| "Custom Item"
     , Widget.divider style.middleDivider
-    , Widget.item <| Element.el [ Element.centerY ] <| Element.text <| "Custom Item (centered)"
+    , Widget.fullBleedItem style.fullBleedItem
+        { onPress = Nothing
+        , icon =
+            \{ size, color } ->
+                Element.none
+        , text = "Full Bleed Item"
+        }
     , "Section 2"
         |> Widget.headerItem style.fullBleedHeader
-    , Widget.textItem style.textItem
+    , Widget.insetItem style.insetItem
         { onPress = Nothing
         , icon =
             FeatherIcons.triangle
@@ -110,7 +120,7 @@ view msgMapper style (IsExpanded isExpanded) =
                         ]
         }
     , Widget.divider style.insetDivider
-    , Widget.textItem style.textItem
+    , Widget.insetItem style.insetItem
         { onPress = not isExpanded |> ToggleCollapsable |> msgMapper |> Just
         , icon = always Element.none
         , text = "Click Me"
@@ -156,7 +166,7 @@ view msgMapper style (IsExpanded isExpanded) =
             , content =
                 [ "Section 3"
                     |> Widget.headerItem style.insetHeader
-                , Widget.textItem style.textItem
+                , Widget.insetItem style.insetItem
                     { onPress = Nothing
                     , icon = always Element.none
                     , text = "Item"
@@ -171,6 +181,25 @@ view msgMapper style (IsExpanded isExpanded) =
                     }
                 ]
             }
+        ++ [ "Menu" |> Widget.headerItem style.fullBleedHeader]
+        ++ ({ selected = if isExpanded then Just 1 else Just 0
+    , options =
+        [ True, False ]
+            |> List.map
+                (\bool ->
+                    { text = if bool then "Expanded" else "Collapsed"
+                    , icon = always Element.none
+                    }
+                )
+    , onSelect = (\int -> 
+            (int == 1) 
+        |> ToggleCollapsable
+        |> msgMapper
+        |> Just
+        )
+    }
+        |> Widget.selectItem style.selectItem
+        )
         |> Widget.itemList style.cardColumn
 
 

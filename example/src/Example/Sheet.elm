@@ -3,26 +3,26 @@ module Example.Sheet exposing (Model, Msg, init, subscriptions, update, view)
 import Browser
 import Element exposing (Element)
 import FeatherIcons
-import Widget exposing (ButtonStyle, SheetStyle,ItemStyle,HeaderStyle,TextItemStyle)
+import Widget exposing (ButtonStyle, SideSheetStyle,ItemStyle,HeaderStyle,InsetItemStyle)
 import Widget.Icon as Icon
 import Widget.Material as Material
 import Widget.Material.Typography as Typography
 
 type alias Style style msg =
     { style
-        | sheet : SheetStyle msg
+        | sideSheet : SideSheetStyle msg
         , primaryButton : ButtonStyle msg
         , fullBleedHeader : ItemStyle (HeaderStyle msg) msg
-        , textItem : ItemStyle (TextItemStyle msg) msg
+        , insetItem : ItemStyle (InsetItemStyle msg) msg
     }
 
 
 materialStyle : Style {} msg
 materialStyle =
-    { sheet = Material.sheet Material.defaultPalette
+    { sideSheet = Material.sideSheet Material.defaultPalette
     , primaryButton = Material.containedButton Material.defaultPalette
     , fullBleedHeader = Material.fullBleedHeader Material.defaultPalette
-    , textItem = Material.textItem Material.defaultPalette
+    , insetItem = Material.insetItem Material.defaultPalette
     }
 
 
@@ -78,8 +78,8 @@ view msgMapper style (IsEnabled isEnabled) =
                             [ "Menu"
                               |> Element.text
                               |> Element.el Typography.h6
-                              |> Widget.item
-                            , Widget.textItem style.textItem
+                              |> Widget.asItem
+                            , Widget.insetItem style.insetItem
                                 { onPress = Just <| msgMapper <| ToggleModal False
                                 , icon =
                                     FeatherIcons.triangle
@@ -89,7 +89,7 @@ view msgMapper style (IsEnabled isEnabled) =
                                     \{ size, color } ->
                                         Element.none
                                 }
-                            , Widget.textItem style.textItem
+                            , Widget.insetItem style.insetItem
                                 { onPress = Just <| msgMapper <| ToggleModal False
                                 , icon =
                                     FeatherIcons.triangle
@@ -100,7 +100,7 @@ view msgMapper style (IsEnabled isEnabled) =
                                         Element.none
                                 }
                             ] 
-                            |> Widget.sheet style.sheet
+                            |> Widget.sideSheet style.sideSheet
                         , onDismiss = Just <| msgMapper <| ToggleModal False
                         }
                         |> List.singleton

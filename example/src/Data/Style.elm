@@ -27,8 +27,9 @@ import Widget
         , SwitchStyle
         , TabStyle
         , TextInputStyle
-        , TextItemStyle
-        , SheetStyle
+        , InsetItemStyle
+        , SideSheetStyle
+        , FullBleedItemStyle
         )
 import Widget.Icon as Icon
 import Widget.Layout exposing (LayoutStyle)
@@ -62,11 +63,13 @@ style palette =
     , middleDivider = Material.middleDivider palette
     , insetHeader = Material.insetHeader palette
     , fullBleedHeader = Material.fullBleedHeader palette
-    , textItem = Material.textItem palette
+    , insetItem = Material.insetItem palette
     , multiLineItem = Material.multiLineItem palette
     , imageItem = Material.imageItem palette
     , expansionItem = Material.expansionItem palette
-    , sheet = Material.sheet palette
+    , sideSheet = Material.sideSheet palette
+    , fullBleedItem = Material.fullBleedItem Material.defaultPalette
+    , selectItem = Material.selectItem Material.defaultPalette
     }
 
 
@@ -95,9 +98,11 @@ type alias Style msg =
     , fullBleedDivider : ItemStyle (DividerStyle msg) msg
     , insetHeader : ItemStyle (HeaderStyle msg) msg
     , fullBleedHeader : ItemStyle (HeaderStyle msg) msg
-    , textItem : ItemStyle (TextItemStyle msg) msg
+    , insetItem : ItemStyle (InsetItemStyle msg) msg
     , multiLineItem : ItemStyle (MultiLineItemStyle msg) msg
     , imageItem : ItemStyle (ImageItemStyle msg) msg
     , expansionItem : ExpansionItemStyle msg
-    , sheet : SheetStyle msg
+    , sideSheet : SideSheetStyle msg
+    , fullBleedItem : ItemStyle (FullBleedItemStyle msg) msg
+    , selectItem : ItemStyle (ButtonStyle msg) msg
     }

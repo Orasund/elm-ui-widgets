@@ -37,28 +37,23 @@ import Element.Input as Input
 import Html exposing (Html)
 import Internal.Button as Button exposing (Button, ButtonStyle)
 import Internal.Dialog as Dialog
-import Internal.Item as Item exposing (ItemStyle,TextItemStyle)
+import Internal.Item as Item exposing (ItemStyle, InsetItemStyle)
 import Internal.Modal as Modal exposing (Modal)
 import Internal.Select as Select exposing (Select)
-import Internal.Sheet as Sheet exposing (SheetStyle)
+import Internal.Sheet as Sheet exposing (SideSheetStyle)
 import Internal.TextInput as TextInput exposing (TextInput, TextInputStyle)
 import Widget.Customize as Customize
 import Widget.Icon exposing (Icon)
 import Widget.Snackbar as Snackbar exposing (Message, SnackbarStyle)
 
 
-{-| Technical Remark:
-
-  - If icons are defined in Svg, they might not display correctly.
-    To avoid that, make sure to wrap them in `Element.html >> Element.el []`
-
--}
+{-| -}
 type alias LayoutStyle msg =
     { container : List (Attribute msg)
     , snackbar : SnackbarStyle msg
     , layout : List (Attribute msg) -> Element msg -> Html msg
     , header : List (Attribute msg)
-    , sheet : SheetStyle msg
+    , sheet : SideSheetStyle msg
     , sheetButton : ItemStyle (ButtonStyle msg) msg
     , menuButton : ButtonStyle msg
     , menuTabButton : ButtonStyle msg
@@ -69,7 +64,7 @@ type alias LayoutStyle msg =
     , searchIcon : Icon msg
     , search : TextInputStyle msg
     , searchFill : TextInputStyle msg
-    , textItem : ItemStyle (TextItemStyle msg) msg
+    , insetItem : ItemStyle (InsetItemStyle msg) msg
     }
 
 
@@ -325,9 +320,9 @@ dialog -> top sheet -> bottom sheet -> left sheet -> right sheet
 -}
 getModals :
     { button : ItemStyle (ButtonStyle msg) msg
-    , sheet : SheetStyle msg
+    , sheet : SideSheetStyle msg
     , searchFill : TextInputStyle msg
-    , textItem : ItemStyle (TextItemStyle msg) msg
+    , insetItem : ItemStyle (InsetItemStyle msg) msg
     }
     ->
         { window : { height : Int, width : Int }
@@ -356,12 +351,11 @@ getModals style { search, title, onChangedSidebar, menu, moreActions, dialog, ac
             (\part ->
                 case part of
                     LeftSheet ->
-                        (title |> Item.item)
+                        (title |> Item.asItem)
                             :: (menu
                                     |> Item.selectItem style.button
-                                
                                )
-                            |> Sheet.sheet
+                            |> Sheet.sideSheet
                                 (style.sheet
                                     |> Customize.element [ Element.alignLeft ]
                                     |> Customize.mapContent
@@ -372,16 +366,17 @@ getModals style { search, title, onChangedSidebar, menu, moreActions, dialog, ac
 
                     RightSheet ->
                         moreActions
-                            |> List.map (\{onPress,text,icon} -> 
-                                Item.textItem 
-                                    style.textItem
-                                    { text = text
-                                    , onPress = onPress
-                                    , icon = icon
-                                    , content = always Element.none
-                                    }
-                            )
-                            |> Sheet.sheet 
+                            |> List.map
+                                (\{ onPress, text, icon } ->
+                                    Item.insetItem
+                                        style.insetItem
+                                        { text = text
+                                        , onPress = onPress
+                                        , icon = icon
+                                        , content = always Element.none
+                                        }
+                                )
+                            |> Sheet.sideSheet
                                 (style.sheet
                                     |> Customize.element [ Element.alignRight ]
                                 )
@@ -393,18 +388,14 @@ getModals style { search, title, onChangedSidebar, menu, moreActions, dialog, ac
                             |> Maybe.map
                                 (TextInput.textInput
                                     (style.searchFill
-                                        |> Customize.elementRow 
-                                                                
-                                                                
-                                                                
-                                            [ Element.width <| Element.fill 
+                                        |> Customize.elementRow
+                                            [ Element.width <| Element.fill
                                             ]
                                         |> Customize.mapContent
                                             (\record ->
                                                 { record
                                                     | text =
                                                         record.text
-                                                            
                                                 }
                                             )
                                     )
@@ -480,7 +471,7 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                     { button = style.sheetButton
                     , sheet = style.sheet
                     , searchFill = style.searchFill
-                    , textItem = style.textItem
+                    , insetItem = style.insetItem
                     }
                     { window = window
                     , dialog = dialog

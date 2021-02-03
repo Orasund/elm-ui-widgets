@@ -2,13 +2,14 @@ module Internal.Material.Item exposing
     ( expansionItem
     , fullBleedDivider
     , fullBleedHeader
+    , fullBleedItem
     , imageItem
     , insetDivider
     , insetHeader
     , middleDivider
     , multiLineItem
     , selectItem
-    , textItem
+    , insetItem
     )
 
 import Color
@@ -17,14 +18,14 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Html.Attributes as Attributes
-import Internal.Item exposing (DividerStyle, ExpansionItemStyle, HeaderStyle, ImageItemStyle, ItemStyle, MultiLineItemStyle, TextItemStyle)
+import Internal.Button exposing (ButtonStyle)
+import Internal.Item exposing (DividerStyle, ExpansionItemStyle, FullBleedItemStyle, HeaderStyle, ImageItemStyle, ItemStyle, MultiLineItemStyle, InsetItemStyle)
+import Internal.Material.Button as Button
 import Internal.Material.Icon as Icon
 import Internal.Material.Palette exposing (Palette)
-import Internal.Material.Button as Button 
-import Internal.Button exposing (ButtonStyle)
 import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
-import Internal.Material.List as List
+
 
 fullBleedDivider : Palette -> ItemStyle (DividerStyle msg) msg
 fullBleedDivider _ =
@@ -183,8 +184,30 @@ fullBleedHeader palette =
     }
 
 
-textItem : Palette -> ItemStyle (TextItemStyle msg) msg
-textItem _ =
+fullBleedItem : Palette -> ItemStyle (FullBleedItemStyle msg) msg
+fullBleedItem palette =
+    let
+        i =
+            insetItem palette
+    in
+    { element = i.element
+    , content =
+        { elementButton = i.content.elementButton
+        , ifDisabled = i.content.ifDisabled
+        , otherwise = i.content.otherwise
+        , content =
+            { elementRow = i.content.content.elementRow
+            , content =
+                { text = i.content.content.content.text
+                , icon = i.content.content.content.content
+                }
+            }
+        }
+    }
+
+
+insetItem : Palette -> ItemStyle (InsetItemStyle msg) msg
+insetItem _ =
     { element = [ Element.padding 0 ]
     , content =
         { elementButton =
@@ -375,14 +398,15 @@ imageItem _ =
 
 expansionItem : Palette -> ExpansionItemStyle msg
 expansionItem palette =
-    { item = textItem palette
+    { item = insetItem palette
     , expandIcon = Icon.expand_more
     , collapseIcon = Icon.expand_less
     }
 
+
 selectItem : Palette -> ItemStyle (ButtonStyle msg) msg
 selectItem palette =
-    { element = []
+    { element = [ Element.paddingXY 8 4 ]
     , content =
         { elementButton =
             [ Font.size 14
@@ -420,10 +444,10 @@ selectItem palette =
                 ++ [ MaterialColor.gray
                         |> MaterialColor.fromColor
                         |> Font.color
-                , Element.mouseDown []
-                , Element.mouseOver []
-                , Element.focused []
-                ]
+                   , Element.mouseDown []
+                   , Element.mouseOver []
+                   , Element.focused []
+                   ]
         , ifActive =
             [ palette.primary
                 |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
@@ -442,7 +466,7 @@ selectItem palette =
                 , Element.centerY
                 ]
             , content =
-                { text = 
+                { text =
                     { contentText = [ Element.centerX ]
                     }
                 , icon =

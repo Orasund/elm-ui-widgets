@@ -1,10 +1,8 @@
 module Internal.Dialog exposing (Dialog, DialogStyle, dialog)
 
-import Element exposing (Attribute, Element)
-import Element.Background as Background
-import Element.Events as Events
+import Element exposing (Attribute)
 import Internal.Button as Button exposing (ButtonStyle, TextButton)
-import Internal.Modal as Modal exposing (Modal)
+import Internal.Modal exposing (Modal)
 
 
 {-| -}

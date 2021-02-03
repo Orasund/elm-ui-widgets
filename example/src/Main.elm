@@ -432,7 +432,7 @@ viewLoaded m =
                                           , elem
                                           ]
                                             |> Element.column Grid.simple
-                                            |> Widget.item
+                                            |> Widget.asItem
                                          )
                                             :: (if more |> List.isEmpty then
                                                     []
@@ -457,7 +457,7 @@ viewLoaded m =
                                                                         ++ [ Element.width <| Element.fill ]
                                                                     )
                                                                     more
-                                                                    |> Widget.item
+                                                                    |> Widget.asItem
                                                                     |> List.singleton
                                                             , isExpanded =
                                                                 name

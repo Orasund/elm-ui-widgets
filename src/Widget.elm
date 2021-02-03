@@ -7,19 +7,21 @@ module Widget exposing
     , DialogStyle, Dialog, dialog
     , RowStyle, row, buttonRow
     , ColumnStyle, column, buttonColumn
-    , ItemStyle, Item, item
-    , TextItemStyle, TextItem, textItem
+    , ItemStyle, Item
+    , InsetItemStyle, InsetItem, insetItem
     , ExpansionItemStyle, ExpansionItem, expansionItem
     , ImageItemStyle, ImageItem, imageItem
     , MultiLineItemStyle, MultiLineItem, multiLineItem
     , HeaderStyle, headerItem
     , DividerStyle, divider
+    , selectItem, asItem
     , itemList
-    , SheetStyle, sheet
+    , SideSheetStyle, sideSheet
     , SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInputStyle, TextInput, textInput
     , TabStyle, Tab, tab
     , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
+    , FullBleedItemStyle, fullBleedItem
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -109,19 +111,20 @@ You can create you own widgets by sticking widgets types together.
 
 ## Item
 
-@docs ItemStyle, Item, item
+@docs ItemStyle, FullBleedStyle, Item, item
 @docs TextItemStyle, TextItem, textItem
 @docs ExpansionItemStyle, ExpansionItem, expansionItem
 @docs ImageItemStyle, ImageItem, imageItem
 @docs MultiLineItemStyle, MultiLineItem, multiLineItem
 @docs HeaderStyle, headerItem
 @docs DividerStyle, divider
-@docs selectItem
+@docs selectItem, asItem
 @docs itemList
+
 
 # Sheet
 
-@docs SheetStyle, sheet
+@docs SideSheetStyle, sideSheet
 
 
 # Sort Table
@@ -588,7 +591,7 @@ This way you can see the list as a queue of modals.
         = Close
 
     Element.layout
-        (modal
+        (singleModal
             [ { onDismiss = Just Close
               , content =
                   Element.text "Click outside this window to close it."
@@ -839,7 +842,22 @@ type alias ColumnStyle msg =
 
 
 {-| -}
-type alias TextItemStyle msg =
+type alias FullBleedItemStyle msg =
+    { elementButton : List (Attribute msg)
+    , ifDisabled : List (Attribute msg)
+    , otherwise : List (Attribute msg)
+    , content :
+        { elementRow : List (Attribute msg)
+        , content :
+            { text : { elementText : List (Attribute msg) }
+            , icon : IconStyle
+            }
+        }
+    }
+
+
+{-| -}
+type alias InsetItemStyle msg =
     { elementButton : List (Attribute msg)
     , ifDisabled : List (Attribute msg)
     , otherwise : List (Attribute msg)
@@ -900,14 +918,14 @@ type alias ImageItemStyle msg =
 
 {-| -}
 type alias ExpansionItemStyle msg =
-    { item : ItemStyle (TextItemStyle msg) msg
+    { item : ItemStyle (InsetItemStyle msg) msg
     , expandIcon : Icon msg
     , collapseIcon : Icon msg
     }
 
 
 {-| -}
-type alias TextItem msg =
+type alias InsetItem msg =
     { text : String
     , onPress : Maybe msg
     , icon : Icon msg
@@ -946,28 +964,45 @@ type alias ExpansionItem msg =
 
 {-| Item widget type.
 
-Use `Widget.item` if you want to turn a simple element into an item.
+Use `Widget.asItem` if you want to turn a simple element into an item.
 
 -}
 type alias Item msg =
     List (Attribute msg) -> Element msg
 
 
-{-| Simple element for a list.
+fullBleedItem :
+    ItemStyle (FullBleedItemStyle msg) msg
+    ->
+        { text : String
+        , onPress : Maybe msg
+        , icon : Icon msg
+        }
+    -> Item msg
+fullBleedItem =
+    let
+        fun : ItemStyle (FullBleedItemStyle msg) msg -> Button msg -> Item msg
+        fun =
+            Item.fullBleedItem
+    in
+    fun
+
+
+{-| Turns a Element into an item. Only use if you want to take care of the styling yourself.
 
     import Element
     import Widget.Material as Material
 
     Element.text "Just a text"
-        |> Widget.item
+        |> Widget.asItem
         |> List.singleton
         |> Widget.itemList (Material.cardColumn Material.defaultPalette)
         |> always "Ignore this line" --> "Ignore this line"
 
 -}
-item : Element msg -> Item msg
-item =
-    Item.item
+asItem : Element msg -> Item msg
+asItem =
+    Item.asItem
 
 
 {-| A divider.
@@ -1062,8 +1097,8 @@ headerItem =
         |> always "Ignore this line" --> "Ignore this line"
 
 -}
-textItem :
-    ItemStyle (TextItemStyle msg) msg
+insetItem :
+    ItemStyle (InsetItemStyle msg) msg
     ->
         { text : String
         , onPress : Maybe msg
@@ -1071,8 +1106,13 @@ textItem :
         , content : Icon msg
         }
     -> Item msg
-textItem =
-    Item.textItem
+insetItem =
+    let
+        fun : ItemStyle (InsetItemStyle msg) msg -> InsetItem msg -> Item msg
+        fun =
+            Item.insetItem
+    in
+    fun
 
 
 {-| A item contining a text running over multiple lines.
@@ -1105,7 +1145,12 @@ multiLineItem :
         }
     -> Item msg
 multiLineItem =
-    Item.multiLineItem
+    let
+        fun : ItemStyle (MultiLineItemStyle msg) msg -> MultiLineItem msg -> Item msg
+        fun =
+            Item.multiLineItem
+    in
+    fun
 
 
 {-| A clickable item that contains a image , a line of text and some additonal information
@@ -1147,7 +1192,12 @@ imageItem :
         }
     -> Item msg
 imageItem =
-    Item.imageItem
+    let
+        fun : ItemStyle (ImageItemStyle msg) msg -> ImageItem msg -> Item msg
+        fun =
+            Item.imageItem
+    in
+    fun
 
 
 {-| An expandable Item
@@ -1206,13 +1256,20 @@ expansionItem :
         }
     -> List (Item msg)
 expansionItem =
-    Item.expansionItem
+    let
+        fun : ExpansionItemStyle msg -> ExpansionItem msg -> List (Item msg)
+        fun =
+            Item.expansionItem
+    in
+    fun
+
 
 {-| Displays a selection of Buttons as a item list. This is intended to be used as a menu.
 -}
 selectItem : ItemStyle (ButtonStyle msg) msg -> Select msg -> List (Item msg)
 selectItem =
     Item.selectItem
+
 
 {-| Replacement of `Element.row`
 
@@ -1355,7 +1412,7 @@ buttonColumn =
 --------------------------------------------------------------------------------
 
 
-type alias SheetStyle msg =
+type alias SideSheetStyle msg =
     { element : List (Attribute msg)
     , content : ColumnStyle msg
     }
@@ -1363,9 +1420,9 @@ type alias SheetStyle msg =
 
 {-| A sheet is similar to
 -}
-sheet : SheetStyle msg -> List (Item msg) -> Element msg
-sheet =
-    Sheet.sheet
+sideSheet : SideSheetStyle msg -> List (Item msg) -> Element msg
+sideSheet =
+    Sheet.sideSheet
 
 
 
