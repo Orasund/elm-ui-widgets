@@ -155,7 +155,6 @@ layout palette =
                , Font.letterSpacing 0.5
                ]
     , snackbar = Snackbar.snackbar palette
-    , layout = Element.layout
     , header =
         (palette.primary
             |> MaterialColor.textAndBackground

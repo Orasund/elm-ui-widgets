@@ -1,7 +1,10 @@
 module Widget.Layout exposing
-    ( LayoutStyle, Layout, Part(..), init, timePassed, view
+    ( LayoutStyle, Layout, Part(..), init, timePassed
     , activate, queueMessage
-    , getDeviceClass, partitionActions, getModals
+    , menuBar, tabBar
+    , leftSheet, rightSheet, searchSheet
+    , getDeviceClass, partitionActions, orderModals
+    , view
     )
 
 {-| Combines multiple concepts from the [material design specification](https://material.io/components/), namely:
@@ -17,7 +20,7 @@ It is responsive and changes view to apply to the [material design guidelines](h
 
 # Basics
 
-@docs LayoutStyle, Layout, Part, init, timePassed, view
+@docs LayoutStyle, Layout, Part, init, timePassed
 
 
 # Actions
@@ -27,7 +30,17 @@ It is responsive and changes view to apply to the [material design guidelines](h
 
 # Views
 
-@docs getDeviceClass, partitionActions, getModals
+@docs menuBar, tabBar
+
+
+## Sheets
+
+@docs leftSheet, rightSheet, searchSheet
+
+
+## Utility Functions
+
+@docs getDeviceClass, partitionActions, orderModals
 
 -}
 
@@ -37,7 +50,7 @@ import Element.Input as Input
 import Html exposing (Html)
 import Internal.Button as Button exposing (Button, ButtonStyle)
 import Internal.Dialog as Dialog
-import Internal.Item as Item exposing (ItemStyle, InsetItemStyle)
+import Internal.Item as Item exposing (InsetItemStyle, ItemStyle)
 import Internal.Modal as Modal exposing (Modal)
 import Internal.Select as Select exposing (Select)
 import Internal.Sheet as Sheet exposing (SideSheetStyle)
@@ -51,7 +64,6 @@ import Widget.Snackbar as Snackbar exposing (Message, SnackbarStyle)
 type alias LayoutStyle msg =
     { container : List (Attribute msg)
     , snackbar : SnackbarStyle msg
-    , layout : List (Attribute msg) -> Element msg -> Html msg
     , header : List (Attribute msg)
     , sheet : SideSheetStyle msg
     , sheetButton : ItemStyle (ButtonStyle msg) msg
@@ -181,51 +193,105 @@ partitionActions actions =
     }
 
 
-viewNav :
-    LayoutStyle msg
+{-| A top bar that displays a menu icon on the left side.
+-}
+menuBar :
+    { style
+        | menuIcon : Icon msg
+        , title : List (Attribute msg)
+        , header : List (Attribute msg)
+        , menuButton : ButtonStyle msg
+        , moreVerticalIcon : Icon msg
+        , spacing : Int
+        , searchIcon : Icon msg
+        , search : TextInputStyle msg
+    }
     ->
         { title : Element msg
-        , menu : Select msg
         , deviceClass : DeviceClass
-        , onChangedSidebar : Maybe Part -> msg
+        , openLeftSheet : msg
+        , openRightSheet : msg
+        , openTopSheet : msg
         , primaryActions : List (Button msg)
         , moreActions : List (Button msg)
         , search : Maybe (TextInput msg)
         }
     -> Element msg
-viewNav style { title, menu, deviceClass, onChangedSidebar, primaryActions, moreActions, search } =
-    [ (if
-        (deviceClass == Phone)
-            || (deviceClass == Tablet)
-            || ((menu.options |> List.length) > 5)
-       then
+menuBar style m =
+    internalNav
         [ Button.iconButton style.menuButton
-            { onPress = Just <| onChangedSidebar <| Just LeftSheet
+            { onPress = Just <| m.openLeftSheet
             , icon = style.menuIcon
             , text = "Menu"
             }
-        , menu.selected
-            |> Maybe.andThen
-                (\option ->
-                    menu.options
-                        |> Array.fromList
-                        |> Array.get option
-                )
-            |> Maybe.map (.text >> Element.text)
-            |> Maybe.withDefault title
-            |> Element.el style.title
+        , m.title |> Element.el style.title
         ]
+        style
+        m
 
-       else
-        [ title |> Element.el style.title
-        , menu
+
+{-| A top bar that displays the menu as tabs
+-}
+tabBar :
+    { style
+        | menuTabButton : ButtonStyle msg
+        , title : List (Attribute msg)
+        , header : List (Attribute msg)
+        , menuButton : ButtonStyle msg
+        , moreVerticalIcon : Icon msg
+        , spacing : Int
+        , searchIcon : Icon msg
+        , search : TextInputStyle msg
+    }
+    ->
+        { title : Element msg
+        , menu : Select msg
+        , deviceClass : DeviceClass
+        , openRightSheet : msg
+        , openTopSheet : msg
+        , primaryActions : List (Button msg)
+        , moreActions : List (Button msg)
+        , search : Maybe (TextInput msg)
+        }
+    -> Element msg
+tabBar style m =
+    internalNav
+        [ m.title |> Element.el style.title
+        , m.menu
             |> Select.select
             |> List.map (Select.selectButton style.menuTabButton)
             |> Element.row
                 [ Element.width <| Element.shrink
                 ]
         ]
-      )
+        style
+        m
+
+
+{-| -}
+internalNav :
+    List (Element msg)
+    ->
+        { style
+            | header : List (Attribute msg)
+            , menuButton : ButtonStyle msg
+            , moreVerticalIcon : Icon msg
+            , spacing : Int
+            , searchIcon : Icon msg
+            , search : TextInputStyle msg
+        }
+    ->
+        { model
+            | deviceClass : DeviceClass
+            , openRightSheet : msg
+            , openTopSheet : msg
+            , primaryActions : List (Button msg)
+            , moreActions : List (Button msg)
+            , search : Maybe (TextInput msg)
+        }
+    -> Element msg
+internalNav menuElements style { deviceClass, openRightSheet, openTopSheet, primaryActions, moreActions, search } =
+    [ menuElements
         |> Element.row
             [ Element.width <| Element.shrink
             , Element.spacing style.spacing
@@ -254,7 +320,7 @@ viewNav style { title, menu, deviceClass, onChangedSidebar, primaryActions, more
                 (\{ label } ->
                     if deviceClass == Tablet then
                         [ Button.button style.menuButton
-                            { onPress = Just <| onChangedSidebar <| Just Search
+                            { onPress = Just <| openTopSheet
                             , icon = style.searchIcon
                             , text = label
                             }
@@ -262,7 +328,7 @@ viewNav style { title, menu, deviceClass, onChangedSidebar, primaryActions, more
 
                     else if deviceClass == Phone then
                         [ Button.iconButton style.menuButton
-                            { onPress = Just <| onChangedSidebar <| Just Search
+                            { onPress = Just <| openTopSheet
                             , icon = style.searchIcon
                             , text = label
                             }
@@ -289,7 +355,7 @@ viewNav style { title, menu, deviceClass, onChangedSidebar, primaryActions, more
 
         else
             [ Button.iconButton style.menuButton
-                { onPress = Just <| onChangedSidebar <| Just RightSheet
+                { onPress = Just <| openRightSheet
                 , icon = style.moreVerticalIcon
                 , text = "More"
                 }
@@ -312,106 +378,123 @@ viewNav style { title, menu, deviceClass, onChangedSidebar, primaryActions, more
             )
 
 
+{-| Left sheet containing a title and a menu.
+-}
+leftSheet :
+    { button : ItemStyle (ButtonStyle msg) msg
+    , sheet : SideSheetStyle msg
+    }
+    ->
+        { window : { height : Int, width : Int }
+        , title : Element msg
+        , menu : Select msg
+        , onDismiss : msg
+        }
+    -> Modal msg
+leftSheet style { title, onDismiss, menu } =
+    { onDismiss = Just onDismiss
+    , content =
+        (title |> Item.asItem)
+            :: (menu
+                    |> Item.selectItem style.button
+               )
+            |> Sheet.sideSheet
+                (style.sheet
+                    |> Customize.element [ Element.alignLeft ]
+                    |> Customize.mapContent
+                        (Customize.elementColumn [ Element.width <| Element.fill ])
+                )
+    }
+
+
+{-| Right sheet containg a simple list of buttons
+-}
+rightSheet :
+    { sheet : SideSheetStyle msg
+    , insetItem : ItemStyle (InsetItemStyle msg) msg
+    }
+    ->
+        { onDismiss : msg
+        , moreActions : List (Button msg)
+        }
+    -> Modal msg
+rightSheet style { onDismiss, moreActions } =
+    { onDismiss = Just onDismiss
+    , content =
+        moreActions
+            |> List.map
+                (\{ onPress, text, icon } ->
+                    Item.insetItem
+                        style.insetItem
+                        { text = text
+                        , onPress = onPress
+                        , icon = icon
+                        , content = always Element.none
+                        }
+                )
+            |> Sheet.sideSheet
+                (style.sheet
+                    |> Customize.element [ Element.alignRight ]
+                )
+    }
+
+
+{-| Top sheet containg a searchbar spaning the full witdh
+-}
+searchSheet :
+    TextInputStyle msg
+    ->
+        { onDismiss : msg
+        , search : TextInput msg
+        }
+    -> Modal msg
+searchSheet style { onDismiss, search } =
+    { onDismiss = Just onDismiss
+    , content =
+        search
+            |> TextInput.textInput
+                (style
+                    |> Customize.elementRow
+                        [ Element.width <| Element.fill
+                        ]
+                    |> Customize.mapContent
+                        (\record ->
+                            { record
+                                | text =
+                                    record.text
+                            }
+                        )
+                )
+            |> Element.el
+                [ Element.alignTop
+                , Element.width <| Element.fill
+                ]
+    }
+
+
 {-| Material design only allows one element at a time to be visible as modal.
 
 The order from most important to least important is as follows:
 dialog -> top sheet -> bottom sheet -> left sheet -> right sheet
 
 -}
-getModals :
-    { button : ItemStyle (ButtonStyle msg) msg
-    , sheet : SideSheetStyle msg
-    , searchFill : TextInputStyle msg
-    , insetItem : ItemStyle (InsetItemStyle msg) msg
+orderModals :
+    { dialog : Maybe (Modal msg)
+    , topSheet : Maybe (Modal msg)
+    , bottomSheet : Maybe (Modal msg)
+    , leftSheet : Maybe (Modal msg)
+    , rightSheet : Maybe (Modal msg)
     }
-    ->
-        { window : { height : Int, width : Int }
-        , dialog : Maybe (Modal msg)
-        , active : Maybe Part
-        , title : Element msg
-        , search : Maybe (TextInput msg)
-        , menu : Select msg
-        , onChangedSidebar : Maybe Part -> msg
-        , moreActions : List (Button msg)
-        }
     -> List (Modal msg)
-getModals style { search, title, onChangedSidebar, menu, moreActions, dialog, active } =
-    let
-        asModal sheet =
-            { onDismiss =
-                Nothing
-                    |> onChangedSidebar
-                    |> Just
-            , content = sheet
-            }
-    in
-    [ dialog
-    , active
-        |> Maybe.andThen
-            (\part ->
-                case part of
-                    LeftSheet ->
-                        (title |> Item.asItem)
-                            :: (menu
-                                    |> Item.selectItem style.button
-                               )
-                            |> Sheet.sideSheet
-                                (style.sheet
-                                    |> Customize.element [ Element.alignLeft ]
-                                    |> Customize.mapContent
-                                        (Customize.elementColumn [ Element.width <| Element.fill ])
-                                )
-                            |> asModal
-                            |> Just
-
-                    RightSheet ->
-                        moreActions
-                            |> List.map
-                                (\{ onPress, text, icon } ->
-                                    Item.insetItem
-                                        style.insetItem
-                                        { text = text
-                                        , onPress = onPress
-                                        , icon = icon
-                                        , content = always Element.none
-                                        }
-                                )
-                            |> Sheet.sideSheet
-                                (style.sheet
-                                    |> Customize.element [ Element.alignRight ]
-                                )
-                            |> asModal
-                            |> Just
-
-                    Search ->
-                        search
-                            |> Maybe.map
-                                (TextInput.textInput
-                                    (style.searchFill
-                                        |> Customize.elementRow
-                                            [ Element.width <| Element.fill
-                                            ]
-                                        |> Customize.mapContent
-                                            (\record ->
-                                                { record
-                                                    | text =
-                                                        record.text
-                                                }
-                                            )
-                                    )
-                                    >> Element.el
-                                        [ Element.alignTop
-                                        , Element.width <| Element.fill
-                                        ]
-                                    >> asModal
-                                )
-            )
+orderModals modals =
+    [ modals.dialog
+    , modals.leftSheet
+    , modals.rightSheet
+    , modals.topSheet
     ]
         |> List.filterMap identity
 
 
-{-| View the layout.
--}
 view :
     LayoutStyle msg
     ->
@@ -424,9 +507,8 @@ view :
         , actions : List (Button msg)
         , onChangedSidebar : Maybe Part -> msg
         }
-    -> Element msg
-    -> Html msg
-view style { search, title, onChangedSidebar, menu, actions, window, dialog, layout } content =
+    -> List (Attribute msg)
+view style { search, title, onChangedSidebar, menu, actions, window, dialog, layout } =
     let
         deviceClass : DeviceClass
         deviceClass =
@@ -437,15 +519,33 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
 
         nav : Element msg
         nav =
-            viewNav style
-                { title = title
-                , menu = menu
-                , deviceClass = deviceClass
-                , onChangedSidebar = onChangedSidebar
-                , primaryActions = primaryActions
-                , moreActions = moreActions
-                , search = search
-                }
+            if
+                (deviceClass == Phone)
+                    || (deviceClass == Tablet)
+                    || ((menu.options |> List.length) > 5)
+            then
+                menuBar style
+                    { title = title
+                    , deviceClass = deviceClass
+                    , openLeftSheet = onChangedSidebar <| Just LeftSheet
+                    , openRightSheet = onChangedSidebar <| Just RightSheet
+                    , openTopSheet = onChangedSidebar <| Just Search
+                    , primaryActions = primaryActions
+                    , moreActions = moreActions
+                    , search = search
+                    }
+
+            else
+                tabBar style
+                    { title = title
+                    , menu = menu
+                    , deviceClass = deviceClass
+                    , openRightSheet = onChangedSidebar <| Just RightSheet
+                    , openTopSheet = onChangedSidebar <| Just Search
+                    , primaryActions = primaryActions
+                    , moreActions = moreActions
+                    , search = search
+                    }
 
         snackbar : Element msg
         snackbar =
@@ -459,29 +559,63 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                         ]
                     )
                 |> Maybe.withDefault Element.none
+
+        onDismiss =
+            Nothing
+                |> onChangedSidebar
+
+        modals =
+            orderModals
+                { dialog = dialog
+                , leftSheet =
+                    if layout.active == Just LeftSheet then
+                        leftSheet
+                            { button = style.sheetButton
+                            , sheet = style.sheet
+                            }
+                            { window = window
+                            , title = title
+                            , menu = menu
+                            , onDismiss = onDismiss
+                            }
+                            |> Just
+
+                    else
+                        Nothing
+                , rightSheet =
+                    if layout.active == Just RightSheet then
+                        rightSheet
+                            { sheet = style.sheet
+                            , insetItem = style.insetItem
+                            }
+                            { onDismiss = onDismiss
+                            , moreActions = moreActions
+                            }
+                            |> Just
+
+                    else
+                        Nothing
+                , topSheet =
+                    if layout.active == Just Search then
+                        search
+                            |> Maybe.map
+                                (\textInput ->
+                                    searchSheet style.searchFill
+                                        { search = textInput
+                                        , onDismiss = onDismiss
+                                        }
+                                )
+
+                    else
+                        Nothing
+                , bottomSheet = Nothing
+                }
     in
-    content
-        |> style.layout
-            (List.concat
-                [ style.container
-                , [ Element.inFront nav
-                  , Element.inFront snackbar
-                  ]
-                , getModals
-                    { button = style.sheetButton
-                    , sheet = style.sheet
-                    , searchFill = style.searchFill
-                    , insetItem = style.insetItem
-                    }
-                    { window = window
-                    , dialog = dialog
-                    , active = layout.active
-                    , title = title
-                    , menu = menu
-                    , onChangedSidebar = onChangedSidebar
-                    , moreActions = moreActions
-                    , search = search
-                    }
-                    |> Modal.singleModal
-                ]
-            )
+    List.concat
+        [ style.container
+        , [ Element.inFront nav
+          , Element.inFront snackbar
+          ]
+        , modals
+            |> Modal.singleModal
+        ]

@@ -288,83 +288,85 @@ view model =
                     Theme.toStyle m.theme
             in
             Html.map LoadedSpecific <|
-                Layout.view style.layout
-                    { dialog =
-                        if m.displayDialog then
-                            { text = "This is a dialog window"
-                            , title = Just "Dialog"
-                            , accept =
-                                Just
-                                    { text = "Ok"
-                                    , onPress = Just <| ToggleDialog False
-                                    }
-                            , dismiss =
-                                Just
-                                    { text = "Dismiss"
-                                    , onPress = Just <| ToggleDialog False
-                                    }
+                Element.layout
+                    (Layout.view style.layout
+                        { dialog =
+                            if m.displayDialog then
+                                { text = "This is a dialog window"
+                                , title = Just "Dialog"
+                                , accept =
+                                    Just
+                                        { text = "Ok"
+                                        , onPress = Just <| ToggleDialog False
+                                        }
+                                , dismiss =
+                                    Just
+                                        { text = "Dismiss"
+                                        , onPress = Just <| ToggleDialog False
+                                        }
+                                }
+                                    |> Widget.dialog style.dialog
+                                    |> Just
+
+                            else
+                                Nothing
+                        , layout = m.layout
+                        , window = m.window
+                        , menu =
+                            m.scrollingNav
+                                |> ScrollingNav.toSelect
+                                    (\int ->
+                                        m.scrollingNav.arrangement
+                                            |> Array.fromList
+                                            |> Array.get int
+                                            |> Maybe.map JumpTo
+                                    )
+                        , actions =
+                            [ { onPress = Just <| Load "https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/"
+                            , text = "Docs"
+                            , icon = FeatherIcons.book |> Icon.elmFeather FeatherIcons.toHtml
                             }
-                                |> Widget.dialog style.dialog
-                                |> Just
-
-                        else
-                            Nothing
-                    , layout = m.layout
-                    , window = m.window
-                    , menu =
-                        m.scrollingNav
-                            |> ScrollingNav.toSelect
-                                (\int ->
-                                    m.scrollingNav.arrangement
-                                        |> Array.fromList
-                                        |> Array.get int
-                                        |> Maybe.map JumpTo
-                                )
-                    , actions =
-                        [ { onPress = Just <| Load "https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/"
-                          , text = "Docs"
-                          , icon = FeatherIcons.book |> Icon.elmFeather FeatherIcons.toHtml
-                          }
-                        , { onPress = Just <| Load "https://github.com/Orasund/elm-ui-widgets"
-                          , text = "Github"
-                          , icon = FeatherIcons.github |> Icon.elmFeather FeatherIcons.toHtml
-                          }
-                        , { onPress =
-                                if m.theme /= Material then
-                                    Just <| SetTheme <| Material
-
-                                else
-                                    Nothing
-                          , text = "Material Theme"
-                          , icon = FeatherIcons.penTool |> Icon.elmFeather FeatherIcons.toHtml
-                          }
-                        , { onPress =
-                                if m.theme /= DarkMaterial then
-                                    Just <| SetTheme <| DarkMaterial
-
-                                else
-                                    Nothing
-                          , text = "Dark Material Theme"
-                          , icon = FeatherIcons.penTool |> Icon.elmFeather FeatherIcons.toHtml
-                          }
-                        ]
-                    , onChangedSidebar = ChangedSidebar
-                    , title =
-                        "Elm-Ui-Widgets"
-                            |> Element.text
-                            |> Element.el Heading.h1
-                    , search =
-                        Just
-                            { chips = []
-                            , text = m.search.raw
-                            , onChange = ChangedSearch
-                            , label = "Search"
-                            , placeholder =
-                                Just <|
-                                    Input.placeholder [] <|
-                                        Element.text "Search Widgets..."
+                            , { onPress = Just <| Load "https://github.com/Orasund/elm-ui-widgets"
+                            , text = "Github"
+                            , icon = FeatherIcons.github |> Icon.elmFeather FeatherIcons.toHtml
                             }
-                    }
+                            , { onPress =
+                                    if m.theme /= Material then
+                                        Just <| SetTheme <| Material
+
+                                    else
+                                        Nothing
+                            , text = "Material Theme"
+                            , icon = FeatherIcons.penTool |> Icon.elmFeather FeatherIcons.toHtml
+                            }
+                            , { onPress =
+                                    if m.theme /= DarkMaterial then
+                                        Just <| SetTheme <| DarkMaterial
+
+                                    else
+                                        Nothing
+                            , text = "Dark Material Theme"
+                            , icon = FeatherIcons.penTool |> Icon.elmFeather FeatherIcons.toHtml
+                            }
+                            ]
+                        , onChangedSidebar = ChangedSidebar
+                        , title =
+                            "Elm-Ui-Widgets"
+                                |> Element.text
+                                |> Element.el Heading.h1
+                        , search =
+                            Just
+                                { chips = []
+                                , text = m.search.raw
+                                , onChange = ChangedSearch
+                                , label = "Search"
+                                , placeholder =
+                                    Just <|
+                                        Input.placeholder [] <|
+                                            Element.text "Search Widgets..."
+                                }
+                        }
+                    )
                 <|
                     viewLoaded m
 
