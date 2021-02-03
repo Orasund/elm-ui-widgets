@@ -1,7 +1,6 @@
 module Widget.Layout exposing
     ( LayoutStyle, Layout, Part(..), init, timePassed
     , activate, queueMessage
-    , menuBar, tabBar
     , leftSheet, rightSheet, searchSheet
     , getDeviceClass, partitionActions, orderModals
     , view
@@ -48,6 +47,7 @@ import Array
 import Element exposing (Attribute, DeviceClass(..), Element)
 import Element.Input as Input
 import Html exposing (Html)
+import Internal.AppBar as AppBar exposing (AppBarStyle)
 import Internal.Button as Button exposing (Button, ButtonStyle)
 import Internal.Dialog as Dialog
 import Internal.Item as Item exposing (InsetItemStyle, ItemStyle)
@@ -64,19 +64,24 @@ import Widget.Snackbar as Snackbar exposing (Message, SnackbarStyle)
 type alias LayoutStyle msg =
     { container : List (Attribute msg)
     , snackbar : SnackbarStyle msg
-    , header : List (Attribute msg)
     , sheet : SideSheetStyle msg
     , sheetButton : ItemStyle (ButtonStyle msg) msg
-    , menuButton : ButtonStyle msg
-    , menuTabButton : ButtonStyle msg
-    , menuIcon : Icon msg
-    , moreVerticalIcon : Icon msg
     , spacing : Int
     , title : List (Attribute msg)
-    , searchIcon : Icon msg
-    , search : TextInputStyle msg
     , searchFill : TextInputStyle msg
     , insetItem : ItemStyle (InsetItemStyle msg) msg
+    , menuBar :
+        AppBarStyle
+            { menuIcon : Icon msg
+            , title : List (Attribute msg)
+            }
+            msg
+    , tabBar :
+        AppBarStyle
+            { menuTabButton : ButtonStyle msg
+            , title : List (Attribute msg)
+            }
+            msg
     }
 
 
@@ -191,191 +196,6 @@ partitionActions actions =
         else
             actions |> List.drop 2
     }
-
-
-{-| A top bar that displays a menu icon on the left side.
--}
-menuBar :
-    { style
-        | menuIcon : Icon msg
-        , title : List (Attribute msg)
-        , header : List (Attribute msg)
-        , menuButton : ButtonStyle msg
-        , moreVerticalIcon : Icon msg
-        , spacing : Int
-        , searchIcon : Icon msg
-        , search : TextInputStyle msg
-    }
-    ->
-        { title : Element msg
-        , deviceClass : DeviceClass
-        , openLeftSheet : msg
-        , openRightSheet : msg
-        , openTopSheet : msg
-        , primaryActions : List (Button msg)
-        , moreActions : List (Button msg)
-        , search : Maybe (TextInput msg)
-        }
-    -> Element msg
-menuBar style m =
-    internalNav
-        [ Button.iconButton style.menuButton
-            { onPress = Just <| m.openLeftSheet
-            , icon = style.menuIcon
-            , text = "Menu"
-            }
-        , m.title |> Element.el style.title
-        ]
-        style
-        m
-
-
-{-| A top bar that displays the menu as tabs
--}
-tabBar :
-    { style
-        | menuTabButton : ButtonStyle msg
-        , title : List (Attribute msg)
-        , header : List (Attribute msg)
-        , menuButton : ButtonStyle msg
-        , moreVerticalIcon : Icon msg
-        , spacing : Int
-        , searchIcon : Icon msg
-        , search : TextInputStyle msg
-    }
-    ->
-        { title : Element msg
-        , menu : Select msg
-        , deviceClass : DeviceClass
-        , openRightSheet : msg
-        , openTopSheet : msg
-        , primaryActions : List (Button msg)
-        , moreActions : List (Button msg)
-        , search : Maybe (TextInput msg)
-        }
-    -> Element msg
-tabBar style m =
-    internalNav
-        [ m.title |> Element.el style.title
-        , m.menu
-            |> Select.select
-            |> List.map (Select.selectButton style.menuTabButton)
-            |> Element.row
-                [ Element.width <| Element.shrink
-                ]
-        ]
-        style
-        m
-
-
-{-| -}
-internalNav :
-    List (Element msg)
-    ->
-        { style
-            | header : List (Attribute msg)
-            , menuButton : ButtonStyle msg
-            , moreVerticalIcon : Icon msg
-            , spacing : Int
-            , searchIcon : Icon msg
-            , search : TextInputStyle msg
-        }
-    ->
-        { model
-            | deviceClass : DeviceClass
-            , openRightSheet : msg
-            , openTopSheet : msg
-            , primaryActions : List (Button msg)
-            , moreActions : List (Button msg)
-            , search : Maybe (TextInput msg)
-        }
-    -> Element msg
-internalNav menuElements style { deviceClass, openRightSheet, openTopSheet, primaryActions, moreActions, search } =
-    [ menuElements
-        |> Element.row
-            [ Element.width <| Element.shrink
-            , Element.spacing style.spacing
-            ]
-    , if deviceClass == Phone || deviceClass == Tablet then
-        Element.none
-
-      else
-        search
-            |> Maybe.map
-                (\{ onChange, text, label } ->
-                    TextInput.textInput style.search
-                        { chips = []
-                        , onChange = onChange
-                        , text = text
-                        , placeholder =
-                            Just <|
-                                Input.placeholder [] <|
-                                    Element.text label
-                        , label = label
-                        }
-                )
-            |> Maybe.withDefault Element.none
-    , [ search
-            |> Maybe.map
-                (\{ label } ->
-                    if deviceClass == Tablet then
-                        [ Button.button style.menuButton
-                            { onPress = Just <| openTopSheet
-                            , icon = style.searchIcon
-                            , text = label
-                            }
-                        ]
-
-                    else if deviceClass == Phone then
-                        [ Button.iconButton style.menuButton
-                            { onPress = Just <| openTopSheet
-                            , icon = style.searchIcon
-                            , text = label
-                            }
-                        ]
-
-                    else
-                        []
-                )
-            |> Maybe.withDefault []
-      , primaryActions
-            |> List.map
-                (if deviceClass == Phone then
-                    Button.iconButton style.menuButton
-
-                 else
-                    Button.button
-                        (style.menuButton
-                            --FIX FOR ISSUE #30
-                            |> Customize.elementButton [ Element.width Element.shrink ]
-                        )
-                )
-      , if moreActions |> List.isEmpty then
-            []
-
-        else
-            [ Button.iconButton style.menuButton
-                { onPress = Just <| openRightSheet
-                , icon = style.moreVerticalIcon
-                , text = "More"
-                }
-            ]
-      ]
-        |> List.concat
-        |> Element.row
-            [ Element.alignRight
-            , Element.width Element.shrink
-            ]
-    ]
-        |> Element.row
-            (style.header
-                ++ [ Element.padding 0
-                   , Element.centerX
-                   , Element.spacing style.spacing
-                   , Element.alignTop
-                   , Element.width <| Element.fill
-                   ]
-            )
 
 
 {-| Left sheet containing a title and a menu.
@@ -524,7 +344,7 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                     || (deviceClass == Tablet)
                     || ((menu.options |> List.length) > 5)
             then
-                menuBar style
+                AppBar.menuBar style.menuBar
                     { title = title
                     , deviceClass = deviceClass
                     , openLeftSheet = onChangedSidebar <| Just LeftSheet
@@ -536,7 +356,7 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                     }
 
             else
-                tabBar style
+                AppBar.tabBar style.tabBar
                     { title = title
                     , menu = menu
                     , deviceClass = deviceClass

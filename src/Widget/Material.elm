@@ -7,10 +7,11 @@ module Widget.Material exposing
     , chip, textInput
     , alertDialog
     , row, column
+    , menuBar, tabBar
     , sideSheet
     , fullBleedItem, insetItem, multiLineItem, imageItem, expansionItem, selectItem
     , fullBleedDivider, insetDivider, middleDivider
-    , insetHeader, fullBleedHeader
+    , fullBleedHeader, insetHeader
     , progressIndicator
     , sortTable
     , snackbar
@@ -81,6 +82,11 @@ Thus for now we only provide a card containing a list.
 @docs row, column
 
 
+# App Bar
+
+@docs menuBar, tabBar
+
+
 # Sheet
 
 @docs sideSheet
@@ -129,11 +135,23 @@ Note that you might want to checkout the [file on GitHub](https://github.com/Ora
 -}
 
 import Color exposing (Color)
+import Element exposing (Attribute)
+import Internal.AppBar exposing (AppBarStyle)
 import Internal.Button exposing (ButtonStyle)
 import Internal.Dialog exposing (DialogStyle)
-import Internal.Item exposing (DividerStyle
-    , ExpansionItemStyle, FullBleedItemStyle, HeaderStyle, ImageItemStyle, ItemStyle, MultiLineItemStyle, InsetItemStyle)
+import Internal.Item
+    exposing
+        ( DividerStyle
+        , ExpansionItemStyle
+        , FullBleedItemStyle
+        , HeaderStyle
+        , ImageItemStyle
+        , InsetItemStyle
+        , ItemStyle
+        , MultiLineItemStyle
+        )
 import Internal.List exposing (ColumnStyle, RowStyle)
+import Internal.Material.AppBar as AppBar
 import Internal.Material.Button as Button
 import Internal.Material.Chip as Chip
 import Internal.Material.Dialog as Dialog
@@ -154,6 +172,7 @@ import Internal.SortTable exposing (SortTableStyle)
 import Internal.Switch exposing (SwitchStyle)
 import Internal.Tab exposing (TabStyle)
 import Internal.TextInput exposing (TextInputStyle)
+import Widget.Icon exposing (Icon)
 import Widget.Layout exposing (LayoutStyle)
 import Widget.Snackbar exposing (SnackbarStyle)
 
@@ -309,6 +328,36 @@ Technical Remark:
 chip : Palette -> ButtonStyle msg
 chip =
     Chip.chip
+
+
+
+--------------------------------------------------------------------------------
+-- APP BAR
+--------------------------------------------------------------------------------
+
+
+menuBar :
+    Palette
+    ->
+        AppBarStyle
+            { menuIcon : Icon msg
+            , title : List (Attribute msg)
+            }
+            msg
+menuBar =
+    AppBar.menuBar
+
+
+tabBar :
+    Palette
+    ->
+        AppBarStyle
+            { menuTabButton : ButtonStyle msg
+            , title : List (Attribute msg)
+            }
+            msg
+tabBar =
+    AppBar.tabBar
 
 
 

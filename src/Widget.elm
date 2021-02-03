@@ -8,7 +8,6 @@ module Widget exposing
     , RowStyle, row, buttonRow
     , ColumnStyle, column, buttonColumn
     , ItemStyle, Item
-    , InsetItemStyle, InsetItem, insetItem
     , ExpansionItemStyle, ExpansionItem, expansionItem
     , ImageItemStyle, ImageItem, imageItem
     , MultiLineItemStyle, MultiLineItem, multiLineItem
@@ -16,12 +15,13 @@ module Widget exposing
     , DividerStyle, divider
     , selectItem, asItem
     , itemList
+    , menuBar, tabBar
     , SideSheetStyle, sideSheet
     , SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInputStyle, TextInput, textInput
     , TabStyle, Tab, tab
     , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
-    , FullBleedItemStyle, fullBleedItem
+    , FullBleedItemStyle, InsetItem, InsetItemStyle, fullBleedItem, insetItem
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -122,6 +122,11 @@ You can create you own widgets by sticking widgets types together.
 @docs itemList
 
 
+# App Bar
+
+@docs menuBar, tabBar
+
+
 # Sheet
 
 @docs SideSheetStyle, sideSheet
@@ -165,8 +170,9 @@ You can create you own widgets by sticking widgets types together.
 -}
 
 import Color exposing (Color)
-import Element exposing (Attribute, Element, Length)
+import Element exposing (Attribute, DeviceClass, Element, Length)
 import Element.Input exposing (Placeholder)
+import Internal.AppBar as AppBar exposing (AppBarStyle)
 import Internal.Button as Button
 import Internal.Dialog as Dialog
 import Internal.Item as Item
@@ -1404,6 +1410,54 @@ buttonColumn :
     -> Element msg
 buttonColumn =
     List.buttonColumn
+
+
+
+--------------------------------------------------------------------------------
+-- APP BAR
+--------------------------------------------------------------------------------
+
+
+menuBar :
+    AppBarStyle
+        { menuIcon : Icon msg
+        , title : List (Attribute msg)
+        }
+        msg
+    ->
+        { title : Element msg
+        , deviceClass : DeviceClass
+        , openLeftSheet : msg
+        , openRightSheet : msg
+        , openTopSheet : msg
+        , primaryActions : List (Button msg)
+        , moreActions : List (Button msg)
+        , search : Maybe (TextInput msg)
+        }
+    -> Element msg
+menuBar =
+    AppBar.menuBar
+
+
+tabBar :
+    AppBarStyle
+        { menuTabButton : ButtonStyle msg
+        , title : List (Attribute msg)
+        }
+        msg
+    ->
+        { title : Element msg
+        , menu : Select msg
+        , deviceClass : DeviceClass
+        , openRightSheet : msg
+        , openTopSheet : msg
+        , primaryActions : List (Button msg)
+        , moreActions : List (Button msg)
+        , search : Maybe (TextInput msg)
+        }
+    -> Element msg
+tabBar =
+    AppBar.tabBar
 
 
 

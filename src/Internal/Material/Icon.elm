@@ -1,4 +1,4 @@
-module Internal.Material.Icon exposing (expand_less, expand_more, icon)
+module Internal.Material.Icon exposing (expand_less, expand_more, icon, menu, more_vert, search)
 
 import Color exposing (Color)
 import Element exposing (Element)
@@ -22,6 +22,48 @@ icon { viewBox, size, color } =
         ]
         >> Element.html
         >> Element.el []
+
+
+menu : Icon msg
+menu { size, color } =
+    icon
+        { viewBox = "0 0 48 48"
+        , size = size
+        , color = color
+        }
+        [ Svg.path
+            [ Svg.Attributes.d "M6 36h36v-4H6v4zm0-10h36v-4H6v4zm0-14v4h36v-4H6z"
+            ]
+            []
+        ]
+
+
+more_vert : Icon msg
+more_vert { size, color } =
+    icon
+        { viewBox = "0 0 48 48"
+        , size = size
+        , color = color
+        }
+        [ Svg.path
+            [ Svg.Attributes.d "M24 16c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 4c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"
+            ]
+            []
+        ]
+
+
+search : Icon msg
+search { size, color } =
+    icon
+        { viewBox = "0 0 48 48"
+        , size = size
+        , color = color
+        }
+        [ Svg.path
+            [ Svg.Attributes.d "M31 28h-1.59l-.55-.55C30.82 25.18 32 22.23 32 19c0-7.18-5.82-13-13-13S6 11.82 6 19s5.82 13 13 13c3.23 0 6.18-1.18 8.45-3.13l.55.55V31l10 9.98L40.98 38 31 28zm-12 0c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9z"
+            ]
+            []
+        ]
 
 
 expand_less : Icon msg
