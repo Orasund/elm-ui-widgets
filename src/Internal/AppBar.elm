@@ -45,18 +45,17 @@ menuBar :
     ->
         { title : Element msg
         , deviceClass : DeviceClass
-        , openLeftSheet : msg
-        , openRightSheet : msg
-        , openTopSheet : msg
+        , openLeftSheet : Maybe msg
+        , openRightSheet : Maybe msg
+        , openTopSheet : Maybe msg
         , primaryActions : List (Button msg)
-        , moreActions : List (Button msg)
         , search : Maybe (TextInput msg)
         }
     -> Element msg
 menuBar style m =
     internalNav
         [ Button.iconButton style.content.actions.content.button
-            { onPress = Just <| m.openLeftSheet
+            { onPress = m.openLeftSheet
             , icon = style.content.menu.content.menuIcon
             , text = "Menu"
             }
@@ -86,10 +85,9 @@ tabBar :
         { title : Element msg
         , menu : Select msg
         , deviceClass : DeviceClass
-        , openRightSheet : msg
-        , openTopSheet : msg
+        , openRightSheet : Maybe msg
+        , openTopSheet : Maybe msg
         , primaryActions : List (Button msg)
-        , moreActions : List (Button msg)
         , search : Maybe (TextInput msg)
         }
     -> Element msg
@@ -138,14 +136,13 @@ internalNav :
     ->
         { model
             | deviceClass : DeviceClass
-            , openRightSheet : msg
-            , openTopSheet : msg
+            , openRightSheet : Maybe msg
+            , openTopSheet : Maybe msg
             , primaryActions : List (Button msg)
-            , moreActions : List (Button msg)
             , search : Maybe (TextInput msg)
         }
     -> Element msg
-internalNav menuElements style { deviceClass, openRightSheet, openTopSheet, primaryActions, moreActions, search } =
+internalNav menuElements style { deviceClass, openRightSheet, openTopSheet, primaryActions, search } =
     [ menuElements
         |> Element.row style.content.menu.elementRow
     , if deviceClass == Phone || deviceClass == Tablet then
@@ -171,8 +168,12 @@ internalNav menuElements style { deviceClass, openRightSheet, openTopSheet, prim
             |> Maybe.map
                 (\{ label } ->
                     if deviceClass == Tablet then
-                        [ Button.button style.content.actions.content.button
-                            { onPress = Just <| openTopSheet
+                        [ Button.button 
+                            ( style.content.actions.content.button
+                            --FIX FOR ISSUE #30
+                            |> Customize.elementButton [ Element.width Element.shrink ]
+                            )
+                            { onPress = openTopSheet
                             , icon = style.content.actions.content.searchIcon
                             , text = label
                             }
@@ -180,7 +181,7 @@ internalNav menuElements style { deviceClass, openRightSheet, openTopSheet, prim
 
                     else if deviceClass == Phone then
                         [ Button.iconButton style.content.actions.content.button
-                            { onPress = Just <| openTopSheet
+                            { onPress = openTopSheet
                             , icon = style.content.actions.content.searchIcon
                             , text = label
                             }
@@ -202,16 +203,16 @@ internalNav menuElements style { deviceClass, openRightSheet, openTopSheet, prim
                             |> Customize.elementButton [ Element.width Element.shrink ]
                         )
                 )
-      , if moreActions |> List.isEmpty then
-            []
-
-        else
-            [ Button.iconButton style.content.actions.content.button
-                { onPress = Just <| openRightSheet
-                , icon = style.content.actions.content.moreVerticalIcon
-                , text = "More"
-                }
-            ]
+      , case openRightSheet of
+            Nothing ->
+                []
+            Just _ ->
+                [ Button.iconButton style.content.actions.content.button
+                    { onPress = openRightSheet
+                    , icon = style.content.actions.content.moreVerticalIcon
+                    , text = "More"
+                    }
+                ]
       ]
         |> List.concat
         |> Element.row style.content.actions.elementRow

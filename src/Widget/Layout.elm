@@ -1,5 +1,5 @@
 module Widget.Layout exposing
-    ( LayoutStyle, Layout, Part(..), init, timePassed
+    ( LayoutStyle, Layout, Part, init, timePassed
     , activate, queueMessage
     , leftSheet, rightSheet, searchSheet
     , getDeviceClass, partitionActions, orderModals
@@ -28,9 +28,6 @@ It is responsive and changes view to apply to the [material design guidelines](h
 
 
 # Views
-
-@docs menuBar, tabBar
-
 
 ## Sheets
 
@@ -205,8 +202,7 @@ leftSheet :
     , sheet : SideSheetStyle msg
     }
     ->
-        { window : { height : Int, width : Int }
-        , title : Element msg
+        { title : Element msg
         , menu : Select msg
         , onDismiss : msg
         }
@@ -347,11 +343,14 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                 AppBar.menuBar style.menuBar
                     { title = title
                     , deviceClass = deviceClass
-                    , openLeftSheet = onChangedSidebar <| Just LeftSheet
-                    , openRightSheet = onChangedSidebar <| Just RightSheet
-                    , openTopSheet = onChangedSidebar <| Just Search
+                    , openLeftSheet = Just <|onChangedSidebar <| Just LeftSheet
+                    , openRightSheet = 
+                        if moreActions |> List.isEmpty then
+                            Nothing
+                        else
+                            Just <| onChangedSidebar <| Just RightSheet
+                    , openTopSheet = Just <|onChangedSidebar <| Just Search
                     , primaryActions = primaryActions
-                    , moreActions = moreActions
                     , search = search
                     }
 
@@ -360,10 +359,13 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                     { title = title
                     , menu = menu
                     , deviceClass = deviceClass
-                    , openRightSheet = onChangedSidebar <| Just RightSheet
-                    , openTopSheet = onChangedSidebar <| Just Search
+                    , openRightSheet = 
+                        if moreActions |> List.isEmpty then
+                            Nothing
+                        else
+                            Just <| onChangedSidebar <| Just RightSheet
+                    , openTopSheet = Just <| onChangedSidebar <| Just Search
                     , primaryActions = primaryActions
-                    , moreActions = moreActions
                     , search = search
                     }
 
@@ -393,8 +395,7 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                             { button = style.sheetButton
                             , sheet = style.sheet
                             }
-                            { window = window
-                            , title = title
+                            { title = title
                             , menu = menu
                             , onDismiss = onDismiss
                             }

@@ -267,11 +267,20 @@ update msg model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.batch
+subscriptions model =
+    (
         [ Time.every 50 (always (TimePassed 50))
         , Events.onResize (\h w -> Resized { height = h, width = w })
-        ]
+        ] ++
+        ( case model of
+            Loading ->
+                []
+            Loaded {stateless} ->
+                Stateless.subscriptions stateless 
+                |> Sub.map StatelessSpecific
+                |> List.singleton
+        ))
+        |> Sub.batch
         |> Sub.map LoadedSpecific
 
 

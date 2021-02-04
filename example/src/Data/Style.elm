@@ -30,16 +30,27 @@ import Widget
         , InsetItemStyle
         , SideSheetStyle
         , FullBleedItemStyle
+        , AppBarStyle
         )
-import Widget.Icon as Icon
+import Widget.Icon as Icon exposing (Icon)
 import Widget.Layout exposing (LayoutStyle)
 import Widget.Snackbar exposing (SnackbarStyle)
 import Widget.Material as Material exposing (Palette)
+import Widget.Material.Color as MaterialColor
 
 
 style : Palette -> Style msg
 style palette =
-    { containedButton = Material.containedButton Material.defaultPalette
+    { container =
+        (Material.defaultPalette.background |> MaterialColor.textAndBackground)
+            ++ [ Font.family
+                    [ Font.typeface "Roboto"
+                    , Font.sansSerif
+                    ]
+               , Font.size 16
+               , Font.letterSpacing 0.5
+               ]
+    , containedButton = Material.containedButton Material.defaultPalette
     , outlinedButton = Material.outlinedButton Material.defaultPalette
     , textButton = Material.textButton Material.defaultPalette
     , iconButton = Material.iconButton Material.defaultPalette
@@ -70,11 +81,38 @@ style palette =
     , sideSheet = Material.sideSheet palette
     , fullBleedItem = Material.fullBleedItem Material.defaultPalette
     , selectItem = Material.selectItem Material.defaultPalette
+    , menuBar = Material.menuBar Material.defaultPalette
+    , tabBar = Material.tabBar Material.defaultPalette
+    , sheetButton = Material.selectItem Material.defaultPalette
+    , searchFill =
+        { elementRow =
+            (Material.defaultPalette.surface
+                |> MaterialColor.textAndBackground) ++
+                [ Element.height <| Element.px 56 ]
+        , content =
+            { chips =
+                { elementRow = [ Element.spacing 8 ]
+                , content = Material.chip Material.defaultPalette
+                }
+            , text =
+                { elementTextInput =
+                    (Material.defaultPalette.surface
+                        |> MaterialColor.textAndBackground
+                    )
+                        ++ [ Border.width 0
+                        , Element.mouseOver []
+                        , Element.focused []
+                        ]
+                }
+            }
+        }
+    , snackbar = Material.snackbar Material.defaultPalette
     }
 
 
 type alias Style msg =
-    { containedButton : ButtonStyle msg
+    { container : List (Attribute msg)
+    , containedButton : ButtonStyle msg
     , outlinedButton : ButtonStyle msg
     , textButton : ButtonStyle msg
     , iconButton : ButtonStyle msg
@@ -105,4 +143,19 @@ type alias Style msg =
     , sideSheet : SideSheetStyle msg
     , fullBleedItem : ItemStyle (FullBleedItemStyle msg) msg
     , selectItem : ItemStyle (ButtonStyle msg) msg
+    , menuBar : 
+        AppBarStyle
+            { menuIcon : Icon msg
+            , title : List (Attribute msg)
+            }
+            msg
+    , tabBar : 
+        AppBarStyle
+            { menuTabButton : ButtonStyle msg
+            , title : List (Attribute msg)
+            }
+            msg
+    , sheetButton : ItemStyle (ButtonStyle msg) msg
+    , searchFill : TextInputStyle msg
+    , snackbar : SnackbarStyle msg
     }

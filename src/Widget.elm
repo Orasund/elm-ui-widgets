@@ -21,7 +21,7 @@ module Widget exposing
     , TextInputStyle, TextInput, textInput
     , TabStyle, Tab, tab
     , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
-    , FullBleedItemStyle, InsetItem, InsetItemStyle, fullBleedItem, insetItem
+    , FullBleedItemStyle, InsetItem, InsetItemStyle, fullBleedItem, insetItem,AppBarStyle
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -124,7 +124,7 @@ You can create you own widgets by sticking widgets types together.
 
 # App Bar
 
-@docs menuBar, tabBar
+@docs AppBarStyle, menuBar, tabBar
 
 
 # Sheet
@@ -172,7 +172,7 @@ You can create you own widgets by sticking widgets types together.
 import Color exposing (Color)
 import Element exposing (Attribute, DeviceClass, Element, Length)
 import Element.Input exposing (Placeholder)
-import Internal.AppBar as AppBar exposing (AppBarStyle)
+import Internal.AppBar as AppBar
 import Internal.Button as Button
 import Internal.Dialog as Dialog
 import Internal.Item as Item
@@ -1417,7 +1417,31 @@ buttonColumn =
 -- APP BAR
 --------------------------------------------------------------------------------
 
+{-|-}
+type alias AppBarStyle content msg =
+    { elementRow : List (Attribute msg) 
+    , content :
+        { menu :
+            { elementRow : List (Attribute msg)
+            , content : content
+            }
+        , search : TextInputStyle msg 
+        , actions :
+            { elementRow : List (Attribute msg)
+            , content :
+                { button : ButtonStyle msg 
+                , searchIcon : Icon msg
+                , moreVerticalIcon : Icon msg
+                }
+            }
+        }
+    }
 
+{-| A app bar with a menu button on the left side.
+
+This should be the default way to display the app bar. Specially for Phone users.
+
+-}
 menuBar :
     AppBarStyle
         { menuIcon : Icon msg
@@ -1427,18 +1451,23 @@ menuBar :
     ->
         { title : Element msg
         , deviceClass : DeviceClass
-        , openLeftSheet : msg
-        , openRightSheet : msg
-        , openTopSheet : msg
+        , openLeftSheet : Maybe msg
+        , openRightSheet : Maybe msg
+        , openTopSheet : Maybe msg
         , primaryActions : List (Button msg)
-        , moreActions : List (Button msg)
         , search : Maybe (TextInput msg)
         }
     -> Element msg
 menuBar =
     AppBar.menuBar
 
+{-| A app bar with tabs instead of a menu.
 
+This is should be used for big screens.
+
+It should be avoided for smaller screens or if you have more then 4 tabs
+
+-}
 tabBar :
     AppBarStyle
         { menuTabButton : ButtonStyle msg
@@ -1449,10 +1478,9 @@ tabBar :
         { title : Element msg
         , menu : Select msg
         , deviceClass : DeviceClass
-        , openRightSheet : msg
-        , openTopSheet : msg
+        , openRightSheet : Maybe msg
+        , openTopSheet : Maybe msg
         , primaryActions : List (Button msg)
-        , moreActions : List (Button msg)
         , search : Maybe (TextInput msg)
         }
     -> Element msg

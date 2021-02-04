@@ -17,7 +17,6 @@ import Svg
 import Svg.Attributes
 import Widget.Customize as Customize
 import Widget.Icon as Icon exposing (Icon)
-import Widget.Layout exposing (LayoutStyle)
 import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
 

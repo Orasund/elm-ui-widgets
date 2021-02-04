@@ -15,9 +15,10 @@ import Example.Switch as Switch
 import Example.Tab as Tab
 import Example.TextInput as TextInput
 import Example.Sheet as Sheet
+import Example.AppBar as AppBar
 import Framework.Grid as Grid
 import View.States as States
-
+import Example.Layout as Layout
 
 type Example
     = ButtonExample
@@ -33,6 +34,8 @@ type Example
     | ProgressIndicatorExample
     | IconExample
     | SheetExample
+    | AppBarExample
+    | LayoutExample
 
 
 asList : List Example
@@ -50,6 +53,8 @@ asList =
     , ProgressIndicatorExample
     , IconExample
     , SheetExample
+    , AppBarExample
+    , LayoutExample
     ]
         |> List.sortBy toString
 
@@ -94,7 +99,10 @@ toString example =
             "Icon"
         SheetExample ->
             "Sheet"
-
+        AppBarExample ->
+            "App Bar"
+        LayoutExample ->
+            "Layout"
 
 fromString : String -> Maybe Example
 fromString string =
@@ -137,6 +145,11 @@ fromString string =
         
         "Sheet" ->
             Just SheetExample
+        "App Bar" ->
+            Just AppBarExample
+        
+        "Layout" ->
+            Just LayoutExample
 
         _ ->
             Nothing
@@ -183,6 +196,12 @@ get example =
         
         SheetExample ->
             .sheet
+        
+        AppBarExample ->
+            .appBar
+        
+        LayoutExample ->
+            .layout
 
 
 toTests : Example -> msg -> Style msg -> List ( String, Element msg )
@@ -226,6 +245,12 @@ toTests example =
         
         SheetExample ->
             States.sheet
+        
+        AppBarExample ->
+            States.appBar
+        
+        LayoutExample ->
+            States.layout
 
 
 type Msg
@@ -242,7 +267,8 @@ type Msg
     | ProgressIndicator ProgressIndicator.Msg
     | Icon Icon.Msg
     | Sheet Sheet.Msg
-
+    | AppBar AppBar.Msg
+    | Layout Layout.Msg
 
 type alias Model =
     { button : Button.Model
@@ -258,6 +284,8 @@ type alias Model =
     , progressIndicator : ProgressIndicator.Model
     , icon : Icon.Model
     , sheet : Sheet.Model
+    , appBar : AppBar.Model
+    , layout : Layout.Model
     }
 
 
@@ -284,6 +312,8 @@ type alias UpgradeCollection =
     , progressIndicator : UpgradeRecord ProgressIndicator.Model ProgressIndicator.Msg
     , icon : UpgradeRecord Icon.Model Icon.Msg
     , sheet : UpgradeRecord Sheet.Model Sheet.Msg
+    , appBar : UpgradeRecord AppBar.Model AppBar.Msg
+    , layout : UpgradeRecord Layout.Model Layout.Msg
     }
 
 
@@ -301,6 +331,8 @@ type alias ExampleView msg =
     , progressIndicator : Element msg
     , icon : Element msg
     , sheet : Element msg
+    , appBar : Element msg
+    , layout : Element msg
     }
 
 
@@ -345,6 +377,12 @@ init =
         
         ( sheetModel, sheetMsg ) =
             Sheet.init
+        
+        ( appBarModel, appBarMsg ) =
+            AppBar.init
+        
+        ( layoutModel, layoutMsg ) =
+            Layout.init
     in
     ( { button = buttonModel
       , switch = switchModel
@@ -359,6 +397,8 @@ init =
       , progressIndicator = progressIndicatorModel
       , icon = iconModel
       , sheet = sheetModel
+      , appBar = appBarModel
+      , layout = layoutModel
       }
     , [ Cmd.map Button buttonMsg
       , Cmd.map Switch switchMsg
@@ -373,6 +413,8 @@ init =
       , Cmd.map ProgressIndicator progressIndicatorMsg
       , Cmd.map Icon iconMsg
       , Cmd.map Sheet sheetMsg
+      , Cmd.map AppBar appBarMsg
+      , Cmd.map Layout layoutMsg
       ]
         |> Cmd.batch
     )
@@ -471,6 +513,20 @@ upgradeRecord =
         , updateFun = Sheet.update
         , subscriptionsFun = Sheet.subscriptions
         }
+    , appBar =
+        { from = .appBar
+        , to = \model a -> { model | appBar = a }
+        , msgMapper = AppBar
+        , updateFun = AppBar.update
+        , subscriptionsFun = AppBar.subscriptions
+        }
+    , layout =
+        { from = .layout
+        , to = \model a -> { model | layout = a }
+        , msgMapper = Layout
+        , updateFun = Layout.update
+        , subscriptionsFun = Layout.subscriptions
+        }
     }
 
 
@@ -515,6 +571,10 @@ update msg model =
         
         Sheet m ->
             updateField .sheet m
+        AppBar m ->
+            updateField .appBar m
+        Layout m ->
+            updateField .layout m
     )
         model
 
@@ -538,6 +598,8 @@ subscriptions model =
     , upgradeRecord.progressIndicator |> subFun
     , upgradeRecord.icon |> subFun
     , upgradeRecord.sheet |> subFun
+    , upgradeRecord.appBar |> subFun
+    , upgradeRecord.layout |> subFun
     ]
         |> Sub.batch
 
@@ -574,6 +636,10 @@ view msgMapper style model =
         Icon.view (Icon >> msgMapper) style (.icon model)
     , sheet =
         Sheet.view (Sheet >> msgMapper) style (.sheet model)
+    , appBar =
+        AppBar.view (AppBar >> msgMapper) style (.appBar model)
+    , layout =
+        Layout.view (Layout >> msgMapper) style (.layout model)
     }
 
 
