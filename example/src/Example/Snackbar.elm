@@ -1,11 +1,11 @@
-module Main exposing (Model, Msg, init, subscriptions, update, view)
+module Example.Snackbar exposing (Model, Msg, init, subscriptions, update, view)
 
 import Browser
 import Element exposing (Element)
 import FeatherIcons
 import Time
-import Widget exposing (ButtonStyle, ColumnStyle, RowStyle, SnackbarStyle)
-import Widget.Snackbar as Snackbar exposing (Snackbar)
+import Widget exposing (ButtonStyle, ColumnStyle, RowStyle)
+import Widget.Snackbar as Snackbar exposing (Snackbar,SnackbarStyle)
 import Widget.Material as Material
 
 
@@ -75,7 +75,7 @@ view msgMapper style model =
                         , False
                         )
         , text = "Add Notification"
-        , icon = Element.none
+        , icon = always Element.none
         }
     , Widget.button style.button
         { onPress =
@@ -86,7 +86,7 @@ view msgMapper style model =
                         , True
                         )
         , text = "Add Notification with Action"
-        , icon = Element.none
+        , icon = always Element.none
         }
     ]
         |> Widget.column style.column

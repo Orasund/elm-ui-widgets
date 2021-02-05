@@ -1,4 +1,4 @@
-module View.States exposing (button, sheet,dialog,layout, icon, list, modal,appBar, multiSelect, progressIndicator, select, sortTable, switch, tab, textInput)
+module View.States exposing (button,snackbar, sheet,dialog,layout, icon, list, modal,appBar, multiSelect, progressIndicator, select, sortTable, switch, tab, textInput)
 
 import Data.Style exposing (Style)
 import Element exposing (Element)
@@ -7,7 +7,7 @@ import Icons
 import Set
 import Widget
 import Widget.Icon as Icon
-import Widget.Layout exposing (Part(..))
+import Widget.Layout 
 
 
 button : msg -> Style msg -> List ( String, Element msg )
@@ -558,4 +558,8 @@ appBar _ style =
 
 layout : msg -> Style msg -> List ( String, Element msg )
 layout _ style =
+    []
+  
+snackbar : msg -> Style msg -> List ( String, Element msg )
+snackbar _ style =
     []

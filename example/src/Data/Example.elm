@@ -16,6 +16,7 @@ import Example.Tab as Tab
 import Example.TextInput as TextInput
 import Example.Sheet as Sheet
 import Example.AppBar as AppBar
+import Example.Snackbar as Snackbar
 import Framework.Grid as Grid
 import View.States as States
 import Example.Layout as Layout
@@ -36,6 +37,7 @@ type Example
     | SheetExample
     | AppBarExample
     | LayoutExample
+    | SnackbarExample
 
 
 asList : List Example
@@ -55,6 +57,7 @@ asList =
     , SheetExample
     , AppBarExample
     , LayoutExample
+    , SnackbarExample
     ]
         |> List.sortBy toString
 
@@ -103,6 +106,8 @@ toString example =
             "App Bar"
         LayoutExample ->
             "Layout"
+        SnackbarExample ->
+            "Snackbar"
 
 fromString : String -> Maybe Example
 fromString string =
@@ -150,6 +155,9 @@ fromString string =
         
         "Layout" ->
             Just LayoutExample
+        
+        "Snackbar" ->
+            Just SnackbarExample
 
         _ ->
             Nothing
@@ -202,6 +210,9 @@ get example =
         
         LayoutExample ->
             .layout
+        
+        SnackbarExample ->
+            .snackbar
 
 
 toTests : Example -> msg -> Style msg -> List ( String, Element msg )
@@ -251,6 +262,9 @@ toTests example =
         
         LayoutExample ->
             States.layout
+        
+        SnackbarExample ->
+            States.snackbar
 
 
 type Msg
@@ -269,6 +283,7 @@ type Msg
     | Sheet Sheet.Msg
     | AppBar AppBar.Msg
     | Layout Layout.Msg
+    | Snackbar Snackbar.Msg
 
 type alias Model =
     { button : Button.Model
@@ -286,6 +301,7 @@ type alias Model =
     , sheet : Sheet.Model
     , appBar : AppBar.Model
     , layout : Layout.Model
+    , snackbar : Snackbar.Model
     }
 
 
@@ -314,6 +330,7 @@ type alias UpgradeCollection =
     , sheet : UpgradeRecord Sheet.Model Sheet.Msg
     , appBar : UpgradeRecord AppBar.Model AppBar.Msg
     , layout : UpgradeRecord Layout.Model Layout.Msg
+    , snackbar : UpgradeRecord Snackbar.Model Snackbar.Msg
     }
 
 
@@ -333,6 +350,7 @@ type alias ExampleView msg =
     , sheet : Element msg
     , appBar : Element msg
     , layout : Element msg
+    , snackbar : Element msg
     }
 
 
@@ -383,6 +401,9 @@ init =
         
         ( layoutModel, layoutMsg ) =
             Layout.init
+        
+        ( snackbarModel, snackbarMsg ) =
+            Snackbar.init
     in
     ( { button = buttonModel
       , switch = switchModel
@@ -399,6 +420,7 @@ init =
       , sheet = sheetModel
       , appBar = appBarModel
       , layout = layoutModel
+      , snackbar = snackbarModel
       }
     , [ Cmd.map Button buttonMsg
       , Cmd.map Switch switchMsg
@@ -415,6 +437,7 @@ init =
       , Cmd.map Sheet sheetMsg
       , Cmd.map AppBar appBarMsg
       , Cmd.map Layout layoutMsg
+      , Cmd.map Snackbar snackbarMsg
       ]
         |> Cmd.batch
     )
@@ -527,6 +550,13 @@ upgradeRecord =
         , updateFun = Layout.update
         , subscriptionsFun = Layout.subscriptions
         }
+    , snackbar =
+        { from = .snackbar
+        , to = \model a -> { model | snackbar = a }
+        , msgMapper = Snackbar
+        , updateFun = Snackbar.update
+        , subscriptionsFun = Snackbar.subscriptions
+        }
     }
 
 
@@ -575,6 +605,8 @@ update msg model =
             updateField .appBar m
         Layout m ->
             updateField .layout m
+        Snackbar m ->
+            updateField .snackbar m
     )
         model
 
@@ -600,6 +632,7 @@ subscriptions model =
     , upgradeRecord.sheet |> subFun
     , upgradeRecord.appBar |> subFun
     , upgradeRecord.layout |> subFun
+    , upgradeRecord.snackbar |> subFun
     ]
         |> Sub.batch
 
@@ -640,6 +673,8 @@ view msgMapper style model =
         AppBar.view (AppBar >> msgMapper) style (.appBar model)
     , layout =
         Layout.view (Layout >> msgMapper) style (.layout model)
+    , snackbar =
+        Snackbar.view (Snackbar >> msgMapper) style (.snackbar model)
     }
 
 

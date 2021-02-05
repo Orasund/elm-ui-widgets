@@ -3,14 +3,14 @@ module Example.Sheet exposing (Model, Msg, init, subscriptions, update, view)
 import Browser
 import Element exposing (Element)
 import FeatherIcons
-import Widget exposing (ButtonStyle, SideSheetStyle,ItemStyle,HeaderStyle,InsetItemStyle)
+import Widget exposing (ButtonStyle, ColumnStyle,ItemStyle,HeaderStyle,InsetItemStyle)
 import Widget.Icon as Icon
 import Widget.Material as Material
 import Widget.Material.Typography as Typography
 
 type alias Style style msg =
     { style
-        | sideSheet : SideSheetStyle msg
+        | sideSheet : ColumnStyle msg
         , primaryButton : ButtonStyle msg
         , fullBleedHeader : ItemStyle (HeaderStyle msg) msg
         , insetItem : ItemStyle (InsetItemStyle msg) msg
@@ -100,7 +100,7 @@ view msgMapper style (IsEnabled isEnabled) =
                                         Element.none
                                 }
                             ] 
-                            |> Widget.sideSheet style.sideSheet
+                            |> Widget.itemList style.sideSheet
                         , onDismiss = Just <| msgMapper <| ToggleModal False
                         }
                         |> List.singleton

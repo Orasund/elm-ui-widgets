@@ -9,7 +9,7 @@ import Internal.Dialog as Dialog
 import Internal.Item as Item exposing (InsetItemStyle, ItemStyle)
 import Internal.Modal as Modal exposing (Modal)
 import Internal.Select as Select exposing (Select)
-import Internal.Sheet as Sheet exposing (SideSheetStyle)
+import Internal.Sheet as Sheet 
 import Internal.TextInput as TextInput exposing (TextInput, TextInputStyle)
 import Widget.Customize as Customize
 import Widget.Icon exposing (Icon)

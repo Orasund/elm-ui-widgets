@@ -8,7 +8,7 @@ module Widget.Material exposing
     , alertDialog
     , row, column
     , menuBar, tabBar
-    , sideSheet
+    , sideSheet, bottomSheet
     , fullBleedItem, insetItem, multiLineItem, imageItem, expansionItem, selectItem
     , fullBleedDivider, insetDivider, middleDivider
     , fullBleedHeader, insetHeader
@@ -88,7 +88,7 @@ Thus for now we only provide a card containing a list.
 
 # Sheet
 
-@docs sideSheet
+@docs sideSheet, bottomSheet
 
 
 # Item
@@ -161,7 +161,6 @@ import Internal.Material.Switch as Switch
 import Internal.Material.Tab as Tab
 import Internal.Material.TextInput as TextInput
 import Internal.ProgressIndicator exposing (ProgressIndicatorStyle)
-import Internal.Sheet exposing (SideSheetStyle)
 import Internal.SortTable exposing (SortTableStyle)
 import Internal.Switch exposing (SwitchStyle)
 import Internal.Tab exposing (TabStyle)
@@ -353,18 +352,6 @@ tabBar =
     AppBar.tabBar
 
 
-
-{-------------------------------------------------------------------------------
--- SHEET
--------------------------------------------------------------------------------}
-
-
-sideSheet : Palette -> SideSheetStyle msg
-sideSheet =
-    Sheet.sideSheet
-
-
-
 {-------------------------------------------------------------------------------
 -- L I S T
 -------------------------------------------------------------------------------}
@@ -383,6 +370,22 @@ column : ColumnStyle msg
 column =
     List.column
 
+{-| A side sheet. Has a maximal width of 360.
+-}
+sideSheet : Palette -> ColumnStyle msg
+sideSheet =
+    List.sideSheet
+
+{-| A bottom sheet. Has a maximal width of 360. 
+Should be align to the bottom right corner of the screen.
+-}
+bottomSheet : Palette -> ColumnStyle msg
+bottomSheet =
+    List.bottomSheet
+
+--------------------------------------------------------------------------------
+-- ITEM
+--------------------------------------------------------------------------------
 
 {-| A divider covering the full length
 -}
@@ -494,6 +497,7 @@ imageItem =
 selectItem : Palette -> ItemStyle (ButtonStyle msg) msg
 selectItem =
     Item.selectItem
+
 
 
 

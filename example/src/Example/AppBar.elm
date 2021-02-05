@@ -2,7 +2,7 @@ module Example.AppBar exposing (Model, Msg, init, subscriptions, update, view)
 
 import Browser
 import FeatherIcons
-import Widget exposing (Modal ,ItemStyle ,SideSheetStyle ,Button , TextInput ,TextInputStyle, AppBarStyle,ButtonStyle)
+import Widget exposing (Modal ,ItemStyle  ,Button , TextInput ,TextInputStyle, AppBarStyle,ButtonStyle)
 import Widget.Icon as Icon exposing (Icon)
 import Widget.Material as Material
 import Element exposing (Attribute, DeviceClass(..), Element)

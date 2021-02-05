@@ -28,7 +28,6 @@ import Widget
         , TabStyle
         , TextInputStyle
         , InsetItemStyle
-        , SideSheetStyle
         , FullBleedItemStyle
         , AppBarStyle
         )
@@ -137,7 +136,7 @@ type alias Style msg =
     , multiLineItem : ItemStyle (MultiLineItemStyle msg) msg
     , imageItem : ItemStyle (ImageItemStyle msg) msg
     , expansionItem : ExpansionItemStyle msg
-    , sideSheet : SideSheetStyle msg
+    , sideSheet : ColumnStyle msg
     , fullBleedItem : ItemStyle (FullBleedItemStyle msg) msg
     , selectItem : ItemStyle (ButtonStyle msg) msg
     , menuBar : 

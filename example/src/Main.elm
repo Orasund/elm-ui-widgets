@@ -25,7 +25,7 @@ import Task
 import Time
 import Widget exposing (Modal,TextInput)
 import Widget.Icon as Icon
-import Widget.Layout as Layout exposing (Part)
+import Widget.Layout as Layout 
 import Widget.ScrollingNav as ScrollingNav
 import Widget.Snackbar as Snackbar exposing (Message)
 import Material.Icons.Types exposing (Coloring(..))
@@ -151,13 +151,6 @@ updateLoaded msg model =
                     (Cmd.map StatelessSpecific)
 
         UpdateScrollingNav fun ->
-            let
-                _ =
-                    model.scrollingNav |> fun
-                        |> ScrollingNav.current Example.fromString
-                        |> Maybe.map Example.toString
-                        |> Debug.log "section"
-            in
             ( { model | scrollingNav = model.scrollingNav |> fun }
             , Cmd.none
             )

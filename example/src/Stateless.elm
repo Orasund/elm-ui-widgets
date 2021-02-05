@@ -3,7 +3,6 @@ module Stateless exposing (Model, Msg, init, update,subscriptions, view)
 import Data.Example as Example
 import Data.Theme as Theme exposing (Theme)
 import Element exposing (Element)
-import Widget.Layout exposing (Part(..))
 
 
 type alias Model =

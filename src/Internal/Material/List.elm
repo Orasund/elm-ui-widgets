@@ -3,6 +3,8 @@ module Internal.Material.List exposing
     , cardColumn
     , column
     , row
+    , sideSheet
+    , bottomSheet
     )
 
 import Element
@@ -144,5 +146,41 @@ cardColumn palette =
                 , bottom = 0
                 }
             ]
+        }
+    }
+
+sideSheet : Palette -> ColumnStyle msg
+sideSheet palette =
+    { elementColumn =
+        (palette.surface |> MaterialColor.textAndBackground)
+            ++ [ Element.width <| Element.maximum 360 <| Element.fill
+                , Element.height <| Element.fill
+                , Element.paddingXY 0 8
+                ]
+    , content =
+        { element = 
+            [ Element.width <| Element.fill ]
+        , ifSingleton = []
+        , ifFirst = []
+        , ifLast = []
+        , otherwise = []
+        }
+    }
+
+bottomSheet : Palette -> ColumnStyle msg
+bottomSheet palette =
+    { elementColumn =
+        (palette.surface |> MaterialColor.textAndBackground)
+            ++ [ Element.height <| Element.fill
+                , Element.width <| Element.maximum 360 <| Element.fill
+                , Element.paddingXY 0 8
+                ]
+    , content =
+        { element = 
+            [ Element.width <| Element.fill ]
+        , ifSingleton = []
+        , ifFirst = []
+        , ifLast = []
+        , otherwise = []
         }
     }

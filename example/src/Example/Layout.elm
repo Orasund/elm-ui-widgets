@@ -5,7 +5,7 @@ import Element exposing (Element,Attribute,DeviceClass(..))
 import FeatherIcons
 import Widget exposing (TextInputStyle ,TextInput
     ,Dialog,DialogStyle,ColumnStyle
-    ,ButtonStyle,Modal,AppBarStyle, SideSheetStyle,ItemStyle,HeaderStyle,InsetItemStyle)
+    ,ButtonStyle,Modal,AppBarStyle,ItemStyle,HeaderStyle,InsetItemStyle)
 import Widget.Icon as Icon exposing (Icon)
 import Widget.Material as Material
 import Widget.Material.Typography as Typography
@@ -29,7 +29,7 @@ type alias Style style msg =
     { style
     | container : List (Attribute msg)
     , snackbar : SnackbarStyle msg
-    , sideSheet : SideSheetStyle msg
+    , sideSheet : ColumnStyle msg
     , sheetButton : ItemStyle (ButtonStyle msg) msg
     , searchFill : TextInputStyle msg
     , insetItem : ItemStyle (InsetItemStyle msg) msg

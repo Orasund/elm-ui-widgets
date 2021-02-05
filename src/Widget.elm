@@ -16,7 +16,6 @@ module Widget exposing
     , selectItem, asItem
     , itemList
     , menuBar, tabBar
-    , SideSheetStyle, sideSheet
     , SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInputStyle, TextInput, textInput
     , TabStyle, Tab, tab
@@ -125,11 +124,6 @@ You can create you own widgets by sticking widgets types together.
 # App Bar
 
 @docs AppBarStyle, menuBar, tabBar
-
-
-# Sheet
-
-@docs SideSheetStyle, sideSheet
 
 
 # Sort Table
@@ -1487,24 +1481,6 @@ tabBar :
 tabBar =
     AppBar.tabBar
 
-
-
---------------------------------------------------------------------------------
--- SHEET
---------------------------------------------------------------------------------
-
-
-type alias SideSheetStyle msg =
-    { element : List (Attribute msg)
-    , content : ColumnStyle msg
-    }
-
-
-{-| A sheet is similar to
--}
-sideSheet : SideSheetStyle msg -> List (Item msg) -> Element msg
-sideSheet =
-    Sheet.sideSheet
 
 
 
