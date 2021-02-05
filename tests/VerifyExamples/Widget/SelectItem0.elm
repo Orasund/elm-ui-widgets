@@ -7,8 +7,6 @@ import Test
 import Expect
 
 import Widget exposing (..)
-import Element.Font as Font
-import Widget.Material.Color as MaterialColor
 import Widget.Material as Material
 import Element
 

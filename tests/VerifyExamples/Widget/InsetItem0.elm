@@ -18,7 +18,7 @@ import Element
 
 spec0 : Test.Test
 spec0 =
-    Test.test "#insetItem: \n\n    [ Widget.insetItem (Material.insetItem Material.defaultPalette)\n        { onPress = Nothing\n        , icon = always Element.none\n        , text = \"Item\"\n        , content =\n            \\{ size, color } ->\n                Element.none\n        }\n    , Widget.divider (Material.insetDivider Material.defaultPalette )\n    , Widget.insetItem (Material.insetItem Material.defaultPalette)\n        { onPress = Nothing\n        , icon = always Element.none\n        , text = \"Item\"\n        , content =\n            \\{ size, color } ->\n                Element.none\n        }\n    ]\n        |> Widget.itemList (Material.cardColumn Material.defaultPalette)\n        |> always \"Ignore this line\"\n    --> \"Ignore this line\"" <|
+    Test.test "#insetItem: \n\n    [ Widget.insetItem (Material.insetItem Material.defaultPalette)\n        { onPress = Nothing\n        , icon = always Element.none\n        , text = \"Item\"\n        , content = always Element.none\n        }\n    , Widget.divider (Material.insetDivider Material.defaultPalette )\n    , Widget.insetItem (Material.insetItem Material.defaultPalette)\n        { onPress = Nothing\n        , icon = always Element.none\n        , text = \"Item\"\n        , content = always Element.none\n        }\n    ]\n        |> Widget.itemList (Material.cardColumn Material.defaultPalette)\n        |> always \"Ignore this line\"\n    --> \"Ignore this line\"" <|
         \() ->
             Expect.equal
                 (
@@ -26,18 +26,14 @@ spec0 =
                     { onPress = Nothing
                     , icon = always Element.none
                     , text = "Item"
-                    , content =
-                        \{ size, color } ->
-                            Element.none
+                    , content = always Element.none
                     }
                 , Widget.divider (Material.insetDivider Material.defaultPalette )
                 , Widget.insetItem (Material.insetItem Material.defaultPalette)
                     { onPress = Nothing
                     , icon = always Element.none
                     , text = "Item"
-                    , content =
-                        \{ size, color } ->
-                            Element.none
+                    , content = always Element.none
                     }
                 ]
                     |> Widget.itemList (Material.cardColumn Material.defaultPalette)
