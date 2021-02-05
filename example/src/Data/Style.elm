@@ -33,7 +33,6 @@ import Widget
         , AppBarStyle
         )
 import Widget.Icon as Icon exposing (Icon)
-import Widget.Layout exposing (LayoutStyle)
 import Widget.Snackbar exposing (SnackbarStyle)
 import Widget.Material as Material exposing (Palette)
 import Widget.Material.Color as MaterialColor
@@ -67,7 +66,6 @@ style palette =
     , chipButton = Material.chip palette
     , dialog = Material.alertDialog palette
     , progressIndicator = Material.progressIndicator palette
-    , layout = Material.layout palette
     , switch = Material.switch palette
     , fullBleedDivider = Material.fullBleedDivider palette
     , insetDivider = Material.insetDivider palette
@@ -130,7 +128,6 @@ type alias Style msg =
     , sortTable : SortTableStyle msg
     , selectButton : ButtonStyle msg
     , progressIndicator : ProgressIndicatorStyle msg
-    , layout : LayoutStyle msg
     , insetDivider : ItemStyle (DividerStyle msg) msg
     , middleDivider : ItemStyle (DividerStyle msg) msg
     , fullBleedDivider : ItemStyle (DividerStyle msg) msg

@@ -36,7 +36,7 @@ snackbar style addSnackbar =
     )
 
 
-scrollingNavCard : Style msg -> ( String, Element msg, List (Element msg) )
+{--scrollingNavCard : Style msg -> ( String, Element msg, List (Element msg) )
 scrollingNavCard _ =
     ( "Scrolling Nav"
     , Element.text "Resize the screen and open the side-menu. Then start scrolling to see the scrolling navigation in action."
@@ -44,17 +44,7 @@ scrollingNavCard _ =
         |> Element.paragraph []
     , []
     )
-
-
-layout : Style msg -> ( String, Element msg, List (Element msg) )
-layout _ =
-    ( "Layout"
-    , Element.text "The layout combines the menu bar, both side bar, the dialog window and the snackbar. Try using all of them and also try resizing the window to see how they interact with each other."
-        |> List.singleton
-        |> Element.paragraph []
-    , []
-    )
-
+-}
 
 view :
     { theme : Theme
@@ -74,7 +64,6 @@ view { theme, addSnackbar } =
     , description = "Reusable views have an internal state but no update function. You will need to do some wiring, but nothing complicated."
     , items =
         [ snackbar style addSnackbar
-        , scrollingNavCard style
-        , layout style
+        --, scrollingNavCard style
         ]
     }

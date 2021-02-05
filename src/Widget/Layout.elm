@@ -1,5 +1,5 @@
 module Widget.Layout exposing
-    ( LayoutStyle, Layout, Part, init, timePassed
+    ( Part, timePassed
     , activate, queueMessage
     , leftSheet, rightSheet, searchSheet
     , getDeviceClass, partitionActions, orderModals
@@ -19,7 +19,7 @@ It is responsive and changes view to apply to the [material design guidelines](h
 
 # Basics
 
-@docs LayoutStyle, Layout, Part, init, timePassed
+@docs Layout, Part, timePassed
 
 
 # Actions
@@ -28,6 +28,7 @@ It is responsive and changes view to apply to the [material design guidelines](h
 
 
 # Views
+
 
 ## Sheets
 
@@ -95,15 +96,6 @@ type Part
 type alias Layout msg =
     { snackbar : Snackbar.Snackbar (Message msg)
     , active : Maybe Part
-    }
-
-
-{-| The initial state of the layout
--}
-init : Layout msg
-init =
-    { snackbar = Snackbar.init
-    , active = Nothing
     }
 
 
@@ -343,13 +335,14 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                 AppBar.menuBar style.menuBar
                     { title = title
                     , deviceClass = deviceClass
-                    , openLeftSheet = Just <|onChangedSidebar <| Just LeftSheet
-                    , openRightSheet = 
+                    , openLeftSheet = Just <| onChangedSidebar <| Just LeftSheet
+                    , openRightSheet =
                         if moreActions |> List.isEmpty then
                             Nothing
+
                         else
                             Just <| onChangedSidebar <| Just RightSheet
-                    , openTopSheet = Just <|onChangedSidebar <| Just Search
+                    , openTopSheet = Just <| onChangedSidebar <| Just Search
                     , primaryActions = primaryActions
                     , search = search
                     }
@@ -359,9 +352,10 @@ view style { search, title, onChangedSidebar, menu, actions, window, dialog, lay
                     { title = title
                     , menu = menu
                     , deviceClass = deviceClass
-                    , openRightSheet = 
+                    , openRightSheet =
                         if moreActions |> List.isEmpty then
                             Nothing
+
                         else
                             Just <| onChangedSidebar <| Just RightSheet
                     , openTopSheet = Just <| onChangedSidebar <| Just Search

@@ -16,7 +16,6 @@ module Widget.Material exposing
     , sortTable
     , snackbar
     , tab, tabButton
-    , layout
     )
 
 {-| ![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
@@ -122,10 +121,6 @@ You way want to use special items to visually organize the content of your list.
 @docs tab, tabButton
 
 
-# Layout
-
-@docs layout
-
 
 # Advanced
 
@@ -156,7 +151,6 @@ import Internal.Material.Button as Button
 import Internal.Material.Chip as Chip
 import Internal.Material.Dialog as Dialog
 import Internal.Material.Item as Item
-import Internal.Material.Layout as Layout
 import Internal.Material.List as List
 import Internal.Material.Palette as Palette
 import Internal.Material.ProgressIndicator as ProgressIndicator
@@ -173,7 +167,6 @@ import Internal.Switch exposing (SwitchStyle)
 import Internal.Tab exposing (TabStyle)
 import Internal.TextInput exposing (TextInputStyle)
 import Widget.Icon exposing (Icon)
-import Widget.Layout exposing (LayoutStyle)
 import Widget.Snackbar exposing (SnackbarStyle)
 
 
@@ -604,31 +597,3 @@ tabButton =
 tab : Palette -> TabStyle msg
 tab =
     Tab.tab
-
-
-
-{-------------------------------------------------------------------------------
--- L A Y O U T
--------------------------------------------------------------------------------}
-
-
-{-| The Layout Widget combines the following Material design concepts:
-
-  - Top bar
-  - Navigation drawer
-  - Side Sheet
-  - Dialog
-  - Snackbar
-
-Future updates might try to seperate them into there own widgets.
-But for now they are only available as an all-in-one solution.
-
-Technical Remark:
-
-  - The Icons are taken from [danmarcab/material-icons](https://dark.elm.dmy.fr/packages/danmarcab/material-icons/latest/).
-  - The drawer button as not taken from the specification (This will been to be added later)
-
--}
-layout : Palette -> LayoutStyle msg
-layout =
-    Layout.layout

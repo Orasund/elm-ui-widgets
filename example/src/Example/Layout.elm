@@ -18,6 +18,7 @@ import Element.Border as Border
 import Material.Icons.Types exposing (Coloring(..))
 import Material.Icons
 import Widget.Customize as Customize
+import Time
 
 type Part
     = LeftSheet
@@ -110,6 +111,7 @@ type Msg
     | AddSnackbar
     | ShowDialog Bool
     | SetSearchText String
+    | TimePassed Int
 
 
 init : ( Model, Cmd Msg )
@@ -151,10 +153,28 @@ update msg model =
             ( { model | searchText = maybeString}
             , Cmd.none
             )
+        TimePassed sec ->
+            ( case model.active of
+                Just LeftSheet ->
+                    model
+
+                Just RightSheet ->
+                    model
+
+                _ ->
+                    { model
+                        | snackbar = model.snackbar |> Snackbar.timePassed sec
+                    }
+            , Cmd.none
+            )
+            
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Events.onResize (\h w -> Resized { height = h, width = w })
+    Sub.batch
+        [ Events.onResize (\h w -> Resized { height = h, width = w })
+        , Time.every 50 (always (TimePassed 50))
+        ]
 
 {-| You can remove the msgMapper. But by doing so, make sure to also change `msg` to `Msg` in the line below.
 -}
@@ -233,6 +253,7 @@ view msgMapper style {snackbar,searchText,selected, window, showDialog, active }
             if
                 (deviceClass == Phone)
                     || (deviceClass == Tablet)
+                    || (menu.options |> List.length) > 5
             then
                 Widget.menuBar style.menuBar
                     { title = title
@@ -247,18 +268,7 @@ view msgMapper style {snackbar,searchText,selected, window, showDialog, active }
             else
                 Widget.tabBar style.tabBar
                     { title = title
-                    , menu =
-                      { selected = Just selected
-                      , options =
-                          [ "Home", "About" ]
-                              |> List.map
-                                  (\string ->
-                                      { text = string
-                                      , icon = always Element.none
-                                      }
-                                  )
-                      , onSelect = SetSelected >> msgMapper >> Just
-                      }
+                    , menu = menu
                     , deviceClass = deviceClass
                     , openRightSheet = Just <|msgMapper <| ChangedSidebar <| Just RightSheet
                     , openTopSheet = Nothing
