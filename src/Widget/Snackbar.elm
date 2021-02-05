@@ -7,8 +7,6 @@ module Widget.Snackbar exposing
 
 A [snackbar](https://material.io/components/snackbars/) shows notification, one at a time.
 
-[Open in Ellie](https://ellie-app.com/9pz7FqhVW83a1)
-
 
 # Basics
 

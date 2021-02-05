@@ -18,9 +18,7 @@ module Widget.Material exposing
     , tab, tabButton
     )
 
-{-| ![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
-
-This module implements a Material design theme for all widgets.
+{-| This module implements a Material design theme for all widgets.
 
 The stylings are following [the official Material Design guidelines](https://material.io/components) as close as possible.
 Please use these widgets in combination with the official guidelines.
@@ -30,7 +28,7 @@ Its recommended to use a font size of 16px width and the [Roboto Font](https://f
 
 The style are not opaque, so you can change every styling to your needs.
 
-If you have any suggestions or improvements, be sure to leave a PR or a Issue over at the github repos.
+If you have any suggestions or improvements, be sure to leave a [PR or a Issue](https://github.com/Orasund/elm-ui-widgets/issues) over at the github repos.
 
 
 # Palette
@@ -48,7 +46,6 @@ Different styles for buttons have different meanings.
     Use `containedButton` for **the most** important action of the group.
 
 @docs containedButton, outlinedButton, textButton
-
 @docs iconButton, toggleButton, buttonRow
 
 
@@ -119,12 +116,6 @@ You way want to use special items to visually organize the content of your list.
 # Tab
 
 @docs tab, tabButton
-
-
-# Advanced
-
-To create your own Material Widgets, here are all internal functions.
-Note that you might want to checkout the [file on GitHub](https://github.com/Orasund/elm-ui-widgets/blob/master/src/Widget/Style/Material.elm) if you want to tweak some internal behaviour.
 
 -}
 
@@ -227,6 +218,9 @@ darkPalette =
 
 
 {-| A contained button representing the most important action of a group.
+
+![containedButton](https://orasund.github.io/elm-ui-widgets/assets/material/containedButton.png)
+
 -}
 containedButton : Palette -> ButtonStyle msg
 containedButton =
@@ -234,6 +228,9 @@ containedButton =
 
 
 {-| A outlined button representing an important action within a group.
+
+![outlinedButton](https://orasund.github.io/elm-ui-widgets/assets/material/outlinedButton.png)
+
 -}
 outlinedButton : Palette -> ButtonStyle msg
 outlinedButton =
@@ -241,6 +238,9 @@ outlinedButton =
 
 
 {-| A text button representing a simple action within a group.
+
+![textButton](https://orasund.github.io/elm-ui-widgets/assets/material/textButton.png)
+
 -}
 textButton : Palette -> ButtonStyle msg
 textButton =
@@ -250,6 +250,8 @@ textButton =
 {-| A ToggleButton. Only use as a group in combination with `buttonRow`.
 
 Toggle buttons should only be used with the `iconButton` widget, else use chips instead.
+
+![toggleButton](https://orasund.github.io/elm-ui-widgets/assets/material/toggleButton.png)
 
 Technical Remark:
 
@@ -264,6 +266,8 @@ toggleButton =
 
 
 {-| An single selectable icon.
+
+![iconButton](https://orasund.github.io/elm-ui-widgets/assets/material/iconButton.png)
 
 Technical Remark:
 
@@ -282,6 +286,8 @@ iconButton =
 
 
 {-| A boolean switch
+
+![switch](https://orasund.github.io/elm-ui-widgets/assets/material/switch.png)
 
 Technical Remark:
 
@@ -309,6 +315,8 @@ In the [official documentation](https://material.io/components/chips#types) chip
   - **Filter Chips** are used for selecting multiple options. They typically have a done-icon when selected.
   - **Action chips** are like button. Make sure to include an icon when using action chips.
 
+![chip](https://orasund.github.io/elm-ui-widgets/assets/material/chip.png)
+
 Technical Remark:
 
   - Desided against the implementation of an outlined chip.
@@ -326,6 +334,11 @@ chip =
 --------------------------------------------------------------------------------
 
 
+{-| An app bar with a menu on the left side
+
+![menuBar](https://orasund.github.io/elm-ui-widgets/assets/material/menuBar.png)
+
+-}
 menuBar :
     Palette
     ->
@@ -338,6 +351,11 @@ menuBar =
     AppBar.menuBar
 
 
+{-| An app bar with tabs instead of a menu
+
+![tabBar](https://orasund.github.io/elm-ui-widgets/assets/material/tabBar.png)
+
+-}
 tabBar :
     Palette
     ->
@@ -371,6 +389,9 @@ column =
 
 
 {-| A side sheet. Has a maximal width of 360.
+
+![sideSheet](https://orasund.github.io/elm-ui-widgets/assets/material/sideSheet.png)
+
 -}
 sideSheet : Palette -> ColumnStyle msg
 sideSheet =
@@ -392,6 +413,9 @@ bottomSheet =
 
 
 {-| A divider covering the full length
+
+![fullBleedDivider](https://orasund.github.io/elm-ui-widgets/assets/material/fullBleedDivider.png)
+
 -}
 fullBleedDivider : Palette -> ItemStyle (DividerStyle msg) msg
 fullBleedDivider =
@@ -399,6 +423,9 @@ fullBleedDivider =
 
 
 {-| A divider covering only parts of the width
+
+![insetDivider](https://orasund.github.io/elm-ui-widgets/assets/material/insetDivider.png)
+
 -}
 insetDivider : Palette -> ItemStyle (DividerStyle msg) msg
 insetDivider =
@@ -406,6 +433,9 @@ insetDivider =
 
 
 {-| A divider in the center
+
+![middleDivider](https://orasund.github.io/elm-ui-widgets/assets/material/middleDivider.png)
+
 -}
 middleDivider : Palette -> ItemStyle (DividerStyle msg) msg
 middleDivider =
@@ -413,6 +443,9 @@ middleDivider =
 
 
 {-| A header of a section of a list. Comes with a inset divider.
+
+![insetHeader](https://orasund.github.io/elm-ui-widgets/assets/material/insetHeader.png)
+
 -}
 insetHeader : Palette -> ItemStyle (HeaderStyle msg) msg
 insetHeader =
@@ -420,6 +453,9 @@ insetHeader =
 
 
 {-| A header of a section of a list. Comes with a full bleed divider.
+
+![fullBleedHeader](https://orasund.github.io/elm-ui-widgets/assets/material/fullBleedHeader.png)
+
 -}
 fullBleedHeader : Palette -> ItemStyle (HeaderStyle msg) msg
 fullBleedHeader =
@@ -427,6 +463,8 @@ fullBleedHeader =
 
 
 {-| An expandable item.
+
+![expansionItem](https://orasund.github.io/elm-ui-widgets/assets/material/expansionItem.png)
 
 Technical Remarks:
 
@@ -442,6 +480,8 @@ expansionItem =
 
 Only use in combination with `toggleButton`
 
+![buttonRow](https://orasund.github.io/elm-ui-widgets/assets/material/buttonRow.png)
+
 -}
 buttonRow : RowStyle msg
 buttonRow =
@@ -449,6 +489,8 @@ buttonRow =
 
 
 {-| A List styled like a card.
+
+![cardColumn](https://orasund.github.io/elm-ui-widgets/assets/material/cardColumn.png)
 
 Technical Remark:
 
@@ -461,6 +503,11 @@ cardColumn =
     List.cardColumn
 
 
+{-| A basic item containg some text, a button. Spans the full width.
+
+![fullBleedItem](https://orasund.github.io/elm-ui-widgets/assets/material/fullBleedItem.png)
+
+-}
 fullBleedItem : Palette -> ItemStyle (FullBleedItemStyle msg) msg
 fullBleedItem =
     Item.fullBleedItem
@@ -468,10 +515,7 @@ fullBleedItem =
 
 {-| A basic item containg some text, a button and some additional information.
 
-Technical Remark:
-
-There are some conflicting informations about the height of an element in the [Specification](https://material.io/components/lists#specs).
-A normal item should be 48 height, but a item with an icon should be 56. This is confusing, because a normal item can also have an additional icon that is the same size.
+![insetItem](https://orasund.github.io/elm-ui-widgets/assets/material/insetItem.png)
 
 -}
 insetItem : Palette -> ItemStyle (InsetItemStyle msg) msg
@@ -480,6 +524,9 @@ insetItem =
 
 
 {-| A text item allowing for more text.
+
+![multiLineItem](https://orasund.github.io/elm-ui-widgets/assets/material/multiLineItem.png)
+
 -}
 multiLineItem : Palette -> ItemStyle (MultiLineItemStyle msg) msg
 multiLineItem =
@@ -490,6 +537,8 @@ multiLineItem =
 
 If the image is bigger then 40x40, the size of the item will change.
 
+![imageItem](https://orasund.github.io/elm-ui-widgets/assets/material/imageItem.png)
+
 -}
 imageItem : Palette -> ItemStyle (ImageItemStyle msg) msg
 imageItem =
@@ -497,6 +546,9 @@ imageItem =
 
 
 {-| Displays a selection. This should be combined with Widget.selectItem
+
+![selectItem](https://orasund.github.io/elm-ui-widgets/assets/material/selectItem.png)
+
 -}
 selectItem : Palette -> ItemStyle (ButtonStyle msg) msg
 selectItem =
@@ -510,6 +562,9 @@ selectItem =
 
 
 {-| An alert dialog for important decisions. Use a snackbar for less important notification.
+
+![alertDialog](https://orasund.github.io/elm-ui-widgets/assets/material/alertDialog.png)
+
 -}
 alertDialog : Palette -> DialogStyle msg
 alertDialog =
@@ -523,6 +578,9 @@ alertDialog =
 
 
 {-| A circular progress indicator
+
+![progressIndicator](https://orasund.github.io/elm-ui-widgets/assets/material/progressIndicator.png)
+
 -}
 progressIndicator : Palette -> ProgressIndicatorStyle msg
 progressIndicator =
@@ -536,6 +594,9 @@ progressIndicator =
 
 
 {-| A sortable table
+
+![sortTable](https://orasund.github.io/elm-ui-widgets/assets/material/sortTable.png)
+
 -}
 sortTable : Palette -> SortTableStyle msg
 sortTable =
@@ -549,6 +610,8 @@ sortTable =
 
 
 {-| A typical snackbar
+
+![snackbar](https://orasund.github.io/elm-ui-widgets/assets/material/snackbar.png)
 
 Technical Remark:
 
@@ -569,6 +632,8 @@ snackbar =
 
 {-| A text input style that is included only to support input chips.
 
+![textInput](https://orasund.github.io/elm-ui-widgets/assets/material/textInput.png)
+
 Technical Remark:
 
   - This is just a temporary implementation. It will soon be replaced with the official implementation.
@@ -587,6 +652,8 @@ textInput =
 
 {-| A single Tab button.
 
+![tabButton](https://orasund.github.io/elm-ui-widgets/assets/material/tabButton.png)
+
 Technical Remark:
 
   - The official specification states that the background color should be the surface color,
@@ -600,6 +667,9 @@ tabButton =
 
 
 {-| A Tab bar meant for only the upper most level. Do not use a tab within a tab.
+
+![tab](https://orasund.github.io/elm-ui-widgets/assets/material/tab.png)
+
 -}
 tab : Palette -> TabStyle msg
 tab =

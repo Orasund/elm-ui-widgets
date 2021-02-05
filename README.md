@@ -2,25 +2,33 @@
 
 This package contains **independent** widgets (no components) written for [Elm-Ui](https://package.elm-lang.org/packages/mdgriffith/elm-ui/latest/). These widgets have no dependencies to other parts of this package. So you can just use as much as you need.
 
-* It also supports custom themes and has a material design theme already ready to use.
 * [Examples of all widgets can be found here](https://orasund.github.io/elm-ui-widgets/3.0.0/).
-* It is highly customizable. Checkout [Widget.Customize](https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/Widget-Customize) for more information.
+* It has a [Material Design Theme](/Widget-Material) ready to use. Additionally it also supports custom themes.
+* It is highly customizable. Checkout [Widget.Customize](/Widget-Customize) for more information.
 
 Feel free to start an [issue on the repository](https://github.com/Orasund/elm-ui-widgets/issues) if you have any questions.
 
-![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)
+[![Example using the Material Design style](https://orasund.github.io/elm-ui-widgets/assets/material-style.png)](https://orasund.github.io/elm-ui-widgets/3.0.0/)
 
-## Summary
+## Table of Contents
 
-* Each widget comes with a _Widget Type_ and a _Style Type_. The Widget Type is an abstract representation of the widget and the Style Type has all styling attributes.
-* Widget Types can be used as building Blocks for more complicated Widgets
-   (Button -> Select Buttons -> Menu -> Layout)
+* [Example](#example)
+  * [Style Type](#style-type)
+  * [Styles](#styles)
+* [Reusable Views vs. Components](#reusable-views-vs-components)
+* [Alternatives](#alternatives)
+* [Motivation](#motivation)
+* [Changelog](#changelog)
 
 ## Example
 
-Let's look at the button widget.
+Each widget comes with a _Widget Type_ and a _Style Type_.
+* The Widget Type is an abstract representation of the widget. They can be used as building Blocks for more complicated Widgets.
+* Style Type has all styling attributes (similar to Element.Attribute).
 
-** Style Type**
+As example, consider the button widget.
+
+### Style Type
 
 ```elm
 button: ButtonStyle msg
@@ -32,10 +40,10 @@ button: ButtonStyle msg
     -> Element msg
 ```
 
-In comparison to Elm-Ui's button, we see  that `List (Attribute msg)` has changed into a _Style Type_. Furthermore, the Style type mirrors the implementation. `element` corresponds to `Element.element`, `elementRow` corresponds to `Element.row` and so on.
+In comparison to Elm-Ui's button, we see  that `List (Attribute msg)` has changed into a _Style Type_. If we look into the Style type, we see that it mirrors the implementation.
   ```
   type alias ButtonStyle msg =
-      { element : List (Attribute msg)
+      { elementButton : List (Attribute msg)
       , ifDisabled : List (Attribute msg)
       , ifActive : List (Attribute msg)
       , otherwise : List (Attribute msg)
@@ -50,40 +58,50 @@ In comparison to Elm-Ui's button, we see  that `List (Attribute msg)` has change
       }
   ```
 
-** Style Implementation **
+ So the resulting Elm-Ui code looks like this:
+
+ ```
+ button style { onPress, text, icon } =
+    Input.button
+        (style.elementButton
+            ++ (if onPress == Nothing then
+                    style.ifDisabled
+
+                else
+                    style.otherwise
+                )
+        )
+        { onPress = onPress
+        , label =
+            Element.row style.content.elementRow
+                [ icon
+                    (if onPress == Nothing then
+                        style.content.content.icon.ifDisabled
+
+                        else
+                        style.content.content.icon.otherwise
+                    )
+                , Element.text text |> Element.el style.content.content.text.contentText
+                ]
+        }
+ ```
+
+### Styles
 
 For actually displaying the button we have a few different implementations:
 
 ``` elm
-{-| Button with only an icon and no text -}
-iconButton :
-    ButtonStyle msg
-    ->
-        { text : String --for screen readers
-        , icon : Icon
-        , onPress : Maybe msg
-        }
-    -> Element msg
+containedButton : Palette -> ButtonStyle msg
+containedButton =
+    Button.containedButton
 
-{-| Button with a text but no icon -}
-textButton :
-    ButtonStyle msg
-    ->
-        { textButton
-            | text : String
-            , onPress : Maybe msg
-        }
-    -> Element msg
+outlinedButton : Palette -> ButtonStyle msg
+outlinedButton =
+    Button.outlinedButton
 
-{-| Button with both icon and text -}
-button :
-    ButtonStyle msg
-    ->
-        { text : String
-        , icon : Icon
-        , onPress : Maybe msg
-        }
-    -> Element msg
+textButton : Palette -> ButtonStyle msg
+textButton =
+    Button.textButton
 ```
 
 ** Widget Type **
@@ -126,7 +144,7 @@ Checkout the examples in [Widget](https://package.elm-lang.org/packages/Orasund/
 ## Reusable Views vs. Components
 
 In Elm we like to use reusable views instead of components.
-At first this packages had a few components, but they where more complicated in comparison. They got slowly turned into reusable views one by one. Most could be reduced even further into _view functions_: Reusable views without a model. All function in [Widget](https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/Widget) are view functions.
+At first this packages had a few components, but they where more complicated in comparison. They got slowly turned into reusable views one by one. Most have been reduced even further into _view functions_: Reusable views without a model. All function in [Widget](https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/Widget) are view functions.
 
 ## Alternatives
 

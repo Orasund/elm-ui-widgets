@@ -20,21 +20,6 @@ module Widget.Customize exposing
     {- Make a button fill the full width -}
     Widget.textButton
       ( Material.containedButton
-        |> (\record ->
-             { record
-             | element = record.element ++ [Element.width Element.fill]
-             }
-           )
-      )
-      { onPress = Just PressedButton
-      , text = "Press Button"
-      }
-
-This module will contain helpfull functions to make customization easier.
-
-    {- Make a button fill the full width -}
-    Widget.textButton
-      ( Material.containedButton
         |> Customize.element [Element.width Element.fill]
       )
       { onPress = Just PressedButton

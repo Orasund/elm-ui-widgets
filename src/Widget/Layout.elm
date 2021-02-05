@@ -13,8 +13,12 @@ module Widget.Layout exposing
 
 It is responsive and changes view to apply to the [material design guidelines](https://material.io/components/app-bars-top).
 
+![Layout](https://orasund.github.io/elm-ui-widgets/assets/layout.png)
+
 
 # Sheets
+
+![Sheet](https://orasund.github.io/elm-ui-widgets/assets/sheet.png)
 
 @docs leftSheet, rightSheet, searchSheet
 
@@ -35,9 +39,9 @@ import Internal.TextInput as TextInput exposing (TextInput, TextInputStyle)
 import Widget.Customize as Customize
 
 
-{-| obtain the Device Calss from a given window.
+{-| Obtain the device class from a given window.
 
-Checkout Element.classifyDevice for more information.
+Checkout [Element.classifyDevice](https://package.elm-lang.org/packages/mdgriffith/elm-ui/latest/Element#classifyDevice) for more information.
 
 -}
 getDeviceClass : { height : Int, width : Int } -> DeviceClass
@@ -47,7 +51,7 @@ getDeviceClass window =
         |> .class
 
 
-{-| partitions actions into primary and additional actions.
+{-| Partitions actions into primary and additional actions.
 
 It is intended to hide the additional actions in a side menu.
 
@@ -175,7 +179,12 @@ searchSheet style { onDismiss, search } =
 {-| Material design only allows one element at a time to be visible as modal.
 
 The order from most important to least important is as follows:
-dialog -> top sheet -> bottom sheet -> left sheet -> right sheet
+
+1.  dialog
+2.  top sheet
+3.  bottom sheet
+4.  left sheet
+5.  right sheet
 
 -}
 orderModals :

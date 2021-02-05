@@ -8,6 +8,8 @@ module Widget exposing
     , RowStyle, row, buttonRow
     , ColumnStyle, column, buttonColumn
     , ItemStyle, Item
+    , FullBleedItemStyle, fullBleedItem
+    , InsetItem, InsetItemStyle, insetItem
     , ExpansionItemStyle, ExpansionItem, expansionItem
     , ImageItemStyle, ImageItem, imageItem
     , MultiLineItemStyle, MultiLineItem, multiLineItem
@@ -20,12 +22,9 @@ module Widget exposing
     , TextInputStyle, TextInput, textInput
     , TabStyle, Tab, tab
     , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
-    , FullBleedItemStyle, InsetItem, InsetItemStyle, fullBleedItem, insetItem
     )
 
 {-| This module contains different stateless view functions. No wiring required.
-
-These widgets should be used by defining the styling seperately:
 
     Widget.button Material.primaryButton
         { text = "disable me"
@@ -52,12 +51,12 @@ You can create you own widgets by sticking widgets types together.
 
 ![Button](https://orasund.github.io/elm-ui-widgets/assets/button.png)
 
-[Open in Ellie](https://ellie-app.com/9p5QGZ3hgPLa1)
-
 @docs ButtonStyle, Button, TextButton, iconButton, textButton, button
 
 
 # Switch
+
+![Switch](https://orasund.github.io/elm-ui-widgets/assets/switch.png)
 
 @docs SwitchStyle, Switch, switch
 
@@ -66,18 +65,16 @@ You can create you own widgets by sticking widgets types together.
 
 ![Select](https://orasund.github.io/elm-ui-widgets/assets/select.png)
 
-[Open in Ellie](https://ellie-app.com/9p5QSzQDMCca1)
-
 @docs Select, selectButton, select
 
 ![MultiSelect](https://orasund.github.io/elm-ui-widgets/assets/multiSelect.png)
-
-[Open in Ellie](https://ellie-app.com/9p5R5crjqfya1)
 
 @docs MultiSelect, multiSelect
 
 
 # Modal
+
+![Modal](https://orasund.github.io/elm-ui-widgets/assets/modal.png)
 
 @docs Modal, singleModal, multiModal
 
@@ -110,8 +107,9 @@ You can create you own widgets by sticking widgets types together.
 
 ## Item
 
-@docs ItemStyle, FullBleedStyle, Item, item
-@docs TextItemStyle, TextItem, textItem
+@docs ItemStyle, Item
+@docs FullBleedItemStyle, fullBleedItem
+@docs InsetItem, InsetItemStyle, insetItem
 @docs ExpansionItemStyle, ExpansionItem, expansionItem
 @docs ImageItemStyle, ImageItem, imageItem
 @docs MultiLineItemStyle, MultiLineItem, multiLineItem
@@ -123,14 +121,14 @@ You can create you own widgets by sticking widgets types together.
 
 # App Bar
 
+![App Bar](https://orasund.github.io/elm-ui-widgets/assets/appBar.png)
+
 @docs AppBarStyle, menuBar, tabBar
 
 
 # Sort Table
 
-![SortTable](https://orasund.github.io/elm-ui-widgets/assets/sortTable.png)
-
-[Open in Ellie](https://ellie-app.com/9p5RXw44B4Ja1)
+![Sort Table](https://orasund.github.io/elm-ui-widgets/assets/sortTable.png)
 
 @docs SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
 
@@ -139,8 +137,6 @@ You can create you own widgets by sticking widgets types together.
 
 ![textInput](https://orasund.github.io/elm-ui-widgets/assets/textInput.png)
 
-[Open in Ellie](https://ellie-app.com/9p5S6cvWCmBa1)
-
 @docs TextInputStyle, TextInput, textInput
 
 
@@ -148,16 +144,12 @@ You can create you own widgets by sticking widgets types together.
 
 ![tab](https://orasund.github.io/elm-ui-widgets/assets/tab.png)
 
-[Open in Ellie](https://ellie-app.com/9p5Sdbvp4jZa1)
-
 @docs TabStyle, Tab, tab
 
 
 # Progress Indicator
 
 ![progress Indicator](https://orasund.github.io/elm-ui-widgets/assets/progressIndicator.png)
-
-[Open in Ellie](https://ellie-app.com/c47GJktH2bqa1)
 
 @docs ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
 
@@ -572,6 +564,7 @@ multiSelect =
 ----------------------------------------------------------}
 
 
+{-| -}
 type alias Modal msg =
     { onDismiss : Maybe msg
     , content : Element msg
@@ -1103,18 +1096,14 @@ headerItem =
         { onPress = Nothing
         , icon = always Element.none
         , text = "Item"
-        , content =
-            \{ size, color } ->
-                Element.none
+        , content = always Element.none
         }
     , Widget.divider (Material.insetDivider Material.defaultPalette )
     , Widget.insetItem (Material.insetItem Material.defaultPalette)
         { onPress = Nothing
         , icon = always Element.none
         , text = "Item"
-        , content =
-            \{ size, color } ->
-                Element.none
+        , content = always Element.none
         }
     ]
         |> Widget.itemList (Material.cardColumn Material.defaultPalette)
@@ -1149,9 +1138,7 @@ insetItem =
         , onPress = Nothing
         , icon = always Element.none
         , text = "Item"
-        , content =
-            \{ size, color } ->
-                Element.none
+        , content = always Element.none
         }
     ]
         |> Widget.itemList (Material.cardColumn Material.defaultPalette)
@@ -1228,8 +1215,6 @@ imageItem =
 
     import Element
     import Widget.Material as Material
-    import Widget.Material.Color as MaterialColor
-    import Element.Font as Font
 
     type Msg =
         Toggle Bool
@@ -1239,13 +1224,13 @@ imageItem =
         isExpanded =
             True
     in
-    (   [ Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)
+    (   ( Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)
             { onPress = Nothing
             , icon = always Element.none
             , text = "Item with Icon"
             }
-        ]
-        ++ Widget.expansionItem (Material.expansionItem Material.defaultPalette )
+        )
+        :: Widget.expansionItem (Material.expansionItem Material.defaultPalette )
             { onToggle = Toggle
             , isExpanded = isExpanded
             , icon = always Element.none
@@ -1286,8 +1271,6 @@ expansionItem =
 
     import Element
     import Widget.Material as Material
-    import Widget.Material.Color as MaterialColor
-    import Element.Font as Font
 
     type Msg =
         Select Int
