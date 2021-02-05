@@ -1,10 +1,10 @@
 module Internal.Material.List exposing
-    ( buttonRow
+    ( bottomSheet
+    , buttonRow
     , cardColumn
     , column
     , row
     , sideSheet
-    , bottomSheet
     )
 
 import Element
@@ -149,16 +149,17 @@ cardColumn palette =
         }
     }
 
+
 sideSheet : Palette -> ColumnStyle msg
 sideSheet palette =
     { elementColumn =
         (palette.surface |> MaterialColor.textAndBackground)
             ++ [ Element.width <| Element.maximum 360 <| Element.fill
-                , Element.height <| Element.fill
-                , Element.paddingXY 0 8
-                ]
+               , Element.height <| Element.fill
+               , Element.paddingXY 0 8
+               ]
     , content =
-        { element = 
+        { element =
             [ Element.width <| Element.fill ]
         , ifSingleton = []
         , ifFirst = []
@@ -167,16 +168,17 @@ sideSheet palette =
         }
     }
 
+
 bottomSheet : Palette -> ColumnStyle msg
 bottomSheet palette =
     { elementColumn =
         (palette.surface |> MaterialColor.textAndBackground)
             ++ [ Element.height <| Element.fill
-                , Element.width <| Element.maximum 360 <| Element.fill
-                , Element.paddingXY 0 8
-                ]
+               , Element.width <| Element.maximum 360 <| Element.fill
+               , Element.paddingXY 0 8
+               ]
     , content =
-        { element = 
+        { element =
             [ Element.width <| Element.fill ]
         , ifSingleton = []
         , ifFirst = []

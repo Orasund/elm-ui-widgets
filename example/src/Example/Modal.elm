@@ -70,55 +70,55 @@ view msgMapper style (IsEnabled isEnabled) =
              , Element.width <| Element.minimum 400 <| Element.fill
              ]
                 ++ (if isEnabled then
-                        [{ onDismiss =
+                        [ { onDismiss =
                                 ToggleModal False
                                     |> msgMapper
                                     |> Just
-                        , content =
-                            "Click on the area around this box to close it."
-                                |> Element.text
-                                |> List.singleton
-                                |> Element.paragraph []
-                                |> List.singleton
-                                |> Widget.column style.cardColumn
-                                |> Element.el
-                                    [ Element.width <| Element.px 250
-                                    , Element.centerX
-                                    , Element.centerY
-                                    ]
-                        }
+                          , content =
+                                "Click on the area around this box to close it."
+                                    |> Element.text
+                                    |> List.singleton
+                                    |> Element.paragraph []
+                                    |> List.singleton
+                                    |> Widget.column style.cardColumn
+                                    |> Element.el
+                                        [ Element.width <| Element.px 250
+                                        , Element.centerX
+                                        , Element.centerY
+                                        ]
+                          }
                         , { onDismiss = Nothing
-                            , content = 
+                          , content =
                                 "This card can not be selected."
-                                |> Element.text
-                                |> List.singleton
-                                |> Element.paragraph []
-                                |> List.singleton
-                                |> Widget.column style.cardColumn
-                                |> Element.el
-                                    [ Element.height <| Element.px 150
-                                    , Element.width <| Element.px 200
-                                    , Element.centerX
-                                    , Element.centerY
-                                    ]
-                        }
+                                    |> Element.text
+                                    |> List.singleton
+                                    |> Element.paragraph []
+                                    |> List.singleton
+                                    |> Widget.column style.cardColumn
+                                    |> Element.el
+                                        [ Element.height <| Element.px 150
+                                        , Element.width <| Element.px 200
+                                        , Element.centerX
+                                        , Element.centerY
+                                        ]
+                          }
                         , { onDismiss = Nothing
-                            , content = 
+                          , content =
                                 "This is message is behind the other two"
-                                |> Element.text
-                                |> List.singleton
-                                |> Element.paragraph []
-                                |> List.singleton
-                                |> Widget.column style.cardColumn
-                                |> Element.el
-                                    [ Element.height <| Element.px 300
-                                    , Element.width <| Element.px 300
-                                    , Element.centerX
-                                    , Element.centerY
-                                    ]
-                            }
-                        ] |> Widget.multiModal
-                            
+                                    |> Element.text
+                                    |> List.singleton
+                                    |> Element.paragraph []
+                                    |> List.singleton
+                                    |> Widget.column style.cardColumn
+                                    |> Element.el
+                                        [ Element.height <| Element.px 300
+                                        , Element.width <| Element.px 300
+                                        , Element.centerX
+                                        , Element.centerY
+                                        ]
+                          }
+                        ]
+                            |> Widget.multiModal
 
                     else
                         []

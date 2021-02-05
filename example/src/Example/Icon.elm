@@ -4,17 +4,16 @@ import Ant.Icons.Svg
 import Browser
 import Element exposing (Element)
 import FeatherIcons
-import FontAwesome.Icon
 import FontAwesome.Solid
 import FontAwesome.Svg
 import Heroicons.Solid
 import Ionicon
-import Material.Icons exposing (offline_bolt)
+import Material.Icons
 import Material.Icons.Action
 import Material.Icons.Types exposing (Coloring(..))
 import Octicons
 import Widget exposing (ButtonStyle, RowStyle)
-import Widget.Icon exposing (Icon)
+import Widget.Icon
 import Widget.Material as Material
 import Zondicons
 

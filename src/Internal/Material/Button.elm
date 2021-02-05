@@ -473,7 +473,7 @@ iconButton palette =
             , Element.centerX
             ]
         , content =
-            { text = { contentText = [Element.centerX] }
+            { text = { contentText = [ Element.centerX ] }
             , icon =
                 { ifActive =
                     { size = 18

@@ -1,31 +1,29 @@
 module Example.AppBar exposing (Model, Msg, init, subscriptions, update, view)
 
 import Browser
-import FeatherIcons
-import Widget exposing (Modal ,ItemStyle  ,Button , TextInput ,TextInputStyle, AppBarStyle,ButtonStyle)
+import Element exposing (Attribute, DeviceClass(..), Element)
+import Material.Icons
+import Material.Icons.Types exposing (Coloring(..))
+import Widget exposing (AppBarStyle, ButtonStyle)
 import Widget.Icon as Icon exposing (Icon)
 import Widget.Material as Material
-import Element exposing (Attribute, DeviceClass(..), Element)
 import Widget.Material.Typography as Typography
-import Material.Icons.Types exposing (Coloring(..))
-import Material.Icons.Action
-import Material.Icons
-import Browser.Events as Events
+
 
 type alias Style style msg =
     { style
-        | menuBar : 
+        | menuBar :
             AppBarStyle
-              { menuIcon : Icon msg
-              , title : List (Attribute msg)
-              }
-              msg
-        , tabBar : 
+                { menuIcon : Icon msg
+                , title : List (Attribute msg)
+                }
+                msg
+        , tabBar :
             AppBarStyle
-              { menuTabButton : ButtonStyle msg
-              , title : List (Attribute msg)
-              }
-              msg
+                { menuTabButton : ButtonStyle msg
+                , title : List (Attribute msg)
+                }
+                msg
     }
 
 
@@ -36,11 +34,11 @@ materialStyle =
     }
 
 
-type alias Model
-    = { isMenuBar : Bool
-      , selected : Int
-      , search : String
-      }
+type alias Model =
+    { isMenuBar : Bool
+    , selected : Int
+    , search : String
+    }
 
 
 type Msg
@@ -66,12 +64,14 @@ update msg menu =
             ( { menu | isMenuBar = bool }
             , Cmd.none
             )
-        SetSelected int  ->
-            ( { menu | selected = int}
+
+        SetSelected int ->
+            ( { menu | selected = int }
             , Cmd.none
             )
+
         SetSearch string ->
-            ( { menu | search = string}
+            ( { menu | search = string }
             , Cmd.none
             )
 
@@ -81,50 +81,49 @@ subscriptions _ =
     Sub.none
 
 
-
 {-| You can remove the msgMapper. But by doing so, make sure to also change `msg` to `Msg` in the line below.
 -}
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
 view msgMapper style model =
-  let
-    primaryActions =
-      [ { icon =
-            Material.Icons.change_history
-                |> Icon.elmMaterialIcons Color
-        , text = "Action"
-        , onPress = Just <| msgMapper <| SetDesign (not model.isMenuBar)
-        }
-      ]
-    
-    search =
-      { chips = []
-      , text = model.search
-      , placeholder = Nothing
-      , label = "Search"
-      , onChange = SetSearch >> msgMapper
-      }
-  in
-    ( if model.isMenuBar then
-          Widget.menuBar style.menuBar
-              { title =
-                "Title" 
-                |> Element.text
-                |> Element.el Typography.h6
-              , deviceClass = Tablet
-              , openLeftSheet = Just <|msgMapper <| SetDesign (not model.isMenuBar)
-              , openRightSheet = Just <|msgMapper <| SetDesign (not model.isMenuBar)
-              , openTopSheet = Just <|msgMapper <| SetDesign (not model.isMenuBar)
-              , primaryActions = primaryActions
-              , search = Just search
+    let
+        primaryActions =
+            [ { icon =
+                    Material.Icons.change_history
+                        |> Icon.elmMaterialIcons Color
+              , text = "Action"
+              , onPress = Just <| msgMapper <| SetDesign (not model.isMenuBar)
               }
+            ]
 
-      else
-          Widget.tabBar style.tabBar
-              { title =
-                "Title" 
-                |> Element.text
-                |> Element.el Typography.h6
-              , menu =
+        search =
+            { chips = []
+            , text = model.search
+            , placeholder = Nothing
+            , label = "Search"
+            , onChange = SetSearch >> msgMapper
+            }
+    in
+    (if model.isMenuBar then
+        Widget.menuBar style.menuBar
+            { title =
+                "Title"
+                    |> Element.text
+                    |> Element.el Typography.h6
+            , deviceClass = Tablet
+            , openLeftSheet = Just <| msgMapper <| SetDesign (not model.isMenuBar)
+            , openRightSheet = Just <| msgMapper <| SetDesign (not model.isMenuBar)
+            , openTopSheet = Just <| msgMapper <| SetDesign (not model.isMenuBar)
+            , primaryActions = primaryActions
+            , search = Just search
+            }
+
+     else
+        Widget.tabBar style.tabBar
+            { title =
+                "Title"
+                    |> Element.text
+                    |> Element.el Typography.h6
+            , menu =
                 { selected = Just model.selected
                 , options =
                     [ "Home", "About" ]
@@ -136,16 +135,14 @@ view msgMapper style model =
                             )
                 , onSelect = SetSelected >> msgMapper >> Just
                 }
-              , deviceClass = Phone
-              , openRightSheet = Just <| msgMapper <| SetDesign (not model.isMenuBar)
-              , openTopSheet = Just <| msgMapper <| SetDesign (not model.isMenuBar)
-              , primaryActions = primaryActions
-              , search = Just search
-              }
-            
-            
-      )
-        |> Element.el [ Element.width <| Element.minimum 400 <| Element.fill]
+            , deviceClass = Phone
+            , openRightSheet = Just <| msgMapper <| SetDesign (not model.isMenuBar)
+            , openTopSheet = Just <| msgMapper <| SetDesign (not model.isMenuBar)
+            , primaryActions = primaryActions
+            , search = Just search
+            }
+    )
+        |> Element.el [ Element.width <| Element.minimum 400 <| Element.fill ]
 
 
 main : Program () Model Msg

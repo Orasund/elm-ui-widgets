@@ -6,10 +6,10 @@ module Internal.Material.Item exposing
     , imageItem
     , insetDivider
     , insetHeader
+    , insetItem
     , middleDivider
     , multiLineItem
     , selectItem
-    , insetItem
     )
 
 import Color
@@ -19,7 +19,7 @@ import Element.Border as Border
 import Element.Font as Font
 import Html.Attributes as Attributes
 import Internal.Button exposing (ButtonStyle)
-import Internal.Item exposing (DividerStyle, ExpansionItemStyle, FullBleedItemStyle, HeaderStyle, ImageItemStyle, ItemStyle, MultiLineItemStyle, InsetItemStyle)
+import Internal.Item exposing (DividerStyle, ExpansionItemStyle, FullBleedItemStyle, HeaderStyle, ImageItemStyle, InsetItemStyle, ItemStyle, MultiLineItemStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Icon as Icon
 import Internal.Material.Palette exposing (Palette)

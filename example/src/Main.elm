@@ -6,10 +6,10 @@ import Browser.Dom as Dom exposing (Viewport)
 import Browser.Events as Events
 import Browser.Navigation as Navigation
 import Data.Example as Example exposing (Example)
-import Data.Section as Section exposing (Section(..))
+import Data.Section exposing (Section(..))
 import Data.Style exposing (Style)
 import Data.Theme as Theme exposing (Theme(..))
-import Element exposing (DeviceClass(..), Element,Attribute)
+import Element exposing (Attribute, DeviceClass(..), Element)
 import Element.Input as Input
 import FeatherIcons
 import Framework
@@ -18,25 +18,26 @@ import Framework.Heading as Heading
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Icons
+import Material.Icons
+import Material.Icons.Types exposing (Coloring(..))
 import Reusable
 import Set.Any as AnySet exposing (AnySet)
 import Stateless
 import Task
 import Time
-import Widget exposing (Modal,TextInput)
+import Widget exposing (Modal, TextInput)
 import Widget.Icon as Icon
-import Widget.Layout as Layout 
+import Widget.Layout as Layout
+import Widget.Material.Typography as Typography
 import Widget.ScrollingNav as ScrollingNav
 import Widget.Snackbar as Snackbar exposing (Message)
-import Material.Icons.Types exposing (Coloring(..))
-import Material.Icons
-import Widget.Material.Typography as Typography
 
 
 type Part
     = LeftSheet
     | RightSheet
     | Search
+
 
 type alias LoadedModel =
     { stateless : Stateless.Model
@@ -68,7 +69,6 @@ type LoadedMsg
     | UpdateScrollingNav (ScrollingNav.ScrollingNav Example -> ScrollingNav.ScrollingNav Example)
     | TimePassed Int
     | AddSnackbar ( String, Bool )
-    | ToggleDialog Bool
     | ChangedSidebar (Maybe Part)
     | Resized { width : Int, height : Int }
     | Load String
@@ -108,7 +108,7 @@ initialModel { viewport } =
     ( { stateless = stateless
       , scrollingNav = scrollingNav
       , snackbar = Snackbar.init
-            , active = Nothing
+      , active = Nothing
       , displayDialog = False
       , window =
             { width = viewport.width |> round
@@ -161,7 +161,7 @@ updateLoaded msg model =
                     model.search
             in
             ( { model
-                | snackbar = 
+                | snackbar =
                     case model.active of
                         Just LeftSheet ->
                             model.snackbar
@@ -171,8 +171,6 @@ updateLoaded msg model =
 
                         _ ->
                             model.snackbar |> Snackbar.timePassed int
-                            
-                            
                 , search =
                     if search.remaining > 0 then
                         if search.remaining <= int then
@@ -195,30 +193,23 @@ updateLoaded msg model =
 
         AddSnackbar ( string, bool ) ->
             ( { model
-                | snackbar = 
-                    model.snackbar 
-                        |> Snackbar.insert 
-                                        { text = string
-                                            , button =
-                                                if bool then
-                                                    Just
-                                                        { text = "Add"
-                                                        , onPress =
-                                                            Just <|
-                                                                AddSnackbar ( "This is another message", False )
-                                                        }
-
-                                                else
-                                                    Nothing
-                                                        
-                                                        
+                | snackbar =
+                    model.snackbar
+                        |> Snackbar.insert
+                            { text = string
+                            , button =
+                                if bool then
+                                    Just
+                                        { text = "Add"
+                                        , onPress =
+                                            Just <|
+                                                AddSnackbar ( "This is another message", False )
                                         }
-            }
-            , Cmd.none
-            )
 
-        ToggleDialog bool ->
-            ( { model | displayDialog = bool }
+                                else
+                                    Nothing
+                            }
+              }
             , Cmd.none
             )
 
@@ -236,19 +227,12 @@ updateLoaded msg model =
             ( model, Navigation.load string )
 
         JumpTo section ->
-            let
-                _ =
-                    section
-                        |> Example.toString
-                        |> Debug.log "section"
-            in
             ( model
             , model.scrollingNav
                 |> ScrollingNav.jumpTo
                     { section = section
                     , onChange = always Idle
                     }
-                
             )
 
         ChangedSearch string ->
@@ -299,18 +283,19 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    (
-        [ Time.every 50 (always (TimePassed 50))
-        , Events.onResize (\h w -> Resized { height = h, width = w })
-        ] ++
-        ( case model of
-            Loading ->
-                []
-            Loaded {stateless} ->
-                Stateless.subscriptions stateless 
-                |> Sub.map StatelessSpecific
-                |> List.singleton
-        ))
+    ([ Time.every 50 (always (TimePassed 50))
+     , Events.onResize (\h w -> Resized { height = h, width = w })
+     ]
+        ++ (case model of
+                Loading ->
+                    []
+
+                Loaded { stateless } ->
+                    Stateless.subscriptions stateless
+                        |> Sub.map StatelessSpecific
+                        |> List.singleton
+           )
+    )
         |> Sub.batch
         |> Sub.map LoadedSpecific
 
@@ -333,21 +318,22 @@ view model =
                 <|
                     viewLoaded m
 
+
 viewLayout : (LoadedMsg -> LoadedMsg) -> Style LoadedMsg -> LoadedModel -> List (Attribute LoadedMsg)
 viewLayout msgMapper style model =
     let
         deviceClass : DeviceClass
         deviceClass =
             Layout.getDeviceClass model.window
-        
+
         dialog : Maybe (Modal LoadedMsg)
         dialog =
             Nothing
 
         onChangedSidebar =
-          ChangedSidebar
-        
-        menu = 
+            ChangedSidebar
+
+        menu =
             model.scrollingNav
                 |> ScrollingNav.toSelect
                     (\int ->
@@ -359,48 +345,49 @@ viewLayout msgMapper style model =
 
         actions =
             [ { onPress = Just <| Load "https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/"
-            , text = "Docs"
-            , icon = FeatherIcons.book |> Icon.elmFeather FeatherIcons.toHtml
-            }
+              , text = "Docs"
+              , icon = FeatherIcons.book |> Icon.elmFeather FeatherIcons.toHtml
+              }
             , { onPress = Just <| Load "https://github.com/Orasund/elm-ui-widgets"
-            , text = "Github"
-            , icon = FeatherIcons.github |> Icon.elmFeather FeatherIcons.toHtml
-            }
+              , text = "Github"
+              , icon = FeatherIcons.github |> Icon.elmFeather FeatherIcons.toHtml
+              }
             , { onPress =
                     if model.theme /= Material then
                         Just <| SetTheme <| Material
 
                     else
                         Nothing
-            , text = "Material Theme"
-            , icon = FeatherIcons.penTool |> Icon.elmFeather FeatherIcons.toHtml
-            }
+              , text = "Material Theme"
+              , icon = FeatherIcons.penTool |> Icon.elmFeather FeatherIcons.toHtml
+              }
             , { onPress =
                     if model.theme /= DarkMaterial then
                         Just <| SetTheme <| DarkMaterial
 
                     else
                         Nothing
-            , text = "Dark Material Theme"
-            , icon = FeatherIcons.penTool |> Icon.elmFeather FeatherIcons.toHtml
-            }
+              , text = "Dark Material Theme"
+              , icon = FeatherIcons.penTool |> Icon.elmFeather FeatherIcons.toHtml
+              }
             ]
 
         { primaryActions, moreActions } =
             Layout.partitionActions actions
-        
+
         title =
-          "Elm-Ui-Widgets"
-          |> Element.text
-          |> Element.el (Typography.h6 ++ [ Element.paddingXY 8 0 ])
-        
+            "Elm-Ui-Widgets"
+                |> Element.text
+                |> Element.el (Typography.h6 ++ [ Element.paddingXY 8 0 ])
+
         search : TextInput LoadedMsg
         search =
             { chips = []
             , text = model.search.raw
-            , placeholder = Just <|
-                                        Input.placeholder [] <|
-                                            Element.text "Search Widgets..."
+            , placeholder =
+                Just <|
+                    Input.placeholder [] <|
+                        Element.text "Search Widgets..."
             , label = "Search"
             , onChange = ChangedSearch >> msgMapper
             }
@@ -410,7 +397,8 @@ viewLayout msgMapper style model =
             if
                 (deviceClass == Phone)
                     || (deviceClass == Tablet)
-                    || (menu.options |> List.length) > 5
+                    || (menu.options |> List.length)
+                    > 5
             then
                 Widget.menuBar style.menuBar
                     { title = title
@@ -427,10 +415,10 @@ viewLayout msgMapper style model =
                     { title = title
                     , menu = menu
                     , deviceClass = deviceClass
-                    , openRightSheet = Just <|msgMapper <| ChangedSidebar <| Just RightSheet
+                    , openRightSheet = Just <| msgMapper <| ChangedSidebar <| Just RightSheet
                     , openTopSheet = Nothing
                     , primaryActions = primaryActions
-                    , search =  Just search
+                    , search = Just search
                     }
 
         snackbarElem : Element LoadedMsg
@@ -475,7 +463,7 @@ viewLayout msgMapper style model =
                             , insetItem = style.insetItem
                             }
                             { onDismiss = onDismiss
-                            , moreActions =moreActions
+                            , moreActions = moreActions
                             }
                             |> Just
 
@@ -487,7 +475,7 @@ viewLayout msgMapper style model =
                             { search = search
                             , onDismiss = onDismiss
                             }
-                        |> Just
+                            |> Just
 
                     else
                         Nothing
@@ -497,11 +485,12 @@ viewLayout msgMapper style model =
     List.concat
         [ style.container
         , [ Element.inFront snackbarElem
-            , Element.inFront nav
-            ]
+          , Element.inFront nav
+          ]
         , modals
             |> Widget.singleModal
         ]
+
 
 viewLoaded : LoadedModel -> Element LoadedMsg
 viewLoaded m =

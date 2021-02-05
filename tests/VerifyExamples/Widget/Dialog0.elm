@@ -20,7 +20,7 @@ type Msg
 
 spec0 : Test.Test
 spec0 =
-    Test.test "#dialog: \n\n    Element.layout\n        (dialog (Material.alertDialog Material.defaultPalette)\n            { title = Just \"Accept\"\n            , text = \"Are you sure?\"\n            , accept =\n                { text = \"Accept\"\n                , onPress = Just Submit\n                }\n                |> Just\n            , dismiss =\n                { text = \"Cancel\"\n                , onPress = Just Close\n                }\n                |> Just\n            }\n        )\n        |> always \"Ignore this line\"\n    --> \"Ignore this line\"" <|
+    Test.test "#dialog: \n\n    Element.layout\n        (dialog (Material.alertDialog Material.defaultPalette)\n            { title = Just \"Accept\"\n            , text = \"Are you sure?\"\n            , accept =\n                { text = \"Accept\"\n                , onPress = Just Submit\n                }\n                |> Just\n            , dismiss =\n                { text = \"Cancel\"\n                , onPress = Just Close\n                }\n                |> Just\n            }\n            |> List.singleton\n            |> singleModal\n        )\n        |> always \"Ignore this line\"\n    --> \"Ignore this line\"" <|
         \() ->
             Expect.equal
                 (
@@ -39,6 +39,8 @@ spec0 =
                             }
                             |> Just
                         }
+                        |> List.singleton
+                        |> singleModal
                     )
                     |> always "Ignore this line"
                 )

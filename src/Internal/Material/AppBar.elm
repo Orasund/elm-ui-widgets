@@ -8,13 +8,8 @@ import Internal.AppBar exposing (AppBarStyle)
 import Internal.Button exposing (ButtonStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Icon as Icon
-import Internal.Material.Item as Item
 import Internal.Material.Palette exposing (Palette)
-import Internal.Material.Sheet as Sheet
-import Internal.Material.Snackbar as Snackbar
 import Internal.Material.TextInput as TextInput
-import Svg
-import Svg.Attributes
 import Widget.Customize as Customize
 import Widget.Icon as Icon exposing (Icon)
 import Widget.Material.Color as MaterialColor

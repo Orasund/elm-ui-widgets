@@ -1,19 +1,12 @@
 module Internal.AppBar exposing (AppBarStyle, menuBar, tabBar)
 
-import Array
 import Element exposing (Attribute, DeviceClass(..), Element)
 import Element.Input as Input
-import Html exposing (Html)
 import Internal.Button as Button exposing (Button, ButtonStyle)
-import Internal.Dialog as Dialog
-import Internal.Item as Item exposing (InsetItemStyle, ItemStyle)
-import Internal.Modal as Modal exposing (Modal)
 import Internal.Select as Select exposing (Select)
-import Internal.Sheet as Sheet 
 import Internal.TextInput as TextInput exposing (TextInput, TextInputStyle)
 import Widget.Customize as Customize
 import Widget.Icon exposing (Icon)
-import Widget.Snackbar as Snackbar exposing (Message, SnackbarStyle)
 
 
 type alias AppBarStyle content msg =
@@ -168,10 +161,10 @@ internalNav menuElements style { deviceClass, openRightSheet, openTopSheet, prim
             |> Maybe.map
                 (\{ label } ->
                     if deviceClass == Tablet then
-                        [ Button.button 
-                            ( style.content.actions.content.button
-                            --FIX FOR ISSUE #30
-                            |> Customize.elementButton [ Element.width Element.shrink ]
+                        [ Button.button
+                            (style.content.actions.content.button
+                                --FIX FOR ISSUE #30
+                                |> Customize.elementButton [ Element.width Element.shrink ]
                             )
                             { onPress = openTopSheet
                             , icon = style.content.actions.content.searchIcon
@@ -206,6 +199,7 @@ internalNav menuElements style { deviceClass, openRightSheet, openTopSheet, prim
       , case openRightSheet of
             Nothing ->
                 []
+
             Just _ ->
                 [ Button.iconButton style.content.actions.content.button
                     { onPress = openRightSheet

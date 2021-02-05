@@ -2,11 +2,10 @@ module Example.Snackbar exposing (Model, Msg, init, subscriptions, update, view)
 
 import Browser
 import Element exposing (Element)
-import FeatherIcons
 import Time
-import Widget exposing (ButtonStyle, ColumnStyle, RowStyle)
-import Widget.Snackbar as Snackbar exposing (Snackbar,SnackbarStyle)
+import Widget exposing (ButtonStyle, ColumnStyle)
 import Widget.Material as Material
+import Widget.Snackbar as Snackbar exposing (Snackbar, SnackbarStyle)
 
 
 type alias Style style msg =

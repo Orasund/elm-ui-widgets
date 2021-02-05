@@ -20,7 +20,6 @@ the page. Clicking on a navigation button will scroll directly to that section.
 
 import Browser.Dom as Dom
 import Element exposing (Element)
-import Html
 import Html.Attributes as Attributes
 import IntDict exposing (IntDict)
 import Task exposing (Task)

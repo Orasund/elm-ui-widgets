@@ -1,24 +1,20 @@
 module Data.Style exposing (Style, style)
 
-import Color exposing (Color)
-import Color.Accessibility as Accessibility
-import Color.Convert as Convert
-import Element exposing (Attribute, Element)
-import Element.Background as Background
+import Element exposing (Attribute)
 import Element.Border as Border
 import Element.Font as Font
-import FeatherIcons
-import Html.Attributes as Attributes
-import Icons
 import Widget
     exposing
-        ( ButtonStyle
+        ( AppBarStyle
+        , ButtonStyle
         , ColumnStyle
         , DialogStyle
         , DividerStyle
         , ExpansionItemStyle
+        , FullBleedItemStyle
         , HeaderStyle
         , ImageItemStyle
+        , InsetItemStyle
         , ItemStyle
         , MultiLineItemStyle
         , ProgressIndicatorStyle
@@ -27,14 +23,11 @@ import Widget
         , SwitchStyle
         , TabStyle
         , TextInputStyle
-        , InsetItemStyle
-        , FullBleedItemStyle
-        , AppBarStyle
         )
-import Widget.Icon as Icon exposing (Icon)
-import Widget.Snackbar exposing (SnackbarStyle)
+import Widget.Icon exposing (Icon)
 import Widget.Material as Material exposing (Palette)
 import Widget.Material.Color as MaterialColor
+import Widget.Snackbar exposing (SnackbarStyle)
 
 
 style : Palette -> Style msg
@@ -84,8 +77,9 @@ style palette =
     , searchFill =
         { elementRow =
             (Material.defaultPalette.surface
-                |> MaterialColor.textAndBackground) ++
-                [ Element.height <| Element.px 56 ]
+                |> MaterialColor.textAndBackground
+            )
+                ++ [ Element.height <| Element.px 56 ]
         , content =
             { chips =
                 { elementRow = [ Element.spacing 8 ]
@@ -97,9 +91,9 @@ style palette =
                         |> MaterialColor.textAndBackground
                     )
                         ++ [ Border.width 0
-                        , Element.mouseOver []
-                        , Element.focused []
-                        ]
+                           , Element.mouseOver []
+                           , Element.focused []
+                           ]
                 }
             }
         }
@@ -139,13 +133,13 @@ type alias Style msg =
     , sideSheet : ColumnStyle msg
     , fullBleedItem : ItemStyle (FullBleedItemStyle msg) msg
     , selectItem : ItemStyle (ButtonStyle msg) msg
-    , menuBar : 
+    , menuBar :
         AppBarStyle
             { menuIcon : Icon msg
             , title : List (Attribute msg)
             }
             msg
-    , tabBar : 
+    , tabBar :
         AppBarStyle
             { menuTabButton : ButtonStyle msg
             , title : List (Attribute msg)

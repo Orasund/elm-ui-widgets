@@ -3,12 +3,11 @@ module Example.Button exposing (Model, Msg, init, subscriptions, update, view)
 import Browser
 import Element exposing (Element)
 import Element.Background as Background
-import Element.Border as Border
 import Material.Icons as MaterialIcons
 import Material.Icons.Types exposing (Coloring(..))
 import Widget exposing (ButtonStyle, ColumnStyle, RowStyle)
-import Widget.Icon as Icon
 import Widget.Customize as Customize
+import Widget.Icon as Icon
 import Widget.Material as Material
 import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography

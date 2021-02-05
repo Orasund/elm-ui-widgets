@@ -1,11 +1,32 @@
-module Internal.Item exposing (DividerStyle
-    , ExpansionItem, ExpansionItemStyle, FullBleedItemStyle, HeaderStyle, ImageItem, ImageItemStyle, Item, ItemStyle, MultiLineItemStyle, InsetItem, InsetItemStyle, asItem, divider, expansionItem, fullBleedItem, headerItem, imageItem, multiLineItem, selectItem, insetItem, toItem)
+module Internal.Item exposing
+    ( DividerStyle
+    , ExpansionItem
+    , ExpansionItemStyle
+    , FullBleedItemStyle
+    , HeaderStyle
+    , ImageItem
+    , ImageItemStyle
+    , InsetItem
+    , InsetItemStyle
+    , Item
+    , ItemStyle
+    , MultiLineItemStyle
+    , asItem
+    , divider
+    , expansionItem
+    , fullBleedItem
+    , headerItem
+    , imageItem
+    , insetItem
+    , multiLineItem
+    , selectItem
+    , toItem
+    )
 
 import Element exposing (Attribute, Element)
 import Element.Input as Input
 import Internal.Button exposing (Button, ButtonStyle)
 import Internal.Select as Select exposing (Select)
-import Widget.Customize exposing (content)
 import Widget.Icon exposing (Icon, IconStyle)
 
 

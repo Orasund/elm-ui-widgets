@@ -1,58 +1,68 @@
 module Example.Layout exposing (Model, Msg, init, subscriptions, update, view)
 
 import Browser
-import Element exposing (Element,Attribute,DeviceClass(..))
-import FeatherIcons
-import Widget exposing (TextInputStyle ,TextInput
-    ,Dialog,DialogStyle,ColumnStyle
-    ,ButtonStyle,Modal,AppBarStyle,ItemStyle,HeaderStyle,InsetItemStyle)
-import Widget.Icon as Icon exposing (Icon)
-import Widget.Material as Material
-import Widget.Material.Typography as Typography
-import Widget.Layout as Layout
-import Widget.Snackbar as Snackbar exposing (Snackbar,Message,SnackbarStyle)
 import Browser.Events as Events
-import Widget.Material.Color as MaterialColor
-import Element.Font as Font
+import Element exposing (Attribute, DeviceClass(..), Element)
 import Element.Border as Border
-import Material.Icons.Types exposing (Coloring(..))
+import Element.Font as Font
 import Material.Icons
-import Widget.Customize as Customize
+import Material.Icons.Types exposing (Coloring(..))
 import Time
+import Widget
+    exposing
+        ( AppBarStyle
+        , ButtonStyle
+        , ColumnStyle
+        , DialogStyle
+        , InsetItemStyle
+        , ItemStyle
+        , Modal
+        , TextInput
+        , TextInputStyle
+        )
+import Widget.Icon as Icon exposing (Icon)
+import Widget.Layout as Layout
+import Widget.Material as Material
+import Widget.Material.Color as MaterialColor
+import Widget.Material.Typography as Typography
+import Widget.Snackbar as Snackbar exposing (Snackbar, SnackbarStyle)
+
 
 type Part
     = LeftSheet
     | RightSheet
     | Search
 
+
 type alias Style style msg =
     { style
-    | container : List (Attribute msg)
-    , snackbar : SnackbarStyle msg
-    , sideSheet : ColumnStyle msg
-    , sheetButton : ItemStyle (ButtonStyle msg) msg
-    , searchFill : TextInputStyle msg
-    , insetItem : ItemStyle (InsetItemStyle msg) msg
-    , menuBar :
-        AppBarStyle
-            { menuIcon : Icon msg
-            , title : List (Attribute msg)
-            }
-            msg
-    , tabBar :
-        AppBarStyle
-            { menuTabButton : ButtonStyle msg
-            , title : List (Attribute msg)
-            }
-            msg
-    , dialog : DialogStyle msg
-    , containedButton : ButtonStyle msg
-    , column : ColumnStyle msg
+        | container : List (Attribute msg)
+        , snackbar : SnackbarStyle msg
+        , sideSheet : ColumnStyle msg
+        , sheetButton : ItemStyle (ButtonStyle msg) msg
+        , searchFill : TextInputStyle msg
+        , insetItem : ItemStyle (InsetItemStyle msg) msg
+        , menuBar :
+            AppBarStyle
+                { menuIcon : Icon msg
+                , title : List (Attribute msg)
+                }
+                msg
+        , tabBar :
+            AppBarStyle
+                { menuTabButton : ButtonStyle msg
+                , title : List (Attribute msg)
+                }
+                msg
+        , dialog : DialogStyle msg
+        , containedButton : ButtonStyle msg
+        , column : ColumnStyle msg
     }
+
 
 materialStyle : Style {} msg
 materialStyle =
-  { container =
+    { container =
         (Material.defaultPalette.background |> MaterialColor.textAndBackground)
             ++ [ Font.family
                     [ Font.typeface "Roboto"
@@ -69,8 +79,9 @@ materialStyle =
     , searchFill =
         { elementRow =
             (Material.defaultPalette.surface
-                |> MaterialColor.textAndBackground) ++
-                [ Element.height <| Element.px 56 ]
+                |> MaterialColor.textAndBackground
+            )
+                ++ [ Element.height <| Element.px 56 ]
         , content =
             { chips =
                 { elementRow = [ Element.spacing 8 ]
@@ -82,9 +93,9 @@ materialStyle =
                         |> MaterialColor.textAndBackground
                     )
                         ++ [ Border.width 0
-                        , Element.mouseOver []
-                        , Element.focused []
-                        ]
+                           , Element.mouseOver []
+                           , Element.focused []
+                           ]
                 }
             }
         }
@@ -94,14 +105,18 @@ materialStyle =
     , column = Material.column
     }
 
-type alias Model
-    = { window : { height : Int, width : Int }
-      , showDialog : Bool
-      , snackbar : Snackbar String
-      , active : Maybe Part
-      , selected : Int
-      , searchText : String
-      }
+
+type alias Model =
+    { window :
+        { height : Int
+        , width : Int
+        }
+    , showDialog : Bool
+    , snackbar : Snackbar String
+    , active : Maybe Part
+    , selected : Int
+    , searchText : String
+    }
 
 
 type Msg
@@ -126,33 +141,40 @@ init =
     , Cmd.none
     )
 
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChangedSidebar maybePart ->
-            ( { model | active = maybePart}
+            ( { model | active = maybePart }
             , Cmd.none
             )
+
         Resized window ->
             ( { model | window = window }
             , Cmd.none
             )
-        SetSelected int  ->
-            ( { model | selected = int}
+
+        SetSelected int ->
+            ( { model | selected = int }
             , Cmd.none
             )
+
         AddSnackbar ->
-            ( {model | snackbar = model.snackbar |> Snackbar.insert "This is a message"}
+            ( { model | snackbar = model.snackbar |> Snackbar.insert "This is a message" }
             , Cmd.none
             )
+
         ShowDialog bool ->
-            ( { model | showDialog = bool}
+            ( { model | showDialog = bool }
             , Cmd.none
             )
+
         SetSearchText maybeString ->
-            ( { model | searchText = maybeString}
+            ( { model | searchText = maybeString }
             , Cmd.none
             )
+
         TimePassed sec ->
             ( case model.active of
                 Just LeftSheet ->
@@ -167,7 +189,7 @@ update msg model =
                     }
             , Cmd.none
             )
-            
+
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
@@ -176,16 +198,18 @@ subscriptions _ =
         , Time.every 50 (always (TimePassed 50))
         ]
 
+
 {-| You can remove the msgMapper. But by doing so, make sure to also change `msg` to `Msg` in the line below.
 -}
 view : (Msg -> msg) -> Style style msg -> Model -> Element msg
-view msgMapper style {snackbar,searchText,selected, window, showDialog, active } =
-  let
+view msgMapper style { snackbar, searchText, selected, showDialog, active } =
+    let
         deviceClass : DeviceClass
         deviceClass =
-            Phone --Replace this line to make the layout responsive
-            --Layout.getDeviceClass window
-        
+            Phone
+
+        --Replace this line to make the layout responsive
+        --Layout.getDeviceClass window
         dialog : Maybe (Modal msg)
         dialog =
             if showDialog then
@@ -203,12 +227,13 @@ view msgMapper style {snackbar,searchText,selected, window, showDialog, active }
                 }
                     |> Widget.dialog style.dialog
                     |> Just
+
             else
                 Nothing
 
         onChangedSidebar =
-          ChangedSidebar
-        
+            ChangedSidebar
+
         menu =
             { selected = Just selected
             , options =
@@ -224,21 +249,21 @@ view msgMapper style {snackbar,searchText,selected, window, showDialog, active }
 
         actions =
             { icon =
-                    Material.Icons.change_history
-                        |> Icon.elmMaterialIcons Color
-                , text = "Action"
-                , onPress = Nothing
-                }
-            |> List.repeat 5
+                Material.Icons.change_history
+                    |> Icon.elmMaterialIcons Color
+            , text = "Action"
+            , onPress = Nothing
+            }
+                |> List.repeat 5
 
         { primaryActions, moreActions } =
             Layout.partitionActions actions
-        
+
         title =
-          "Title"
-          |> Element.text
-          |> Element.el (Typography.h6 ++ [ Element.paddingXY 8 0 ])
-        
+            "Title"
+                |> Element.text
+                |> Element.el (Typography.h6 ++ [ Element.paddingXY 8 0 ])
+
         search : TextInput msg
         search =
             { chips = []
@@ -253,7 +278,8 @@ view msgMapper style {snackbar,searchText,selected, window, showDialog, active }
             if
                 (deviceClass == Phone)
                     || (deviceClass == Tablet)
-                    || (menu.options |> List.length) > 5
+                    || (menu.options |> List.length)
+                    > 5
             then
                 Widget.menuBar style.menuBar
                     { title = title
@@ -270,16 +296,16 @@ view msgMapper style {snackbar,searchText,selected, window, showDialog, active }
                     { title = title
                     , menu = menu
                     , deviceClass = deviceClass
-                    , openRightSheet = Just <|msgMapper <| ChangedSidebar <| Just RightSheet
+                    , openRightSheet = Just <| msgMapper <| ChangedSidebar <| Just RightSheet
                     , openTopSheet = Nothing
                     , primaryActions = primaryActions
-                    , search =  Just search
+                    , search = Just search
                     }
 
         snackbarElem : Element msg
         snackbarElem =
             snackbar
-                |> Snackbar.view style.snackbar 
+                |> Snackbar.view style.snackbar
                     (\text ->
                         { text = text
                         , button = Nothing
@@ -323,7 +349,7 @@ view msgMapper style {snackbar,searchText,selected, window, showDialog, active }
                             , insetItem = style.insetItem
                             }
                             { onDismiss = onDismiss
-                            , moreActions =moreActions
+                            , moreActions = moreActions
                             }
                             |> Just
 
@@ -335,7 +361,7 @@ view msgMapper style {snackbar,searchText,selected, window, showDialog, active }
                             { search = search
                             , onDismiss = onDismiss
                             }
-                        |> Just
+                            |> Just
 
                     else
                         Nothing
@@ -352,18 +378,19 @@ view msgMapper style {snackbar,searchText,selected, window, showDialog, active }
         , icon = always Element.none
         }
     ]
-    |> Element.column [Element.width <| Element.fill, Element.spacing 8]
-    |> Element.el 
+        |> Element.column [ Element.width <| Element.fill, Element.spacing 8 ]
+        |> Element.el
             (List.concat
                 [ style.container
                 , [ Element.inFront snackbarElem ]
                 , modals
                     |> Widget.singleModal
                 , [ Element.height <| Element.minimum 200 <| Element.fill
-                , Element.width <| Element.minimum 400 <| Element.fill
-                ]
+                  , Element.width <| Element.minimum 400 <| Element.fill
+                  ]
                 ]
             )
+
 
 main : Program () Model Msg
 main =

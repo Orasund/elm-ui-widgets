@@ -4,7 +4,7 @@ import Browser
 import Element exposing (Element)
 import Element.Font as Font
 import FeatherIcons
-import Widget exposing (ButtonStyle,ColumnStyle,FullBleedItemStyle, DividerStyle, ExpansionItemStyle, HeaderStyle, ImageItemStyle, ItemStyle, MultiLineItemStyle, SwitchStyle, InsetItemStyle)
+import Widget exposing (ButtonStyle, ColumnStyle, DividerStyle, ExpansionItemStyle, FullBleedItemStyle, HeaderStyle, ImageItemStyle, InsetItemStyle, ItemStyle, MultiLineItemStyle, SwitchStyle)
 import Widget.Icon as Icon
 import Widget.Material as Material
 import Widget.Material.Color as MaterialColor
@@ -86,7 +86,7 @@ view msgMapper style (IsExpanded isExpanded) =
     , Widget.fullBleedItem style.fullBleedItem
         { onPress = Nothing
         , icon =
-            \{ size, color } ->
+            \_ ->
                 Element.none
         , text = "Full Bleed Item"
         }
@@ -99,7 +99,7 @@ view msgMapper style (IsExpanded isExpanded) =
                 |> Icon.elmFeather FeatherIcons.toHtml
         , text = "Item with Icon"
         , content =
-            \{ size, color } ->
+            \_ ->
                 Element.none
         }
     , Widget.imageItem style.imageItem
@@ -145,7 +145,7 @@ view msgMapper style (IsExpanded isExpanded) =
         , image = Element.none
         , text = "Clickable Item with Switch"
         , content =
-            \{ size, color } ->
+            \_ ->
                 Widget.switch style.switch
                     { description = "Click Me"
                     , active = isExpanded
@@ -181,25 +181,35 @@ view msgMapper style (IsExpanded isExpanded) =
                     }
                 ]
             }
-        ++ [ "Menu" |> Widget.headerItem style.fullBleedHeader]
-        ++ ({ selected = if isExpanded then Just 1 else Just 0
-    , options =
-        [ True, False ]
-            |> List.map
-                (\bool ->
-                    { text = if bool then "Expanded" else "Collapsed"
-                    , icon = always Element.none
-                    }
-                )
-    , onSelect = (\int -> 
-            (int == 1) 
-        |> ToggleCollapsable
-        |> msgMapper
-        |> Just
-        )
-    }
-        |> Widget.selectItem style.selectItem
-        )
+        ++ [ "Menu" |> Widget.headerItem style.fullBleedHeader ]
+        ++ ({ selected =
+                if isExpanded then
+                    Just 1
+
+                else
+                    Just 0
+            , options =
+                [ True, False ]
+                    |> List.map
+                        (\bool ->
+                            { text =
+                                if bool then
+                                    "Expanded"
+
+                                else
+                                    "Collapsed"
+                            , icon = always Element.none
+                            }
+                        )
+            , onSelect =
+                \int ->
+                    (int == 1)
+                        |> ToggleCollapsable
+                        |> msgMapper
+                        |> Just
+            }
+                |> Widget.selectItem style.selectItem
+           )
         |> Widget.itemList style.cardColumn
 
 

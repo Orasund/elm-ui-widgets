@@ -2,8 +2,7 @@ module Example.Switch exposing (Model, Msg, init, subscriptions, update, view)
 
 import Browser
 import Element exposing (Element)
-import FeatherIcons
-import Widget exposing (RowStyle, SwitchStyle)
+import Widget exposing (SwitchStyle)
 import Widget.Material as Material
 
 

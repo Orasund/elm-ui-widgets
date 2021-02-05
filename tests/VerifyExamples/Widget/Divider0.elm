@@ -18,26 +18,20 @@ import Element
 
 spec0 : Test.Test
 spec0 =
-    Test.test "#divider: \n\n    [ Widget.textItem (Material.textItem Material.defaultPalette)\n        { onPress = Nothing\n        , icon = always Element.none\n        , text = \"Item\"\n        , content =\n            \\{ size, color } ->\n                Element.none\n        }\n    , Widget.divider (Material.insetDivider Material.defaultPalette )\n    , Widget.textItem (Material.textItem Material.defaultPalette)\n        { onPress = Nothing\n        , icon = always Element.none\n        , text = \"Item\"\n        , content =\n            \\{ size, color } ->\n                Element.none\n        }\n    ]\n        |> Widget.itemList (Material.cardColumn Material.defaultPalette)\n        |> always \"Ignore this line\"\n    --> \"Ignore this line\"" <|
+    Test.test "#divider: \n\n    [ Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)\n        { onPress = Nothing\n        , icon = always Element.none\n        , text = \"Item\"\n        }\n    , Widget.divider (Material.insetDivider Material.defaultPalette )\n    , Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)\n        { onPress = Nothing\n        , icon = always Element.none\n        , text = \"Item\"\n        }\n    ]\n        |> Widget.itemList (Material.cardColumn Material.defaultPalette)\n        |> always \"Ignore this line\"\n    --> \"Ignore this line\"" <|
         \() ->
             Expect.equal
                 (
-                [ Widget.textItem (Material.textItem Material.defaultPalette)
+                [ Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)
                     { onPress = Nothing
                     , icon = always Element.none
                     , text = "Item"
-                    , content =
-                        \{ size, color } ->
-                            Element.none
                     }
                 , Widget.divider (Material.insetDivider Material.defaultPalette )
-                , Widget.textItem (Material.textItem Material.defaultPalette)
+                , Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)
                     { onPress = Nothing
                     , icon = always Element.none
                     , text = "Item"
-                    , content =
-                        \{ size, color } ->
-                            Element.none
                     }
                 ]
                     |> Widget.itemList (Material.cardColumn Material.defaultPalette)

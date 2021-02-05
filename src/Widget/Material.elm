@@ -121,7 +121,6 @@ You way want to use special items to visually organize the content of your list.
 @docs tab, tabButton
 
 
-
 # Advanced
 
 To create your own Material Widgets, here are all internal functions.
@@ -154,7 +153,6 @@ import Internal.Material.Item as Item
 import Internal.Material.List as List
 import Internal.Material.Palette as Palette
 import Internal.Material.ProgressIndicator as ProgressIndicator
-import Internal.Material.Sheet as Sheet
 import Internal.Material.Snackbar as Snackbar
 import Internal.Material.SortTable as SortTable
 import Internal.Material.Switch as Switch
@@ -352,6 +350,7 @@ tabBar =
     AppBar.tabBar
 
 
+
 {-------------------------------------------------------------------------------
 -- L I S T
 -------------------------------------------------------------------------------}
@@ -370,22 +369,27 @@ column : ColumnStyle msg
 column =
     List.column
 
+
 {-| A side sheet. Has a maximal width of 360.
 -}
 sideSheet : Palette -> ColumnStyle msg
 sideSheet =
     List.sideSheet
 
-{-| A bottom sheet. Has a maximal width of 360. 
+
+{-| A bottom sheet. Has a maximal width of 360.
 Should be align to the bottom right corner of the screen.
 -}
 bottomSheet : Palette -> ColumnStyle msg
 bottomSheet =
     List.bottomSheet
 
+
+
 --------------------------------------------------------------------------------
 -- ITEM
 --------------------------------------------------------------------------------
+
 
 {-| A divider covering the full length
 -}
@@ -497,7 +501,6 @@ imageItem =
 selectItem : Palette -> ItemStyle (ButtonStyle msg) msg
 selectItem =
     Item.selectItem
-
 
 
 

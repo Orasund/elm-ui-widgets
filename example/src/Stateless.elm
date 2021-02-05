@@ -1,4 +1,4 @@
-module Stateless exposing (Model, Msg, init, update,subscriptions, view)
+module Stateless exposing (Model, Msg, init, subscriptions, update, view)
 
 import Data.Example as Example
 import Data.Theme as Theme exposing (Theme)
@@ -44,9 +44,11 @@ update msg model =
         Idle ->
             ( model, Cmd.none )
 
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Example.subscriptions model.example |> Sub.map ExampleSpecific
+
 
 view :
     { theme : Theme

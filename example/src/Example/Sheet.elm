@@ -3,10 +3,11 @@ module Example.Sheet exposing (Model, Msg, init, subscriptions, update, view)
 import Browser
 import Element exposing (Element)
 import FeatherIcons
-import Widget exposing (ButtonStyle, ColumnStyle,ItemStyle,HeaderStyle,InsetItemStyle)
+import Widget exposing (ButtonStyle, ColumnStyle, HeaderStyle, InsetItemStyle, ItemStyle)
 import Widget.Icon as Icon
 import Widget.Material as Material
 import Widget.Material.Typography as Typography
+
 
 type alias Style style msg =
     { style
@@ -76,9 +77,9 @@ view msgMapper style (IsEnabled isEnabled) =
                 ++ (if isEnabled then
                         { content =
                             [ "Menu"
-                              |> Element.text
-                              |> Element.el Typography.h6
-                              |> Widget.asItem
+                                |> Element.text
+                                |> Element.el Typography.h6
+                                |> Widget.asItem
                             , Widget.insetItem style.insetItem
                                 { onPress = Just <| msgMapper <| ToggleModal False
                                 , icon =
@@ -86,7 +87,7 @@ view msgMapper style (IsEnabled isEnabled) =
                                         |> Icon.elmFeather FeatherIcons.toHtml
                                 , text = "Home"
                                 , content =
-                                    \{ size, color } ->
+                                    \_ ->
                                         Element.none
                                 }
                             , Widget.insetItem style.insetItem
@@ -96,16 +97,15 @@ view msgMapper style (IsEnabled isEnabled) =
                                         |> Icon.elmFeather FeatherIcons.toHtml
                                 , text = "About"
                                 , content =
-                                    \{ size, color } ->
+                                    \_ ->
                                         Element.none
                                 }
-                            ] 
-                            |> Widget.itemList style.sideSheet
+                            ]
+                                |> Widget.itemList style.sideSheet
                         , onDismiss = Just <| msgMapper <| ToggleModal False
                         }
-                        |> List.singleton
-                        |> Widget.singleModal
-                            
+                            |> List.singleton
+                            |> Widget.singleModal
 
                     else
                         []

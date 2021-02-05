@@ -36,6 +36,7 @@ snackbar style addSnackbar =
     )
 
 
+
 {--scrollingNavCard : Style msg -> ( String, Element msg, List (Element msg) )
 scrollingNavCard _ =
     ( "Scrolling Nav"
@@ -45,6 +46,7 @@ scrollingNavCard _ =
     , []
     )
 -}
+
 
 view :
     { theme : Theme
@@ -64,6 +66,7 @@ view { theme, addSnackbar } =
     , description = "Reusable views have an internal state but no update function. You will need to do some wiring, but nothing complicated."
     , items =
         [ snackbar style addSnackbar
+
         --, scrollingNavCard style
         ]
     }

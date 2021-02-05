@@ -1,16 +1,17 @@
-module Main exposing (main)
+module IconBug exposing (main)
 
 import Browser
 import Element exposing (..)
+import Element.Border as Border
+import Element.Input as Input
 import Html exposing (Html)
 import Svg
 import Svg.Attributes
-import Element.Border as Border
-import Element.Input as Input
+
 
 main : Html msg
 main =
-  Element.layout [] <|
+    Element.layout [] <|
         row []
             [ el
                 [ width (shrink |> minimum 100)
@@ -23,7 +24,10 @@ main =
                     none
                 )
             ]
-      {--Element.layout [] <|
+
+
+
+{--Element.layout [] <|
         row [ width shrink
             ]
             [ Element.el
@@ -37,4 +41,3 @@ main =
                             [ Element.el [centerX] <| text "test test test Test Test"]
                         )
             ]--}
-            

@@ -14,7 +14,6 @@ Just look for the function with the name of the package and copy&paste the respe
 -}
 
 import Color exposing (Color)
-import Dict exposing (size)
 import Element exposing (Element)
 import Html exposing (Html)
 import Svg exposing (Svg)

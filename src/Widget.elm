@@ -15,12 +15,12 @@ module Widget exposing
     , DividerStyle, divider
     , selectItem, asItem
     , itemList
-    , menuBar, tabBar
+    , AppBarStyle, menuBar, tabBar
     , SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInputStyle, TextInput, textInput
     , TabStyle, Tab, tab
     , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
-    , FullBleedItemStyle, InsetItem, InsetItemStyle, fullBleedItem, insetItem,AppBarStyle
+    , FullBleedItemStyle, InsetItem, InsetItemStyle, fullBleedItem, insetItem
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -174,7 +174,6 @@ import Internal.List as List
 import Internal.Modal as Modal
 import Internal.ProgressIndicator as ProgressIndicator
 import Internal.Select as Select
-import Internal.Sheet as Sheet
 import Internal.SortTable as SortTable
 import Internal.Switch as Switch
 import Internal.Tab as Tab
@@ -611,6 +610,22 @@ singleModal =
 
 
 {-| Same implementation as `singleModal` but also displays the "queued" modals.
+
+    import Element
+
+    type Msg
+        = Close
+
+    Element.layout
+        (multiModal
+            [ { onDismiss = Just Close
+              , content =
+                  Element.text "Click outside this window to close it."
+              }
+            ]
+        )
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 multiModal : List { onDismiss : Maybe msg, content : Element msg } -> List (Attribute msg)
 multiModal =
@@ -971,6 +986,27 @@ type alias Item msg =
     List (Attribute msg) -> Element msg
 
 
+{-| A text item spanning the full width.
+
+    import Element
+    import Widget.Material as Material
+
+    [ Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)
+        { onPress = Nothing
+        , icon = always Element.none
+        , text = "Item"
+        }
+    , Widget.divider (Material.fullBleedDivider Material.defaultPalette )
+    , Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)
+        { onPress = Nothing
+        , icon = always Element.none
+        , text = "Item"
+        }
+    ]
+        |> Widget.itemList (Material.cardColumn Material.defaultPalette)
+        |> always "Ignore this line" --> "Ignore this line"
+
+-}
 fullBleedItem :
     ItemStyle (FullBleedItemStyle msg) msg
     ->
@@ -1010,22 +1046,16 @@ asItem =
     import Element
     import Widget.Material as Material
 
-    [ Widget.textItem (Material.textItem Material.defaultPalette)
+    [ Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)
         { onPress = Nothing
         , icon = always Element.none
         , text = "Item"
-        , content =
-            \{ size, color } ->
-                Element.none
         }
     , Widget.divider (Material.insetDivider Material.defaultPalette )
-    , Widget.textItem (Material.textItem Material.defaultPalette)
+    , Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)
         { onPress = Nothing
         , icon = always Element.none
         , text = "Item"
-        , content =
-            \{ size, color } ->
-                Element.none
         }
     ]
         |> Widget.itemList (Material.cardColumn Material.defaultPalette)
@@ -1042,23 +1072,17 @@ divider =
     import Element
     import Widget.Material as Material
 
-    [ Widget.textItem (Material.textItem Material.defaultPalette)
+    [ Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)
         { onPress = Nothing
         , icon = always Element.none
         , text = "Item"
-        , content =
-            \{ size, color } ->
-                Element.none
         }
     , "Header"
         |> Widget.headerItem (Material.insetHeader Material.defaultPalette )
-    , Widget.textItem (Material.textItem Material.defaultPalette)
+    , Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)
         { onPress = Nothing
         , icon = always Element.none
         , text = "Item"
-        , content =
-            \{ size, color } ->
-                Element.none
         }
     ]
         |> Widget.itemList (Material.cardColumn Material.defaultPalette)
@@ -1075,7 +1099,7 @@ headerItem =
     import Element
     import Widget.Material as Material
 
-    [ Widget.textItem (Material.textItem Material.defaultPalette)
+    [ Widget.insetItem (Material.insetItem Material.defaultPalette)
         { onPress = Nothing
         , icon = always Element.none
         , text = "Item"
@@ -1084,7 +1108,7 @@ headerItem =
                 Element.none
         }
     , Widget.divider (Material.insetDivider Material.defaultPalette )
-    , Widget.textItem (Material.textItem Material.defaultPalette)
+    , Widget.insetItem (Material.insetItem Material.defaultPalette)
         { onPress = Nothing
         , icon = always Element.none
         , text = "Item"
@@ -1215,13 +1239,10 @@ imageItem =
         isExpanded =
             True
     in
-    (   [ Widget.textItem (Material.textItem Material.defaultPalette)
+    (   [ Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)
             { onPress = Nothing
             , icon = always Element.none
             , text = "Item with Icon"
-            , content =
-                \{ size, color } ->
-                    Element.none
             }
         ]
         ++ Widget.expansionItem (Material.expansionItem Material.defaultPalette )
@@ -1230,13 +1251,10 @@ imageItem =
             , icon = always Element.none
             , text = "Expandable Item"
             , content =
-                [ Widget.textItem (Material.textItem Material.defaultPalette)
+                [ Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)
                 { onPress = Nothing
                 , icon = always Element.none
                 , text = "Item with Icon"
-                , content =
-                    \{ size, color } ->
-                        Element.none
                 }
                 ]
             }
@@ -1265,6 +1283,35 @@ expansionItem =
 
 
 {-| Displays a selection of Buttons as a item list. This is intended to be used as a menu.
+
+    import Element
+    import Widget.Material as Material
+    import Widget.Material.Color as MaterialColor
+    import Element.Font as Font
+
+    type Msg =
+        Select Int
+
+    (   { selected = Just 1
+        , options =
+            [ "Option 1", "Option 2" ]
+                |> List.map
+                    (\text ->
+                        { text = text
+                        , icon = always Element.none
+                        }
+                    )
+        , onSelect = (\int ->
+            int
+            |> Select
+            |> Just
+            )
+        }
+            |> Widget.selectItem (Material.selectItem Material.defaultPalette)
+    )
+        |> Widget.itemList (Material.cardColumn Material.defaultPalette)
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 selectItem : ItemStyle (ButtonStyle msg) msg -> Select msg -> List (Item msg)
 selectItem =
@@ -1320,23 +1367,17 @@ column =
     import Element
     import Widget.Material as Material
 
-    [ Widget.textItem (Material.textItem Material.defaultPalette)
+    [ Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)
         { onPress = Nothing
         , icon = always Element.none
         , text = "Item"
-        , content =
-            \{ size, color } ->
-                Element.none
         }
     , "Header"
         |> Widget.headerItem (Material.insetHeader Material.defaultPalette )
-    , Widget.textItem (Material.textItem Material.defaultPalette)
+    , Widget.fullBleedItem (Material.fullBleedItem Material.defaultPalette)
         { onPress = Nothing
         , icon = always Element.none
         , text = "Item"
-        , content =
-            \{ size, color } ->
-                Element.none
         }
     ]
         |> Widget.itemList (Material.cardColumn Material.defaultPalette)
@@ -1395,6 +1436,35 @@ buttonRow =
 
 
 {-| A column of buttons
+
+    import Element
+    import Widget.Material as Material
+
+    type Msg =
+        Select Int
+
+    selected : Maybe Int
+    selected =
+        Just 0
+
+    Widget.select
+        { selected = selected
+        , options =
+            [ 1, 2, 42 ]
+                |> List.map
+                    (\int ->
+                        { text = String.fromInt int
+                        , icon = always Element.none
+                        }
+                    )
+        , onSelect = (\i -> Just (Select i ))
+        }
+        |> Widget.buttonColumn
+            { elementColumn = Material.column
+            , content = Material.toggleButton Material.defaultPalette
+            }
+        |> always "Ignore this line" --> "Ignore this line"
+
 -}
 buttonColumn :
     { elementColumn : ColumnStyle msg
@@ -1411,19 +1481,20 @@ buttonColumn =
 -- APP BAR
 --------------------------------------------------------------------------------
 
-{-|-}
+
+{-| -}
 type alias AppBarStyle content msg =
-    { elementRow : List (Attribute msg) 
+    { elementRow : List (Attribute msg)
     , content :
         { menu :
             { elementRow : List (Attribute msg)
             , content : content
             }
-        , search : TextInputStyle msg 
+        , search : TextInputStyle msg
         , actions :
             { elementRow : List (Attribute msg)
             , content :
-                { button : ButtonStyle msg 
+                { button : ButtonStyle msg
                 , searchIcon : Icon msg
                 , moreVerticalIcon : Icon msg
                 }
@@ -1431,9 +1502,38 @@ type alias AppBarStyle content msg =
         }
     }
 
+
 {-| A app bar with a menu button on the left side.
 
 This should be the default way to display the app bar. Specially for Phone users.
+
+    import Element exposing (DeviceClass(..))
+    import Widget.Material as Material
+
+    type Msg =
+        Select Int
+
+    selected : Int
+    selected = 0
+
+    Widget.menuBar style.tabBar
+        { title =
+            "Title"
+                |> Element.text
+                |> Element.el Typography.h6
+        , deviceClass = Phone
+        , openRightSheet = Nothing
+        , openTopSheet = Nothing
+        , primaryActions =
+            [   { icon =
+                    Material.Icons.change_history
+                        |> Icon.elmMaterialIcons Color
+                , text = "Action"
+                , onPress = Nothing
+                }
+            ]
+        , search = Nothing
+        }
 
 -}
 menuBar :
@@ -1455,11 +1555,52 @@ menuBar :
 menuBar =
     AppBar.menuBar
 
+
 {-| A app bar with tabs instead of a menu.
 
 This is should be used for big screens.
 
 It should be avoided for smaller screens or if you have more then 4 tabs
+
+    import Element exposing (DeviceClass(..))
+    import Widget.Material as Material
+
+    type Msg =
+        Select Int
+
+    selected : Int
+    selected = 0
+
+    Widget.tabBar style.tabBar
+        { title =
+            "Title"
+                |> Element.text
+                |> Element.el Typography.h6
+        , menu =
+            { selected = Just selected
+            , options =
+                [ "Home", "About" ]
+                    |> List.map
+                        (\string ->
+                            { text = string
+                            , icon = always Element.none
+                            }
+                        )
+            , onSelect = \int -> int |> Select |> Just
+            }
+        , deviceClass = Phone
+        , openRightSheet = Nothing
+        , openTopSheet = Nothing
+        , primaryActions =
+            [   { icon =
+                    Material.Icons.change_history
+                        |> Icon.elmMaterialIcons Color
+                , text = "Action"
+                , onPress = Nothing
+                }
+            ]
+        , search = Nothing
+        }
 
 -}
 tabBar :
@@ -1480,7 +1621,6 @@ tabBar :
     -> Element msg
 tabBar =
     AppBar.tabBar
-
 
 
 

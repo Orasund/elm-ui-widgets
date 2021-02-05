@@ -13,6 +13,7 @@ module Widget.Layout exposing
 
 It is responsive and changes view to apply to the [material design guidelines](https://material.io/components/app-bars-top).
 
+
 # Sheets
 
 @docs leftSheet, rightSheet, searchSheet
@@ -24,21 +25,14 @@ It is responsive and changes view to apply to the [material design guidelines](h
 
 -}
 
-import Array
-import Element exposing (Attribute, DeviceClass(..), Element)
-import Element.Input as Input
-import Html exposing (Html)
-import Internal.AppBar as AppBar exposing (AppBarStyle)
-import Internal.Button as Button exposing (Button, ButtonStyle)
-import Internal.Dialog as Dialog
+import Element exposing (DeviceClass(..), Element)
+import Internal.Button exposing (Button, ButtonStyle)
 import Internal.Item as Item exposing (InsetItemStyle, ItemStyle)
-import Internal.Modal as Modal exposing (Modal)
-import Internal.Select as Select exposing (Select)
-import Internal.TextInput as TextInput exposing (TextInput, TextInputStyle)
 import Internal.List as List exposing (ColumnStyle)
+import Internal.Modal exposing (Modal)
+import Internal.Select exposing (Select)
+import Internal.TextInput as TextInput exposing (TextInput, TextInputStyle)
 import Widget.Customize as Customize
-import Widget.Icon exposing (Icon)
-import Widget.Snackbar as Snackbar exposing (Message, SnackbarStyle)
 
 
 {-| obtain the Device Calss from a given window.

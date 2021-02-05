@@ -2,24 +2,25 @@ module Data.Example exposing (Example, Model, Msg, asList, fromString, init, sub
 
 import Data.Style exposing (Style)
 import Element exposing (Element)
+import Example.AppBar as AppBar
 import Example.Button as Button
 import Example.Dialog as Dialog
 import Example.Icon as Icon
+import Example.Layout as Layout
 import Example.List as List
 import Example.Modal as Modal
 import Example.MultiSelect as MultiSelect
 import Example.ProgressIndicator as ProgressIndicator
 import Example.Select as Select
+import Example.Sheet as Sheet
+import Example.Snackbar as Snackbar
 import Example.SortTable as SortTable
 import Example.Switch as Switch
 import Example.Tab as Tab
 import Example.TextInput as TextInput
-import Example.Sheet as Sheet
-import Example.AppBar as AppBar
-import Example.Snackbar as Snackbar
 import Framework.Grid as Grid
 import View.States as States
-import Example.Layout as Layout
+
 
 type Example
     = ButtonExample
@@ -100,14 +101,19 @@ toString example =
 
         IconExample ->
             "Icon"
+
         SheetExample ->
             "Sheet"
+
         AppBarExample ->
             "App Bar"
+
         LayoutExample ->
             "Layout"
+
         SnackbarExample ->
             "Snackbar"
+
 
 fromString : String -> Maybe Example
 fromString string =
@@ -147,15 +153,16 @@ fromString string =
 
         "Icon" ->
             Just IconExample
-        
+
         "Sheet" ->
             Just SheetExample
+
         "App Bar" ->
             Just AppBarExample
-        
+
         "Layout" ->
             Just LayoutExample
-        
+
         "Snackbar" ->
             Just SnackbarExample
 
@@ -201,16 +208,16 @@ get example =
 
         IconExample ->
             .icon
-        
+
         SheetExample ->
             .sheet
-        
+
         AppBarExample ->
             .appBar
-        
+
         LayoutExample ->
             .layout
-        
+
         SnackbarExample ->
             .snackbar
 
@@ -253,16 +260,16 @@ toTests example =
 
         IconExample ->
             States.icon
-        
+
         SheetExample ->
             States.sheet
-        
+
         AppBarExample ->
             States.appBar
-        
+
         LayoutExample ->
             States.layout
-        
+
         SnackbarExample ->
             States.snackbar
 
@@ -284,6 +291,7 @@ type Msg
     | AppBar AppBar.Msg
     | Layout Layout.Msg
     | Snackbar Snackbar.Msg
+
 
 type alias Model =
     { button : Button.Model
@@ -392,16 +400,16 @@ init =
 
         ( iconModel, iconMsg ) =
             Icon.init
-        
+
         ( sheetModel, sheetMsg ) =
             Sheet.init
-        
+
         ( appBarModel, appBarMsg ) =
             AppBar.init
-        
+
         ( layoutModel, layoutMsg ) =
             Layout.init
-        
+
         ( snackbarModel, snackbarMsg ) =
             Snackbar.init
     in
@@ -598,13 +606,16 @@ update msg model =
 
         Icon m ->
             updateField .icon m
-        
+
         Sheet m ->
             updateField .sheet m
+
         AppBar m ->
             updateField .appBar m
+
         Layout m ->
             updateField .layout m
+
         Snackbar m ->
             updateField .snackbar m
     )
