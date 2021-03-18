@@ -23,7 +23,7 @@ module Widget.Material exposing
 The stylings are following [the official Material Design guidelines](https://material.io/components) as close as possible.
 Please use these widgets in combination with the official guidelines.
 
-The typograpahy is taken from [the material design guidelines](https://material.io/design/typography/the-type-system.html#type-scale).
+The typograpahy is taken from [the Material Design guidelines](https://material.io/design/typography/the-type-system.html#type-scale).
 Its recommended to use a font size of 16px width and the [Roboto Font](https://fonts.google.com/specimen/Roboto?query=Ro).
 
 The style are not opaque, so you can change every styling to your needs.

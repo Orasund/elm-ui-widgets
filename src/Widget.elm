@@ -83,16 +83,12 @@ You can create you own widgets by sticking widgets types together.
 
 ![Dialog](https://orasund.github.io/elm-ui-widgets/assets/dialog.png)
 
-[Open in Ellie](https://ellie-app.com/9p5Rdz625TZa1)
-
 @docs DialogStyle, Dialog, dialog
 
 
 # List
 
 ![List](https://orasund.github.io/elm-ui-widgets/assets/list.png)
-
-[Open in Ellie](https://ellie-app.com/9p5RJnDVVCKa1)
 
 
 ## Row

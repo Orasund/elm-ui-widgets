@@ -3,8 +3,8 @@
 This package contains **independent** widgets (no components) written for [Elm-Ui](https://package.elm-lang.org/packages/mdgriffith/elm-ui/latest/). These widgets have no dependencies to other parts of this package. So you can just use as much as you need.
 
 * [Examples of all widgets can be found here](https://orasund.github.io/elm-ui-widgets/3.0.0/).
-* It has a [Material Design Theme](/Widget-Material) ready to use. Additionally it also supports custom themes.
-* It is highly customizable. Checkout [Widget.Customize](/Widget-Customize) for more information.
+* It has a [Material Design Theme](Widget-Material) ready to use. Additionally, it also supports custom themes.
+* It is highly customizable. Checkout [Widget.Customize](Widget-Customize) for more information.
 
 Feel free to start an [issue on the repository](https://github.com/Orasund/elm-ui-widgets/issues) if you have any questions.
 
@@ -139,12 +139,12 @@ selectButton :
     -> Element msg
 ```
 
-Checkout the examples in [Widget](https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/Widget) for more details.
+Checkout the examples in [Widget](Widget) for more details.
 
 ## Reusable Views vs. Components
 
 In Elm we like to use reusable views instead of components.
-At first this packages had a few components, but they where more complicated in comparison. They got slowly turned into reusable views one by one. Most have been reduced even further into _view functions_: Reusable views without a model. All function in [Widget](https://package.elm-lang.org/packages/Orasund/elm-ui-widgets/latest/Widget) are view functions.
+At first this packages had a few components, but they where more complicated in comparison. They got slowly turned into reusable views one by one. Most have been reduced even further into _view functions_: Reusable views without a model. All function in [Widget](Widget) are view functions.
 
 ## Alternatives
 

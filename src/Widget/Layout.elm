@@ -3,7 +3,7 @@ module Widget.Layout exposing
     , getDeviceClass, partitionActions, orderModals
     )
 
-{-| Combines multiple concepts from the [material design specification](https://material.io/components/), namely:
+{-| Combines multiple concepts from the [Material Design specification](https://material.io/components/), namely:
 
   - Top App Bar
   - Navigation Draw
@@ -11,7 +11,7 @@ module Widget.Layout exposing
   - Dialog
   - Snackbar
 
-It is responsive and changes view to apply to the [material design guidelines](https://material.io/components/app-bars-top).
+It is responsive and changes view to apply to the [Material Design guidelines](https://material.io/components/app-bars-top).
 
 ![Layout](https://orasund.github.io/elm-ui-widgets/assets/layout.png)
 
