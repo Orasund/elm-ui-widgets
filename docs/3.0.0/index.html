@@ -7063,6 +7063,7 @@ var $author$project$Stateless$subscriptions = function (model) {
 		$author$project$Data$Example$subscriptions(model.example));
 };
 var $author$project$Main$subscriptions = function (model) {
+	var ms = 2000;
 	return A2(
 		$elm$core$Platform$Sub$map,
 		$author$project$Main$LoadedSpecific,
@@ -7072,9 +7073,9 @@ var $author$project$Main$subscriptions = function (model) {
 					[
 						A2(
 						$elm$time$Time$every,
-						50,
+						ms,
 						$elm$core$Basics$always(
-							$author$project$Main$TimePassed(50))),
+							$author$project$Main$TimePassed(ms))),
 						$elm$browser$Browser$Events$onResize(
 						F2(
 							function (h, w) {
@@ -17138,6 +17139,23 @@ var $mdgriffith$elm_ui$Element$column = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
+var $author$project$Widget$Customize$mapElement = F2(
+	function (fun, a) {
+		return _Utils_update(
+			a,
+			{
+				element: fun(a.element)
+			});
+	});
+var $author$project$Widget$Customize$element = F2(
+	function (list, a) {
+		return A2(
+			$author$project$Widget$Customize$mapElement,
+			function (b) {
+				return _Utils_ap(b, list);
+			},
+			a);
+	});
 var $author$project$Internal$List$internal = F2(
 	function (style, list) {
 		return A2(
@@ -17156,7 +17174,14 @@ var $author$project$Internal$List$internal = F2(
 var $author$project$Internal$List$itemList = function (style) {
 	return A2(
 		$elm$core$Basics$composeR,
-		$author$project$Internal$List$internal(style.content),
+		$author$project$Internal$List$internal(
+			A2(
+				$author$project$Widget$Customize$element,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink)
+					]),
+				style.content)),
 		$mdgriffith$elm_ui$Element$column(style.elementColumn));
 };
 var $author$project$Internal$Select$select = function (_v0) {
@@ -21076,23 +21101,6 @@ var $icidasset$elm_material_icons$Material$Icons$add = A2(
 				]),
 			_List_Nil)
 		]));
-var $author$project$Widget$Customize$mapElement = F2(
-	function (fun, a) {
-		return _Utils_update(
-			a,
-			{
-				element: fun(a.element)
-			});
-	});
-var $author$project$Widget$Customize$element = F2(
-	function (list, a) {
-		return A2(
-			$author$project$Widget$Customize$mapElement,
-			function (b) {
-				return _Utils_ap(b, list);
-			},
-			a);
-	});
 var $icidasset$elm_material_icons$Material$Icons$exposure_plus_2 = A2(
 	$icidasset$elm_material_icons$Material$Icons$Internal$icon,
 	_List_fromArray(

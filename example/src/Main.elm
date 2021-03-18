@@ -283,7 +283,10 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    ([ Time.every 50 (always (TimePassed 50))
+    let
+        ms = 2000
+    in
+    ([ Time.every ms (always (TimePassed ms))
      , Events.onResize (\h w -> Resized { height = h, width = w })
      ]
         ++ (case model of
