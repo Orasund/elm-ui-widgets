@@ -91,7 +91,9 @@ cardColumn palette =
     , content =
         { element =
             [ Element.paddingXY 16 12
-            , Element.height <| Element.minimum 48 <| Element.shrink
+
+            -- HOTFIX FOR ISSUE #52
+            --, Element.height <| Element.minimum 48 <| Element.shrink
             , palette.surface
                 |> MaterialColor.fromColor
                 |> Background.color

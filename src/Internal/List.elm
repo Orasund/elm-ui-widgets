@@ -94,10 +94,7 @@ column style =
 itemList : ColumnStyle msg -> List (Item msg) -> Element msg
 itemList style =
     internal
-        (style.content
-            --FIX FOR ISSUE #52
-            |> Customize.element [ Element.height Element.shrink ]
-        )
+        style.content
         >> Element.column
             style.elementColumn
 
