@@ -160,7 +160,7 @@ fullBleedHeader palette =
             { bottom = 0
             , left = 1
             , right = 1
-            , top = 0
+            , top = 1
             }
         ]
     , content =
@@ -169,9 +169,7 @@ fullBleedHeader palette =
             , Element.spacing <| 8
             ]
         , content =
-            { divider =
-                insetDivider palette
-                    |> .content
+            { divider = { element = [] }
             , title =
                 Typography.caption
                     ++ [ MaterialColor.gray
