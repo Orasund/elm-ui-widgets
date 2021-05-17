@@ -17,6 +17,7 @@ import Widget
         , InsetItemStyle
         , ItemStyle
         , MultiLineItemStyle
+        , PasswordInputStyle
         , ProgressIndicatorStyle
         , RowStyle
         , SortTableStyle
@@ -55,6 +56,7 @@ style palette =
     , selectButton = Material.toggleButton palette
     , tab = Material.tab palette
     , textInput = Material.textInput palette
+    , passwordInput = Material.passwordInput palette
     , chipButton = Material.chip palette
     , dialog = Material.alertDialog palette
     , progressIndicator = Material.progressIndicator palette
@@ -113,6 +115,7 @@ type alias Style msg =
     , primaryButton : ButtonStyle msg
     , tab : TabStyle msg
     , textInput : TextInputStyle msg
+    , passwordInput : PasswordInputStyle msg
     , chipButton : ButtonStyle msg
     , row : RowStyle msg
     , buttonRow : RowStyle msg

@@ -4,7 +4,7 @@ module Widget.Material exposing
     , iconButton, toggleButton, buttonRow
     , switch
     , cardColumn
-    , chip, textInput
+    , chip, textInput, passwordInput
     , alertDialog
     , row, column
     , menuBar, tabBar
@@ -65,7 +65,7 @@ Thus for now we only provide a card containing a list.
 
 # Chip
 
-@docs chip, textInput
+@docs chip, textInput, passwordInput
 
 
 # Dialog
@@ -143,12 +143,14 @@ import Internal.Material.Dialog as Dialog
 import Internal.Material.Item as Item
 import Internal.Material.List as List
 import Internal.Material.Palette as Palette
+import Internal.Material.PasswordInput as PasswordInput
 import Internal.Material.ProgressIndicator as ProgressIndicator
 import Internal.Material.Snackbar as Snackbar
 import Internal.Material.SortTable as SortTable
 import Internal.Material.Switch as Switch
 import Internal.Material.Tab as Tab
 import Internal.Material.TextInput as TextInput
+import Internal.PasswordInput exposing (PasswordInputStyle)
 import Internal.ProgressIndicator exposing (ProgressIndicatorStyle)
 import Internal.SortTable exposing (SortTableStyle)
 import Internal.Switch exposing (SwitchStyle)
@@ -642,6 +644,11 @@ Technical Remark:
 textInput : Palette -> TextInputStyle msg
 textInput =
     TextInput.textInput
+
+
+passwordInput : Palette -> PasswordInputStyle msg
+passwordInput =
+    PasswordInput.passwordInput
 
 
 

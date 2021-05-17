@@ -1,4 +1,4 @@
-module View.States exposing (appBar, button, dialog, icon, layout, list, modal, multiSelect, progressIndicator, select, sheet, snackbar, sortTable, switch, tab, textInput)
+module View.States exposing (appBar, button, dialog, icon, layout, list, modal, multiSelect, passwordInput, progressIndicator, select, sheet, snackbar, sortTable, switch, tab, textInput)
 
 import Data.Style exposing (Style)
 import Element exposing (Element)
@@ -486,6 +486,29 @@ textInput idle style =
         , onChange = always idle
         }
             |> Widget.textInput style.textInput
+      )
+    ]
+
+
+passwordInput : msg -> Style msg -> List ( String, Element msg )
+passwordInput idle style =
+    [ ( "show"
+      , { text = "password"
+        , placeholder = Nothing
+        , label = "Label"
+        , onChange = always idle
+        , show = True
+        }
+            |> Widget.currentPasswordInput style.passwordInput
+      )
+    , ( "no show"
+      , { text = "password"
+        , placeholder = Nothing
+        , label = "Label"
+        , onChange = always idle
+        , show = False
+        }
+            |> Widget.currentPasswordInput style.passwordInput
       )
     ]
 

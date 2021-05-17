@@ -10,6 +10,7 @@ import Example.Layout as Layout
 import Example.List as List
 import Example.Modal as Modal
 import Example.MultiSelect as MultiSelect
+import Example.PasswordInput as PasswordInput
 import Example.ProgressIndicator as ProgressIndicator
 import Example.Select as Select
 import Example.Sheet as Sheet
@@ -32,6 +33,7 @@ type Example
     | ModalExample
     | DialogExample
     | TextInputExample
+    | PasswordInputExample
     | ListExample
     | ProgressIndicatorExample
     | IconExample
@@ -52,6 +54,7 @@ asList =
     , ModalExample
     , DialogExample
     , TextInputExample
+    , PasswordInputExample
     , ListExample
     , ProgressIndicatorExample
     , IconExample
@@ -92,6 +95,9 @@ toString example =
 
         TextInputExample ->
             "TextInput"
+
+        PasswordInputExample ->
+            "PasswordInput"
 
         ListExample ->
             "List"
@@ -144,6 +150,9 @@ fromString string =
 
         "TextInput" ->
             Just TextInputExample
+
+        "PasswordInput" ->
+            Just PasswordInputExample
 
         "List" ->
             Just ListExample
@@ -200,6 +209,9 @@ get example =
         TextInputExample ->
             .textInput
 
+        PasswordInputExample ->
+            .passwordInput
+
         ListExample ->
             .list
 
@@ -252,6 +264,9 @@ toTests example =
         TextInputExample ->
             States.textInput
 
+        PasswordInputExample ->
+            States.passwordInput
+
         ListExample ->
             States.list
 
@@ -284,6 +299,7 @@ type Msg
     | Modal Modal.Msg
     | Dialog Dialog.Msg
     | TextInput TextInput.Msg
+    | PasswordInput PasswordInput.Msg
     | List List.Msg
     | ProgressIndicator ProgressIndicator.Msg
     | Icon Icon.Msg
@@ -303,6 +319,7 @@ type alias Model =
     , modal : Modal.Model
     , dialog : Dialog.Model
     , textInput : TextInput.Model
+    , passwordInput : PasswordInput.Model
     , list : List.Model
     , progressIndicator : ProgressIndicator.Model
     , icon : Icon.Model
@@ -332,6 +349,7 @@ type alias UpgradeCollection =
     , modal : UpgradeRecord Modal.Model Modal.Msg
     , dialog : UpgradeRecord Dialog.Model Dialog.Msg
     , textInput : UpgradeRecord TextInput.Model TextInput.Msg
+    , passwordInput : UpgradeRecord PasswordInput.Model PasswordInput.Msg
     , list : UpgradeRecord List.Model List.Msg
     , progressIndicator : UpgradeRecord ProgressIndicator.Model ProgressIndicator.Msg
     , icon : UpgradeRecord Icon.Model Icon.Msg
@@ -352,6 +370,7 @@ type alias ExampleView msg =
     , modal : Element msg
     , dialog : Element msg
     , textInput : Element msg
+    , passwordInput : Element msg
     , list : Element msg
     , progressIndicator : Element msg
     , icon : Element msg
@@ -392,6 +411,9 @@ init =
         ( textInputModel, textInputMsg ) =
             TextInput.init
 
+        ( passwordInputModel, passwordInputMsg ) =
+            PasswordInput.init
+
         ( listModel, listMsg ) =
             List.init
 
@@ -422,6 +444,7 @@ init =
       , modal = modalModel
       , dialog = dialogModel
       , textInput = textInputModel
+      , passwordInput = passwordInputModel
       , list = listModel
       , progressIndicator = progressIndicatorModel
       , icon = iconModel
@@ -439,6 +462,7 @@ init =
       , Cmd.map Modal modalMsg
       , Cmd.map Dialog dialogMsg
       , Cmd.map TextInput textInputMsg
+      , Cmd.map PasswordInput passwordInputMsg
       , Cmd.map List listMsg
       , Cmd.map ProgressIndicator progressIndicatorMsg
       , Cmd.map Icon iconMsg
@@ -515,6 +539,13 @@ upgradeRecord =
         , msgMapper = TextInput
         , updateFun = TextInput.update
         , subscriptionsFun = TextInput.subscriptions
+        }
+    , passwordInput =
+        { from = .passwordInput
+        , to = \model a -> { model | passwordInput = a }
+        , msgMapper = PasswordInput
+        , updateFun = PasswordInput.update
+        , subscriptionsFun = PasswordInput.subscriptions
         }
     , list =
         { from = .list
@@ -598,6 +629,9 @@ update msg model =
         TextInput m ->
             updateField .textInput m
 
+        PasswordInput m ->
+            updateField .passwordInput m
+
         List m ->
             updateField .list m
 
@@ -637,6 +671,7 @@ subscriptions model =
     , upgradeRecord.modal |> subFun
     , upgradeRecord.dialog |> subFun
     , upgradeRecord.textInput |> subFun
+    , upgradeRecord.passwordInput |> subFun
     , upgradeRecord.list |> subFun
     , upgradeRecord.progressIndicator |> subFun
     , upgradeRecord.icon |> subFun
@@ -672,6 +707,8 @@ view msgMapper style model =
         Dialog.view (Dialog >> msgMapper) style (.dialog model)
     , textInput =
         TextInput.view (TextInput >> msgMapper) style (.textInput model)
+    , passwordInput =
+        PasswordInput.view (PasswordInput >> msgMapper) style (.passwordInput model)
     , list =
         List.view (List >> msgMapper) style (.list model)
     , progressIndicator =

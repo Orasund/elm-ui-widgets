@@ -20,6 +20,7 @@ module Widget exposing
     , AppBarStyle, menuBar, tabBar
     , SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInputStyle, TextInput, textInput
+    , PasswordInputStyle, PasswordInput, newPasswordInput, currentPasswordInput
     , TabStyle, Tab, tab
     , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
     )
@@ -134,6 +135,7 @@ You can create you own widgets by sticking widgets types together.
 ![textInput](https://orasund.github.io/elm-ui-widgets/assets/textInput.png)
 
 @docs TextInputStyle, TextInput, textInput
+@docs PasswordInputStyle, PasswordInput, newPasswordInput, currentPasswordInput
 
 
 # Tab
@@ -160,6 +162,7 @@ import Internal.Dialog as Dialog
 import Internal.Item as Item
 import Internal.List as List
 import Internal.Modal as Modal
+import Internal.PasswordInput as PasswordInput
 import Internal.ProgressIndicator as ProgressIndicator
 import Internal.Select as Select
 import Internal.SortTable as SortTable
@@ -788,6 +791,38 @@ textInput =
             TextInput.textInput
     in
     fun
+
+
+{-| -}
+type alias PasswordInputStyle msg =
+    { elementRow : List (Attribute msg)
+    , content :
+        { password :
+            { elementPasswordInput : List (Attribute msg)
+            }
+        }
+    }
+
+
+{-| Password Input widget type
+-}
+type alias PasswordInput msg =
+    { text : String
+    , placeholder : Maybe (Placeholder msg)
+    , label : String
+    , onChange : String -> msg
+    , show : Bool
+    }
+
+
+currentPasswordInput : PasswordInputStyle msg -> PasswordInput msg -> Element msg
+currentPasswordInput =
+    PasswordInput.currentPasswordInput
+
+
+newPasswordInput : PasswordInputStyle msg -> PasswordInput msg -> Element msg
+newPasswordInput =
+    PasswordInput.newPasswordInput
 
 
 
