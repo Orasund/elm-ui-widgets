@@ -4,7 +4,7 @@ import Element exposing (Element)
 import Element.Background as Background
 import Material.Icons as MaterialIcons exposing (offline_bolt)
 import Material.Icons.Types exposing (Coloring(..))
-import Story exposing (Story)
+import Story
 import Tooling
 import UiExplorer
 import Widget
@@ -29,20 +29,21 @@ intro =
 book =
     Story.book (Just "States") buttonBlocs
         |> Story.addStory
-            (Story "Palette"
+            (Story.optionListStory "Palette"
+                defaultPalette
                 [ ( "default", defaultPalette )
                 , ( "dark", darkPalette )
                 ]
             )
         |> Story.addStory
-            (Story "Text"
-                [ ( "OK", "OK" )
-                , ( "Cancel", "Cancel" )
-                , ( "Something a little too long", "Something a little too long" )
-                ]
+            (Story.textStory "Label"
+                "OK"
             )
         |> Story.addStory
-            (Story "Icon"
+            (Story.optionListStory "Icon"
+                (MaterialIcons.done
+                    |> Icon.elmMaterialIcons Color
+                )
                 [ ( "done"
                   , MaterialIcons.done
                         |> Icon.elmMaterialIcons Color
@@ -50,10 +51,17 @@ book =
                 ]
             )
         |> Story.addStory
-            (Story "onPress"
-                [ ( "Something", Just Noop )
-                , ( "Nothing", Nothing )
-                ]
+            (Story.boolStory "with event handler"
+                ( Just Noop, Nothing )
+                True
+            )
+        |> Story.addStory
+            (Story.rangeStory "Height"
+                { unit = "px"
+                , min = 1
+                , max = 200
+                , default = 48
+                }
             )
         |> Story.build
 
@@ -119,16 +127,19 @@ subscriptions _ =
     Sub.none
 
 
-viewButton palette text icon onPress _ _ =
+viewButton palette text icon onPress size _ _ =
     Tooling.canvas <|
-        Widget.button (containedButton palette)
+        Widget.button
+            (containedButton palette
+                |> Customize.elementButton [ Element.height <| Element.px size ]
+            )
             { text = text
             , icon = icon
             , onPress = onPress
             }
 
 
-view palette _ _ _ _ model =
+view palette _ _ _ _ _ model =
     let
         style =
             { containedButton = Material.containedButton palette
