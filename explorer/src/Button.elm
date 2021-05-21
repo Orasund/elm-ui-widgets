@@ -34,6 +34,10 @@ book =
                 [ Background.color <| MaterialColor.fromColor MaterialColor.gray ]
                 Nothing
                 viewButton
+            |> Story.addBloc Tooling.FullWidthBloc
+                []
+                (Just "source code")
+                viewButtonSource
         )
         |> Story.addStory
             (Story.optionListStory "Palette"
@@ -86,6 +90,31 @@ viewButton palette text icon onPress size _ _ =
         , icon = icon
         , onPress = onPress
         }
+
+
+viewButtonSource palette text icon onPress size _ _ =
+    Tooling.sourceCode <|
+        """Widget.button
+    (Material.containedButton palette
+          |> Customize.elementButton [ Element.height <| Element.px """
+            ++ String.fromInt size
+            ++ """ ]
+    )
+    { text =\""""
+            ++ text
+            ++ """" 
+    , icon = MaterialIcons.done |> Icon.elmMaterialIcons Widget.Material.Types.Color
+    , onPress = """
+            ++ (case onPress of
+                    Nothing ->
+                        "Nothing"
+
+                    Just () ->
+                        "Just ()"
+               )
+            ++ """
+    }
+    """
 
 
 type alias Model =

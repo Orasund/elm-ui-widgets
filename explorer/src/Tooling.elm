@@ -408,3 +408,10 @@ canvas view =
             , Element.centerY
             ]
             view
+
+
+sourceCode : String -> Element msg
+sourceCode code =
+    ("```\n" ++ code ++ "\n```")
+        |> Markdown.toHtml []
+        |> Element.html
