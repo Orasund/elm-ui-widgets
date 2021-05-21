@@ -1,25 +1,38 @@
 module Tooling exposing (..)
 
 import Dict exposing (Dict)
-import Element exposing (Element)
+import Element exposing (Attribute, Element)
+import Element.Background as Background
 import Markdown
 import SelectList exposing (SelectList)
 import UiExplorer exposing (Page, PageSize)
 import Widget
+import Widget.Customize as Customize
 import Widget.Material as Material
+import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
+
+
+type BlocPosition
+    = FullWidthBloc
+    | RightColumnBloc
+    | NewRightColumnBloc
+    | LeftColumnBloc
+    | NewLeftColumnBloc
 
 
 type alias BlocView msg =
     { body : Element msg
-    , sidebloc : Bool
+    , position : BlocPosition
+    , attributes : List (Attribute msg)
     }
 
 
 mapBlocView : (a -> b) -> BlocView a -> BlocView b
 mapBlocView map view =
     { body = Element.map map view.body
-    , sidebloc = view.sidebloc
+    , position = view.position
+    , attributes = List.map (Element.mapAttribute map) view.attributes
     }
 
 
@@ -129,6 +142,10 @@ blocListSingleton bloc =
     }
 
 
+type alias BlocMeta =
+    { title : Maybe String }
+
+
 {-| -}
 type BlocBuilder model msg flags
     = BlocBuilder
@@ -136,7 +153,7 @@ type BlocBuilder model msg flags
         , update : msg -> model -> ( model, Cmd msg )
         , views : PageSize -> model -> List (BlocView msg)
         , subscriptions : model -> Sub msg
-        , meta : List { title : Maybe String }
+        , meta : List BlocMeta
         }
 
 
@@ -228,70 +245,147 @@ nextBlocList config (BlocBuilder previous) =
         }
 
 
+type LayoutRow msg
+    = OneColumn (List ( BlocMeta, BlocView msg ))
+    | TwoColumn (List ( BlocMeta, BlocView msg )) (List ( BlocMeta, BlocView msg ))
+
+
+type alias Layout msg =
+    List (LayoutRow msg)
+
+
+layoutAddBloc : ( BlocMeta, BlocView msg ) -> Layout msg -> Layout msg
+layoutAddBloc ( meta, view ) layout =
+    case view.position of
+        FullWidthBloc ->
+            case layout of
+                (OneColumn items) :: tail ->
+                    OneColumn (( meta, view ) :: items) :: tail
+
+                _ ->
+                    OneColumn [ ( meta, view ) ] :: layout
+
+        LeftColumnBloc ->
+            case layout of
+                (TwoColumn left right) :: tail ->
+                    TwoColumn (( meta, view ) :: left) right :: tail
+
+                _ ->
+                    TwoColumn [ ( meta, view ) ] [] :: layout
+
+        NewLeftColumnBloc ->
+            TwoColumn [ ( meta, view ) ] [] :: layout
+
+        RightColumnBloc ->
+            case layout of
+                (TwoColumn left right) :: tail ->
+                    TwoColumn left (( meta, view ) :: right) :: tail
+
+                _ ->
+                    TwoColumn [] [ ( meta, view ) ] :: layout
+
+        NewRightColumnBloc ->
+            TwoColumn [] [ ( meta, view ) ] :: layout
+
+
+layoutBlocView : List (Attribute msg) -> ( BlocMeta, BlocView msg ) -> Element msg
+layoutBlocView attributes ( meta, view ) =
+    Widget.column
+        (Material.cardColumn Material.defaultPalette
+            |> Customize.elementColumn attributes
+            |> Customize.mapContent (Customize.element <| Element.height Element.fill :: view.attributes)
+        )
+    <|
+        List.filterMap identity
+            [ meta.title
+                |> Maybe.map Element.text
+                |> Maybe.map (Element.el Typography.h3)
+            , Just view.body
+            ]
+
+
+layoutRowView : LayoutRow msg -> List (Element msg)
+layoutRowView row =
+    case row of
+        OneColumn items ->
+            items
+                |> List.reverse
+                |> List.map (layoutBlocView [])
+
+        TwoColumn left right ->
+            Element.row
+                [ Element.width Element.fill
+                , Element.spacing 10
+                ]
+                [ Element.column
+                    [ Element.width <| Element.fillPortion 2
+                    , Element.height Element.fill
+                    ]
+                  <|
+                    List.map
+                        (layoutBlocView
+                            [ Element.height Element.fill ]
+                        )
+                    <|
+                        List.reverse left
+                , Element.column
+                    [ Element.width <| Element.fillPortion 1
+                    , Element.height Element.fill
+                    ]
+                  <|
+                    List.map
+                        (layoutBlocView
+                            [ Element.height Element.fill ]
+                        )
+                    <|
+                        List.reverse right
+                ]
+                |> List.singleton
+
+
 page : BlocBuilder model msg flags -> Page model msg flags
 page (BlocBuilder config) =
     { init = config.init
     , update = config.update
     , view =
         \pagesize model ->
-            let
-                ( sideblocs, blocs ) =
-                    config.views pagesize model
-                        |> List.map2
-                            (\meta view ->
-                                ( view.sidebloc
-                                , Widget.column (Material.cardColumn Material.defaultPalette) <|
-                                    List.filterMap identity
-                                        [ meta.title
-                                            |> Maybe.map Element.text
-                                            |> Maybe.map (Element.el Typography.h3)
-                                        , Just view.body
-                                        ]
-                                )
-                            )
-                            config.meta
-                        |> List.partition Tuple.first
-                        |> Tuple.mapBoth (List.map Tuple.second) (List.map Tuple.second)
-            in
-            Element.row
-                [ Element.width Element.shrink
-                , Element.centerX
-                , Element.spacing 10
-                ]
-                [ Element.column
+            config.views pagesize model
+                |> List.map2 Tuple.pair config.meta
+                |> List.foldl layoutAddBloc []
+                |> List.reverse
+                |> List.concatMap layoutRowView
+                |> Element.column
                     [ Element.padding 10
                     , Element.spacing 10
                     , Element.px 800 |> Element.width
+                    , Element.centerX
                     ]
-                    blocs
-                , Element.column
-                    [ Element.padding 10
-                    , Element.spacing 10
-                    , Element.px 400 |> Element.width
-                    ]
-                    sideblocs
-                ]
     , subscriptions = config.subscriptions
     }
 
 
 {-| render a markdown text into a simple panel
 -}
-markdown : String -> Bloc () () ()
-markdown text =
-    static
+markdown : List (Attribute ()) -> String -> Bloc () () ()
+markdown attributes text =
+    static attributes
         (\_ _ ->
             Markdown.toHtml [] text
                 |> Element.html
         )
 
 
-static : (PageSize -> flags -> Element msg) -> Bloc flags msg flags
-static blocView =
+static : List (Attribute msg) -> (PageSize -> flags -> Element msg) -> Bloc flags msg flags
+static attributes blocView =
     { init = \flags -> ( flags, Cmd.none )
     , title = Nothing
     , update = \_ m -> ( m, Cmd.none )
-    , view = \pagesize flags -> { body = blocView pagesize flags, sidebloc = False }
+    , view =
+        \pagesize flags ->
+            { body = blocView pagesize flags
+            , position = FullWidthBloc
+            , attributes = attributes
+            }
     , subscriptions = \_ -> Sub.none
     }
 
@@ -306,23 +400,11 @@ canvas view =
     Element.el
         [ Element.padding 30
         , Element.width Element.fill
+        , Background.color <| MaterialColor.fromColor <| MaterialColor.gray
         ]
     <|
         Element.el
             [ Element.centerX
-            , Element.width Element.shrink
+            , Element.centerY
             ]
             view
-
-
-assidebloc : Bloc model msg flags -> Bloc model msg flags
-assidebloc bloc =
-    { bloc
-        | view =
-            \pagesize model ->
-                let
-                    sidebloc =
-                        bloc.view pagesize model
-                in
-                { sidebloc | sidebloc = True }
-    }

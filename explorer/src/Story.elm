@@ -1,7 +1,7 @@
 module Story exposing (..)
 
 import Dict exposing (Dict)
-import Element exposing (Element)
+import Element exposing (Attribute, Element)
 import Element.Input as Input exposing (Label, Option, labelAbove, option, radio)
 import SelectList exposing (SelectList)
 import Tooling
@@ -78,7 +78,7 @@ type alias BlocList view model msg flags =
     { init : flags -> ( model, Cmd msg )
     , update : msg -> model -> ( model, Cmd msg )
     , titles : List (Maybe String)
-    , views : List view
+    , views : List ( Tooling.BlocPosition, List (Attribute msg), view )
     , subscriptions : model -> Sub msg
     }
 
@@ -87,7 +87,7 @@ type alias BlocListBuilder view model msg flags a =
     { init : flags -> ( model, Cmd msg )
     , update : msg -> model -> ( model, Cmd msg )
     , titles : List (Maybe String)
-    , views : a -> List view
+    , views : a -> List ( Tooling.BlocPosition, List (Attribute msg), view )
     , subscriptions : model -> Sub msg
     }
 
@@ -146,17 +146,7 @@ addStoryToBlocList builder =
     , views =
         \( a, previous ) ->
             builder.views previous
-                |> List.map (\view -> view a)
-    }
-
-
-static : view -> BlocList view flags msg flags
-static blocView =
-    { init = \flags -> ( flags, Cmd.none )
-    , titles = [ Nothing ]
-    , update = \_ m -> ( m, Cmd.none )
-    , views = [ blocView ]
-    , subscriptions = \_ -> Sub.none
+                |> List.map (\( position, attrs, view ) -> ( position, attrs, view a ))
     }
 
 
@@ -175,11 +165,27 @@ initBlocs { init, update, subscriptions } =
     }
 
 
-addBloc : Maybe String -> view -> BlocList view model msg flags -> BlocList view model msg flags
-addBloc title view bloclist =
+addBloc :
+    Tooling.BlocPosition
+    -> List (Attribute msg)
+    -> Maybe String
+    -> view
+    -> BlocList view model msg flags
+    -> BlocList view model msg flags
+addBloc position attributes title view bloclist =
     { bloclist
         | titles = List.append bloclist.titles [ title ]
-        , views = List.append bloclist.views [ view ]
+        , views = List.append bloclist.views [ ( position, attributes, view ) ]
+    }
+
+
+initStaticBlocs : BlocList view () () ()
+initStaticBlocs =
+    { init = always ( (), Cmd.none )
+    , titles = []
+    , update = \_ _ -> ( (), Cmd.none )
+    , views = []
+    , subscriptions = always Sub.none
     }
 
 
@@ -384,7 +390,8 @@ storyBloc title stories storiesToValue =
     , subscriptions = always Sub.none
     , views =
         \_ model ->
-            [ { sidebloc = True
+            [ { position = Tooling.NewRightColumnBloc
+              , attributes = []
               , body =
                     model
                         |> List.map storyView
@@ -409,8 +416,9 @@ build builder =
             , views =
                 \pagesize ( selectorModel, model ) ->
                     List.map
-                        (\view ->
-                            { sidebloc = False
+                        (\( position, attrs, view ) ->
+                            { position = position
+                            , attributes = attrs
                             , body = view pagesize model
                             }
                         )
