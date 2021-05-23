@@ -1,10 +1,10 @@
-module Story exposing (..)
+module UIExplorer.Story exposing (..)
 
 import Dict exposing (Dict)
 import Element exposing (Attribute, Element)
 import Element.Input as Input exposing (Label, Option, labelAbove, option, radio)
 import SelectList exposing (SelectList)
-import Tooling
+import UIExplorer.Tile as Tile
 import UiExplorer exposing (PageSize)
 
 
@@ -74,20 +74,18 @@ boolStory label ( ifTrue, ifFalse ) default =
     }
 
 
-type alias BlocList view model msg flags =
+type alias Group view model msg flags =
     { init : flags -> ( model, Cmd msg )
     , update : msg -> model -> ( model, Cmd msg )
-    , titles : List (Maybe String)
-    , views : List ( Tooling.BlocPosition, List (Attribute msg), view )
+    , views : List view
     , subscriptions : model -> Sub msg
     }
 
 
-type alias BlocListBuilder view model msg flags a =
+type alias GroupBuilder view model msg flags a =
     { init : flags -> ( model, Cmd msg )
     , update : msg -> model -> ( model, Cmd msg )
-    , titles : List (Maybe String)
-    , views : a -> List ( Tooling.BlocPosition, List (Attribute msg), view )
+    , views : a -> List view
     , subscriptions : model -> Sub msg
     }
 
@@ -96,24 +94,23 @@ type alias BookBuilder view model msg flags a =
     { title : Maybe String
     , stories : List StoryInfo
     , storiesToValue : List String -> a
-    , bloclist : BlocListBuilder view model msg flags a
+    , tilelist : GroupBuilder view model msg flags a
     }
 
 
 book :
     Maybe String
-    -> BlocList view model msg flags
+    -> Group view model msg flags
     -> BookBuilder view model msg flags ()
-book title bloclist =
+book title tilelist =
     { title = title
     , stories = []
     , storiesToValue = always ()
-    , bloclist =
-        { init = bloclist.init
-        , update = bloclist.update
-        , titles = bloclist.titles
-        , subscriptions = bloclist.subscriptions
-        , views = always bloclist.views
+    , tilelist =
+        { init = tilelist.init
+        , update = tilelist.update
+        , subscriptions = tilelist.subscriptions
+        , views = always tilelist.views
         }
     }
 
@@ -133,56 +130,53 @@ addStory { info, toValue } builder =
     { title = builder.title
     , stories = info :: builder.stories
     , storiesToValue = storiesToValue
-    , bloclist = addStoryToBlocList builder.bloclist
+    , tilelist = addStoryToGroup builder.tilelist
     }
 
 
-addStoryToBlocList : BlocListBuilder (a -> view) model msg flags previous -> BlocListBuilder view model msg flags ( a, previous )
-addStoryToBlocList builder =
+addStoryToGroup : GroupBuilder (a -> view) model msg flags previous -> GroupBuilder view model msg flags ( a, previous )
+addStoryToGroup builder =
     { init = builder.init
     , update = builder.update
-    , titles = builder.titles
     , subscriptions = builder.subscriptions
     , views =
         \( a, previous ) ->
             builder.views previous
-                |> List.map (\( position, attrs, view ) -> ( position, attrs, view a ))
+                |> List.map
+                    (\view ->
+                        view a
+                    )
     }
 
 
-initBlocs :
+initTiles :
     { init : flags -> ( model, Cmd msg )
     , update : msg -> model -> ( model, Cmd msg )
     , subscriptions : model -> Sub msg
     }
-    -> BlocList view model msg flags
-initBlocs { init, update, subscriptions } =
+    -> Group view model msg flags
+initTiles { init, update, subscriptions } =
     { init = init
-    , titles = []
     , update = update
     , views = []
     , subscriptions = subscriptions
     }
 
 
-addBloc :
-    Tooling.BlocPosition
-    -> List (Attribute msg)
-    -> Maybe String
-    -> view
-    -> BlocList view model msg flags
-    -> BlocList view model msg flags
-addBloc position attributes title view bloclist =
-    { bloclist
-        | titles = List.append bloclist.titles [ title ]
-        , views = List.append bloclist.views [ ( position, attributes, view ) ]
+addTile :
+    view
+    -> Group view model msg flags
+    -> Group view model msg flags
+addTile view tilelist =
+    { tilelist
+        | views =
+            List.append tilelist.views [ view ]
     }
 
 
-initStaticBlocs : BlocList view () () ()
-initStaticBlocs =
+initStaticTiles : Group view () () ()
+initStaticTiles =
     { init = always ( (), Cmd.none )
-    , titles = []
     , update = \_ _ -> ( (), Cmd.none )
     , views = []
     , subscriptions = always Sub.none
@@ -372,8 +366,8 @@ storyView model =
                 }
 
 
-storyBloc : Maybe String -> List StoryInfo -> (List String -> a) -> Tooling.BlocList StorySelectorModel StorySelectorMsg flags
-storyBloc title stories storiesToValue =
+storyTile : Maybe String -> List StoryInfo -> (List String -> a) -> Tile.Group StorySelectorModel StorySelectorMsg flags
+storyTile title stories storiesToValue =
     { init =
         \_ ->
             ( stories
@@ -386,11 +380,11 @@ storyBloc title stories storiesToValue =
             case msg of
                 StorySelect story value ->
                     ( selectStory story value model, Cmd.none )
-    , titles = [ title ]
     , subscriptions = always Sub.none
     , views =
         \_ model ->
-            [ { position = Tooling.NewRightColumnBloc
+            [ { title = title
+              , position = Tile.NewRightColumnTile
               , attributes = []
               , body =
                     model
@@ -402,30 +396,25 @@ storyBloc title stories storiesToValue =
 
 
 build :
-    BookBuilder (PageSize -> model -> Element msg) model msg flags a
-    -> Tooling.BlocList ( StorySelectorModel, model ) (Tooling.BlocMsg StorySelectorMsg msg) flags
+    BookBuilder (PageSize -> model -> Tile.View msg) model msg flags a
+    -> Tile.Group ( StorySelectorModel, model ) (Tile.TileMsg StorySelectorMsg msg) flags
 build builder =
-    storyBloc builder.title builder.stories builder.storiesToValue
-        |> Tooling.linkBlocList
-            { init = builder.bloclist.init
+    storyTile builder.title builder.stories builder.storiesToValue
+        |> Tile.linkGroup
+            { init = builder.tilelist.init
             , update =
                 \msg ( selectorModel, model ) ->
-                    builder.bloclist.update msg model
-            , titles = builder.bloclist.titles
-            , subscriptions = Tuple.second >> builder.bloclist.subscriptions
+                    builder.tilelist.update msg model
+            , subscriptions = Tuple.second >> builder.tilelist.subscriptions
             , views =
                 \pagesize ( selectorModel, model ) ->
-                    List.map
-                        (\( position, attrs, view ) ->
-                            { position = position
-                            , attributes = attrs
-                            , body = view pagesize model
-                            }
-                        )
-                        (selectorModel
-                            |> selectedStories
-                            |> List.reverse
-                            |> builder.storiesToValue
-                            |> builder.bloclist.views
-                        )
+                    selectorModel
+                        |> selectedStories
+                        |> List.reverse
+                        |> builder.storiesToValue
+                        |> builder.tilelist.views
+                        |> List.map
+                            (\view ->
+                                view pagesize model
+                            )
             }

@@ -4,8 +4,8 @@ import Element exposing (Element)
 import Element.Background as Background
 import Material.Icons as MaterialIcons exposing (offline_bolt)
 import Material.Icons.Types exposing (Coloring(..))
-import Story
-import Tooling
+import UIExplorer.Story as Story
+import UIExplorer.Tile as Tile
 import UiExplorer
 import Widget
 import Widget.Customize as Customize
@@ -16,28 +16,22 @@ import Widget.Material.Typography as Typography
 
 
 page =
-    Tooling.firstBloc (intro |> Tooling.withBlocTitle "Button")
-        |> Tooling.nextBlocList book
-        |> Tooling.nextBloc demo
-        |> Tooling.page
+    Tile.first (intro |> Tile.withTitle "Button")
+        |> Tile.nextGroup book
+        |> Tile.next demo
+        |> Tile.page
 
 
 intro =
-    Tooling.markdown []
+    Tile.markdown []
         """ A simple button """
 
 
 book =
     Story.book (Just "States")
-        (Story.initStaticBlocs
-            |> Story.addBloc Tooling.LeftColumnBloc
-                [ Background.color <| MaterialColor.fromColor MaterialColor.gray ]
-                Nothing
-                viewButton
-            |> Story.addBloc Tooling.FullWidthBloc
-                []
-                (Just "source code")
-                viewButtonSource
+        (Story.initStaticTiles
+            |> Story.addTile viewButton
+            |> Story.addTile viewButtonSource
         )
         |> Story.addStory
             (Story.optionListStory "Palette"
@@ -78,43 +72,53 @@ book =
 
 
 viewButton palette text icon onPress size _ _ =
-    Widget.button
-        (containedButton palette
-            |> Customize.elementButton
-                [ Element.height <| Element.px size
-                , Element.centerX
-                , Element.centerY
-                ]
-        )
-        { text = text
-        , icon = icon
-        , onPress = onPress
-        }
+    { title = Nothing
+    , position = Tile.LeftColumnTile
+    , attributes = [ Background.color <| MaterialColor.fromColor MaterialColor.gray ]
+    , body =
+        Widget.button
+            (containedButton palette
+                |> Customize.elementButton
+                    [ Element.height <| Element.px size
+                    , Element.centerX
+                    , Element.centerY
+                    ]
+            )
+            { text = text
+            , icon = icon
+            , onPress = onPress
+            }
+    }
 
 
 viewButtonSource palette text icon onPress size _ _ =
-    Tooling.sourceCode <|
-        """Widget.button
+    { title = Just "source code"
+    , position = Tile.FullWidthTile
+    , attributes = []
+    , body =
+        Tile.sourceCode <|
+            """Widget.button
     (Material.containedButton palette
           |> Customize.elementButton [ Element.height <| Element.px """
-            ++ String.fromInt size
-            ++ """ ]
+                ++ String.fromInt size
+                ++ """ ]
     )
     { text =\""""
-            ++ text
-            ++ """" 
+                ++ text
+                ++ """" 
     , icon = MaterialIcons.done |> Icon.elmMaterialIcons Widget.Material.Types.Color
     , onPress = """
-            ++ (case onPress of
-                    Nothing ->
-                        "Nothing"
+                ++ (case onPress of
+                        Nothing ->
+                            "Nothing"
 
-                    Just () ->
-                        "Just ()"
-               )
-            ++ """
+                        Just () ->
+                            "Just ()"
+                   )
+                ++ """
     }
     """
+    }
 
 
 type alias Model =
@@ -129,13 +133,12 @@ type Msg
 
 
 
---|> Story.addBloc (Just "Interactive example") view
+--|> Story.addTile (Just "Interactive example") view
 
 
 demo =
     { init = always init
     , update = update
-    , title = Just "Interactive Demo"
     , view = view
     , subscriptions = subscriptions
     }
@@ -192,7 +195,8 @@ view _ model =
             , cardColumn = Material.cardColumn palette
             }
     in
-    { position = Tooling.FullWidthBloc
+    { title = Just "Interactive Demo"
+    , position = Tile.FullWidthTile
     , attributes = []
     , body =
         [ model

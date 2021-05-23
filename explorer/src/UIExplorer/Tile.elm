@@ -1,4 +1,4 @@
-module Tooling exposing (..)
+module UIExplorer.Tile exposing (..)
 
 import Dict exposing (Dict)
 import Element exposing (Attribute, Element)
@@ -13,68 +13,67 @@ import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
 
 
-type BlocPosition
-    = FullWidthBloc
-    | RightColumnBloc
-    | NewRightColumnBloc
-    | LeftColumnBloc
-    | NewLeftColumnBloc
+type Position
+    = FullWidthTile
+    | RightColumnTile
+    | NewRightColumnTile
+    | LeftColumnTile
+    | NewLeftColumnTile
 
 
-type alias BlocView msg =
-    { body : Element msg
-    , position : BlocPosition
+type alias View msg =
+    { title : Maybe String
+    , position : Position
     , attributes : List (Attribute msg)
+    , body : Element msg
     }
 
 
-mapBlocView : (a -> b) -> BlocView a -> BlocView b
-mapBlocView map view =
-    { body = Element.map map view.body
+mapView : (a -> b) -> View a -> View b
+mapView map view =
+    { title = view.title
     , position = view.position
     , attributes = List.map (Element.mapAttribute map) view.attributes
+    , body = Element.map map view.body
     }
 
 
-mapBlocViewList : (a -> b) -> List (BlocView a) -> List (BlocView b)
-mapBlocViewList map =
-    List.map (mapBlocView map)
+mapViewList : (a -> b) -> List (View a) -> List (View b)
+mapViewList map =
+    List.map (mapView map)
 
 
-type alias Bloc model msg flags =
+type alias Tile model msg flags =
     { init : flags -> ( model, Cmd msg )
     , update : msg -> model -> ( model, Cmd msg )
-    , title : Maybe String
-    , view : PageSize -> model -> BlocView msg
+    , view : PageSize -> model -> View msg
     , subscriptions : model -> Sub msg
     }
 
 
-type alias BlocList model msg flags =
+type alias Group model msg flags =
     { init : flags -> ( model, Cmd msg )
     , update : msg -> model -> ( model, Cmd msg )
-    , titles : List (Maybe String)
-    , views : PageSize -> model -> List (BlocView msg)
+    , views : PageSize -> model -> List (View msg)
     , subscriptions : model -> Sub msg
     }
 
 
-type alias LinkedBlockList sharedModel model msg flags =
+type alias LinkedGroup sharedModel model msg flags =
     { init : flags -> ( model, Cmd msg )
     , update : msg -> ( sharedModel, model ) -> ( model, Cmd msg )
-    , titles : List (Maybe String)
-    , views : PageSize -> ( sharedModel, model ) -> List (BlocView msg)
+    , views : PageSize -> ( sharedModel, model ) -> List (View msg)
     , subscriptions : ( sharedModel, model ) -> Sub msg
     }
 
 
-linkBlocList :
-    LinkedBlockList sharedModel model msg flags
-    -> BlocList sharedModel upMsg flags
-    -> BlocList ( sharedModel, model ) (BlocMsg upMsg msg) flags
-linkBlocList linked parent =
+linkGroup :
+    LinkedGroup sharedModel model msg flags
+    -> Group sharedModel upMsg flags
+    -> Group ( sharedModel, model ) (TileMsg upMsg msg) flags
+linkGroup linked parent =
     let
-        init_ : flags -> ( ( sharedModel, model ), Cmd (BlocMsg upMsg msg) )
+        init_ : flags -> ( ( sharedModel, model ), Cmd (TileMsg upMsg msg) )
         init_ flags =
             let
                 ( parentModel, parentCmd ) =
@@ -101,9 +100,6 @@ linkBlocList linked parent =
                     in
                     ( ( sharedModel, newModel ), Cmd.map Current cmd )
 
-        titles_ =
-            List.append parent.titles linked.titles
-
         subscriptions_ ( sharedModel, model ) =
             Sub.batch
                 [ Sub.map Current (linked.subscriptions ( sharedModel, model ))
@@ -112,85 +108,75 @@ linkBlocList linked parent =
 
         views_ pageSize ( sharedModel, model ) =
             List.append
-                (parent.views pageSize sharedModel |> mapBlocViewList Previous)
-                (linked.views pageSize ( sharedModel, model ) |> mapBlocViewList Current)
+                (parent.views pageSize sharedModel |> mapViewList Previous)
+                (linked.views pageSize ( sharedModel, model ) |> mapViewList Current)
     in
     { init = init_
     , update = update_
-    , titles = titles_
     , views = views_
     , subscriptions = subscriptions_
     }
 
 
-
--- addLinkedBlocList :
--- LinkedBlockList sharedModel model msg flags
--- -> BlocList ( sharedModel, previousModel ) upMsg flags
--- -> BlocList ( sharedModel, ( model, previousModel ) ) (BlocMsg upMsg msg) flags
-
-
-blocListSingleton : Bloc model msg flags -> BlocList model msg flags
-blocListSingleton bloc =
-    { init = bloc.init
-    , update = bloc.update
-    , titles = List.singleton bloc.title
+groupSingleton : Tile model msg flags -> Group model msg flags
+groupSingleton tile =
+    { init = tile.init
+    , update = tile.update
     , views =
         \pagesize model ->
-            List.singleton <| bloc.view pagesize model
-    , subscriptions = bloc.subscriptions
+            List.singleton <| tile.view pagesize model
+    , subscriptions = tile.subscriptions
     }
 
 
-type alias BlocMeta =
-    { title : Maybe String }
-
-
 {-| -}
-type BlocBuilder model msg flags
-    = BlocBuilder
+type Builder model msg flags
+    = Builder
         { init : flags -> ( model, Cmd msg )
         , update : msg -> model -> ( model, Cmd msg )
-        , views : PageSize -> model -> List (BlocView msg)
+        , views : PageSize -> model -> List (View msg)
         , subscriptions : model -> Sub msg
-        , meta : List BlocMeta
         }
 
 
-type BlocMsg previous current
+type TileMsg previous current
     = Previous previous
     | Current current
 
 
-firstBloc : Bloc model msg flags -> BlocBuilder ( (), model ) (BlocMsg () msg) flags
-firstBloc config =
-    BlocBuilder
+firstGroup : Group model msg flags -> Builder ( (), model ) (TileMsg () msg) flags
+firstGroup config =
+    Builder
         { init = always ( (), Cmd.none )
         , update = \_ m -> ( m, Cmd.none )
         , views =
             \_ _ ->
                 []
         , subscriptions = always Sub.none
-        , meta = []
         }
-        |> nextBloc config
+        |> nextGroup config
 
 
-nextBloc :
-    Bloc model msg flags
-    -> BlocBuilder modelPrevious msgPrevious flags
-    -> BlocBuilder ( modelPrevious, model ) (BlocMsg msgPrevious msg) flags
-nextBloc =
-    blocListSingleton >> nextBlocList
+first : Tile model msg flags -> Builder ( (), model ) (TileMsg () msg) flags
+first =
+    groupSingleton >> firstGroup
 
 
-nextBlocList :
-    BlocList model msg flags
-    -> BlocBuilder modelPrevious msgPrevious flags
-    -> BlocBuilder ( modelPrevious, model ) (BlocMsg msgPrevious msg) flags
-nextBlocList config (BlocBuilder previous) =
+next :
+    Tile model msg flags
+    -> Builder modelPrevious msgPrevious flags
+    -> Builder ( modelPrevious, model ) (TileMsg msgPrevious msg) flags
+next =
+    groupSingleton >> nextGroup
+
+
+nextGroup :
+    Group model msg flags
+    -> Builder modelPrevious msgPrevious flags
+    -> Builder ( modelPrevious, model ) (TileMsg msgPrevious msg) flags
+nextGroup config (Builder previous) =
     let
-        init_ : flags -> ( ( modelPrevious, model ), Cmd (BlocMsg msgPrevious msg) )
+        init_ : flags -> ( ( modelPrevious, model ), Cmd (TileMsg msgPrevious msg) )
         init_ flags =
             let
                 ( previousModel, previousCmds ) =
@@ -202,9 +188,9 @@ nextBlocList config (BlocBuilder previous) =
             ( ( previousModel, model ), Cmd.batch [ Cmd.map Previous previousCmds, Cmd.map Current cmds ] )
 
         update_ :
-            BlocMsg msgPrevious msg
+            TileMsg msgPrevious msg
             -> ( modelPrevious, model )
-            -> ( ( modelPrevious, model ), Cmd (BlocMsg msgPrevious msg) )
+            -> ( ( modelPrevious, model ), Cmd (TileMsg msgPrevious msg) )
         update_ msg ( previousModel, model ) =
             case msg of
                 Previous previousMsg ->
@@ -221,11 +207,11 @@ nextBlocList config (BlocBuilder previous) =
                     in
                     ( ( previousModel, newModel ), Cmd.map Current cmds )
 
-        views_ : PageSize -> ( modelPrevious, model ) -> List (BlocView (BlocMsg msgPrevious msg))
+        views_ : PageSize -> ( modelPrevious, model ) -> List (View (TileMsg msgPrevious msg))
         views_ windowSize ( previousModel, model ) =
             List.append
-                (previous.views windowSize previousModel |> mapBlocViewList Previous)
-                (config.views windowSize model |> mapBlocViewList Current)
+                (previous.views windowSize previousModel |> mapViewList Previous)
+                (config.views windowSize model |> mapViewList Current)
 
         subscriptions_ ( previousModel, model ) =
             Sub.batch
@@ -233,63 +219,59 @@ nextBlocList config (BlocBuilder previous) =
                 , Sub.map Previous (previous.subscriptions previousModel)
                 ]
     in
-    BlocBuilder
+    Builder
         { init = init_
         , update = update_
         , views = views_
         , subscriptions = subscriptions_
-        , meta =
-            List.append
-                previous.meta
-                (List.map (\title -> { title = title }) config.titles)
         }
 
 
 type LayoutRow msg
-    = OneColumn (List ( BlocMeta, BlocView msg ))
-    | TwoColumn (List ( BlocMeta, BlocView msg )) (List ( BlocMeta, BlocView msg ))
+    = OneColumn (List (View msg))
+    | TwoColumn (List (View msg)) (List (View msg))
 
 
 type alias Layout msg =
     List (LayoutRow msg)
 
 
-layoutAddBloc : ( BlocMeta, BlocView msg ) -> Layout msg -> Layout msg
-layoutAddBloc ( meta, view ) layout =
+layoutAddTile : View msg -> Layout msg -> Layout msg
+layoutAddTile view layout =
     case view.position of
-        FullWidthBloc ->
+        FullWidthTile ->
             case layout of
                 (OneColumn items) :: tail ->
-                    OneColumn (( meta, view ) :: items) :: tail
+                    OneColumn (view :: items) :: tail
 
                 _ ->
-                    OneColumn [ ( meta, view ) ] :: layout
+                    OneColumn [ view ] :: layout
 
-        LeftColumnBloc ->
+        LeftColumnTile ->
             case layout of
                 (TwoColumn left right) :: tail ->
-                    TwoColumn (( meta, view ) :: left) right :: tail
+                    TwoColumn (view :: left) right :: tail
 
                 _ ->
-                    TwoColumn [ ( meta, view ) ] [] :: layout
+                    TwoColumn [ view ] [] :: layout
 
-        NewLeftColumnBloc ->
-            TwoColumn [ ( meta, view ) ] [] :: layout
+        NewLeftColumnTile ->
+            TwoColumn [ view ] [] :: layout
 
-        RightColumnBloc ->
+        RightColumnTile ->
             case layout of
                 (TwoColumn left right) :: tail ->
-                    TwoColumn left (( meta, view ) :: right) :: tail
+                    TwoColumn left (view :: right) :: tail
 
                 _ ->
-                    TwoColumn [] [ ( meta, view ) ] :: layout
+                    TwoColumn [] [ view ] :: layout
 
-        NewRightColumnBloc ->
-            TwoColumn [] [ ( meta, view ) ] :: layout
+        NewRightColumnTile ->
+            TwoColumn [] [ view ] :: layout
 
 
-layoutBlocView : List (Attribute msg) -> ( BlocMeta, BlocView msg ) -> Element msg
-layoutBlocView attributes ( meta, view ) =
+layoutView : List (Attribute msg) -> View msg -> Element msg
+layoutView attributes view =
     Widget.column
         (Material.cardColumn Material.defaultPalette
             |> Customize.elementColumn attributes
@@ -297,7 +279,7 @@ layoutBlocView attributes ( meta, view ) =
         )
     <|
         List.filterMap identity
-            [ meta.title
+            [ view.title
                 |> Maybe.map Element.text
                 |> Maybe.map (Element.el Typography.h3)
             , Just view.body
@@ -310,7 +292,7 @@ layoutRowView row =
         OneColumn items ->
             items
                 |> List.reverse
-                |> List.map (layoutBlocView [])
+                |> List.map (layoutView [])
 
         TwoColumn left right ->
             Element.row
@@ -323,7 +305,7 @@ layoutRowView row =
                     ]
                   <|
                     List.map
-                        (layoutBlocView
+                        (layoutView
                             [ Element.height Element.fill ]
                         )
                     <|
@@ -334,7 +316,7 @@ layoutRowView row =
                     ]
                   <|
                     List.map
-                        (layoutBlocView
+                        (layoutView
                             [ Element.height Element.fill ]
                         )
                     <|
@@ -343,15 +325,14 @@ layoutRowView row =
                 |> List.singleton
 
 
-page : BlocBuilder model msg flags -> Page model msg flags
-page (BlocBuilder config) =
+page : Builder model msg flags -> Page model msg flags
+page (Builder config) =
     { init = config.init
     , update = config.update
     , view =
         \pagesize model ->
             config.views pagesize model
-                |> List.map2 Tuple.pair config.meta
-                |> List.foldl layoutAddBloc []
+                |> List.foldl layoutAddTile []
                 |> List.reverse
                 |> List.concatMap layoutRowView
                 |> Element.column
@@ -366,7 +347,7 @@ page (BlocBuilder config) =
 
 {-| render a markdown text into a simple panel
 -}
-markdown : List (Attribute ()) -> String -> Bloc () () ()
+markdown : List (Attribute ()) -> String -> Tile () () ()
 markdown attributes text =
     static attributes
         (\_ _ ->
@@ -375,24 +356,32 @@ markdown attributes text =
         )
 
 
-static : List (Attribute msg) -> (PageSize -> flags -> Element msg) -> Bloc flags msg flags
-static attributes blocView =
+static : List (Attribute msg) -> (PageSize -> flags -> Element msg) -> Tile flags msg flags
+static attributes tileView =
     { init = \flags -> ( flags, Cmd.none )
-    , title = Nothing
     , update = \_ m -> ( m, Cmd.none )
     , view =
         \pagesize flags ->
-            { body = blocView pagesize flags
-            , position = FullWidthBloc
+            { title = Nothing
+            , body = tileView pagesize flags
+            , position = FullWidthTile
             , attributes = attributes
             }
     , subscriptions = \_ -> Sub.none
     }
 
 
-withBlocTitle : String -> Bloc model msg flags -> Bloc model msg flags
-withBlocTitle title bloc =
-    { bloc | title = Just title }
+withTitle : String -> Tile model msg flags -> Tile model msg flags
+withTitle title tile =
+    let
+        settitle t v =
+            { v | title = Just t }
+    in
+    { tile
+        | view =
+            \pagesize flags ->
+                tile.view pagesize flags |> settitle title
+    }
 
 
 canvas : Element msg -> Element msg
