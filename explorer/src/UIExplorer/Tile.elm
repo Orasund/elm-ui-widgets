@@ -270,10 +270,10 @@ layoutAddTile view layout =
             TwoColumn [] [ view ] :: layout
 
 
-layoutView : List (Attribute msg) -> View msg -> Element msg
-layoutView attributes view =
+layoutView : Material.Palette -> List (Attribute msg) -> View msg -> Element msg
+layoutView palette attributes view =
     Widget.column
-        (Material.cardColumn Material.defaultPalette
+        (Material.cardColumn palette
             |> Customize.elementColumn attributes
             |> Customize.mapContent (Customize.element <| Element.height Element.fill :: view.attributes)
         )
@@ -286,13 +286,13 @@ layoutView attributes view =
             ]
 
 
-layoutRowView : LayoutRow msg -> List (Element msg)
-layoutRowView row =
+layoutRowView : Material.Palette -> LayoutRow msg -> List (Element msg)
+layoutRowView palette row =
     case row of
         OneColumn items ->
             items
                 |> List.reverse
-                |> List.map (layoutView [])
+                |> List.map (layoutView palette [])
 
         TwoColumn left right ->
             Element.row
@@ -305,7 +305,7 @@ layoutRowView row =
                     ]
                   <|
                     List.map
-                        (layoutView
+                        (layoutView palette
                             [ Element.height Element.fill ]
                         )
                     <|
@@ -316,7 +316,7 @@ layoutRowView row =
                     ]
                   <|
                     List.map
-                        (layoutView
+                        (layoutView palette
                             [ Element.height Element.fill ]
                         )
                     <|
@@ -330,11 +330,19 @@ page (Builder config) =
     { init = config.init
     , update = config.update
     , view =
-        \pagesize model ->
+        \pagesize dark model ->
+            let
+                palette =
+                    if dark then
+                        Material.darkPalette
+
+                    else
+                        Material.defaultPalette
+            in
             config.views pagesize model
                 |> List.foldl layoutAddTile []
                 |> List.reverse
-                |> List.concatMap layoutRowView
+                |> List.concatMap (layoutRowView palette)
                 |> Element.column
                     [ Element.padding 10
                     , Element.spacing 10

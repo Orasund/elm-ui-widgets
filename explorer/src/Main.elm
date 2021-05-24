@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Button
+import Element
 import UIExplorer
 
 
@@ -9,4 +10,12 @@ pages =
 
 
 main =
-    UIExplorer.application UIExplorer.defaultConfig pages
+    let
+        config =
+            UIExplorer.defaultConfig
+    in
+    UIExplorer.application
+        { config
+            | sidebarTitle = Element.text "Elm UI Widgets"
+        }
+        pages

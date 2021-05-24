@@ -73,7 +73,7 @@ firstPage id config =
         { init = always ( (), Cmd.none )
         , update = \_ m -> ( m, Cmd.none )
         , view =
-            \_ _ _ ->
+            \_ _ _ _ ->
                 Element.el
                     [ Element.centerX
                     , Element.centerY
@@ -122,7 +122,7 @@ type alias PageSize =
 type alias Page model msg flags =
     { init : flags -> ( model, Cmd msg )
     , update : msg -> model -> ( model, Cmd msg )
-    , view : PageSize -> model -> Element msg
+    , view : PageSize -> Bool -> model -> Element msg
     , subscriptions : model -> Sub msg
     }
 
@@ -132,7 +132,7 @@ type PageBuilder model msg flags
     = PageBuilder
         { init : flags -> ( model, Cmd msg )
         , update : msg -> model -> ( model, Cmd msg )
-        , view : List String -> PageSize -> model -> Element msg
+        , view : List String -> PageSize -> Bool -> model -> Element msg
         , subscriptions : model -> Sub msg
         , ids : List { pageId : String, pageGroup : List String }
         , pageGroup : List String
@@ -141,7 +141,7 @@ type PageBuilder model msg flags
 
 {-| A page that doesn't change or react to user input. It's just a view function.
 -}
-static : (PageSize -> flags -> Element msg) -> Page flags msg flags
+static : (PageSize -> Bool -> flags -> Element msg) -> Page flags msg flags
 static pageView =
     { init = \flags -> ( flags, Cmd.none )
     , update = \_ m -> ( m, Cmd.none )
@@ -210,13 +210,13 @@ nextPage id config (PageBuilder previous) =
                     in
                     ( ( previousModel, newModel ), Cmd.map Current cmds )
 
-        view_ : List String -> PageSize -> ( modelPrevious, model ) -> Element (PageMsg msgPrevious msg)
-        view_ pageId windowSize ( previousModel, model ) =
+        view_ : List String -> PageSize -> Bool -> ( modelPrevious, model ) -> Element (PageMsg msgPrevious msg)
+        view_ pageId windowSize darkTheme ( previousModel, model ) =
             if previous.pageGroup ++ [ id ] == pageId then
-                Element.Lazy.lazy2 config.view windowSize model |> Element.map Current
+                Element.Lazy.lazy3 config.view windowSize darkTheme model |> Element.map Current
 
             else
-                previous.view pageId windowSize previousModel |> Element.map Previous
+                previous.view pageId windowSize darkTheme previousModel |> Element.map Previous
 
         subscriptions_ ( previousModel, model ) =
             Sub.batch
@@ -279,6 +279,7 @@ type Msg pageMsg
     | LinkClicked Browser.UrlRequest
     | WindowResized PageSize
     | PressedToggleSidebar
+    | ChangeDarkTheme Bool
     | NoOp
     | PageMsg pageMsg
     | PressedChangePageHotkey (List String)
@@ -366,6 +367,7 @@ type alias SuccessModel pageModel flags =
     , pageSizeOption : PageSizeOption
     , expandColorBlindOptions : Bool
     , colorBlindOption : Maybe ColorBlindOption
+    , darkThemeEnabled : Bool
     }
 
 
@@ -444,6 +446,7 @@ init config (PageBuilder pages) flagsJson url key =
                 , pageSizeOption = Native
                 , expandColorBlindOptions = False
                 , colorBlindOption = Nothing
+                , darkThemeEnabled = True
                 }
             , Cmd.batch
                 [ navigationCmd
@@ -591,6 +594,9 @@ updateSuccess (PageBuilder pages) config msg model =
         ToggledColorBlindGroup ->
             ( { model | expandColorBlindOptions = not model.expandColorBlindOptions }, Cmd.none )
 
+        ChangeDarkTheme enabled ->
+            ( { model | darkThemeEnabled = enabled }, Cmd.none )
+
 
 view :
     ApplicationConfig (Msg pageMsg) flags
@@ -610,23 +616,27 @@ view config pages model =
                         :: Element.height Element.fill
                         :: config.layoutAttributes
                     )
-                    (errorView errorMessage)
+                    (errorView False errorMessage)
                 ]
             }
 
 
-textColor : Element.Color
-textColor =
-    Element.rgb255 56 60 67
+textColor : Bool -> Element.Color
+textColor dark =
+    if dark then
+        gray
+
+    else
+        Element.rgb255 56 60 67
 
 
-errorView : String -> Element msg
-errorView errorMessage =
+errorView : Bool -> String -> Element msg
+errorView dark errorMessage =
     Element.column
         [ Element.Region.announce
         , Element.width Element.fill
         , Element.Background.color (Element.rgb255 250 237 236)
-        , Element.Font.color textColor
+        , Element.Font.color <| textColor dark
         , Element.padding 16
         , Element.spacing 16
         ]
@@ -671,6 +681,7 @@ viewSuccess config ((PageBuilder pages) as pages_) model =
                     )
                 :: Element.behindContent (Element.html colorblindnessSvg)
                 :: Element.behindContent (Element.html colorblindnessCss)
+                :: Element.Font.color (textColor model.darkThemeEnabled)
                 :: config.layoutAttributes
             )
             (Element.row
@@ -690,6 +701,12 @@ viewSuccess config ((PageBuilder pages) as pages_) model =
                             )
                         :: Element.height Element.fill
                         :: Element.Region.mainContent
+                        :: (if model.darkThemeEnabled then
+                                Element.Background.color <| Element.rgb255 30 30 30
+
+                            else
+                                Element.Background.color <| Element.rgb255 225 225 225
+                           )
                         :: (case model.colorBlindOption of
                                 Nothing ->
                                     []
@@ -701,12 +718,17 @@ viewSuccess config ((PageBuilder pages) as pages_) model =
                                         |> List.singleton
                            )
                     )
-                    (pages.view model.page (contentSize model) model.pageModel
+                    (pages.view model.page (contentSize model) model.darkThemeEnabled model.pageModel
                         |> Element.map PageMsg
                     )
                 , Element.el
-                    [ Element.Background.color gray
-                    , Element.alpha 0.5
+                    [ Element.Background.color <|
+                        if model.darkThemeEnabled then
+                            black
+
+                        else
+                            gray
+                    , Element.alpha 0.9
                     , Element.width Element.fill
                     , Element.height Element.fill
                     ]
@@ -733,12 +755,20 @@ viewSidebar :
     -> SuccessModel pageModel flags
     -> Element (Msg pageMsg)
 viewSidebar pages config model =
+    let
+        bgColor =
+            if model.darkThemeEnabled then
+                darkerGray
+
+            else
+                lightGray
+    in
     if model.minimizeSidebar then
         Element.el
             [ Element.height Element.fill ]
             (Element.Input.button
                 [ Element.width (Element.px (Pixels.inPixels sidebarMinimizedWidth))
-                , Element.Background.color lightGray
+                , Element.Background.color bgColor
                 , Element.height Element.fill
                 ]
                 { onPress = Just PressedToggleSidebar
@@ -754,20 +784,27 @@ viewSidebar pages config model =
             -- For some reason a horizontal scrollbar pops up unless we include this.
             , Element.htmlAttribute <| Html.Attributes.style "overflow-x" "hidden"
             , Element.scrollbars
-            , Element.Background.color lightGray
+            , Element.Background.color bgColor
             ]
             [ Element.row
                 [ Element.width Element.fill ]
                 [ config.sidebarTitle, minimizeSidebarButton ]
             , Element.column
                 [ Element.spacing 2, Element.width Element.fill ]
-                [ pageSizeOptionView model.expandPageSizeOptions model.pageSizeOption
-                , colorBlindOptionView model.expandColorBlindOptions model.colorBlindOption
+                [ pageSizeOptionView model.darkThemeEnabled model.expandPageSizeOptions model.pageSizeOption
+                , colorBlindOptionView model.darkThemeEnabled model.expandColorBlindOptions model.colorBlindOption
+                , Element.Input.checkbox []
+                    { onChange = ChangeDarkTheme
+                    , icon = Element.Input.defaultCheckbox
+                    , checked = model.darkThemeEnabled
+                    , label = Element.Input.labelRight [] <| Element.text "dark theme"
+                    }
                 ]
             , Element.el [ Element.padding 4, Element.width Element.fill ]
                 (Element.Input.text
                     [ Element.width Element.fill
                     , Element.paddingEach { left = 8, right = 32, top = 8, bottom = 8 }
+                    , Element.Background.color bgColor
                     , Element.inFront <|
                         if String.isEmpty model.searchText then
                             Element.none
@@ -779,7 +816,7 @@ viewSidebar pages config model =
                                 , Element.moveLeft 2
                                 , Element.width <| Element.px 26
                                 , Element.height <| Element.px 26
-                                , Element.Background.color lightGray
+                                , Element.Background.color bgColor
                                 , Element.Font.center
                                 , Element.Border.rounded 99999
                                 ]
@@ -798,10 +835,10 @@ viewSidebar pages config model =
                 , Element.Region.navigation
                 ]
                 (if showSearchResults model.searchText then
-                    Element.Lazy.lazy4 viewSearchResults pages config model.page model.searchText
+                    Element.Lazy.lazy5 viewSearchResults model.darkThemeEnabled pages config model.page model.searchText
 
                  else
-                    Element.Lazy.lazy4 viewSidebarLinks pages config model.page model.expandedGroups
+                    Element.Lazy.lazy5 viewSidebarLinks model.darkThemeEnabled pages config model.page model.expandedGroups
                 )
             ]
 
@@ -995,9 +1032,9 @@ colorblindnessSvg =
         ]
 
 
-pageSizeOptionView : Bool -> PageSizeOption -> Element (Msg pageMsg)
-pageSizeOptionView isExpanded selectedPageSize =
-    optionGroupView
+pageSizeOptionView : Bool -> Bool -> PageSizeOption -> Element (Msg pageMsg)
+pageSizeOptionView dark isExpanded selectedPageSize =
+    optionGroupView dark
         isExpanded
         selectedPageSize
         allPageSizeOptions
@@ -1006,9 +1043,9 @@ pageSizeOptionView isExpanded selectedPageSize =
         ToggledPageSizeGroup
 
 
-colorBlindOptionView : Bool -> Maybe ColorBlindOption -> Element (Msg pageMsg)
-colorBlindOptionView isExpanded selectedColorBlindOption =
-    optionGroupView
+colorBlindOptionView : Bool -> Bool -> Maybe ColorBlindOption -> Element (Msg pageMsg)
+colorBlindOptionView dark isExpanded selectedColorBlindOption =
+    optionGroupView dark
         isExpanded
         selectedColorBlindOption
         (Nothing :: List.map Just allColorBlindOptions)
@@ -1017,13 +1054,22 @@ colorBlindOptionView isExpanded selectedColorBlindOption =
         ToggledColorBlindGroup
 
 
-optionGroupView : Bool -> a -> List a -> (a -> String) -> (a -> msg) -> msg -> Element msg
-optionGroupView isExpanded selectedItem items itemToString onPress toggleExpand =
+optionGroupView : Bool -> Bool -> a -> List a -> (a -> String) -> (a -> msg) -> msg -> Element msg
+optionGroupView dark isExpanded selectedItem items itemToString onPress toggleExpand =
+    let
+        selectedColor =
+            if dark then
+                darkerGray
+
+            else
+                lightBlue
+    in
     Element.Input.button
         [ Element.width Element.fill
         , Element.paddingEach { left = 6, right = 8, top = 5, bottom = 5 }
-        , Element.mouseOver [ Element.Background.color lightBlue ]
-        , focusAttributes
+        , Element.mouseOver [ Element.Background.color selectedColor ]
+        , focusAttributes dark
+        , Element.Font.color <| textColor dark
         ]
         { onPress = Just toggleExpand
         , label = Element.row [] [ expanderArrow isExpanded, Element.text (itemToString selectedItem) ]
@@ -1037,12 +1083,12 @@ optionGroupView isExpanded selectedItem items itemToString onPress toggleExpand 
                         , Element.paddingEach { left = 6, right = 8, top = 6, bottom = 6 }
                         , Element.Background.color <|
                             if selectedItem == option then
-                                lightBlue
+                                selectedColor
 
                             else
                                 Element.rgba 0 0 0 0
-                        , Element.mouseOver [ Element.Background.color lightBlue ]
-                        , Element.focused [ Element.Background.color lightBlue ]
+                        , Element.mouseOver [ Element.Background.color selectedColor ]
+                        , Element.focused [ Element.Background.color selectedColor ]
                         ]
                         { onPress = onPress option |> Just
                         , label = itemToString option |> Element.text
@@ -1068,12 +1114,13 @@ showSearchResults searchText =
 
 
 viewSearchResults :
-    PageBuilder pageModel pageMsg flags
+    Bool
+    -> PageBuilder pageModel pageMsg flags
     -> ApplicationConfig (Msg pageMsg) flags
     -> List String
     -> String
     -> Element (Msg pageMsg)
-viewSearchResults (PageBuilder pages) config currentPage searchText =
+viewSearchResults dark (PageBuilder pages) config currentPage searchText =
     pages.ids
         |> List.filterMap
             (\{ pageId, pageGroup } ->
@@ -1091,7 +1138,7 @@ viewSearchResults (PageBuilder pages) config currentPage searchText =
             )
         |> List.sort
         |> listNeighbors
-        |> List.map (pageButton config currentPage)
+        |> List.map (pageButton dark config currentPage)
         |> Element.column [ Element.width Element.fill ]
 
 
@@ -1176,6 +1223,21 @@ lightGray =
 gray : Element.Color
 gray =
     Element.rgb255 206 215 225
+
+
+mediumDarkGray : Element.Color
+mediumDarkGray =
+    Element.rgb255 90 100 105
+
+
+darkGray : Element.Color
+darkGray =
+    Element.rgb255 60 70 80
+
+
+darkerGray : Element.Color
+darkerGray =
+    Element.rgb255 20 30 40
 
 
 black =
@@ -1290,18 +1352,26 @@ mouseOverButtonColor buttonDepth =
     mix (0.92 ^ toFloat buttonDepth) gray black
 
 
-pageSelectedButtonColor buttonDepth =
-    mix (0.92 ^ toFloat buttonDepth) lightBlue black
+pageSelectedButtonColor dark buttonDepth =
+    mix (0.92 ^ toFloat buttonDepth)
+        (if dark then
+            mediumDarkGray
+
+         else
+            lightBlue
+        )
+        black
 
 
 viewSidebarLinksHelper :
-    { a | relativeUrlPath : List String }
+    Bool
+    -> { a | relativeUrlPath : List String }
     -> List String
     -> Set String
     -> List String
     -> List (Tree String)
     -> List (Element (Msg pageMsg))
-viewSidebarLinksHelper config page expandedGroups path trees =
+viewSidebarLinksHelper dark config page expandedGroups path trees =
     trees
         |> List.sortBy Tree.label
         |> List.map
@@ -1317,6 +1387,7 @@ viewSidebarLinksHelper config page expandedGroups path trees =
                 case Tree.children tree of
                     [] ->
                         pageButton
+                            dark
                             config
                             page
                             { previous = Nothing, next = Nothing, current = newPath }
@@ -1334,7 +1405,7 @@ viewSidebarLinksHelper config page expandedGroups path trees =
 
                                       else
                                         Element.Background.color <| Element.rgba 0 0 0 0.08
-                                    , focusAttributes
+                                    , focusAttributes dark
                                     ]
                                     { onPress = ToggledPageGroup newPath |> Just
                                     , label = Element.row [] [ expanderArrow isExpanded, Element.text label ]
@@ -1345,7 +1416,7 @@ viewSidebarLinksHelper config page expandedGroups path trees =
                             (Element.column
                                 [ Element.width Element.fill, Element.Background.color <| Element.rgba 0 0 0 0.08 ]
                                 (if isGroupExpanded expandedGroups newPath then
-                                    groupButton True :: viewSidebarLinksHelper config page expandedGroups newPath children
+                                    groupButton True :: viewSidebarLinksHelper dark config page expandedGroups newPath children
 
                                  else
                                     [ groupButton False ]
@@ -1401,11 +1472,12 @@ gatherWith testFn list =
 
 
 pageButton :
-    { a | relativeUrlPath : List String }
+    Bool
+    -> { a | relativeUrlPath : List String }
     -> List String
     -> { b | previous : Maybe (List String), next : Maybe (List String), current : List String }
     -> Element (Msg pageMsg)
-pageButton config selectedPage pageIds =
+pageButton dark config selectedPage pageIds =
     let
         depth =
             List.length pageIds.current - 1
@@ -1429,11 +1501,11 @@ pageButton config selectedPage pageIds =
                 )
             , Element.htmlAttribute <| Html.Attributes.id <| pageGroupToString pageIds.current
             , if pageIds.current == selectedPage then
-                Element.Background.color (pageSelectedButtonColor depth)
+                Element.Background.color (pageSelectedButtonColor dark depth)
 
               else
                 Element.mouseOver [ mouseOverButtonColor depth |> Element.Background.color ]
-            , focusAttributes
+            , focusAttributes dark
             ]
             { url = uiUrl config.relativeUrlPath pageIds.current
             , label =
@@ -1448,20 +1520,28 @@ pageButton config selectedPage pageIds =
         )
 
 
-focusAttributes =
-    Element.focused [ Element.Background.color lightBlue ]
+focusAttributes dark =
+    Element.focused
+        [ Element.Background.color <|
+            if dark then
+                mediumDarkGray
+
+            else
+                lightBlue
+        ]
 
 
 viewSidebarLinks :
-    PageBuilder pageModel pageMsg flags
+    Bool
+    -> PageBuilder pageModel pageMsg flags
     -> ApplicationConfig (Msg pageMsg) flags
     -> List String
     -> Set String
     -> Element (Msg pageMsg)
-viewSidebarLinks (PageBuilder pages) config page expandedGroups =
+viewSidebarLinks dark (PageBuilder pages) config page expandedGroups =
     pages.ids
         |> buildTree
-        |> viewSidebarLinksHelper config page expandedGroups []
+        |> viewSidebarLinksHelper dark config page expandedGroups []
         |> Element.column
             [ Element.width Element.fill
             , Element.Font.medium
