@@ -1,12 +1,12 @@
 module Main exposing (main)
 
-import Button
 import Element
+import Pages.Button
 import UIExplorer
 
 
 pages =
-    UIExplorer.firstPage "Button" Button.page
+    UIExplorer.firstPage "Button" Pages.Button.page
 
 
 main =

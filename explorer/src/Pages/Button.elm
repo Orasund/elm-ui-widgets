@@ -1,7 +1,8 @@
-module Button exposing (page)
+module Pages.Button exposing (page)
 
 import Element exposing (Element)
 import Element.Background as Background
+import Element.Font
 import Material.Icons as MaterialIcons exposing (offline_bolt)
 import Material.Icons.Types exposing (Coloring(..))
 import UIExplorer
@@ -10,7 +11,15 @@ import UIExplorer.Tile as Tile
 import Widget
 import Widget.Customize as Customize
 import Widget.Icon as Icon exposing (Icon)
-import Widget.Material as Material exposing (Palette, containedButton, darkPalette, defaultPalette)
+import Widget.Material as Material
+    exposing
+        ( Palette
+        , containedButton
+        , darkPalette
+        , defaultPalette
+        , outlinedButton
+        , textButton
+        )
 import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
 
@@ -28,16 +37,27 @@ intro =
 
 
 book =
-    Story.book (Just "States")
+    Story.book (Just "options")
         (Story.initStaticTiles
             |> Story.addTile viewButton
-            |> Story.addTile viewButtonSource
+            |> Story.addTile viewTextButton
+            |> Story.addTile viewIconButton
+            |> Story.addTile viewSelectButton
+         --|> Story.addTile viewButtonSource
         )
         |> Story.addStory
             (Story.optionListStory "Palette"
-                defaultPalette
-                [ ( "default", defaultPalette )
-                , ( "dark", darkPalette )
+                darkPalette
+                [ ( "dark", darkPalette )
+                , ( "default", defaultPalette )
+                ]
+            )
+        |> Story.addStory
+            (Story.optionListStory "Material button"
+                containedButton
+                [ ( "contained", containedButton )
+                , ( "outlined", outlinedButton )
+                , ( "text", textButton )
                 ]
             )
         |> Story.addStory
@@ -60,34 +80,131 @@ book =
                 ( Just (), Nothing )
                 True
             )
-        |> Story.addStory
-            (Story.rangeStory "Height"
-                { unit = "px"
-                , min = 1
-                , max = 200
-                , default = 48
-                }
-            )
         |> Story.build
 
 
-viewButton palette text icon onPress size _ _ =
+viewLabel : String -> Element msg
+viewLabel =
+    Element.el [ Element.width <| Element.px 250 ] << Element.text
+
+
+viewButton palette button text icon onPress _ _ =
     { title = Nothing
     , position = Tile.LeftColumnTile
-    , attributes = [ Background.color <| MaterialColor.fromColor MaterialColor.gray ]
+    , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
     , body =
-        Widget.button
-            (containedButton palette
-                |> Customize.elementButton
-                    [ Element.height <| Element.px size
-                    , Element.centerX
-                    , Element.centerY
-                    ]
-            )
-            { text = text
-            , icon = icon
-            , onPress = onPress
-            }
+        Element.row
+            [ Element.width Element.fill
+            , Element.centerY
+            , Element.Font.color <| MaterialColor.fromColor palette.on.surface
+            ]
+            [ viewLabel "button"
+            , Widget.button
+                (button palette
+                    |> Customize.elementButton
+                        [ Element.alignLeft
+                        , Element.centerY
+                        ]
+                )
+                { text = text
+                , icon = icon
+                , onPress = onPress
+                }
+            ]
+    }
+
+
+viewTextButton palette button text icon onPress _ _ =
+    { title = Nothing
+    , position = Tile.LeftColumnTile
+    , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
+    , body =
+        Element.row
+            [ Element.width Element.fill
+            , Element.centerY
+            , Element.Font.color <| MaterialColor.fromColor palette.on.surface
+            ]
+            [ viewLabel "textButton"
+            , Widget.textButton
+                (button palette
+                    |> Customize.elementButton
+                        [ Element.alignLeft
+                        , Element.centerY
+                        ]
+                )
+                { text = text
+                , onPress = onPress
+                }
+            ]
+    }
+
+
+viewIconButton palette button text icon onPress _ _ =
+    { title = Nothing
+    , position = Tile.LeftColumnTile
+    , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
+    , body =
+        Element.row
+            [ Element.width Element.fill
+            , Element.centerY
+            , Element.Font.color <| MaterialColor.fromColor palette.on.surface
+            ]
+            [ viewLabel "textButton"
+            , Widget.iconButton
+                (button palette
+                    |> Customize.elementButton
+                        [ Element.alignLeft
+                        , Element.centerY
+                        ]
+                )
+                { text = text
+                , icon = icon
+                , onPress = onPress
+                }
+            ]
+    }
+
+
+viewSelectButton palette button text icon onPress _ _ =
+    { title = Nothing
+    , position = Tile.LeftColumnTile
+    , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
+    , body =
+        Element.row
+            [ Element.width Element.fill
+            , Element.centerY
+            , Element.Font.color <| MaterialColor.fromColor palette.on.surface
+            ]
+            [ viewLabel "select button"
+            , Element.column [ Element.width Element.fill, Element.spacing 8 ]
+                [ Widget.selectButton
+                    (button palette
+                        |> Customize.elementButton
+                            [ Element.centerY
+                            , Element.alignLeft
+                            ]
+                    )
+                    ( False
+                    , { text = text
+                      , icon = icon
+                      , onPress = onPress
+                      }
+                    )
+                , Widget.selectButton
+                    (button palette
+                        |> Customize.elementButton
+                            [ Element.centerY
+                            , Element.alignLeft
+                            ]
+                    )
+                    ( True
+                    , { text = text
+                      , icon = icon
+                      , onPress = onPress
+                      }
+                    )
+                ]
+            ]
     }
 
 

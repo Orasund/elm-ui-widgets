@@ -3,6 +3,7 @@ module UIExplorer.Tile exposing (..)
 import Dict exposing (Dict)
 import Element exposing (Attribute, Element)
 import Element.Background as Background
+import Element.Font as Font
 import Markdown
 import SelectList exposing (SelectList)
 import UIExplorer exposing (Page, PageSize)
@@ -302,6 +303,7 @@ layoutRowView palette row =
                 [ Element.column
                     [ Element.width <| Element.fillPortion 2
                     , Element.height Element.fill
+                    , Element.spacing 10
                     ]
                   <|
                     List.map
@@ -313,6 +315,7 @@ layoutRowView palette row =
                 , Element.column
                     [ Element.width <| Element.fillPortion 1
                     , Element.height Element.fill
+                    , Element.spacing 10
                     ]
                   <|
                     List.map
@@ -344,11 +347,19 @@ page (Builder config) =
                 |> List.reverse
                 |> List.concatMap (layoutRowView palette)
                 |> Element.column
-                    [ Element.padding 10
-                    , Element.spacing 10
-                    , Element.px 800 |> Element.width
-                    , Element.centerX
-                    ]
+                    ([ Element.padding 10
+                     , Element.spacing 10
+                     , Element.px 800 |> Element.width
+                     , Element.centerX
+                     , Font.family
+                        [ Font.typeface "Roboto"
+                        , Font.sansSerif
+                        ]
+                     , Font.size 16
+                     , Font.letterSpacing 0.5
+                     ]
+                        ++ (palette.background |> MaterialColor.textAndBackground)
+                    )
     , subscriptions = config.subscriptions
     }
 
