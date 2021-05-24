@@ -4,9 +4,9 @@ import Element exposing (Element)
 import Element.Background as Background
 import Material.Icons as MaterialIcons exposing (offline_bolt)
 import Material.Icons.Types exposing (Coloring(..))
+import UIExplorer
 import UIExplorer.Story as Story
 import UIExplorer.Tile as Tile
-import UiExplorer
 import Widget
 import Widget.Customize as Customize
 import Widget.Icon as Icon exposing (Icon)

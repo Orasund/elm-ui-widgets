@@ -5,7 +5,7 @@ import Element exposing (Attribute, Element)
 import Element.Background as Background
 import Markdown
 import SelectList exposing (SelectList)
-import UiExplorer exposing (Page, PageSize)
+import UIExplorer exposing (Page, PageSize)
 import Widget
 import Widget.Customize as Customize
 import Widget.Material as Material

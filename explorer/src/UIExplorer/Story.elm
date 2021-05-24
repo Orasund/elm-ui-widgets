@@ -4,8 +4,8 @@ import Dict exposing (Dict)
 import Element exposing (Attribute, Element)
 import Element.Input as Input exposing (Label, Option, labelAbove, option, radio)
 import SelectList exposing (SelectList)
+import UIExplorer exposing (PageSize)
 import UIExplorer.Tile as Tile
-import UiExplorer exposing (PageSize)
 
 
 type StoryInfo
