@@ -4,8 +4,9 @@ import Dict exposing (Dict)
 import Element exposing (Attribute, Element)
 import Element.Input as Input exposing (Label, Option, labelAbove, option, radio)
 import SelectList exposing (SelectList)
-import UIExplorer exposing (PageSize)
-import UIExplorer.Tile as Tile
+import UIExplorer.Tile as Tile exposing (Context)
+import Widget
+import Widget.Material as Material
 
 
 type StoryInfo
@@ -313,57 +314,81 @@ storyHelp info =
             Just <| BoolStoryModel label default
 
 
-storyView : StoryModel -> Element StorySelectorMsg
-storyView model =
+storyView : Context -> StoryModel -> Element StorySelectorMsg
+storyView context model =
     case model of
         RangeStoryModel label { unit, min, max, value } ->
-            Input.slider []
-                { onChange = round >> String.fromInt >> StorySelect label
-                , label = Input.labelAbove [] <| Element.text <| label ++ " (" ++ String.fromInt value ++ unit ++ ")"
-                , min = toFloat min
-                , max = toFloat max
-                , value = toFloat value
-                , thumb = Input.defaultThumb
-                , step = Just 1.0
-                }
+            Element.column [ Element.spacing 8 ]
+                [ Element.text <| label ++ " (" ++ String.fromInt value ++ unit ++ ")"
+                , Input.slider []
+                    { onChange = round >> String.fromInt >> StorySelect label
+                    , label = Input.labelHidden label
+                    , min = toFloat min
+                    , max = toFloat max
+                    , value = toFloat value
+                    , thumb = Input.defaultThumb
+                    , step = Just 1.0
+                    }
+                ]
 
         TextStoryModel label value ->
-            Input.text []
-                { onChange = StorySelect label
-                , label = Input.labelAbove [] <| Element.text label
-                , placeholder = Nothing
-                , text = value
-                }
+            Element.column [ Element.spacing 8 ]
+                [ Element.text label
+                , Widget.textInput (Material.textInput context.palette)
+                    { chips = []
+                    , onChange = StorySelect label
+                    , label = label
+                    , placeholder = Nothing
+                    , text = value
+                    }
+                ]
 
         OptionListStoryModel label options ->
-            radio []
-                { label = labelAbove [] <| Element.text label
-                , onChange = StorySelect label
-                , options =
-                    options
-                        |> SelectList.toList
-                        |> List.map
-                            (\value ->
-                                option value <| Element.text value
-                            )
-                , selected = Just <| SelectList.selected options
-                }
+            Element.column [ Element.spacing 8 ]
+                [ Element.text label
+                , { selected =
+                        Just <| SelectList.index options
+                  , options =
+                        options
+                            |> SelectList.toList
+                            |> List.map
+                                (\opt ->
+                                    { text = opt
+                                    , icon = always Element.none
+                                    }
+                                )
+                  , onSelect =
+                        \selected ->
+                            options
+                                |> SelectList.toList
+                                |> List.indexedMap (\i opt -> ( i, opt ))
+                                |> List.filter (\( i, opt ) -> selected == i)
+                                |> List.head
+                                |> Maybe.map (Tuple.second >> StorySelect label)
+                  }
+                    |> Widget.select
+                    |> Widget.buttonColumn
+                        { elementColumn = Material.column
+                        , content = Material.textButton context.palette
+                        }
+                ]
 
         BoolStoryModel label value ->
-            Input.checkbox []
-                { label = Input.labelRight [] <| Element.text label
-                , onChange =
-                    \v ->
-                        StorySelect label
-                            (if v then
-                                "t"
+            Element.row [ Element.spacing 8 ]
+                [ Widget.switch (Material.switch context.palette)
+                    { description = label
+                    , onPress =
+                        Just <|
+                            StorySelect label <|
+                                if value then
+                                    "f"
 
-                             else
-                                "f"
-                            )
-                , icon = Input.defaultCheckbox
-                , checked = value
-                }
+                                else
+                                    "t"
+                    , active = value
+                    }
+                , Element.text label
+                ]
 
 
 storyTile : Maybe String -> List StoryInfo -> (List String -> a) -> Tile.Group StorySelectorModel StorySelectorMsg flags
@@ -382,21 +407,21 @@ storyTile title stories storiesToValue =
                     ( selectStory story value model, Cmd.none )
     , subscriptions = always Sub.none
     , views =
-        \_ model ->
+        \context model ->
             [ { title = title
               , position = Tile.NewRightColumnTile
               , attributes = []
               , body =
                     model
-                        |> List.map storyView
-                        |> Element.column []
+                        |> List.map (storyView context)
+                        |> Element.column [ Element.spacing 8 ]
               }
             ]
     }
 
 
 build :
-    BookBuilder (PageSize -> model -> Tile.View msg) model msg flags a
+    BookBuilder (Context -> model -> Tile.View msg) model msg flags a
     -> Tile.Group ( StorySelectorModel, model ) (Tile.TileMsg StorySelectorMsg msg) flags
 build builder =
     storyTile builder.title builder.stories builder.storiesToValue
@@ -407,7 +432,7 @@ build builder =
                     builder.tilelist.update msg model
             , subscriptions = Tuple.second >> builder.tilelist.subscriptions
             , views =
-                \pagesize ( selectorModel, model ) ->
+                \context ( selectorModel, model ) ->
                     selectorModel
                         |> selectedStories
                         |> List.reverse
@@ -415,6 +440,6 @@ build builder =
                         |> builder.tilelist.views
                         |> List.map
                             (\view ->
-                                view pagesize model
+                                view context model
                             )
             }

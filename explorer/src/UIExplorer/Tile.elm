@@ -22,6 +22,12 @@ type Position
     | NewLeftColumnTile
 
 
+type alias Context =
+    { pagesize : PageSize
+    , palette : Material.Palette
+    }
+
+
 type alias View msg =
     { title : Maybe String
     , position : Position
@@ -47,7 +53,7 @@ mapViewList map =
 type alias Tile model msg flags =
     { init : flags -> ( model, Cmd msg )
     , update : msg -> model -> ( model, Cmd msg )
-    , view : PageSize -> model -> View msg
+    , view : Context -> model -> View msg
     , subscriptions : model -> Sub msg
     }
 
@@ -55,7 +61,7 @@ type alias Tile model msg flags =
 type alias Group model msg flags =
     { init : flags -> ( model, Cmd msg )
     , update : msg -> model -> ( model, Cmd msg )
-    , views : PageSize -> model -> List (View msg)
+    , views : Context -> model -> List (View msg)
     , subscriptions : model -> Sub msg
     }
 
@@ -63,7 +69,7 @@ type alias Group model msg flags =
 type alias LinkedGroup sharedModel model msg flags =
     { init : flags -> ( model, Cmd msg )
     , update : msg -> ( sharedModel, model ) -> ( model, Cmd msg )
-    , views : PageSize -> ( sharedModel, model ) -> List (View msg)
+    , views : Context -> ( sharedModel, model ) -> List (View msg)
     , subscriptions : ( sharedModel, model ) -> Sub msg
     }
 
@@ -135,7 +141,7 @@ type Builder model msg flags
     = Builder
         { init : flags -> ( model, Cmd msg )
         , update : msg -> model -> ( model, Cmd msg )
-        , views : PageSize -> model -> List (View msg)
+        , views : Context -> model -> List (View msg)
         , subscriptions : model -> Sub msg
         }
 
@@ -208,7 +214,7 @@ nextGroup config (Builder previous) =
                     in
                     ( ( previousModel, newModel ), Cmd.map Current cmds )
 
-        views_ : PageSize -> ( modelPrevious, model ) -> List (View (TileMsg msgPrevious msg))
+        views_ : Context -> ( modelPrevious, model ) -> List (View (TileMsg msgPrevious msg))
         views_ windowSize ( previousModel, model ) =
             List.append
                 (previous.views windowSize previousModel |> mapViewList Previous)
@@ -342,7 +348,11 @@ page (Builder config) =
                     else
                         Material.defaultPalette
             in
-            config.views pagesize model
+            config.views
+                { pagesize = pagesize
+                , palette = palette
+                }
+                model
                 |> List.foldl layoutAddTile []
                 |> List.reverse
                 |> List.concatMap (layoutRowView palette)
@@ -375,7 +385,7 @@ markdown attributes text =
         )
 
 
-static : List (Attribute msg) -> (PageSize -> flags -> Element msg) -> Tile flags msg flags
+static : List (Attribute msg) -> (Context -> flags -> Element msg) -> Tile flags msg flags
 static attributes tileView =
     { init = \flags -> ( flags, Cmd.none )
     , update = \_ m -> ( m, Cmd.none )
