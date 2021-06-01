@@ -4,6 +4,7 @@ module Widget.Customize exposing
     , elementColumn, mapElementColumn
     , elementRow, mapElementRow
     , elementTable, mapElementTable
+    , elementPasswordInput, mapElementPasswordInput
     , elementTextInput, mapElementTextInput
     , content, mapContent
     , contentText, mapContentText
@@ -59,6 +60,8 @@ A styling for a simple Elm-Ui button would be like this:
 @docs elementRow, mapElementRow
 
 @docs elementTable, mapElementTable
+
+@docs elementPasswordInput, mapElementPasswordInput
 
 @docs elementTextInput, mapElementTextInput
 
@@ -247,6 +250,21 @@ mapElementTextInput : (b -> b) -> { a | elementTextInput : b } -> { a | elementT
 mapElementTextInput fun a =
     { a
         | elementTextInput = fun a.elementTextInput
+    }
+
+
+{-| -}
+elementPasswordInput : List b -> { a | elementPasswordInput : List b } -> { a | elementPasswordInput : List b }
+elementPasswordInput list a =
+    a
+        |> mapElementPasswordInput (\b -> b ++ list)
+
+
+{-| -}
+mapElementPasswordInput : (b -> b) -> { a | elementPasswordInput : b } -> { a | elementPasswordInput : b }
+mapElementPasswordInput fun a =
+    { a
+        | elementPasswordInput = fun a.elementPasswordInput
     }
 
 
