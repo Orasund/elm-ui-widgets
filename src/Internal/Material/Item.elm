@@ -142,6 +142,9 @@ fullBleedHeader palette =
             , right = 0
             , top = 1
             }
+        , Palette.lightGray palette
+            |> MaterialColor.fromColor
+            |> Border.color
         ]
     , content =
         { elementColumn =

@@ -1,10 +1,10 @@
-module Page exposing (..)
+module Page exposing (create, viewTile)
 
-import Element
+import Element exposing (Element)
 import UIExplorer exposing (Page)
-import UIExplorer.Story exposing (StorySelectorModel, StorySelectorMsg)
+import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
 import UIExplorer.Tile as Tile exposing (Group, Tile, TileMsg)
-import Widget.Material as Material
+import Widget.Material as Material exposing (Palette)
 import Widget.Material.Typography as Typography
 
 
@@ -33,3 +33,29 @@ create { title, description, book, demo } =
         |> Tile.nextGroup book
         |> Tile.next demo
         |> Tile.page
+
+
+viewTile :
+    String
+    -> Element msg
+    ->
+        { attributes : List (Element.Attribute msg)
+        , body : Element msg
+        , position : Tile.Position
+        , title : Maybe String
+        }
+viewTile title content =
+    { title = Nothing
+    , position = Tile.LeftColumnTile
+    , attributes = []
+    , body =
+        Element.column
+            [ Element.width Element.fill
+            , Element.spacing 8
+            ]
+            [ title
+                |> Element.text
+                |> Element.el Typography.caption
+            , content
+            ]
+    }

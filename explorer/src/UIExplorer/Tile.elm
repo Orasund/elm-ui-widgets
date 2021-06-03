@@ -302,12 +302,12 @@ layoutRowView palette row =
         TwoColumn left right ->
             Element.row
                 [ Element.width Element.fill
-                , Element.spacing 10
+                , Element.spacing 8
                 ]
                 [ Element.column
                     [ Element.width <| Element.fillPortion 2
                     , Element.height Element.fill
-                    , Element.spacing 10
+                    , Element.spacing 32
                     ]
                   <|
                     List.map
@@ -319,7 +319,7 @@ layoutRowView palette row =
                 , Element.column
                     [ Element.width <| Element.fillPortion 1
                     , Element.height Element.fill
-                    , Element.spacing 10
+                    , Element.spacing 8
                     ]
                   <|
                     List.map
@@ -355,8 +355,8 @@ page (Builder config) =
                 |> List.reverse
                 |> List.concatMap (layoutRowView palette)
                 |> Element.column
-                    ([ Element.padding 10
-                     , Element.spacing 10
+                    ([ Element.padding 16
+                     , Element.spacing 32
                      , Element.px 800 |> Element.width
                      , Element.centerX
                      , Font.family
