@@ -278,7 +278,7 @@ layoutAddTile view layout =
 
 
 layoutView : Material.Palette -> List (Attribute msg) -> View msg -> Element msg
-layoutView palette attributes view =
+layoutView palette _ view =
     case view.title of
         Just string ->
             [ string
