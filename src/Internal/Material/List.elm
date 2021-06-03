@@ -7,6 +7,7 @@ module Internal.Material.List exposing
     , sideSheet
     )
 
+import Color
 import Element
 import Element.Background as Background
 import Element.Border as Border
@@ -159,10 +160,17 @@ sideSheet palette =
             ++ [ Element.width <| Element.maximum 360 <| Element.fill
                , Element.height <| Element.fill
                , Element.paddingXY 0 8
+               , MaterialColor.gray
+                    |> MaterialColor.fromColor
+                    |> Border.color
                ]
     , content =
         { element =
-            [ Element.width <| Element.fill ]
+            [ Element.width <| Element.fill
+            , MaterialColor.gray
+                |> MaterialColor.fromColor
+                |> Border.color
+            ]
         , ifSingleton = []
         , ifFirst = []
         , ifLast = []

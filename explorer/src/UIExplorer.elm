@@ -29,6 +29,7 @@ Pages can contain a single widget, tables showing every variation of your button
 
 -}
 
+import Array exposing (Array)
 import Browser
 import Browser.Dom
 import Browser.Events
@@ -54,6 +55,8 @@ import Tree exposing (Tree)
 import Url exposing (Url)
 import Url.Builder
 import Url.Parser exposing ((</>))
+import Widget exposing (Item)
+import Widget.Material as Material
 
 
 {-| The first page in your UI explorer. This is the default page if the user doesn't specify a url path.
@@ -290,6 +293,7 @@ type Msg pageMsg
     | ToggledPageSizeGroup
     | PressedColorBlindOption (Maybe ColorBlindOption)
     | ToggledColorBlindGroup
+    | Load String
 
 
 type PageSizeOption
@@ -597,6 +601,9 @@ updateSuccess (PageBuilder pages) config msg model =
         ChangeDarkTheme enabled ->
             ( { model | darkThemeEnabled = enabled }, Cmd.none )
 
+        Load string ->
+            ( model, Browser.Navigation.pushUrl model.key string )
+
 
 view :
     ApplicationConfig (Msg pageMsg) flags
@@ -762,6 +769,13 @@ viewSidebar pages config model =
 
             else
                 lightGray
+
+        palette =
+            if model.darkThemeEnabled then
+                Material.darkPalette
+
+            else
+                Material.defaultPalette
     in
     if model.minimizeSidebar then
         Element.el
@@ -777,7 +791,51 @@ viewSidebar pages config model =
             )
 
     else
-        Element.column
+        [ [ Element.row
+                [ Element.width Element.fill ]
+                [ config.sidebarTitle, minimizeSidebarButton ]
+                |> Widget.asItem
+          , Widget.fullBleedItem (Material.fullBleedItem palette)
+                { text = "dark theme"
+                , onPress = Just <| ChangeDarkTheme <| not <| model.darkThemeEnabled
+                , icon =
+                    \{} ->
+                        Widget.switch (Material.switch palette)
+                            { description = "Toggle Theme"
+                            , onPress = Just <| ChangeDarkTheme <| not <| model.darkThemeEnabled
+                            , active = model.darkThemeEnabled
+                            }
+                }
+          , Widget.textInput (Material.textInput palette)
+                { chips = []
+                , text = model.searchText
+                , placeholder = Just (Element.Input.placeholder [] (Element.text "Search pages"))
+                , label = "Search pages"
+                , onChange = TypingSearchText
+                }
+                |> Element.el [ Element.centerX, Element.centerY ]
+                |> Element.el [ Element.height <| Element.px 70, Element.width <| Element.fill ]
+                |> Widget.asItem
+          , Widget.headerItem (Material.fullBleedHeader palette) "Device Toolbar"
+          ]
+        , pageSizeOptionView model.darkThemeEnabled model.expandPageSizeOptions model.pageSizeOption
+        , [ Widget.divider (Material.insetDivider palette) ]
+        , colorBlindOptionView model.darkThemeEnabled model.expandColorBlindOptions model.colorBlindOption
+        , [ Widget.headerItem (Material.fullBleedHeader palette) "Widgets"
+          , Widget.asItem <|
+                if showSearchResults model.searchText then
+                    Element.Lazy.lazy5 viewSearchResults model.darkThemeEnabled pages config model.page model.searchText
+
+                else
+                    Element.Lazy.lazy5 viewSidebarLinks model.darkThemeEnabled pages config model.page model.expandedGroups
+          ]
+        ]
+            |> List.concat
+            |> Widget.itemList (Material.sideSheet palette)
+
+
+
+{--Element.column
             [ Element.width (Element.px (Pixels.inPixels sidebarWidth))
             , Element.height Element.fill
 
@@ -841,6 +899,7 @@ viewSidebar pages config model =
                     Element.Lazy.lazy5 viewSidebarLinks model.darkThemeEnabled pages config model.page model.expandedGroups
                 )
             ]
+        --}
 
 
 colorblindnessCss : Html msg
@@ -1032,7 +1091,7 @@ colorblindnessSvg =
         ]
 
 
-pageSizeOptionView : Bool -> Bool -> PageSizeOption -> Element (Msg pageMsg)
+pageSizeOptionView : Bool -> Bool -> PageSizeOption -> List (Item (Msg pageMsg))
 pageSizeOptionView dark isExpanded selectedPageSize =
     optionGroupView dark
         isExpanded
@@ -1043,7 +1102,7 @@ pageSizeOptionView dark isExpanded selectedPageSize =
         ToggledPageSizeGroup
 
 
-colorBlindOptionView : Bool -> Bool -> Maybe ColorBlindOption -> Element (Msg pageMsg)
+colorBlindOptionView : Bool -> Bool -> Maybe ColorBlindOption -> List (Item (Msg pageMsg))
 colorBlindOptionView dark isExpanded selectedColorBlindOption =
     optionGroupView dark
         isExpanded
@@ -1054,7 +1113,7 @@ colorBlindOptionView dark isExpanded selectedColorBlindOption =
         ToggledColorBlindGroup
 
 
-optionGroupView : Bool -> Bool -> a -> List a -> (a -> String) -> (a -> msg) -> msg -> Element msg
+optionGroupView : Bool -> Bool -> a -> List a -> (a -> String) -> (a -> msg) -> msg -> List (Item msg)
 optionGroupView dark isExpanded selectedItem items itemToString onPress toggleExpand =
     let
         selectedColor =
@@ -1063,8 +1122,58 @@ optionGroupView dark isExpanded selectedItem items itemToString onPress toggleEx
 
             else
                 lightBlue
+
+        palette =
+            if dark then
+                Material.darkPalette
+
+            else
+                Material.defaultPalette
     in
-    Element.Input.button
+    Widget.expansionItem (Material.expansionItem palette)
+        { icon = always Element.none
+        , text = itemToString selectedItem
+        , onToggle = always toggleExpand
+        , content =
+            List.map
+                (\option ->
+                    Widget.insetItem (Material.insetItem palette)
+                        { text = itemToString option
+                        , onPress = onPress option |> Just
+                        , icon = always Element.none
+                        , content = always Element.none
+                        }
+                 {--Element.el
+                    [ Element.width Element.fill ]
+                    (Element.Input.button
+                        [ Element.width Element.fill
+                        , Element.paddingEach { left = 6, right = 8, top = 6, bottom = 6 }
+                        , Element.Background.color <|
+                            if selectedItem == option then
+                                selectedColor
+
+                            else
+                                Element.rgba 0 0 0 0
+                        , Element.mouseOver [ Element.Background.color selectedColor ]
+                        , Element.focused [ Element.Background.color selectedColor ]
+                        ]
+                        { onPress = onPress option |> Just
+                        , label = itemToString option |> Element.text
+                        }
+                    )--}
+                )
+                (if isExpanded then
+                    items
+
+                 else
+                    []
+                )
+        , isExpanded = isExpanded
+        }
+
+
+
+{--Element.Input.button
         [ Element.width Element.fill
         , Element.paddingEach { left = 6, right = 8, top = 5, bottom = 5 }
         , Element.mouseOver [ Element.Background.color selectedColor ]
@@ -1105,7 +1214,7 @@ optionGroupView dark isExpanded selectedItem items itemToString onPress toggleEx
             [ Element.width Element.fill
             , Element.Background.color <| Element.rgba 0 0 0 0.08
             , Element.Font.size 15
-            ]
+            ]--}
 
 
 showSearchResults : String -> Bool
@@ -1121,25 +1230,71 @@ viewSearchResults :
     -> String
     -> Element (Msg pageMsg)
 viewSearchResults dark (PageBuilder pages) config currentPage searchText =
-    pages.ids
-        |> List.filterMap
-            (\{ pageId, pageGroup } ->
-                if
-                    String.join " " pageGroup
-                        ++ " "
-                        ++ pageId
-                        |> String.toLower
-                        |> String.contains (String.toLower searchText)
-                then
-                    pageGroup ++ [ pageId ] |> Just
+    let
+        options : Array { previous : Maybe (List String), current : List String, next : Maybe (List String) }
+        options =
+            pages.ids
+                |> List.filterMap
+                    (\{ pageId, pageGroup } ->
+                        if
+                            String.join " " pageGroup
+                                ++ " "
+                                ++ pageId
+                                |> String.toLower
+                                |> String.contains (String.toLower searchText)
+                        then
+                            pageGroup ++ [ pageId ] |> Just
 
-                else
-                    Nothing
-            )
-        |> List.sort
-        |> listNeighbors
-        |> List.map (pageButton dark config currentPage)
-        |> Element.column [ Element.width Element.fill ]
+                        else
+                            Nothing
+                    )
+                |> List.sort
+                |> listNeighbors
+                |> Array.fromList
+
+        palette =
+            if dark then
+                Material.darkPalette
+
+            else
+                Material.defaultPalette
+    in
+    Widget.selectItem (Material.selectItem palette)
+        { selected =
+            options
+                |> Array.indexedMap Tuple.pair
+                |> Array.filter (Tuple.second >> .current >> (==) currentPage)
+                |> Array.get 0
+                |> Maybe.map Tuple.first
+        , options =
+            options
+                |> Array.toList
+                |> List.filterMap
+                    (.current
+                        >> List.reverse
+                        >> List.head
+                        >> Maybe.map
+                            (\text ->
+                                { text = text
+                                , icon = always Element.none
+                                }
+                            )
+                    )
+        , onSelect =
+            \int ->
+                options
+                    |> Array.get int
+                    |> Maybe.map .current
+                    |> Maybe.withDefault []
+                    |> uiUrl config.relativeUrlPath
+                    |> Load
+                    |> Just
+        }
+        |> Widget.itemList (Material.sideSheet palette)
+
+
+
+--|> List.map (pageButton dark config currentPage)
 
 
 listNeighbors : List a -> List { previous : Maybe a, current : a, next : Maybe a }
@@ -1370,11 +1525,11 @@ viewSidebarLinksHelper :
     -> Set String
     -> List String
     -> List (Tree String)
-    -> List (Element (Msg pageMsg))
+    -> List (List String)
 viewSidebarLinksHelper dark config page expandedGroups path trees =
     trees
         |> List.sortBy Tree.label
-        |> List.map
+        |> List.concatMap
             (\tree ->
                 let
                     label : String
@@ -1386,42 +1541,10 @@ viewSidebarLinksHelper dark config page expandedGroups path trees =
                 in
                 case Tree.children tree of
                     [] ->
-                        pageButton
-                            dark
-                            config
-                            page
-                            { previous = Nothing, next = Nothing, current = newPath }
+                        [ newPath ]
 
                     children ->
-                        let
-                            groupButton : Bool -> Element (Msg pageMsg)
-                            groupButton isExpanded =
-                                Element.Input.button
-                                    [ Element.width Element.fill
-                                    , Element.paddingEach { left = 6, right = 8, top = 8, bottom = 8 }
-                                    , Element.mouseOver [ Element.Background.color (mouseOverButtonColor (List.length newPath)) ]
-                                    , if isExpanded then
-                                        Element.Background.color <| Element.rgba 0 0 0 0
-
-                                      else
-                                        Element.Background.color <| Element.rgba 0 0 0 0.08
-                                    , focusAttributes dark
-                                    ]
-                                    { onPress = ToggledPageGroup newPath |> Just
-                                    , label = Element.row [] [ expanderArrow isExpanded, Element.text label ]
-                                    }
-                        in
-                        Element.el
-                            [ Element.width Element.fill, Element.paddingEach { left = 0, right = 0, top = 0, bottom = 2 } ]
-                            (Element.column
-                                [ Element.width Element.fill, Element.Background.color <| Element.rgba 0 0 0 0.08 ]
-                                (if isGroupExpanded expandedGroups newPath then
-                                    groupButton True :: viewSidebarLinksHelper dark config page expandedGroups newPath children
-
-                                 else
-                                    [ groupButton False ]
-                                )
-                            )
+                        viewSidebarLinksHelper dark config page expandedGroups newPath children
             )
 
 
@@ -1539,14 +1662,62 @@ viewSidebarLinks :
     -> Set String
     -> Element (Msg pageMsg)
 viewSidebarLinks dark (PageBuilder pages) config page expandedGroups =
-    pages.ids
+    let
+        options : Array (List String)
+        options =
+            pages.ids
+                |> buildTree
+                |> viewSidebarLinksHelper dark config page expandedGroups []
+                |> Array.fromList
+
+        palette =
+            if dark then
+                Material.darkPalette
+
+            else
+                Material.defaultPalette
+    in
+    Widget.selectItem (Material.selectItem palette)
+        { selected =
+            options
+                |> Array.indexedMap Tuple.pair
+                |> Array.filter (Tuple.second >> (==) page)
+                |> Array.get 0
+                |> Maybe.map Tuple.first
+        , options =
+            options
+                |> Array.toList
+                |> List.filterMap
+                    (List.reverse
+                        >> List.head
+                        >> Maybe.map
+                            (\text ->
+                                { text = text
+                                , icon = always Element.none
+                                }
+                            )
+                    )
+        , onSelect =
+            \int ->
+                options
+                    |> Array.get int
+                    |> Maybe.withDefault []
+                    |> uiUrl config.relativeUrlPath
+                    |> Load
+                    |> Just
+        }
+        |> Widget.itemList (Material.sideSheet palette)
+
+
+
+{--pages.ids
         |> buildTree
         |> viewSidebarLinksHelper dark config page expandedGroups []
         |> Element.column
             [ Element.width Element.fill
             , Element.Font.medium
             , Element.Font.alignLeft
-            ]
+            ]--}
 
 
 subscriptions : PageBuilder pageModel pageMsg flags -> Model pageModel flags -> Sub (Msg pageMsg)

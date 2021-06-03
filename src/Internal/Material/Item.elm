@@ -33,18 +33,13 @@ fullBleedDivider _ =
         [ Element.width <| Element.fill
         , Element.height <| Element.px 1
         , Element.padding 0
-        , Border.widthEach
-            { bottom = 0
-            , left = 1
-            , right = 1
-            , top = 0
-            }
+        , Border.width 0
         ]
     , content =
         { element =
             [ Element.width <| Element.fill
             , Element.height <| Element.px 1
-            , Color.gray
+            , MaterialColor.gray
                 |> MaterialColor.fromColor
                 |> Background.color
             ]
@@ -57,12 +52,7 @@ insetDivider _ =
     { element =
         [ Element.width <| Element.fill
         , Element.height <| Element.px 1
-        , Border.widthEach
-            { bottom = 0
-            , left = 1
-            , right = 1
-            , top = 0
-            }
+        , Border.width 0
         , Element.paddingEach
             { bottom = 0
             , left = 72
@@ -74,7 +64,7 @@ insetDivider _ =
         { element =
             [ Element.width <| Element.fill
             , Element.height <| Element.px 1
-            , Color.gray
+            , MaterialColor.gray
                 |> MaterialColor.fromColor
                 |> Background.color
             ]
@@ -87,12 +77,7 @@ middleDivider _ =
     { element =
         [ Element.width <| Element.fill
         , Element.height <| Element.px 1
-        , Border.widthEach
-            { bottom = 0
-            , left = 1
-            , right = 1
-            , top = 0
-            }
+        , Border.width 0
         , Element.paddingEach
             { bottom = 0
             , left = 16
@@ -104,7 +89,7 @@ middleDivider _ =
         { element =
             [ Element.width <| Element.fill
             , Element.height <| Element.px 1
-            , Color.gray
+            , MaterialColor.gray
                 |> MaterialColor.fromColor
                 |> Background.color
             ]
@@ -117,12 +102,7 @@ insetHeader palette =
     { element =
         [ Element.width <| Element.fill
         , Element.height <| Element.shrink
-        , Border.widthEach
-            { bottom = 0
-            , left = 1
-            , right = 1
-            , top = 0
-            }
+        , Border.width 0
         , Element.paddingEach
             { bottom = 0
             , left = 72
@@ -158,8 +138,8 @@ fullBleedHeader palette =
         , Element.padding 0
         , Border.widthEach
             { bottom = 0
-            , left = 1
-            , right = 1
+            , left = 0
+            , right = 0
             , top = 1
             }
         ]
