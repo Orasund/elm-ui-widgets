@@ -1,4 +1,4 @@
-module Example.Tab exposing (Model, Msg, init, subscriptions, update, view)
+module Page.Tab exposing (Model, Msg, init, subscriptions, update, view)
 
 import Browser
 import Element exposing (Element)

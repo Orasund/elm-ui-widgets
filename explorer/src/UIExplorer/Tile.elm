@@ -7,7 +7,7 @@ import Element.Font as Font
 import Markdown
 import SelectList exposing (SelectList)
 import UIExplorer exposing (Page, PageSize)
-import Widget
+import Widget exposing (Item)
 import Widget.Customize as Customize
 import Widget.Material as Material
 import Widget.Material.Color as MaterialColor
@@ -41,7 +41,7 @@ mapView map view =
     { title = view.title
     , position = view.position
     , attributes = List.map (Element.mapAttribute map) view.attributes
-    , body = Element.map map view.body
+    , body = view.body |> Element.map map
     }
 
 
@@ -279,18 +279,16 @@ layoutAddTile view layout =
 
 layoutView : Material.Palette -> List (Attribute msg) -> View msg -> Element msg
 layoutView palette attributes view =
-    Widget.column
-        (Material.cardColumn palette
-            |> Customize.elementColumn attributes
-            |> Customize.mapContent (Customize.element <| Element.height Element.fill :: view.attributes)
-        )
-    <|
-        List.filterMap identity
-            [ view.title
-                |> Maybe.map Element.text
-                |> Maybe.map (Element.el Typography.h3)
-            , Just view.body
+    case view.title of
+        Just string ->
+            [ string
+                |> Widget.headerItem (Material.fullBleedHeader palette)
+            , view.body |> Widget.asItem
             ]
+                |> Widget.itemList (Material.cardColumn palette)
+
+        Nothing ->
+            view.body
 
 
 layoutRowView : Material.Palette -> LayoutRow msg -> List (Element msg)

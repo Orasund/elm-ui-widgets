@@ -1,4 +1,4 @@
-module Example.Switch exposing (Model, Msg, init, subscriptions, update, view)
+module Page.Switch exposing (Model, Msg, init, subscriptions, update, view)
 
 import Browser
 import Element exposing (Element)

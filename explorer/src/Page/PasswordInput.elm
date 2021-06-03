@@ -1,4 +1,4 @@
-module Pages.PasswordInput exposing (Model, Msg, init, page, subscriptions, update, view)
+module Page.PasswordInput exposing (Model, Msg, init, page, subscriptions, update, view)
 
 import Browser
 import Element exposing (Element)

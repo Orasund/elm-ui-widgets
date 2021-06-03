@@ -1,13 +1,14 @@
-module Pages.Button exposing (page)
+module Page.Button exposing (page)
 
 import Element exposing (Element)
 import Element.Background as Background
 import Element.Font
 import Material.Icons as MaterialIcons exposing (offline_bolt)
 import Material.Icons.Types exposing (Coloring(..))
+import Page
 import UIExplorer
-import UIExplorer.Story as Story
-import UIExplorer.Tile as Tile
+import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
+import UIExplorer.Tile as Tile exposing (Tile, TileMsg)
 import Widget
 import Widget.Customize as Customize
 import Widget.Icon as Icon exposing (Icon)
@@ -25,19 +26,17 @@ import Widget.Material.Typography as Typography
 
 
 page =
-    Tile.first (intro |> Tile.withTitle "Button")
-        |> Tile.nextGroup book
-        |> Tile.next demo
-        |> Tile.page
+    Page.create
+        { title = "Button"
+        , description = "A simple button"
+        , book = book
+        , demo = demo
+        }
 
 
-intro =
-    Tile.markdown []
-        """ A simple button """
-
-
+book : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) ()
 book =
-    Story.book (Just "options")
+    Story.book (Just "Options")
         (Story.initStaticTiles
             |> Story.addTile viewButton
             |> Story.addTile viewTextButton
@@ -253,6 +252,7 @@ type Msg
 --|> Story.addTile (Just "Interactive example") view
 
 
+demo : Tile Model Msg ()
 demo =
     { init = always init
     , update = update
