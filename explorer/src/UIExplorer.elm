@@ -587,16 +587,21 @@ updateSuccess (PageBuilder pages) config msg model =
             )
 
         PressedPageSizeOption pageSizeOption ->
-            ( { model | pageSizeOption = pageSizeOption }, Cmd.none )
+            ( { model | pageSizeOption = pageSizeOption
+            , expandPageSizeOptions = False }, Cmd.none )
 
         ToggledPageSizeGroup ->
-            ( { model | expandPageSizeOptions = not model.expandPageSizeOptions }, Cmd.none )
+            ( { model | expandPageSizeOptions = not model.expandPageSizeOptions
+            , expandColorBlindOptions = False
+             }, Cmd.none )
 
         PressedColorBlindOption colorBlindOption ->
-            ( { model | colorBlindOption = colorBlindOption }, Cmd.none )
+            ( { model | colorBlindOption = colorBlindOption 
+            , expandColorBlindOptions = False}, Cmd.none )
 
         ToggledColorBlindGroup ->
-            ( { model | expandColorBlindOptions = not model.expandColorBlindOptions }, Cmd.none )
+            ( { model | expandColorBlindOptions = not model.expandColorBlindOptions
+            , expandPageSizeOptions = False }, Cmd.none )
 
         ChangeDarkTheme enabled ->
             ( { model | darkThemeEnabled = enabled }, Cmd.none )
@@ -796,7 +801,7 @@ viewSidebar pages config model =
                 [ config.sidebarTitle, minimizeSidebarButton ]
                 |> Widget.asItem
           , Widget.fullBleedItem (Material.fullBleedItem palette)
-                { text = "dark theme"
+                { text = "Dark Theme"
                 , onPress = Just <| ChangeDarkTheme <| not <| model.darkThemeEnabled
                 , icon =
                     \{} ->
