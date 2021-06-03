@@ -9,7 +9,7 @@ import SelectList exposing (SelectList)
 import UIExplorer exposing (Page, PageSize)
 import Widget exposing (Item)
 import Widget.Customize as Customize
-import Widget.Material as Material
+import Widget.Material as Material exposing (Palette)
 import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
 
@@ -411,12 +411,12 @@ withTitle title tile =
     }
 
 
-canvas : Element msg -> Element msg
-canvas view =
+canvas : Palette -> Element msg -> Element msg
+canvas palette view =
     Element.el
         [ Element.padding 30
         , Element.width Element.fill
-        , Background.color <| MaterialColor.fromColor <| MaterialColor.gray
+        , Background.color <| MaterialColor.fromColor <| Material.gray palette
         ]
     <|
         Element.el

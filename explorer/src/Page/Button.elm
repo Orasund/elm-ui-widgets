@@ -41,7 +41,6 @@ book =
             |> Story.addTile viewButton
             |> Story.addTile viewTextButton
             |> Story.addTile viewIconButton
-            |> Story.addTile viewSelectButton
          --|> Story.addTile viewButtonSource
         )
         |> Story.addStory
@@ -88,7 +87,7 @@ viewLabel =
 
 
 viewButton palette button text icon onPress _ _ =
-    { title = Nothing
+    { title = Just "Button"
     , position = Tile.LeftColumnTile
     , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
     , body =
@@ -97,8 +96,7 @@ viewButton palette button text icon onPress _ _ =
             , Element.centerY
             , Element.Font.color <| MaterialColor.fromColor palette.on.surface
             ]
-            [ viewLabel "button"
-            , Widget.button
+            [ Widget.button
                 (button palette
                     |> Customize.elementButton
                         [ Element.alignLeft
@@ -114,7 +112,7 @@ viewButton palette button text icon onPress _ _ =
 
 
 viewTextButton palette button text icon onPress _ _ =
-    { title = Nothing
+    { title = Just "Text Button"
     , position = Tile.LeftColumnTile
     , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
     , body =
@@ -123,8 +121,7 @@ viewTextButton palette button text icon onPress _ _ =
             , Element.centerY
             , Element.Font.color <| MaterialColor.fromColor palette.on.surface
             ]
-            [ viewLabel "textButton"
-            , Widget.textButton
+            [ Widget.textButton
                 (button palette
                     |> Customize.elementButton
                         [ Element.alignLeft
@@ -139,7 +136,7 @@ viewTextButton palette button text icon onPress _ _ =
 
 
 viewIconButton palette button text icon onPress _ _ =
-    { title = Nothing
+    { title = Just "Icon Button"
     , position = Tile.LeftColumnTile
     , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
     , body =
@@ -148,8 +145,7 @@ viewIconButton palette button text icon onPress _ _ =
             , Element.centerY
             , Element.Font.color <| MaterialColor.fromColor palette.on.surface
             ]
-            [ viewLabel "textButton"
-            , Widget.iconButton
+            [ Widget.iconButton
                 (button palette
                     |> Customize.elementButton
                         [ Element.alignLeft
@@ -160,49 +156,6 @@ viewIconButton palette button text icon onPress _ _ =
                 , icon = icon
                 , onPress = onPress
                 }
-            ]
-    }
-
-
-viewSelectButton palette button text icon onPress _ _ =
-    { title = Nothing
-    , position = Tile.LeftColumnTile
-    , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
-    , body =
-        Element.row
-            [ Element.width Element.fill
-            , Element.centerY
-            , Element.Font.color <| MaterialColor.fromColor palette.on.surface
-            ]
-            [ viewLabel "select button"
-            , Element.column [ Element.width Element.fill, Element.spacing 8 ]
-                [ Widget.selectButton
-                    (button palette
-                        |> Customize.elementButton
-                            [ Element.centerY
-                            , Element.alignLeft
-                            ]
-                    )
-                    ( False
-                    , { text = text
-                      , icon = icon
-                      , onPress = onPress
-                      }
-                    )
-                , Widget.selectButton
-                    (button palette
-                        |> Customize.elementButton
-                            [ Element.centerY
-                            , Element.alignLeft
-                            ]
-                    )
-                    ( True
-                    , { text = text
-                      , icon = icon
-                      , onPress = onPress
-                      }
-                    )
-                ]
             ]
     }
 

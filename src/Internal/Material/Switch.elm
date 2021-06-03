@@ -5,7 +5,7 @@ import Element
 import Element.Background as Background
 import Element.Border as Border
 import Html.Attributes as Attributes
-import Internal.Material.Palette exposing (Palette)
+import Internal.Material.Palette as Palette exposing (Palette)
 import Internal.Switch exposing (SwitchStyle)
 import Widget.Material.Color as MaterialColor
 
@@ -30,7 +30,8 @@ switch palette =
         , ifDisabled =
             [ Element.htmlAttribute <| Attributes.style "cursor" "not-allowed"
             , palette.surface
-                |> MaterialColor.withShade MaterialColor.gray (0.5 * MaterialColor.buttonDisabledOpacity)
+                |> MaterialColor.withShade (Palette.gray palette)
+                    (0.5 * MaterialColor.buttonDisabledOpacity)
                 |> MaterialColor.fromColor
                 |> Background.color
             ]
@@ -41,7 +42,7 @@ switch palette =
                 |> Background.color
             ]
         , otherwise =
-            [ MaterialColor.gray
+            [ Palette.gray palette
                 |> MaterialColor.scaleOpacity 0.5
                 |> MaterialColor.fromColor
                 |> Background.color

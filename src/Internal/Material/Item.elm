@@ -22,13 +22,13 @@ import Internal.Button exposing (ButtonStyle)
 import Internal.Item exposing (DividerStyle, ExpansionItemStyle, FullBleedItemStyle, HeaderStyle, ImageItemStyle, InsetItemStyle, ItemStyle, MultiLineItemStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Icon as Icon
-import Internal.Material.Palette exposing (Palette)
+import Internal.Material.Palette as Palette exposing (Palette)
 import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
 
 
 fullBleedDivider : Palette -> ItemStyle (DividerStyle msg) msg
-fullBleedDivider _ =
+fullBleedDivider palette =
     { element =
         [ Element.width <| Element.fill
         , Element.height <| Element.px 1
@@ -39,7 +39,7 @@ fullBleedDivider _ =
         { element =
             [ Element.width <| Element.fill
             , Element.height <| Element.px 1
-            , MaterialColor.gray
+            , Palette.lightGray palette
                 |> MaterialColor.fromColor
                 |> Background.color
             ]
@@ -48,7 +48,7 @@ fullBleedDivider _ =
 
 
 insetDivider : Palette -> ItemStyle (DividerStyle msg) msg
-insetDivider _ =
+insetDivider palette =
     { element =
         [ Element.width <| Element.fill
         , Element.height <| Element.px 1
@@ -64,7 +64,7 @@ insetDivider _ =
         { element =
             [ Element.width <| Element.fill
             , Element.height <| Element.px 1
-            , MaterialColor.gray
+            , Palette.lightGray palette
                 |> MaterialColor.fromColor
                 |> Background.color
             ]
@@ -73,7 +73,7 @@ insetDivider _ =
 
 
 middleDivider : Palette -> ItemStyle (DividerStyle msg) msg
-middleDivider _ =
+middleDivider palette =
     { element =
         [ Element.width <| Element.fill
         , Element.height <| Element.px 1
@@ -89,7 +89,7 @@ middleDivider _ =
         { element =
             [ Element.width <| Element.fill
             , Element.height <| Element.px 1
-            , MaterialColor.gray
+            , Palette.lightGray palette
                 |> MaterialColor.fromColor
                 |> Background.color
             ]
@@ -120,8 +120,8 @@ insetHeader palette =
                 insetDivider palette
                     |> .content
             , title =
-                Typography.body2
-                    ++ [ MaterialColor.gray
+                Typography.caption
+                    ++ [ Palette.textGray palette
                             |> MaterialColor.fromColor
                             |> Font.color
                        ]
@@ -151,11 +151,11 @@ fullBleedHeader palette =
         , content =
             { divider = { element = [] }
             , title =
-                Typography.caption
-                    ++ [ MaterialColor.gray
+                Typography.subtitle2
+                    ++ [ Palette.textGray palette
                             |> MaterialColor.fromColor
                             |> Font.color
-                       , Element.paddingXY 16 0
+                       , Element.paddingXY 16 8
                        ]
             }
         }
@@ -185,7 +185,7 @@ fullBleedItem palette =
 
 
 insetItem : Palette -> ItemStyle (InsetItemStyle msg) msg
-insetItem _ =
+insetItem palette =
     { element = [ Element.padding 0 ]
     , content =
         { elementButton =
@@ -200,19 +200,19 @@ insetItem _ =
             ]
         , otherwise =
             [ Element.mouseDown <|
-                [ MaterialColor.gray
+                [ Palette.gray palette
                     |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
                     |> MaterialColor.fromColor
                     |> Background.color
                 ]
             , Element.focused <|
-                [ MaterialColor.gray
+                [ Palette.gray palette
                     |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
                     |> MaterialColor.fromColor
                     |> Background.color
                 ]
             , Element.mouseOver <|
-                [ MaterialColor.gray
+                [ Palette.gray palette
                     |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
                     |> MaterialColor.fromColor
                     |> Background.color
@@ -229,12 +229,12 @@ insetItem _ =
                         ]
                     , content =
                         { size = 24
-                        , color = MaterialColor.gray
+                        , color = Palette.gray palette
                         }
                     }
                 , content =
                     { size = 24
-                    , color = MaterialColor.gray
+                    , color = Palette.gray palette
                     }
                 }
             }
@@ -243,7 +243,7 @@ insetItem _ =
 
 
 multiLineItem : Palette -> ItemStyle (MultiLineItemStyle msg) msg
-multiLineItem _ =
+multiLineItem palette =
     { element = [ Element.padding 0 ]
     , content =
         { elementButton =
@@ -258,19 +258,19 @@ multiLineItem _ =
             ]
         , otherwise =
             [ Element.mouseDown <|
-                [ MaterialColor.gray
+                [ Palette.gray palette
                     |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
                     |> MaterialColor.fromColor
                     |> Background.color
                 ]
             , Element.focused <|
-                [ MaterialColor.gray
+                [ Palette.gray palette
                     |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
                     |> MaterialColor.fromColor
                     |> Background.color
                 ]
             , Element.mouseOver <|
-                [ MaterialColor.gray
+                [ Palette.gray palette
                     |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
                     |> MaterialColor.fromColor
                     |> Background.color
@@ -289,7 +289,7 @@ multiLineItem _ =
                         , text =
                             { elementText =
                                 Typography.body2
-                                    ++ [ MaterialColor.gray
+                                    ++ [ Palette.gray palette
                                             |> MaterialColor.fromColor
                                             |> Font.color
                                        ]
@@ -303,12 +303,12 @@ multiLineItem _ =
                         ]
                     , content =
                         { size = 24
-                        , color = MaterialColor.gray
+                        , color = Palette.textGray palette
                         }
                     }
                 , content =
                     { size = 24
-                    , color = MaterialColor.gray
+                    , color = Palette.textGray palette
                     }
                 }
             }
@@ -317,7 +317,7 @@ multiLineItem _ =
 
 
 imageItem : Palette -> ItemStyle (ImageItemStyle msg) msg
-imageItem _ =
+imageItem palette =
     { element = [ Element.padding 0 ]
     , content =
         { elementButton =
@@ -332,19 +332,19 @@ imageItem _ =
             ]
         , otherwise =
             [ Element.mouseDown <|
-                [ MaterialColor.gray
+                [ Palette.gray palette
                     |> MaterialColor.scaleOpacity MaterialColor.buttonPressedOpacity
                     |> MaterialColor.fromColor
                     |> Background.color
                 ]
             , Element.focused <|
-                [ MaterialColor.gray
+                [ Palette.gray palette
                     |> MaterialColor.scaleOpacity MaterialColor.buttonFocusOpacity
                     |> MaterialColor.fromColor
                     |> Background.color
                 ]
             , Element.mouseOver <|
-                [ MaterialColor.gray
+                [ Palette.gray palette
                     |> MaterialColor.scaleOpacity MaterialColor.buttonHoverOpacity
                     |> MaterialColor.fromColor
                     |> Background.color
@@ -366,7 +366,7 @@ imageItem _ =
                     }
                 , content =
                     { size = 24
-                    , color = MaterialColor.gray
+                    , color = Palette.gray palette
                     }
                 }
             }
@@ -419,7 +419,7 @@ selectItem palette =
             ]
         , ifDisabled =
             (Button.baseButton palette |> .ifDisabled)
-                ++ [ MaterialColor.gray
+                ++ [ Palette.gray palette
                         |> MaterialColor.fromColor
                         |> Font.color
                    , Element.mouseDown []
@@ -454,7 +454,7 @@ selectItem palette =
                         }
                     , ifDisabled =
                         { size = 18
-                        , color = MaterialColor.gray
+                        , color = Palette.gray palette
                         }
                     , otherwise =
                         { size = 18

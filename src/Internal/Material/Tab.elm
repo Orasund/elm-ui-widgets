@@ -6,7 +6,7 @@ import Element.Border as Border
 import Element.Font as Font
 import Internal.Button exposing (ButtonStyle)
 import Internal.Material.Button as Button
-import Internal.Material.Palette exposing (Palette)
+import Internal.Material.Palette as Palette exposing (Palette)
 import Internal.Tab exposing (TabStyle)
 import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
@@ -44,7 +44,7 @@ tabButton palette =
                ]
     , ifDisabled =
         (Button.baseButton palette |> .ifDisabled)
-            ++ [ MaterialColor.gray
+            ++ [ Palette.gray palette
                     |> MaterialColor.fromColor
                     |> Font.color
                , Element.mouseDown []
@@ -77,7 +77,7 @@ tabButton palette =
                     }
                 , ifDisabled =
                     { size = 18
-                    , color = MaterialColor.gray
+                    , color = Palette.gray palette
                     }
                 , otherwise =
                     { size = 18

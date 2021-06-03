@@ -16,6 +16,7 @@ module Widget.Material exposing
     , sortTable
     , snackbar
     , tab, tabButton
+    , textGray
     )
 
 {-| This module implements a Material design theme for all widgets.
@@ -157,7 +158,6 @@ import Internal.Switch exposing (SwitchStyle)
 import Internal.Tab exposing (TabStyle)
 import Internal.TextInput exposing (TextInputStyle)
 import Widget.Icon exposing (Icon)
-import Widget.Material.Color as MaterialColor
 import Widget.Snackbar exposing (SnackbarStyle)
 
 
@@ -214,12 +214,25 @@ darkPalette =
     Palette.darkPalette
 
 
-{-| generates a "grayish" color that matches the on-surface color.
+{-| generates a "grayish 50%" color that matches the on-surface color.
 -}
 gray : Palette -> Color
-gray palette =
-    palette.on.surface
-        |> MaterialColor.scaleOpacity 0.14
+gray =
+    Palette.gray
+
+
+{-| generates a "grayish 14%" color that matches the on-surface color.
+-}
+lightGray : Palette -> Color
+lightGray =
+    Palette.lightGray
+
+
+{-| generates a grayer text color
+-}
+textGray : Palette -> Color
+textGray =
+    Palette.textGray
 
 
 
