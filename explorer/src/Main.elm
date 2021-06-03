@@ -2,11 +2,13 @@ module Main exposing (main)
 
 import Element
 import Pages.Button
+import Pages.PasswordInput
 import UIExplorer
 
 
 pages =
     UIExplorer.firstPage "Button" Pages.Button.page
+        |> UIExplorer.nextPage "Password Input" Pages.PasswordInput.page
 
 
 main =
