@@ -1,5 +1,5 @@
 module Widget.Material exposing
-    ( Palette, defaultPalette, darkPalette
+    ( Palette, defaultPalette, darkPalette, gray
     , containedButton, outlinedButton, textButton
     , iconButton, toggleButton, buttonRow
     , switch
@@ -33,7 +33,7 @@ If you have any suggestions or improvements, be sure to leave a [PR or a Issue](
 
 # Palette
 
-@docs Palette, defaultPalette, darkPalette
+@docs Palette, defaultPalette, darkPalette, gray
 
 
 # Button
@@ -157,6 +157,7 @@ import Internal.Switch exposing (SwitchStyle)
 import Internal.Tab exposing (TabStyle)
 import Internal.TextInput exposing (TextInputStyle)
 import Widget.Icon exposing (Icon)
+import Widget.Material.Color as MaterialColor
 import Widget.Snackbar exposing (SnackbarStyle)
 
 
@@ -211,6 +212,14 @@ _Image take from [material.io](https://material.io/design/color/dark-theme.html#
 darkPalette : Palette
 darkPalette =
     Palette.darkPalette
+
+
+{-| generates a "grayish" color that matches the on-surface color.
+-}
+gray : Palette -> Color
+gray palette =
+    palette.on.surface
+        |> MaterialColor.scaleOpacity 0.14
 
 
 
