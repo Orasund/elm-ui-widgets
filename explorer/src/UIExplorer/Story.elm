@@ -7,6 +7,7 @@ import SelectList exposing (SelectList)
 import UIExplorer.Tile as Tile exposing (Context)
 import Widget
 import Widget.Material as Material
+import Widget.Material.Typography as Typography
 
 
 type StoryInfo
@@ -319,7 +320,13 @@ storyView context model =
     case model of
         RangeStoryModel label { unit, min, max, value } ->
             Element.column [ Element.spacing 8 ]
-                [ Element.text <| label ++ " (" ++ String.fromInt value ++ unit ++ ")"
+                [ label
+                    ++ " ("
+                    ++ String.fromInt value
+                    ++ unit
+                    ++ ")"
+                    |> Element.text
+                    |> Element.el Typography.caption
                 , Input.slider []
                     { onChange = round >> String.fromInt >> StorySelect label
                     , label = Input.labelHidden label
@@ -333,7 +340,7 @@ storyView context model =
 
         TextStoryModel label value ->
             Element.column [ Element.spacing 8 ]
-                [ Element.text label
+                [ Element.text label |> Element.el Typography.caption
                 , Widget.textInput (Material.textInput context.palette)
                     { chips = []
                     , onChange = StorySelect label
@@ -345,7 +352,7 @@ storyView context model =
 
         OptionListStoryModel label options ->
             Element.column [ Element.spacing 8 ]
-                [ Element.text label
+                [ Element.text label |> Element.el Typography.caption
                 , { selected =
                         Just <| SelectList.index options
                   , options =
@@ -374,8 +381,9 @@ storyView context model =
                 ]
 
         BoolStoryModel label value ->
-            Element.row [ Element.spacing 8 ]
-                [ Widget.switch (Material.switch context.palette)
+            Element.row [ Element.spaceEvenly, Element.width Element.fill ]
+                [ Element.text label |> Element.el Typography.caption
+                , Widget.switch (Material.switch context.palette)
                     { description = label
                     , onPress =
                         Just <|
@@ -387,7 +395,6 @@ storyView context model =
                                     "t"
                     , active = value
                     }
-                , Element.text label
                 ]
 
 

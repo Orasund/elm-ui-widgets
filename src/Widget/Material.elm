@@ -1,5 +1,5 @@
 module Widget.Material exposing
-    ( Palette, defaultPalette, darkPalette
+    ( Palette, defaultPalette, darkPalette, gray
     , containedButton, outlinedButton, textButton
     , iconButton, toggleButton, buttonRow
     , switch
@@ -16,6 +16,7 @@ module Widget.Material exposing
     , sortTable
     , snackbar
     , tab, tabButton
+    , textGray
     )
 
 {-| This module implements a Material design theme for all widgets.
@@ -33,7 +34,7 @@ If you have any suggestions or improvements, be sure to leave a [PR or a Issue](
 
 # Palette
 
-@docs Palette, defaultPalette, darkPalette
+@docs Palette, defaultPalette, darkPalette, gray
 
 
 # Button
@@ -211,6 +212,27 @@ _Image take from [material.io](https://material.io/design/color/dark-theme.html#
 darkPalette : Palette
 darkPalette =
     Palette.darkPalette
+
+
+{-| generates a "grayish 50%" color that matches the on-surface color.
+-}
+gray : Palette -> Color
+gray =
+    Palette.gray
+
+
+{-| generates a "grayish 14%" color that matches the on-surface color.
+-}
+lightGray : Palette -> Color
+lightGray =
+    Palette.lightGray
+
+
+{-| generates a grayer text color
+-}
+textGray : Palette -> Color
+textGray =
+    Palette.textGray
 
 
 

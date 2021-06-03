@@ -1,14 +1,18 @@
-module Pages.Button exposing (page)
+module Page.Button exposing (page)
+
+{-| This is an example Page. If you want to add your own pages, simple copy and modify this one.
+-}
 
 import Element exposing (Element)
 import Element.Background as Background
 import Element.Font
 import Material.Icons as MaterialIcons exposing (offline_bolt)
 import Material.Icons.Types exposing (Coloring(..))
+import Page
 import UIExplorer
-import UIExplorer.Story as Story
-import UIExplorer.Tile as Tile
-import Widget
+import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
+import UIExplorer.Tile as Tile exposing (Context, Position, Tile, TileMsg)
+import Widget exposing (ButtonStyle)
 import Widget.Customize as Customize
 import Widget.Icon as Icon exposing (Icon)
 import Widget.Material as Material
@@ -24,46 +28,88 @@ import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
 
 
-page =
-    Tile.first (intro |> Tile.withTitle "Button")
-        |> Tile.nextGroup book
-        |> Tile.next demo
-        |> Tile.page
+{-| The title of this page
+-}
+title : String
+title =
+    "Button"
 
 
-intro =
-    Tile.markdown []
-        """ A simple button """
+{-| The description. I've taken this description directly from the [Material-UI-Specification](https://material.io/components/buttons)
+-}
+description : String
+description =
+    "Buttons allow users to take actions, and make choices, with a single tap."
 
 
+{-| List of view functions. Essentially, anything that takes a Button as input.
+-}
+viewFunctions =
+    let
+        viewButton button text icon onPress { palette } () =
+            Widget.button (button palette)
+                { text = text
+                , icon = icon
+                , onPress = onPress
+                }
+                --Don't forget to change the title
+                |> Page.viewTile "Widget.button"
+
+        viewTextButton button text icon onPress { palette } () =
+            Widget.textButton
+                (button palette
+                    |> Customize.elementButton
+                        [ Element.alignLeft
+                        , Element.centerY
+                        ]
+                )
+                { text = text
+                , onPress = onPress
+                }
+                --Don't forget to change the title
+                |> Page.viewTile "Widget.textButton"
+
+        viewIconButton button text icon onPress { palette } () =
+            Widget.iconButton
+                (button palette
+                    |> Customize.elementButton
+                        [ Element.alignLeft
+                        , Element.centerY
+                        ]
+                )
+                { text = text
+                , icon = icon
+                , onPress = onPress
+                }
+                |> Page.viewTile "Widget.itemButton"
+    in
+    [ viewButton, viewTextButton, viewIconButton ]
+        |> List.foldl Story.addTile
+            Story.initStaticTiles
+
+
+{-| Let's you play around with the options.
+Note that the order of these stories must follow the order of the arguments from the view functions.
+-}
+book : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) ()
 book =
-    Story.book (Just "options")
-        (Story.initStaticTiles
-            |> Story.addTile viewButton
-            |> Story.addTile viewTextButton
-            |> Story.addTile viewIconButton
-            |> Story.addTile viewSelectButton
-         --|> Story.addTile viewButtonSource
-        )
+    Story.book (Just "Options")
+        viewFunctions
+        --Adding a option for different styles.
         |> Story.addStory
-            (Story.optionListStory "Palette"
-                darkPalette
-                [ ( "dark", darkPalette )
-                , ( "default", defaultPalette )
-                ]
-            )
-        |> Story.addStory
-            (Story.optionListStory "Material button"
+            (Story.optionListStory "Style"
                 containedButton
                 [ ( "contained", containedButton )
                 , ( "outlined", outlinedButton )
                 , ( "text", textButton )
                 ]
             )
+        --Changing the text of the label
         |> Story.addStory
             (Story.textStory "Label"
                 "OK"
             )
+        --Change the Icon
         |> Story.addStory
             (Story.optionListStory "Icon"
                 (MaterialIcons.done
@@ -75,6 +121,7 @@ book =
                   )
                 ]
             )
+        --Should an event be triggered when pressing the button?
         |> Story.addStory
             (Story.boolStory "with event handler"
                 ( Just (), Nothing )
@@ -83,159 +130,11 @@ book =
         |> Story.build
 
 
-viewLabel : String -> Element msg
-viewLabel =
-    Element.el [ Element.width <| Element.px 250 ] << Element.text
 
-
-viewButton palette button text icon onPress _ _ =
-    { title = Nothing
-    , position = Tile.LeftColumnTile
-    , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
-    , body =
-        Element.row
-            [ Element.width Element.fill
-            , Element.centerY
-            , Element.Font.color <| MaterialColor.fromColor palette.on.surface
-            ]
-            [ viewLabel "button"
-            , Widget.button
-                (button palette
-                    |> Customize.elementButton
-                        [ Element.alignLeft
-                        , Element.centerY
-                        ]
-                )
-                { text = text
-                , icon = icon
-                , onPress = onPress
-                }
-            ]
-    }
-
-
-viewTextButton palette button text icon onPress _ _ =
-    { title = Nothing
-    , position = Tile.LeftColumnTile
-    , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
-    , body =
-        Element.row
-            [ Element.width Element.fill
-            , Element.centerY
-            , Element.Font.color <| MaterialColor.fromColor palette.on.surface
-            ]
-            [ viewLabel "textButton"
-            , Widget.textButton
-                (button palette
-                    |> Customize.elementButton
-                        [ Element.alignLeft
-                        , Element.centerY
-                        ]
-                )
-                { text = text
-                , onPress = onPress
-                }
-            ]
-    }
-
-
-viewIconButton palette button text icon onPress _ _ =
-    { title = Nothing
-    , position = Tile.LeftColumnTile
-    , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
-    , body =
-        Element.row
-            [ Element.width Element.fill
-            , Element.centerY
-            , Element.Font.color <| MaterialColor.fromColor palette.on.surface
-            ]
-            [ viewLabel "textButton"
-            , Widget.iconButton
-                (button palette
-                    |> Customize.elementButton
-                        [ Element.alignLeft
-                        , Element.centerY
-                        ]
-                )
-                { text = text
-                , icon = icon
-                , onPress = onPress
-                }
-            ]
-    }
-
-
-viewSelectButton palette button text icon onPress _ _ =
-    { title = Nothing
-    , position = Tile.LeftColumnTile
-    , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
-    , body =
-        Element.row
-            [ Element.width Element.fill
-            , Element.centerY
-            , Element.Font.color <| MaterialColor.fromColor palette.on.surface
-            ]
-            [ viewLabel "select button"
-            , Element.column [ Element.width Element.fill, Element.spacing 8 ]
-                [ Widget.selectButton
-                    (button palette
-                        |> Customize.elementButton
-                            [ Element.centerY
-                            , Element.alignLeft
-                            ]
-                    )
-                    ( False
-                    , { text = text
-                      , icon = icon
-                      , onPress = onPress
-                      }
-                    )
-                , Widget.selectButton
-                    (button palette
-                        |> Customize.elementButton
-                            [ Element.centerY
-                            , Element.alignLeft
-                            ]
-                    )
-                    ( True
-                    , { text = text
-                      , icon = icon
-                      , onPress = onPress
-                      }
-                    )
-                ]
-            ]
-    }
-
-
-viewButtonSource palette text icon onPress size _ _ =
-    { title = Just "source code"
-    , position = Tile.FullWidthTile
-    , attributes = []
-    , body =
-        Tile.sourceCode <|
-            """Widget.button
-    (Material.containedButton palette
-          |> Customize.elementButton [ Element.height <| Element.px """
-                ++ String.fromInt size
-                ++ """ ]
-    )
-    { text =\""""
-                ++ text
-                ++ """" 
-    , icon = MaterialIcons.done |> Icon.elmMaterialIcons Widget.Material.Types.Color
-    , onPress = """
-                ++ (case onPress of
-                        Nothing ->
-                            "Nothing"
-
-                        Just () ->
-                            "Just ()"
-                   )
-                ++ """
-    }
-    """
-    }
+--------------------------------------------------------------------------------
+-- Interactive Demonstration
+--------------------------------------------------------------------------------
+{- This section here is essentially just a normal Elm program. -}
 
 
 type alias Model =
@@ -251,14 +150,6 @@ type Msg
 
 
 --|> Story.addTile (Just "Interactive example") view
-
-
-demo =
-    { init = always init
-    , update = update
-    , view = view
-    , subscriptions = subscriptions
-    }
 
 
 init : ( Model, Cmd Msg )
@@ -297,11 +188,9 @@ subscriptions _ =
     Sub.none
 
 
-view _ model =
+view : Context -> Int -> { title : Maybe String, position : Position, attributes : List b, body : Element Msg }
+view { palette } model =
     let
-        palette =
-            Material.defaultPalette
-
         style =
             { containedButton = Material.containedButton palette
             , outlinedButton = Material.outlinedButton palette
@@ -397,3 +286,27 @@ view _ model =
                     |> Customize.mapContent (Customize.element [ Element.width <| Element.fill ])
                 )
     }
+
+
+demo : Tile Model Msg ()
+demo =
+    { init = always init
+    , update = update
+    , view = view
+    , subscriptions = subscriptions
+    }
+
+
+
+--------------------------------------------------------------------------------
+-- DO NOT MODIFY ANTHING AFTER THIS LINE
+--------------------------------------------------------------------------------
+
+
+page =
+    Page.create
+        { title = title
+        , description = description
+        , book = book
+        , demo = demo
+        }

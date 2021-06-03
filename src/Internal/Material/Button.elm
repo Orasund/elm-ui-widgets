@@ -6,13 +6,13 @@ import Element.Border as Border
 import Element.Font as Font
 import Html.Attributes as Attributes
 import Internal.Button exposing (ButtonStyle)
-import Internal.Material.Palette exposing (Palette)
+import Internal.Material.Palette as Palette exposing (Palette)
 import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
 
 
 baseButton : Palette -> ButtonStyle msg
-baseButton _ =
+baseButton palette =
     { elementButton =
         Typography.button
             ++ [ Element.height <| Element.px 36
@@ -35,15 +35,15 @@ baseButton _ =
             , icon =
                 { ifDisabled =
                     { size = 18
-                    , color = MaterialColor.gray
+                    , color = Palette.gray palette
                     }
                 , ifActive =
                     { size = 18
-                    , color = MaterialColor.gray
+                    , color = Palette.gray palette
                     }
                 , otherwise =
                     { size = 18
-                    , color = MaterialColor.gray
+                    , color = Palette.gray palette
                     }
                 }
             }
@@ -82,11 +82,11 @@ containedButton palette =
                ]
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
-            ++ [ MaterialColor.gray
+            ++ [ Palette.gray palette
                     |> MaterialColor.scaleOpacity MaterialColor.buttonDisabledOpacity
                     |> MaterialColor.fromColor
                     |> Background.color
-               , Font.color <| MaterialColor.fromColor <| MaterialColor.gray
+               , Font.color <| MaterialColor.fromColor <| Palette.gray palette
                , Border.shadow <| MaterialColor.shadow 0
                , Element.mouseDown []
                , Element.mouseOver []
@@ -126,7 +126,8 @@ containedButton palette =
                     }
                 , ifDisabled =
                     { size = 18
-                    , color = MaterialColor.gray
+                    , color =
+                        Palette.gray palette
                     }
                 , otherwise =
                     { size = 18
@@ -174,7 +175,7 @@ outlinedButton palette =
                ]
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
-            ++ [ MaterialColor.gray
+            ++ [ Palette.gray palette
                     |> MaterialColor.fromColor
                     |> Font.color
                , Element.mouseDown []
@@ -212,7 +213,7 @@ outlinedButton palette =
                     }
                 , ifDisabled =
                     { size = 18
-                    , color = MaterialColor.gray
+                    , color = Palette.gray palette
                     }
                 , otherwise =
                     { size = 18
@@ -252,7 +253,7 @@ textButton palette =
                ]
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
-            ++ [ MaterialColor.gray
+            ++ [ Palette.gray palette
                     |> MaterialColor.fromColor
                     |> Font.color
                , Element.mouseDown []
@@ -278,7 +279,7 @@ textButton palette =
                     }
                 , ifDisabled =
                     { size = 18
-                    , color = MaterialColor.gray
+                    , color = Palette.gray palette
                     }
                 , otherwise =
                     { size = 18
@@ -342,7 +343,7 @@ toggleButton palette =
                     |> MaterialColor.scaleOpacity 0.14
                     |> MaterialColor.fromColor
                     |> Border.color
-               , MaterialColor.gray
+               , Palette.gray palette
                     |> MaterialColor.fromColor
                     |> Font.color
                , Element.mouseDown []
@@ -401,7 +402,7 @@ toggleButton palette =
                     }
                 , ifDisabled =
                     { size = 24
-                    , color = MaterialColor.gray
+                    , color = Palette.gray palette
                     }
                 , otherwise =
                     { size = 24
@@ -450,7 +451,7 @@ iconButton palette =
                ]
     , ifDisabled =
         (baseButton palette |> .ifDisabled)
-            ++ [ MaterialColor.gray
+            ++ [ Palette.gray palette
                     |> MaterialColor.fromColor
                     |> Font.color
                , Element.mouseDown []
@@ -481,7 +482,7 @@ iconButton palette =
                     }
                 , ifDisabled =
                     { size = 18
-                    , color = MaterialColor.gray
+                    , color = Palette.gray palette
                     }
                 , otherwise =
                     { size = 18

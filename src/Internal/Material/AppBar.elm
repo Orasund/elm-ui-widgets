@@ -8,7 +8,7 @@ import Internal.AppBar exposing (AppBarStyle)
 import Internal.Button exposing (ButtonStyle)
 import Internal.Material.Button as Button
 import Internal.Material.Icon as Icon
-import Internal.Material.Palette exposing (Palette)
+import Internal.Material.Palette as Palette exposing (Palette)
 import Internal.Material.TextInput as TextInput
 import Widget.Customize as Customize
 import Widget.Icon as Icon exposing (Icon)
@@ -52,7 +52,7 @@ menuTabButton palette =
                ]
     , ifDisabled =
         (Button.baseButton palette |> .ifDisabled)
-            ++ [ MaterialColor.gray
+            ++ [ Palette.gray palette
                     |> MaterialColor.fromColor
                     |> Font.color
                , Element.mouseDown []
@@ -84,7 +84,7 @@ menuTabButton palette =
                     }
                 , ifDisabled =
                     { size = 18
-                    , color = MaterialColor.gray
+                    , color = Palette.gray palette
                     }
                 , otherwise =
                     { size = 18

@@ -13,7 +13,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Internal.List exposing (ColumnStyle, RowStyle)
-import Internal.Material.Palette exposing (Palette)
+import Internal.Material.Palette as Palette exposing (Palette)
 import Widget.Material.Color as MaterialColor
 
 
@@ -88,6 +88,11 @@ cardColumn palette =
             [ Border.shadow <| MaterialColor.shadow 4 ]
         , Element.alignTop
         , Border.rounded 4
+        , Border.width 1
+        , palette.on.surface
+            |> MaterialColor.scaleOpacity 0.14
+            |> MaterialColor.fromColor
+            |> Border.color
         ]
     , content =
         { element =
@@ -119,12 +124,6 @@ cardColumn palette =
                 , bottomLeft = 0
                 , bottomRight = 0
                 }
-            , Border.widthEach
-                { top = 1
-                , left = 1
-                , right = 1
-                , bottom = 0
-                }
             ]
         , ifLast =
             [ Border.roundEach
@@ -133,21 +132,9 @@ cardColumn palette =
                 , bottomLeft = 4
                 , bottomRight = 4
                 }
-            , Border.widthEach
-                { top = 0
-                , left = 1
-                , right = 1
-                , bottom = 1
-                }
             ]
         , otherwise =
             [ Border.rounded 0
-            , Border.widthEach
-                { top = 0
-                , left = 1
-                , right = 1
-                , bottom = 0
-                }
             ]
         }
     }
@@ -160,14 +147,14 @@ sideSheet palette =
             ++ [ Element.width <| Element.maximum 360 <| Element.fill
                , Element.height <| Element.fill
                , Element.paddingXY 0 8
-               , MaterialColor.gray
+               , Palette.gray palette
                     |> MaterialColor.fromColor
                     |> Border.color
                ]
     , content =
         { element =
             [ Element.width <| Element.fill
-            , MaterialColor.gray
+            , Palette.gray palette
                 |> MaterialColor.fromColor
                 |> Border.color
             ]

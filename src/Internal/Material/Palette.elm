@@ -1,6 +1,7 @@
-module Internal.Material.Palette exposing (Palette, darkPalette, defaultPalette)
+module Internal.Material.Palette exposing (Palette, darkPalette, defaultPalette, gray, lightGray, textGray)
 
 import Color exposing (Color)
+import Widget.Material.Color as MaterialColor
 
 
 type alias Palette =
@@ -51,3 +52,21 @@ darkPalette =
         , error = Color.rgb255 0x00 0x00 0x00
         }
     }
+
+
+gray : Palette -> Color
+gray palette =
+    palette.surface
+        |> MaterialColor.withShade palette.on.surface 0.5
+
+
+lightGray : Palette -> Color
+lightGray palette =
+    palette.surface
+        |> MaterialColor.withShade palette.on.surface 0.14
+
+
+textGray : Palette -> Color
+textGray palette =
+    palette.surface
+        |> MaterialColor.withShade palette.on.surface 0.77

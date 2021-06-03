@@ -57,6 +57,7 @@ import Url.Builder
 import Url.Parser exposing ((</>))
 import Widget exposing (Item)
 import Widget.Material as Material
+import Widget.Material.Typography as Typography
 
 
 {-| The first page in your UI explorer. This is the default page if the user doesn't specify a url path.
@@ -587,21 +588,36 @@ updateSuccess (PageBuilder pages) config msg model =
             )
 
         PressedPageSizeOption pageSizeOption ->
-            ( { model | pageSizeOption = pageSizeOption
-            , expandPageSizeOptions = False }, Cmd.none )
+            ( { model
+                | pageSizeOption = pageSizeOption
+                , expandPageSizeOptions = False
+              }
+            , Cmd.none
+            )
 
         ToggledPageSizeGroup ->
-            ( { model | expandPageSizeOptions = not model.expandPageSizeOptions
-            , expandColorBlindOptions = False
-             }, Cmd.none )
+            ( { model
+                | expandPageSizeOptions = not model.expandPageSizeOptions
+                , expandColorBlindOptions = False
+              }
+            , Cmd.none
+            )
 
         PressedColorBlindOption colorBlindOption ->
-            ( { model | colorBlindOption = colorBlindOption 
-            , expandColorBlindOptions = False}, Cmd.none )
+            ( { model
+                | colorBlindOption = colorBlindOption
+                , expandColorBlindOptions = False
+              }
+            , Cmd.none
+            )
 
         ToggledColorBlindGroup ->
-            ( { model | expandColorBlindOptions = not model.expandColorBlindOptions
-            , expandPageSizeOptions = False }, Cmd.none )
+            ( { model
+                | expandColorBlindOptions = not model.expandColorBlindOptions
+                , expandPageSizeOptions = False
+              }
+            , Cmd.none
+            )
 
         ChangeDarkTheme enabled ->
             ( { model | darkThemeEnabled = enabled }, Cmd.none )
@@ -796,10 +812,19 @@ viewSidebar pages config model =
             )
 
     else
-        [ [ Element.row
-                [ Element.width Element.fill ]
-                [ config.sidebarTitle, minimizeSidebarButton ]
-                |> Widget.asItem
+        [ [ Widget.insetItem (Material.insetItem palette)
+                { text = ""
+                , onPress = Just PressedToggleSidebar
+                , icon =
+                    \_ ->
+                        config.sidebarTitle
+                            |> Element.el Typography.h6
+                , content =
+                    \{ size } ->
+                        Element.text "❮"
+                            |> Element.el [ Element.Font.size size ]
+                }
+          , Widget.divider (Material.fullBleedDivider palette)
           , Widget.fullBleedItem (Material.fullBleedItem palette)
                 { text = "Dark Theme"
                 , onPress = Just <| ChangeDarkTheme <| not <| model.darkThemeEnabled

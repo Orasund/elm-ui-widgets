@@ -2,8 +2,9 @@ module Widget.Material.Color exposing
     ( buttonHoverOpacity, buttonFocusOpacity, buttonPressedOpacity, buttonDisabledOpacity, buttonSelectedOpacity
     , accessibleTextColor, accessibleWithTextColor
     , withShade, scaleOpacity
-    , dark, gray
+    , dark
     , toCIELCH, fromCIELCH, shadow, fromColor, textAndBackground
+    , gray
     )
 
 {-| This module contains functions to adapt color in various ways.
@@ -33,12 +34,17 @@ then the javascript material design implementation.
 
 ## Predefined Colors
 
-@docs dark, gray
+@docs dark
 
 
 ## Utility Functions
 
 @docs toCIELCH, fromCIELCH, shadow, fromColor, textAndBackground
+
+
+## DEPRECATED
+
+@docs gray
 
 -}
 
@@ -237,7 +243,7 @@ scaleOpacity opacity =
         >> Color.fromRgba
 
 
-{-| gray
+{-| DEPRECATED use Material.gray instead.
 -}
 gray : Color
 gray =
