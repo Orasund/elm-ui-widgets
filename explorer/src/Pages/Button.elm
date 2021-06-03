@@ -5,6 +5,8 @@ import Element.Background as Background
 import Element.Font
 import Material.Icons as MaterialIcons exposing (offline_bolt)
 import Material.Icons.Types exposing (Coloring(..))
+import StoryTileWithSource
+import String.Interpolate exposing (interpolate)
 import UIExplorer
 import UIExplorer.Story as Story
 import UIExplorer.Tile as Tile
@@ -38,26 +40,26 @@ intro =
 
 book =
     Story.book (Just "options")
-        (Story.initStaticTiles
-            |> Story.addTile viewButton
-            |> Story.addTile viewTextButton
-            |> Story.addTile viewIconButton
-            |> Story.addTile viewSelectButton
+        (StoryTileWithSource.init
+            |> StoryTileWithSource.addTile viewButton
+            |> StoryTileWithSource.addTile viewTextButton
+            |> StoryTileWithSource.addTile viewIconButton
+            |> StoryTileWithSource.addTile viewSelectButton
          --|> Story.addTile viewButtonSource
         )
         |> Story.addStory
             (Story.optionListStory "Palette"
-                darkPalette
-                [ ( "dark", darkPalette )
-                , ( "default", defaultPalette )
+                ( "dark", darkPalette )
+                [ ( "dark", ( "Material.darkPalette", darkPalette ) )
+                , ( "default", ( "Material.defaultPalette", defaultPalette ) )
                 ]
             )
         |> Story.addStory
             (Story.optionListStory "Material button"
-                containedButton
-                [ ( "contained", containedButton )
-                , ( "outlined", outlinedButton )
-                , ( "text", textButton )
+                ( "contained", containedButton )
+                [ ( "contained", ( "Material.containedButton", containedButton ) )
+                , ( "outlined", ( "Material.outlined", outlinedButton ) )
+                , ( "text", ( "Material.textButton", textButton ) )
                 ]
             )
         |> Story.addStory
@@ -66,21 +68,32 @@ book =
             )
         |> Story.addStory
             (Story.optionListStory "Icon"
-                (MaterialIcons.done
+                ( "done"
+                , MaterialIcons.done
                     |> Icon.elmMaterialIcons Color
                 )
-                [ ( "done"
-                  , MaterialIcons.done
+                [ ( "save"
+                  , ( "save"
+                    , MaterialIcons.save
                         |> Icon.elmMaterialIcons Color
+                    )
+                  )
+                , ( "done"
+                  , ( "done"
+                    , MaterialIcons.done
+                        |> Icon.elmMaterialIcons Color
+                    )
                   )
                 ]
             )
         |> Story.addStory
             (Story.boolStory "with event handler"
-                ( Just (), Nothing )
+                ( ( "Just Noop", Just StoryTileWithSource.Noop )
+                , ( "Nothing", Nothing )
+                )
                 True
             )
-        |> Story.build
+        |> StoryTileWithSource.build
 
 
 viewLabel : String -> Element msg
@@ -88,11 +101,11 @@ viewLabel =
     Element.el [ Element.width <| Element.px 250 ] << Element.text
 
 
-viewButton palette button text icon onPress _ _ =
+viewButton ( paletteSrc, palette ) ( buttonSrc, button ) text ( iconSrc, icon ) ( onPressSrc, onPress ) _ _ =
     { title = Nothing
     , position = Tile.LeftColumnTile
     , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
-    , body =
+    , demo =
         Element.row
             [ Element.width Element.fill
             , Element.centerY
@@ -111,14 +124,25 @@ viewButton palette button text icon onPress _ _ =
                 , onPress = onPress
                 }
             ]
+    , source =
+        interpolate
+            """Widget.button
+    ({0} {1})
+    { text ="{2}"
+    , icon = MaterialIcons.{3}
+        |> Widget.Icon.elmMaterialIcons Widget.Material.Types.Color
+    , onPress = {4}
+    }
+    """
+            [ buttonSrc, paletteSrc, text, iconSrc, onPressSrc ]
     }
 
 
-viewTextButton palette button text icon onPress _ _ =
+viewTextButton ( paletteSrc, palette ) ( buttonSrc, button ) text ( iconSrc, icon ) ( onPressSrc, onPress ) _ _ =
     { title = Nothing
     , position = Tile.LeftColumnTile
     , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
-    , body =
+    , demo =
         Element.row
             [ Element.width Element.fill
             , Element.centerY
@@ -136,20 +160,29 @@ viewTextButton palette button text icon onPress _ _ =
                 , onPress = onPress
                 }
             ]
+    , source =
+        interpolate
+            """Widget.textButton
+    ({0} {1})
+    { text = "{2}"
+    , onPress = {3}
+    }
+    """
+            [ buttonSrc, paletteSrc, text, onPressSrc ]
     }
 
 
-viewIconButton palette button text icon onPress _ _ =
+viewIconButton ( paletteSrc, palette ) ( buttonSrc, button ) text ( iconSrc, icon ) ( onPressSrc, onPress ) _ _ =
     { title = Nothing
     , position = Tile.LeftColumnTile
     , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
-    , body =
+    , demo =
         Element.row
             [ Element.width Element.fill
             , Element.centerY
             , Element.Font.color <| MaterialColor.fromColor palette.on.surface
             ]
-            [ viewLabel "textButton"
+            [ viewLabel "iconButton"
             , Widget.iconButton
                 (button palette
                     |> Customize.elementButton
@@ -162,14 +195,25 @@ viewIconButton palette button text icon onPress _ _ =
                 , onPress = onPress
                 }
             ]
+    , source =
+        interpolate
+            """Widget.iconButton
+    ({0} {1})
+    { text = "{2}"
+    , icon = MaterialIcons.{3}
+        |> Widget.Icon.elmMaterialIcons Widget.Material.Types.Color
+    , onPress = {4}
+    }
+    """
+            [ buttonSrc, paletteSrc, text, iconSrc, onPressSrc ]
     }
 
 
-viewSelectButton palette button text icon onPress _ _ =
+viewSelectButton ( paletteSrc, palette ) ( buttonSrc, button ) text ( iconSrc, icon ) ( onPressSrc, onPress ) _ _ =
     { title = Nothing
     , position = Tile.LeftColumnTile
     , attributes = [ Background.color <| MaterialColor.fromColor palette.surface ]
-    , body =
+    , demo =
         Element.row
             [ Element.width Element.fill
             , Element.centerY
@@ -205,36 +249,32 @@ viewSelectButton palette button text icon onPress _ _ =
                     )
                 ]
             ]
-    }
-
-
-viewButtonSource palette text icon onPress size _ _ =
-    { title = Just "source code"
-    , position = Tile.FullWidthTile
-    , attributes = []
-    , body =
-        Tile.sourceCode <|
-            """Widget.button
-    (Material.containedButton palette
-          |> Customize.elementButton [ Element.height <| Element.px """
-                ++ String.fromInt size
-                ++ """ ]
-    )
-    { text =\""""
-                ++ text
-                ++ """" 
-    , icon = MaterialIcons.done |> Icon.elmMaterialIcons Widget.Material.Types.Color
-    , onPress = """
-                ++ (case onPress of
-                        Nothing ->
-                            "Nothing"
-
-                        Just () ->
-                            "Just ()"
-                   )
-                ++ """
-    }
+    , source =
+        interpolate
+            """Element.column [ Element.width Element.fill, Element.spacing 8 ]
+    [ Widget.selectButton
+        ({0} {1})
+        ( False
+        , { text = "{2}"
+          , icon =
+              MaterialIcons.{3}
+                |> Widget.Icon.elmMaterialIcons Widget.Material.Types.Color
+          , onPress = {4}
+          }
+        )
+    , Widget.selectButton
+        ({0} {1})
+        ( True
+        , { text = "{2}"
+          , icon =
+              MaterialIcons.{3}
+                |> Widget.Icon.elmMaterialIcons Widget.Material.Types.Color
+          , onPress = {4}
+          }
+        )
+    ]
     """
+            [ buttonSrc, paletteSrc, text, iconSrc, onPressSrc ]
     }
 
 

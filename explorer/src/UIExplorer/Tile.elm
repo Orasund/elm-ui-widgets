@@ -307,7 +307,7 @@ layoutRowView palette row =
                 , Element.spacing 10
                 ]
                 [ Element.column
-                    [ Element.width <| Element.fillPortion 2
+                    [ Element.width <| Element.px 600
                     , Element.height Element.fill
                     , Element.spacing 10
                     ]
@@ -319,7 +319,7 @@ layoutRowView palette row =
                     <|
                         List.reverse left
                 , Element.column
-                    [ Element.width <| Element.fillPortion 1
+                    [ Element.width <| Element.px 370
                     , Element.height Element.fill
                     , Element.spacing 10
                     ]
@@ -359,7 +359,7 @@ page (Builder config) =
                 |> Element.column
                     ([ Element.padding 10
                      , Element.spacing 10
-                     , Element.px 800 |> Element.width
+                     , Element.px 1000 |> Element.width
                      , Element.centerX
                      , Font.family
                         [ Font.typeface "Roboto"
