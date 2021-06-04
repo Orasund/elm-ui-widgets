@@ -1,7 +1,7 @@
 module Widget.Material exposing
     ( Palette, defaultPalette, darkPalette, gray
     , containedButton, outlinedButton, textButton
-    , iconButton, toggleButton, buttonRow
+    , iconButton, toggleButton, toggleRow
     , switch
     , cardColumn
     , chip, textInput, passwordInput
@@ -16,6 +16,7 @@ module Widget.Material exposing
     , sortTable
     , snackbar
     , tab, tabButton
+    , buttonRow
     , textGray
     )
 
@@ -47,7 +48,7 @@ Different styles for buttons have different meanings.
     Use `containedButton` for **the most** important action of the group.
 
 @docs containedButton, outlinedButton, textButton
-@docs iconButton, toggleButton, buttonRow
+@docs iconButton, toggleButton, toggleRow
 
 
 # Switch
@@ -117,6 +118,11 @@ You way want to use special items to visually organize the content of your list.
 # Tab
 
 @docs tab, tabButton
+
+
+# DEPRECATED
+
+@docs buttonRow
 
 -}
 
@@ -500,6 +506,16 @@ expansionItem =
     Item.expansionItem
 
 
+{-| DEPRECATED
+
+Use Material.toggleRow instead
+
+-}
+buttonRow : RowStyle msg
+buttonRow =
+    List.toggleRow
+
+
 {-| a Row of buttons.
 
 Only use in combination with `toggleButton`
@@ -507,9 +523,9 @@ Only use in combination with `toggleButton`
 ![buttonRow](https://orasund.github.io/elm-ui-widgets/assets/material/buttonRow.png)
 
 -}
-buttonRow : RowStyle msg
-buttonRow =
-    List.buttonRow
+toggleRow : RowStyle msg
+toggleRow =
+    List.toggleRow
 
 
 {-| A List styled like a card.

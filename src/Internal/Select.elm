@@ -1,7 +1,8 @@
-module Internal.Select exposing (MultiSelect, Select, multiSelect, select, selectButton)
+module Internal.Select exposing (MultiSelect, Select, multiSelect, select, selectButton, toggleButton)
 
 import Element exposing (Element)
 import Element.Input as Input
+import Element.Region as Region
 import Internal.Button exposing (Button, ButtonStyle)
 import Set exposing (Set)
 import Widget.Icon exposing (Icon)
@@ -45,6 +46,7 @@ selectButton style ( selected, b ) =
                 else
                     style.otherwise
                )
+            ++ [ Region.description b.text ]
         )
         { onPress = b.onPress
         , label =
@@ -61,6 +63,37 @@ selectButton style ( selected, b ) =
                     )
                 , Element.text b.text |> Element.el style.content.content.text.contentText
                 ]
+        }
+
+
+toggleButton :
+    ButtonStyle msg
+    -> ( Bool, Button msg )
+    -> Element msg
+toggleButton style ( selected, b ) =
+    Input.button
+        (style.elementButton
+            ++ (if b.onPress == Nothing then
+                    style.ifDisabled
+
+                else
+                    style.otherwise
+               )
+            ++ [ Region.description b.text ]
+        )
+        { onPress = b.onPress
+        , label =
+            b.icon
+                (if b.onPress == Nothing then
+                    style.content.content.icon.ifDisabled
+
+                 else if selected then
+                    style.content.content.icon.ifActive
+
+                 else
+                    style.content.content.icon.otherwise
+                )
+                |> Element.el style.content.elementRow
         }
 
 

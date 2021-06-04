@@ -374,9 +374,9 @@ storyView context model =
                                 |> Maybe.map (Tuple.second >> StorySelect label)
                   }
                     |> Widget.select
-                    |> Widget.buttonColumn
-                        { elementColumn = Material.column
-                        , content = Material.textButton context.palette
+                    |> Widget.wrappedButtonRow
+                        { elementRow = Material.row
+                        , content = Material.chip context.palette
                         }
                 ]
 

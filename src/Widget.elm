@@ -1,11 +1,11 @@
 module Widget exposing
     ( ButtonStyle, Button, TextButton, iconButton, textButton, button
     , SwitchStyle, Switch, switch
-    , Select, selectButton, select
+    , Select, selectButton, select, toggleButton
     , MultiSelect, multiSelect
     , Modal, singleModal, multiModal
     , DialogStyle, Dialog, dialog
-    , RowStyle, row, buttonRow
+    , RowStyle, row, buttonRow, toggleRow, wrappedButtonRow
     , ColumnStyle, column, buttonColumn
     , ItemStyle, Item
     , FullBleedItemStyle, fullBleedItem
@@ -66,7 +66,7 @@ You can create you own widgets by sticking widgets types together.
 
 ![Select](https://orasund.github.io/elm-ui-widgets/assets/select.png)
 
-@docs Select, selectButton, select
+@docs Select, selectButton, select, toggleButton
 
 ![MultiSelect](https://orasund.github.io/elm-ui-widgets/assets/multiSelect.png)
 
@@ -94,7 +94,7 @@ You can create you own widgets by sticking widgets types together.
 
 ## Row
 
-@docs RowStyle, row, buttonRow
+@docs RowStyle, row, buttonRow, toggleRow, wrappedButtonRow
 
 
 ## Column
@@ -475,7 +475,7 @@ type alias MultiSelect msg =
         |> Widget.select
         |> Widget.buttonRow
             { elementRow = Material.buttonRow
-            , content = Material.toggleButton Material.defaultPalette
+            , content = Material.outlinedButton Material.defaultPalette
             }
         |> always "Ignore this line" --> "Ignore this line"
 
@@ -486,6 +486,41 @@ selectButton :
     -> Element msg
 selectButton =
     Select.selectButton
+
+
+{-| A icon button that can be selected. Should be used together with Material.toggleButton
+
+    import Widget.Material as Material
+    import Element
+
+    type Msg
+        = ChangedSelected Int
+
+    { selected = Just 1
+    , options =
+        [ 1, 2, 42 ]
+            |> List.map
+                (\int ->
+                    { text = String.fromInt int
+                    , icon = always Element.none
+                    }
+                )
+    , onSelect = (\i -> Just <| ChangedSelected i)
+    }
+        |> Widget.select
+        |> Widget.toggleRow
+            { elementRow = Material.toggleRow
+            , content = Material.toggleButton Material.defaultPalette
+            }
+        |> always "Ignore this line" --> "Ignore this line"
+
+-}
+toggleButton :
+    ButtonStyle msg
+    -> ( Bool, Button msg )
+    -> Element msg
+toggleButton =
+    Select.toggleButton
 
 
 {-| Selects one out of multiple options. This can be used for radio buttons or Menus.
@@ -1434,7 +1469,7 @@ itemList =
         }
         |> Widget.buttonRow
             { elementRow = Material.row
-            , content = Material.toggleButton Material.defaultPalette
+            , content = Material.outlinedButton Material.defaultPalette
             }
         |> always "Ignore this line" --> "Ignore this line"
 
@@ -1447,6 +1482,88 @@ buttonRow :
     -> Element msg
 buttonRow =
     List.buttonRow
+
+
+{-| A row of icon buttons use this in combination with Material.toggleButton
+
+    import Element
+    import Widget.Material as Material
+
+    type Msg =
+        Select Int
+
+    selected : Maybe Int
+    selected =
+        Just 0
+
+    Widget.select
+        { selected = selected
+        , options =
+            [ 1, 2, 42 ]
+                |> List.map
+                    (\int ->
+                        { text = String.fromInt int
+                        , icon = always Element.none
+                        }
+                    )
+        , onSelect = (\i -> Just (Select i ))
+        }
+        |> Widget.buttonRow
+            { elementRow = Material.row
+            , content = Material.toggleButton Material.defaultPalette
+            }
+        |> always "Ignore this line" --> "Ignore this line"
+
+-}
+toggleRow :
+    { elementRow : RowStyle msg
+    , content : ButtonStyle msg
+    }
+    -> List ( Bool, Button msg )
+    -> Element msg
+toggleRow =
+    List.toggleRow
+
+
+{-| A wrapped row of buttons
+
+    import Element
+    import Widget.Material as Material
+
+    type Msg =
+        Select Int
+
+    selected : Maybe Int
+    selected =
+        Just 0
+
+    Widget.select
+        { selected = selected
+        , options =
+            [ 1, 2, 42 ]
+                |> List.map
+                    (\int ->
+                        { text = String.fromInt int
+                        , icon = always Element.none
+                        }
+                    )
+        , onSelect = (\i -> Just (Select i ))
+        }
+        |> Widget.wrappedButtonRow
+            { elementRow = Material.row
+            , content = Material.outlinedButton Material.defaultPalette
+            }
+        |> always "Ignore this line" --> "Ignore this line"
+
+-}
+wrappedButtonRow :
+    { elementRow : RowStyle msg
+    , content : ButtonStyle msg
+    }
+    -> List ( Bool, Button msg )
+    -> Element msg
+wrappedButtonRow =
+    List.wrappedButtonRow
 
 
 {-| A column of buttons

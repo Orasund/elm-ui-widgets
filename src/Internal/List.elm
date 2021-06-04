@@ -1,4 +1,4 @@
-module Internal.List exposing (ColumnStyle, RowStyle, buttonColumn, buttonRow, column, itemList, row)
+module Internal.List exposing (ColumnStyle, RowStyle, buttonColumn, buttonRow, column, itemList, row, toggleRow, wrappedButtonRow)
 
 import Element exposing (Attribute, Element)
 import Internal.Button exposing (Button, ButtonStyle)
@@ -134,6 +134,39 @@ internalButton style list =
             )
 
 
+toggleRow :
+    { elementRow : RowStyle msg
+    , content : ButtonStyle msg
+    }
+    -> List ( Bool, Button msg )
+    -> Element msg
+toggleRow style list =
+    (list
+        |> List.indexedMap
+            (\i ->
+                Select.toggleButton
+                    (style.content
+                        |> Customize.elementButton
+                            (style.elementRow.content.element
+                                ++ (if List.length list == 1 then
+                                        style.elementRow.content.ifSingleton
+
+                                    else if i == 0 then
+                                        style.elementRow.content.ifFirst
+
+                                    else if i == (List.length list - 1) then
+                                        style.elementRow.content.ifLast
+
+                                    else
+                                        style.elementRow.content.otherwise
+                                   )
+                            )
+                    )
+            )
+    )
+        |> Element.row style.elementRow.elementRow
+
+
 buttonRow :
     { elementRow : RowStyle msg
     , content : ButtonStyle msg
@@ -155,6 +188,29 @@ buttonRow style =
         , content = style.content
         }
         >> Element.row style.elementRow.elementRow
+
+
+wrappedButtonRow :
+    { elementRow : RowStyle msg
+    , content : ButtonStyle msg
+    }
+    -> List ( Bool, Button msg )
+    -> Element msg
+wrappedButtonRow style =
+    internalButton
+        { element =
+            style.elementRow.content.element
+        , ifSingleton =
+            style.elementRow.content.ifSingleton
+        , ifFirst =
+            style.elementRow.content.ifFirst
+        , ifLast =
+            style.elementRow.content.ifLast
+        , otherwise =
+            style.elementRow.content.otherwise
+        , content = style.content
+        }
+        >> Element.wrappedRow style.elementRow.elementRow
 
 
 buttonColumn :

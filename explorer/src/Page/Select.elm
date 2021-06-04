@@ -38,19 +38,6 @@ description =
 -}
 viewFunctions =
     let
-        viewSelectButtonRow style selected options onSelect { palette } () =
-            Widget.select
-                { selected = selected
-                , options = options
-                , onSelect = onSelect
-                }
-                |> Widget.buttonRow
-                    { elementRow = Material.buttonRow
-                    , content = style palette
-                    }
-                --Don't forget to change the title
-                |> Page.viewTile "Widget.buttonRow with Material.buttonRow"
-
         viewSelectRow style selected options onSelect { palette } () =
             Widget.select
                 { selected = selected
@@ -62,7 +49,34 @@ viewFunctions =
                     , content = style palette
                     }
                 --Don't forget to change the title
-                |> Page.viewTile "Widget.buttonRow with Material.row"
+                |> Page.viewTile "Widget.buttonRow "
+
+        
+        viewTogggleRow style selected options onSelect { palette } () =
+            Widget.select
+                { selected = selected
+                , options = options
+                , onSelect = onSelect
+                }
+                |> Widget.toggleRow
+                    { elementRow = Material.toggleRow
+                    , content = style palette
+                    }
+                --Don't forget to change the title
+                |> Page.viewTile "Widget.toggleRow"
+        
+        viewWrappedRow style selected options onSelect { palette } () =
+            Widget.select
+                { selected = selected
+                , options = options
+                , onSelect = onSelect
+                }
+                |> Widget.wrappedButtonRow
+                    { elementRow = Material.row
+                    , content = style palette
+                    }
+                --Don't forget to change the title
+                |> Page.viewTile "Widget.wrappedButtonRow"
 
         viewSelectColumn style selected options onSelect { palette } () =
             Widget.select
@@ -77,7 +91,7 @@ viewFunctions =
                 --Don't forget to change the title
                 |> Page.viewTile "Widget.buttonColumn"
     in
-    [ viewSelectButtonRow, viewSelectRow, viewSelectColumn ]
+    [ viewTogggleRow, viewSelectRow, viewSelectColumn, viewWrappedRow ]
         |> List.foldl Story.addTile
             Story.initStaticTiles
 
@@ -95,6 +109,8 @@ book =
                 ( "Contained", Material.containedButton )
                 [ ( "Outlined", Material.outlinedButton )
                 , ( "Text", Material.textButton )
+                , ( "Chip", Material.chip )
+                , ( "IconButton", Material.iconButton)
                 , ( "Toggle", Material.toggleButton )
                 ]
             )
@@ -111,17 +127,17 @@ book =
         |> Story.addStory
             (Story.optionListStory "Options"
                 ( "3 Option"
-                , [ { icon = always Element.none, text = "42" }
+                , [ { icon = always Element.none, text = "Submit" }
                   , { icon = MaterialIcons.done |> Icon.elmMaterialIcons Color, text = "" }
-                  , { icon = MaterialIcons.done |> Icon.elmMaterialIcons Color, text = "42" }
+                  , { icon = MaterialIcons.done |> Icon.elmMaterialIcons Color, text = "Submit" }
                   ]
                 )
                 [ ( "2 Option"
-                  , [ { icon = always Element.none, text = "42" }
+                  , [ { icon = always Element.none, text = "Submit" }
                     , { icon = MaterialIcons.done |> Icon.elmMaterialIcons Color, text = "" }
                     ]
                   )
-                , ( "1 Option", [ { icon = always Element.none, text = "42" } ] )
+                , ( "1 Option", [ { icon = always Element.none, text = "Submit" } ] )
                 ]
             )
         --Should an event be triggered when pressing the button?
