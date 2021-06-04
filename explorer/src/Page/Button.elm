@@ -14,11 +14,6 @@ import Widget
 import Widget.Customize as Customize
 import Widget.Icon as Icon
 import Widget.Material as Material
-    exposing
-        ( containedButton
-        , outlinedButton
-        , textButton
-        )
 import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
 
@@ -41,8 +36,8 @@ description =
 -}
 viewFunctions =
     let
-        viewButton button text icon onPress { palette } () =
-            Widget.button (button palette)
+        viewButton style text icon onPress { palette } () =
+            Widget.button (style palette)
                 { text = text
                 , icon = icon
                 , onPress = onPress
@@ -50,9 +45,9 @@ viewFunctions =
                 --Don't forget to change the title
                 |> Page.viewTile "Widget.button"
 
-        viewTextButton button text _ onPress { palette } () =
+        viewTextButton style text _ onPress { palette } () =
             Widget.textButton
-                (button palette
+                (style palette
                     |> Customize.elementButton
                         [ Element.alignLeft
                         , Element.centerY
@@ -64,9 +59,9 @@ viewFunctions =
                 --Don't forget to change the title
                 |> Page.viewTile "Widget.textButton"
 
-        viewIconButton button text icon onPress { palette } () =
+        viewIconButton style text icon onPress { palette } () =
             Widget.iconButton
-                (button palette
+                (style palette
                     |> Customize.elementButton
                         [ Element.alignLeft
                         , Element.centerY
@@ -93,9 +88,9 @@ book =
         --Adding a option for different styles.
         |> Story.addStory
             (Story.optionListStory "Style"
-                ( "Contained", containedButton )
-                [ ( "Outlined", outlinedButton )
-                , ( "Text", textButton )
+                ( "Contained", Material.containedButton )
+                [ ( "Outlined", Material.outlinedButton )
+                , ( "Text", Material.textButton )
                 ]
             )
         --Changing the text of the label
@@ -114,7 +109,7 @@ book =
             )
         --Should an event be triggered when pressing the button?
         |> Story.addStory
-            (Story.boolStory "with event handler"
+            (Story.boolStory "With event handler"
                 ( Just (), Nothing )
                 True
             )
@@ -122,10 +117,10 @@ book =
 
 
 
+{- This next section is essentially just a normal Elm program. -}
 --------------------------------------------------------------------------------
 -- Interactive Demonstration
 --------------------------------------------------------------------------------
-{- This section here is essentially just a normal Elm program. -}
 
 
 type alias Model =
@@ -137,10 +132,6 @@ type Msg
     | Decrease Int
     | Reset
     | Noop
-
-
-
---|> Story.addTile (Just "Interactive example") view
 
 
 init : ( Model, Cmd Msg )
@@ -274,6 +265,12 @@ view { palette } model =
             )
 
 
+
+--------------------------------------------------------------------------------
+-- DO NOT MODIFY ANYTHING AFTER THIS LINE
+--------------------------------------------------------------------------------
+
+
 demo : Tile Model Msg ()
 demo =
     { init = always init
@@ -281,12 +278,6 @@ demo =
     , view = Page.demo view
     , subscriptions = subscriptions
     }
-
-
-
---------------------------------------------------------------------------------
--- DO NOT MODIFY ANTHING AFTER THIS LINE
---------------------------------------------------------------------------------
 
 
 page =

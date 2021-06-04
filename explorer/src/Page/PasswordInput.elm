@@ -84,10 +84,10 @@ book =
 
 
 
---------------------------------------------------------------------------------
+---{- This next section is essentially just a normal Elm program. -}
+-----------------------------------------------------------------------------
 -- Interactive Demonstration
 --------------------------------------------------------------------------------
-{- This section here is essentially just a normal Elm program. -}
 
 
 type alias Model =
@@ -162,6 +162,12 @@ view { palette } model =
         |> Element.column [ Element.width <| Element.fill, Element.spacing 8 ]
 
 
+
+--------------------------------------------------------------------------------
+-- DO NOT MODIFY ANYTHING AFTER THIS LINE
+--------------------------------------------------------------------------------
+
+
 demo : Tile Model Msg ()
 demo =
     { init = always init
@@ -169,12 +175,6 @@ demo =
     , view = Page.demo view
     , subscriptions = subscriptions
     }
-
-
-
---------------------------------------------------------------------------------
--- DO NOT MODIFY ANTHING AFTER THIS LINE
---------------------------------------------------------------------------------
 
 
 page =

@@ -132,7 +132,7 @@ book =
             )
         --Should an event be triggered when pressing the button?
         |> Story.addStory
-            (Story.boolStory "with event handler"
+            (Story.boolStory "With event handler"
                 ( always <| Just (), always Nothing )
                 True
             )
@@ -140,10 +140,10 @@ book =
 
 
 
+{- This next section is essentially just a normal Elm program. -}
 --------------------------------------------------------------------------------
 -- Interactive Demonstration
 --------------------------------------------------------------------------------
-{- This section here is essentially just a normal Elm program. -}
 
 
 type Model
@@ -197,18 +197,18 @@ view { palette } (Selected selected) =
             }
 
 
+
+--------------------------------------------------------------------------------
+-- DO NOT MODIFY ANYTHING AFTER THIS LINE
+--------------------------------------------------------------------------------
+
+
 demo =
     { init = always init
     , view = Page.demo view
     , update = update
     , subscriptions = subscriptions
     }
-
-
-
---------------------------------------------------------------------------------
--- DO NOT MODIFY ANTHING AFTER THIS LINE
---------------------------------------------------------------------------------
 
 
 page =
