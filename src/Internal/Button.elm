@@ -85,6 +85,7 @@ button style { onPress, text, icon } =
                 else
                     style.otherwise
                )
+            ++ [ Region.description text ]
         )
         { onPress = onPress
         , label =

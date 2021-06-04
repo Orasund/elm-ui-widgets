@@ -1,10 +1,10 @@
 module Internal.Material.List exposing
     ( bottomSheet
-    , buttonRow
     , cardColumn
     , column
     , row
     , sideSheet
+    , toggleRow
     )
 
 import Color
@@ -49,8 +49,8 @@ column =
     }
 
 
-buttonRow : RowStyle msg
-buttonRow =
+toggleRow : RowStyle msg
+toggleRow =
     { elementRow = []
     , content =
         { element = []

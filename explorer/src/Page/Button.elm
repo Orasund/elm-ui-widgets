@@ -91,6 +91,8 @@ book =
                 ( "Contained", Material.containedButton )
                 [ ( "Outlined", Material.outlinedButton )
                 , ( "Text", Material.textButton )
+                , ( "Chip", Material.chip )
+                , ( "IconButton", Material.iconButton)
                 ]
             )
         --Changing the text of the label
