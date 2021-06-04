@@ -1,21 +1,20 @@
-module Page.Select exposing (page)
+module Page.Tab exposing (page)
 
 {-| This is an example Page. If you want to add your own pages, simple copy and modify this one.
 -}
 
+import Browser
 import Element exposing (Element)
 import Element.Background as Background
-import Element.Font
-import Material.Icons as MaterialIcons exposing (offline_bolt)
+import Material.Icons as MaterialIcons
 import Material.Icons.Types exposing (Coloring(..))
 import Page
-import UIExplorer
 import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
-import UIExplorer.Tile as Tile exposing (Context, Position, Tile, TileMsg)
-import Widget exposing (ButtonStyle)
+import UIExplorer.Tile as Tile exposing (Context, Tile, TileMsg)
+import Widget exposing (TabStyle)
 import Widget.Customize as Customize
-import Widget.Icon as Icon exposing (Icon)
-import Widget.Material as Material exposing (Palette)
+import Widget.Icon as Icon
+import Widget.Material as Material
 import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
 
@@ -24,60 +23,48 @@ import Widget.Material.Typography as Typography
 -}
 title : String
 title =
-    "Select"
+    "Tab"
 
 
 {-| The description. I've taken this description directly from the [Material-UI-Specification](https://material.io/components/buttons)
 -}
 description : String
 description =
-    "Select buttons group a set of actions using layout and spacing."
+    "Tabs organize content across different screens, data sets, and other interactions."
 
 
 {-| List of view functions. Essentially, anything that takes a Button as input.
 -}
 viewFunctions =
     let
-        viewSelectButtonRow style selected options onSelect { palette } () =
-            Widget.select
-                { selected = selected
-                , options = options
-                , onSelect = onSelect
-                }
-                |> Widget.buttonRow
-                    { elementRow = Material.buttonRow
-                    , content = style palette
+        viewTab style selected options onSelect { palette } () =
+            Widget.tab (style palette)
+                { tabs =
+                    { selected = selected
+                    , options = options
+                    , onSelect = onSelect
                     }
-                --Don't forget to change the title
-                |> Page.viewTile "Widget.buttonRow with Material.buttonRow"
+                , content =
+                    \s ->
+                        (case s of
+                            Just 0 ->
+                                "This is Tab 1"
 
-        viewSelectRow style selected options onSelect { palette } () =
-            Widget.select
-                { selected = selected
-                , options = options
-                , onSelect = onSelect
-                }
-                |> Widget.buttonRow
-                    { elementRow = Material.row
-                    , content = style palette
-                    }
-                --Don't forget to change the title
-                |> Page.viewTile "Widget.buttonRow with Material.row"
+                            Just 1 ->
+                                "This is the second tab"
 
-        viewSelectColumn style selected options onSelect { palette } () =
-            Widget.select
-                { selected = selected
-                , options = options
-                , onSelect = onSelect
+                            Just 2 ->
+                                "The thrid and last tab"
+
+                            _ ->
+                                "Please select a tab"
+                        )
+                            |> Element.text
                 }
-                |> Widget.buttonColumn
-                    { elementColumn = Material.column
-                    , content = style palette
-                    }
                 --Don't forget to change the title
-                |> Page.viewTile "Widget.buttonColumn"
+                |> Page.viewTile "Widget.tab"
     in
-    [ viewSelectButtonRow, viewSelectRow, viewSelectColumn ]
+    [ viewTab ]
         |> List.foldl Story.addTile
             Story.initStaticTiles
 
@@ -92,11 +79,8 @@ book =
         --Adding a option for different styles.
         |> Story.addStory
             (Story.optionListStory "Style"
-                ( "Contained", Material.containedButton )
-                [ ( "Outlined", Material.outlinedButton )
-                , ( "Text", Material.textButton )
-                , ( "Toggle", Material.toggleButton )
-                ]
+                ( "Tab", Material.tab )
+                []
             )
         --Changing the text of the label
         |> Story.addStory
@@ -127,7 +111,7 @@ book =
         --Should an event be triggered when pressing the button?
         |> Story.addStory
             (Story.boolStory "With event handler"
-                ( always <| Just (), always Nothing )
+                ( always (Just ()), always Nothing )
                 True
             )
         |> Story.build
@@ -145,7 +129,7 @@ type Model
 
 
 type Msg
-    = ChangedSelected Int
+    = ChangedTab Int
 
 
 init : ( Model, Cmd Msg )
@@ -158,7 +142,7 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg _ =
     case msg of
-        ChangedSelected int ->
+        ChangedTab int ->
             ( Selected <| Just int
             , Cmd.none
             )
@@ -173,22 +157,36 @@ subscriptions _ =
 -}
 view : Context -> Model -> Element Msg
 view { palette } (Selected selected) =
-    { selected = selected
-    , options =
-        [ 1, 2, 42 ]
-            |> List.map
-                (\int ->
-                    { text = String.fromInt int
-                    , icon = always Element.none
-                    }
-                )
-    , onSelect = ChangedSelected >> Just
-    }
-        |> Widget.select
-        |> Widget.buttonRow
-            { elementRow = Material.buttonRow
-            , content = Material.toggleButton palette
+    Widget.tab (Material.tab palette)
+        { tabs =
+            { selected = selected
+            , options =
+                [ 1, 2, 3 ]
+                    |> List.map
+                        (\int ->
+                            { text = "Tab " ++ (int |> String.fromInt)
+                            , icon = always Element.none
+                            }
+                        )
+            , onSelect = ChangedTab >> Just
             }
+        , content =
+            \s ->
+                (case s of
+                    Just 0 ->
+                        "This is Tab 1"
+
+                    Just 1 ->
+                        "This is the second tab"
+
+                    Just 2 ->
+                        "The thrid and last tab"
+
+                    _ ->
+                        "Please select a tab"
+                )
+                    |> Element.text
+        }
 
 
 
@@ -197,10 +195,11 @@ view { palette } (Selected selected) =
 --------------------------------------------------------------------------------
 
 
+demo : Tile Model Msg ()
 demo =
     { init = always init
-    , view = Page.demo view
     , update = update
+    , view = Page.demo view
     , subscriptions = subscriptions
     }
 
