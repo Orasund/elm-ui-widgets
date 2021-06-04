@@ -155,7 +155,7 @@ fullBleedHeader palette =
             { divider = { element = [] }
             , title =
                 Typography.subtitle2
-                    ++ [ Palette.textGray palette
+                    ++ [ Palette.gray palette
                             |> MaterialColor.fromColor
                             |> Font.color
                        , Element.paddingXY 16 8

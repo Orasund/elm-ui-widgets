@@ -865,72 +865,6 @@ viewSidebar pages config model =
 
 
 
-{--Element.column
-            [ Element.width (Element.px (Pixels.inPixels sidebarWidth))
-            , Element.height Element.fill
-
-            -- For some reason a horizontal scrollbar pops up unless we include this.
-            , Element.htmlAttribute <| Html.Attributes.style "overflow-x" "hidden"
-            , Element.scrollbars
-            , Element.Background.color bgColor
-            ]
-            [ Element.row
-                [ Element.width Element.fill ]
-                [ config.sidebarTitle, minimizeSidebarButton ]
-            , Element.column
-                [ Element.spacing 2, Element.width Element.fill ]
-                [ pageSizeOptionView model.darkThemeEnabled model.expandPageSizeOptions model.pageSizeOption
-                , colorBlindOptionView model.darkThemeEnabled model.expandColorBlindOptions model.colorBlindOption
-                , Element.Input.checkbox []
-                    { onChange = ChangeDarkTheme
-                    , icon = Element.Input.defaultCheckbox
-                    , checked = model.darkThemeEnabled
-                    , label = Element.Input.labelRight [] <| Element.text "dark theme"
-                    }
-                ]
-            , Element.el [ Element.padding 4, Element.width Element.fill ]
-                (Element.Input.text
-                    [ Element.width Element.fill
-                    , Element.paddingEach { left = 8, right = 32, top = 8, bottom = 8 }
-                    , Element.Background.color bgColor
-                    , Element.inFront <|
-                        if String.isEmpty model.searchText then
-                            Element.none
-
-                        else
-                            Element.Input.button
-                                [ Element.alignRight
-                                , Element.centerY
-                                , Element.moveLeft 2
-                                , Element.width <| Element.px 26
-                                , Element.height <| Element.px 26
-                                , Element.Background.color bgColor
-                                , Element.Font.center
-                                , Element.Border.rounded 99999
-                                ]
-                                { onPress = Just PressedClearSearchText, label = Element.text "✕" }
-                    ]
-                    { onChange = TypingSearchText
-                    , text = model.searchText
-                    , placeholder = Just (Element.Input.placeholder [] (Element.text "Search pages"))
-                    , label = Element.Input.labelHidden "Search pages"
-                    }
-                )
-            , Element.el
-                [ Element.scrollbarY
-                , Element.width Element.fill
-                , Element.height Element.fill
-                , Element.Region.navigation
-                ]
-                (if showSearchResults model.searchText then
-                    Element.Lazy.lazy5 viewSearchResults model.darkThemeEnabled pages config model.page model.searchText
-
-                 else
-                    Element.Lazy.lazy5 viewSidebarLinks model.darkThemeEnabled pages config model.page model.expandedGroups
-                )
-            ]
-        --}
-
 
 colorblindnessCss : Html msg
 colorblindnessCss =
@@ -1173,24 +1107,6 @@ optionGroupView dark isExpanded selectedItem items itemToString onPress toggleEx
                         , icon = always Element.none
                         , content = always Element.none
                         }
-                 {--Element.el
-                    [ Element.width Element.fill ]
-                    (Element.Input.button
-                        [ Element.width Element.fill
-                        , Element.paddingEach { left = 6, right = 8, top = 6, bottom = 6 }
-                        , Element.Background.color <|
-                            if selectedItem == option then
-                                selectedColor
-
-                            else
-                                Element.rgba 0 0 0 0
-                        , Element.mouseOver [ Element.Background.color selectedColor ]
-                        , Element.focused [ Element.Background.color selectedColor ]
-                        ]
-                        { onPress = onPress option |> Just
-                        , label = itemToString option |> Element.text
-                        }
-                    )--}
                 )
                 (if isExpanded then
                     items
@@ -1202,49 +1118,6 @@ optionGroupView dark isExpanded selectedItem items itemToString onPress toggleEx
         }
 
 
-
-{--Element.Input.button
-        [ Element.width Element.fill
-        , Element.paddingEach { left = 6, right = 8, top = 5, bottom = 5 }
-        , Element.mouseOver [ Element.Background.color selectedColor ]
-        , focusAttributes dark
-        , Element.Font.color <| textColor dark
-        ]
-        { onPress = Just toggleExpand
-        , label = Element.row [] [ expanderArrow isExpanded, Element.text (itemToString selectedItem) ]
-        }
-        :: List.map
-            (\option ->
-                Element.el
-                    [ Element.width Element.fill ]
-                    (Element.Input.button
-                        [ Element.width Element.fill
-                        , Element.paddingEach { left = 6, right = 8, top = 6, bottom = 6 }
-                        , Element.Background.color <|
-                            if selectedItem == option then
-                                selectedColor
-
-                            else
-                                Element.rgba 0 0 0 0
-                        , Element.mouseOver [ Element.Background.color selectedColor ]
-                        , Element.focused [ Element.Background.color selectedColor ]
-                        ]
-                        { onPress = onPress option |> Just
-                        , label = itemToString option |> Element.text
-                        }
-                    )
-            )
-            (if isExpanded then
-                items
-
-             else
-                []
-            )
-        |> Element.column
-            [ Element.width Element.fill
-            , Element.Background.color <| Element.rgba 0 0 0 0.08
-            , Element.Font.size 15
-            ]--}
 
 
 showSearchResults : String -> Bool
