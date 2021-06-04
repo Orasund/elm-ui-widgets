@@ -5,25 +5,15 @@ module Page.Button exposing (page)
 
 import Element exposing (Element)
 import Element.Background as Background
-import Element.Font
-import Material.Icons as MaterialIcons exposing (offline_bolt)
+import Material.Icons as MaterialIcons
 import Material.Icons.Types exposing (Coloring(..))
 import Page
-import UIExplorer
 import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
-import UIExplorer.Tile as Tile exposing (Context, Position, Tile, TileMsg)
-import Widget exposing (ButtonStyle)
+import UIExplorer.Tile as Tile exposing (Context, Tile, TileMsg)
+import Widget
 import Widget.Customize as Customize
-import Widget.Icon as Icon exposing (Icon)
+import Widget.Icon as Icon
 import Widget.Material as Material
-    exposing
-        ( Palette
-        , containedButton
-        , darkPalette
-        , defaultPalette
-        , outlinedButton
-        , textButton
-        )
 import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
 
@@ -46,8 +36,8 @@ description =
 -}
 viewFunctions =
     let
-        viewButton button text icon onPress { palette } () =
-            Widget.button (button palette)
+        viewButton style text icon onPress { palette } () =
+            Widget.button (style palette)
                 { text = text
                 , icon = icon
                 , onPress = onPress
@@ -55,9 +45,9 @@ viewFunctions =
                 --Don't forget to change the title
                 |> Page.viewTile "Widget.button"
 
-        viewTextButton button text icon onPress { palette } () =
+        viewTextButton style text _ onPress { palette } () =
             Widget.textButton
-                (button palette
+                (style palette
                     |> Customize.elementButton
                         [ Element.alignLeft
                         , Element.centerY
@@ -69,9 +59,9 @@ viewFunctions =
                 --Don't forget to change the title
                 |> Page.viewTile "Widget.textButton"
 
-        viewIconButton button text icon onPress { palette } () =
+        viewIconButton style text icon onPress { palette } () =
             Widget.iconButton
-                (button palette
+                (style palette
                     |> Customize.elementButton
                         [ Element.alignLeft
                         , Element.centerY
@@ -98,10 +88,9 @@ book =
         --Adding a option for different styles.
         |> Story.addStory
             (Story.optionListStory "Style"
-                containedButton
-                [ ( "contained", containedButton )
-                , ( "outlined", outlinedButton )
-                , ( "text", textButton )
+                ( "Contained", Material.containedButton )
+                [ ( "Outlined", Material.outlinedButton )
+                , ( "Text", Material.textButton )
                 ]
             )
         --Changing the text of the label
@@ -111,19 +100,16 @@ book =
             )
         --Change the Icon
         |> Story.addStory
-            (Story.optionListStory "Icon"
-                (MaterialIcons.done
+            (Story.boolStory "With Icon"
+                ( MaterialIcons.done
                     |> Icon.elmMaterialIcons Color
+                , always Element.none
                 )
-                [ ( "done"
-                  , MaterialIcons.done
-                        |> Icon.elmMaterialIcons Color
-                  )
-                ]
+                True
             )
         --Should an event be triggered when pressing the button?
         |> Story.addStory
-            (Story.boolStory "with event handler"
+            (Story.boolStory "With event handler"
                 ( Just (), Nothing )
                 True
             )
@@ -131,10 +117,10 @@ book =
 
 
 
+{- This next section is essentially just a normal Elm program. -}
 --------------------------------------------------------------------------------
 -- Interactive Demonstration
 --------------------------------------------------------------------------------
-{- This section here is essentially just a normal Elm program. -}
 
 
 type alias Model =
@@ -146,10 +132,6 @@ type Msg
     | Decrease Int
     | Reset
     | Noop
-
-
-
---|> Story.addTile (Just "Interactive example") view
 
 
 init : ( Model, Cmd Msg )
@@ -188,7 +170,7 @@ subscriptions _ =
     Sub.none
 
 
-view : Context -> Int -> { title : Maybe String, position : Position, attributes : List b, body : Element Msg }
+view : Context -> Model -> Element Msg
 view { palette } model =
     let
         style =
@@ -201,106 +183,101 @@ view { palette } model =
             , cardColumn = Material.cardColumn palette
             }
     in
-    { title = Just "Interactive Demo"
-    , position = Tile.FullWidthTile
-    , attributes = []
-    , body =
-        [ model
-            |> String.fromInt
-            |> Element.text
-            |> Element.el
-                (Typography.h4
-                    ++ [ Element.centerX, Element.centerY ]
-                )
-            |> List.singleton
-            |> Widget.column
-                (style.cardColumn
-                    |> Customize.elementColumn
-                        [ Element.centerX
-                        , Element.width <| Element.px 128
+    [ model
+        |> String.fromInt
+        |> Element.text
+        |> Element.el
+            (Typography.h4
+                ++ [ Element.centerX, Element.centerY ]
+            )
+        |> List.singleton
+        |> Widget.column
+            (style.cardColumn
+                |> Customize.elementColumn
+                    [ Element.centerX
+                    , Element.width <| Element.px 128
+                    , Element.height <| Element.px 128
+                    , Widget.iconButton style.iconButton
+                        { text = "+2"
+                        , icon =
+                            MaterialIcons.exposure_plus_2
+                                |> Icon.elmMaterialIcons Color
+                        , onPress =
+                            Increase 2
+                                |> Just
+                        }
+                        |> Element.el [ Element.alignRight ]
+                        |> Element.inFront
+                    ]
+                |> Customize.mapContent
+                    (Customize.element
+                        [ Element.width <| Element.px 128
                         , Element.height <| Element.px 128
-                        , Widget.iconButton style.iconButton
-                            { text = "+2"
-                            , icon =
-                                MaterialIcons.exposure_plus_2
-                                    |> Icon.elmMaterialIcons Color
-                            , onPress =
-                                Increase 2
-                                    |> Just
-                            }
-                            |> Element.el [ Element.alignRight ]
-                            |> Element.inFront
+                        , Material.defaultPalette.secondary
+                            |> MaterialColor.fromColor
+                            |> Background.color
                         ]
-                    |> Customize.mapContent
-                        (Customize.element
-                            [ Element.width <| Element.px 128
-                            , Element.height <| Element.px 128
-                            , Material.defaultPalette.secondary
-                                |> MaterialColor.fromColor
-                                |> Background.color
-                            ]
-                        )
-                )
-        , [ [ Widget.textButton style.textButton
-                { text = "Reset"
-                , onPress =
-                    Reset
+                    )
+            )
+    , [ [ Widget.textButton style.textButton
+            { text = "Reset"
+            , onPress =
+                Reset
+                    |> Just
+            }
+        , Widget.button style.outlinedButton
+            { text = "Decrease"
+            , icon =
+                MaterialIcons.remove
+                    |> Icon.elmMaterialIcons Color
+            , onPress =
+                if model > 0 then
+                    Decrease 1
                         |> Just
-                }
-            , Widget.button style.outlinedButton
-                { text = "Decrease"
-                , icon =
-                    MaterialIcons.remove
-                        |> Icon.elmMaterialIcons Color
-                , onPress =
-                    if model > 0 then
-                        Decrease 1
-                            |> Just
 
-                    else
-                        Nothing
-                }
-            ]
-                |> Widget.row (style.row |> Customize.elementRow [ Element.alignRight ])
-          , [ Widget.button style.containedButton
-                { text = "Increase"
-                , icon =
-                    MaterialIcons.add
-                        |> Icon.elmMaterialIcons Color
-                , onPress =
-                    Increase 1
-                        |> Just
-                }
-            ]
-                |> Widget.row (style.row |> Customize.elementRow [ Element.alignLeft ])
-          ]
-            |> Widget.row
-                (style.row
-                    |> Customize.elementRow [ Element.width <| Element.fill ]
-                    |> Customize.mapContent (Customize.element [ Element.width <| Element.fill ])
-                )
+                else
+                    Nothing
+            }
         ]
-            |> Widget.column
-                (style.column
-                    |> Customize.elementColumn [ Element.width <| Element.fill ]
-                    |> Customize.mapContent (Customize.element [ Element.width <| Element.fill ])
-                )
-    }
+            |> Widget.row (style.row |> Customize.elementRow [ Element.alignRight ])
+      , [ Widget.button style.containedButton
+            { text = "Increase"
+            , icon =
+                MaterialIcons.add
+                    |> Icon.elmMaterialIcons Color
+            , onPress =
+                Increase 1
+                    |> Just
+            }
+        ]
+            |> Widget.row (style.row |> Customize.elementRow [ Element.alignLeft ])
+      ]
+        |> Widget.row
+            (style.row
+                |> Customize.elementRow [ Element.width <| Element.fill ]
+                |> Customize.mapContent (Customize.element [ Element.width <| Element.fill ])
+            )
+    ]
+        |> Widget.column
+            (style.column
+                |> Customize.elementColumn [ Element.width <| Element.fill ]
+                |> Customize.mapContent (Customize.element [ Element.width <| Element.fill ])
+            )
+
+
+
+--------------------------------------------------------------------------------
+-- DO NOT MODIFY ANYTHING AFTER THIS LINE
+--------------------------------------------------------------------------------
 
 
 demo : Tile Model Msg ()
 demo =
     { init = always init
     , update = update
-    , view = view
+    , view = Page.demo view
     , subscriptions = subscriptions
     }
-
-
-
---------------------------------------------------------------------------------
--- DO NOT MODIFY ANTHING AFTER THIS LINE
---------------------------------------------------------------------------------
 
 
 page =

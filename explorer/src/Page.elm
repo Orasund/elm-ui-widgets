@@ -1,9 +1,9 @@
-module Page exposing (create, viewTile)
+module Page exposing (create, demo, viewTile)
 
 import Element exposing (Element)
 import UIExplorer exposing (Page)
 import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
-import UIExplorer.Tile as Tile exposing (Group, Tile, TileMsg)
+import UIExplorer.Tile as Tile exposing (Context, Group, Position, Tile, TileMsg)
 import Widget.Material as Material exposing (Palette)
 import Widget.Material.Typography as Typography
 
@@ -21,17 +21,17 @@ create :
     , demo : Tile model msg ()
     }
     -> Page ( ( ( (), () ), ( StorySelectorModel, () ) ), model ) (TileMsg (TileMsg (TileMsg () msg1) (TileMsg StorySelectorMsg ())) msg) ()
-create { title, description, book, demo } =
+create config =
     Tile.static []
         (\_ _ ->
-            [ title |> Element.text |> Element.el Typography.h3
-            , description |> Element.text |> Element.el []
+            [ config.title |> Element.text |> Element.el Typography.h3
+            , config.description |> Element.text |> List.singleton |> Element.paragraph []
             ]
                 |> Element.column [ Element.spacing 32 ]
         )
         |> Tile.first
-        |> Tile.nextGroup book
-        |> Tile.next demo
+        |> Tile.nextGroup config.book
+        |> Tile.next config.demo
         |> Tile.page
 
 
@@ -59,3 +59,21 @@ viewTile title content =
             , content
             ]
     }
+
+
+demo :
+    (Context -> model -> Element msg)
+    ->
+        (Context
+         -> model
+         -> { title : Maybe String, position : Position, attributes : List b, body : Element msg }
+        )
+demo fun context model =
+    fun context model
+        |> (\body ->
+                { title = Just "Interactive Demo"
+                , position = Tile.FullWidthTile
+                , attributes = []
+                , body = body
+                }
+           )

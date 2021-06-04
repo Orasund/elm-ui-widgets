@@ -283,7 +283,7 @@ layoutView palette _ view =
         Just string ->
             [ string
                 |> Widget.headerItem (Material.fullBleedHeader palette)
-            , view.body |> Widget.asItem
+            , view.body |> Element.el [ Element.width Element.fill ] |> Widget.asItem
             ]
                 |> Widget.itemList (Material.cardColumn palette)
 
@@ -323,9 +323,7 @@ layoutRowView palette row =
                     ]
                   <|
                     List.map
-                        (layoutView palette
-                            [ Element.height Element.fill ]
-                        )
+                        (layoutView palette [ Element.height Element.fill ])
                     <|
                         List.reverse right
                 ]

@@ -30,6 +30,7 @@ passwordInput palette =
                         |> Border.color
                     ]
                , Element.mouseOver [ Border.shadow <| MaterialColor.shadow 2 ]
+               , Element.width <| Element.px <| 280
                ]
     , content =
         { password =
