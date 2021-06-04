@@ -97,6 +97,7 @@ button style { onPress, text, icon } =
                      else
                         style.content.content.icon.otherwise
                     )
-                , Element.text text |> Element.el style.content.content.text.contentText
+                , Element.text text
+                    |> Element.el style.content.content.text.contentText
                 ]
         }

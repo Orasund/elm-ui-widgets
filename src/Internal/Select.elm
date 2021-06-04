@@ -76,6 +76,9 @@ toggleButton style ( selected, b ) =
             ++ (if b.onPress == Nothing then
                     style.ifDisabled
 
+                else if selected then
+                    style.ifActive
+
                 else
                     style.otherwise
                )
