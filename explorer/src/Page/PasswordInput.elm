@@ -1,31 +1,17 @@
 module Page.PasswordInput exposing (Model, Msg, init, page, subscriptions, update, view)
 
-import Browser
 import Element exposing (Element)
-import Element.Background as Background
-import Element.Font
 import Element.Input as Input
-import Material.Icons as MaterialIcons exposing (offline_bolt)
 import Material.Icons.Types exposing (Coloring(..))
 import Page
-import Set exposing (Set)
-import UIExplorer exposing (Page)
-import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
-import UIExplorer.Tile as Tile exposing (Context, Group, Position, Tile, TileMsg)
-import Widget exposing (ButtonStyle, ColumnStyle, PasswordInputStyle)
-import Widget.Customize as Customize
-import Widget.Icon as Icon exposing (Icon)
+import UIExplorer.Story as Story
+import UIExplorer.Tile exposing (Context, Tile)
+import Widget
 import Widget.Material as Material
     exposing
-        ( Palette
-        , containedButton
-        , darkPalette
+        ( darkPalette
         , defaultPalette
-        , outlinedButton
-        , textButton
         )
-import Widget.Material.Color as MaterialColor
-import Widget.Material.Typography as Typography
 
 
 {-| The title of this page
@@ -46,7 +32,7 @@ description =
 -}
 viewFunctions =
     let
-        viewCurrentPassword palette text placeholder label _ _ =
+        viewCurrentPassword text placeholder label { palette } () =
             Widget.currentPasswordInput (Material.passwordInput palette)
                 { text = text
                 , placeholder = placeholder
@@ -57,7 +43,7 @@ viewFunctions =
                 --Don't forget to change the title
                 |> Page.viewTile "Widget.currentPasswordInput"
 
-        viewNewPassword palette text placeholder label _ _ =
+        viewNewPassword text placeholder label { palette } () =
             Widget.newPasswordInput (Material.passwordInput palette)
                 { text = text
                 , placeholder = placeholder
@@ -77,27 +63,18 @@ book =
     Story.book (Just "Options")
         viewFunctions
         |> Story.addStory
-            (Story.optionListStory "Palette"
-                darkPalette
-                [ ( "dark", darkPalette )
-                , ( "default", defaultPalette )
-                ]
-            )
-        |> Story.addStory
             (Story.textStory "Text"
                 "123456789"
             )
         |> Story.addStory
-            (Story.optionListStory "Placeholder"
-                Nothing
-                [ ( "Yes"
-                  , "password"
-                        |> Element.text
-                        |> Input.placeholder []
-                        |> Just
-                  )
-                , ( "No", Nothing )
-                ]
+            (Story.boolStory "Placeholder"
+                ( "password"
+                    |> Element.text
+                    |> Input.placeholder []
+                    |> Just
+                , Nothing
+                )
+                True
             )
         |> Story.addStory
             (Story.textStory "Label"
@@ -148,52 +125,48 @@ subscriptions _ =
     Sub.none
 
 
+view : Context -> Model -> Element Msg
 view { palette } model =
-    { title = Just "Interactive Demo"
-    , position = Tile.FullWidthTile
-    , attributes = []
-    , body =
-        [ "Try  fill out these fields using autofill" |> Element.text
-        , [ "Current Password"
-                |> Element.text
-                |> Element.el [ Element.width <| Element.fill ]
-          , Widget.currentPasswordInput (Material.passwordInput palette)
-                { text = model.passwordInput
-                , placeholder = Nothing
-                , label = "Chips"
-                , onChange = SetPasswordInput
-                , show = False
-                }
-          ]
-            |> Element.row [ Element.width <| Element.fill, Element.spaceEvenly ]
-        , [ "New Password"
-                |> Element.text
-                |> Element.el [ Element.width <| Element.fill ]
-          , Widget.newPasswordInput (Material.passwordInput palette)
-                { text = model.newInput
-                , placeholder = Nothing
-                , label = "Chips"
-                , onChange = SetNewPasswordInput
-                , show = False
-                }
-          ]
-            |> Element.row [ Element.width <| Element.fill, Element.spaceEvenly ]
-        , Element.text <|
-            if (model.newInput /= "") && (model.newInput == model.passwordInput) then
-                "Yeay, the two passwords match!"
+    [ "Try  fill out these fields using autofill" |> Element.text
+    , [ "Current Password"
+            |> Element.text
+            |> Element.el [ Element.width <| Element.fill ]
+      , Widget.currentPasswordInput (Material.passwordInput palette)
+            { text = model.passwordInput
+            , placeholder = Nothing
+            , label = "Chips"
+            , onChange = SetPasswordInput
+            , show = False
+            }
+      ]
+        |> Element.row [ Element.width <| Element.fill, Element.spaceEvenly ]
+    , [ "New Password"
+            |> Element.text
+            |> Element.el [ Element.width <| Element.fill ]
+      , Widget.newPasswordInput (Material.passwordInput palette)
+            { text = model.newInput
+            , placeholder = Nothing
+            , label = "Chips"
+            , onChange = SetNewPasswordInput
+            , show = False
+            }
+      ]
+        |> Element.row [ Element.width <| Element.fill, Element.spaceEvenly ]
+    , Element.text <|
+        if (model.newInput /= "") && (model.newInput == model.passwordInput) then
+            "Yeay, the two passwords match!"
 
-            else
-                ""
-        ]
-            |> Element.column [ Element.width <| Element.fill, Element.spacing 8 ]
-    }
+        else
+            ""
+    ]
+        |> Element.column [ Element.width <| Element.fill, Element.spacing 8 ]
 
 
 demo : Tile Model Msg ()
 demo =
     { init = always init
     , update = update
-    , view = view
+    , view = Page.demo view
     , subscriptions = subscriptions
     }
 

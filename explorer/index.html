@@ -15794,6 +15794,8 @@ var $author$project$Internal$Material$TextInput$textInput = function (palette) {
 							$mdgriffith$elm_ui$Element$Border$color(
 							$author$project$Widget$Material$Color$fromColor(palette.primary))
 						])),
+					$mdgriffith$elm_ui$Element$width(
+					$mdgriffith$elm_ui$Element$px(280)),
 					$mdgriffith$elm_ui$Element$mouseOver(
 					_List_fromArray(
 						[
@@ -19675,7 +19677,9 @@ var $author$project$Internal$Material$PasswordInput$passwordInput = function (pa
 						[
 							$mdgriffith$elm_ui$Element$Border$shadow(
 							$author$project$Widget$Material$Color$shadow(2))
-						]))
+						])),
+					$mdgriffith$elm_ui$Element$width(
+					$mdgriffith$elm_ui$Element$px(280))
 				]))
 	};
 };
@@ -19791,17 +19795,19 @@ var $author$project$Page$PasswordInput$SetPasswordInput = function (a) {
 };
 var $author$project$Page$PasswordInput$view = F2(
 	function (_v0, model) {
+		var palette = _v0.palette;
 		return {
 			attributes: _List_Nil,
 			body: A2(
 				$mdgriffith$elm_ui$Element$column,
 				_List_fromArray(
 					[
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+						$mdgriffith$elm_ui$Element$spacing(8)
 					]),
 				_List_fromArray(
 					[
-						$mdgriffith$elm_ui$Element$text('Try autofill to fill out this field'),
+						$mdgriffith$elm_ui$Element$text('Try  fill out these fields using autofill'),
 						A2(
 						$mdgriffith$elm_ui$Element$row,
 						_List_fromArray(
@@ -19819,21 +19825,9 @@ var $author$project$Page$PasswordInput$view = F2(
 									]),
 								$mdgriffith$elm_ui$Element$text('Current Password')),
 								A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink)
-									]),
-								A2(
-									$mdgriffith$elm_ui$Element$el,
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-										]),
-									A2(
-										$author$project$Widget$currentPasswordInput,
-										$author$project$Widget$Material$passwordInput($author$project$Widget$Material$defaultPalette),
-										{label: 'Chips', onChange: $author$project$Page$PasswordInput$SetPasswordInput, placeholder: $elm$core$Maybe$Nothing, show: false, text: model.passwordInput})))
+								$author$project$Widget$currentPasswordInput,
+								$author$project$Widget$Material$passwordInput(palette),
+								{label: 'Chips', onChange: $author$project$Page$PasswordInput$SetPasswordInput, placeholder: $elm$core$Maybe$Nothing, show: false, text: model.passwordInput})
 							])),
 						A2(
 						$mdgriffith$elm_ui$Element$row,
@@ -19852,21 +19846,9 @@ var $author$project$Page$PasswordInput$view = F2(
 									]),
 								$mdgriffith$elm_ui$Element$text('New Password')),
 								A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink)
-									]),
-								A2(
-									$mdgriffith$elm_ui$Element$el,
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-										]),
-									A2(
-										$author$project$Widget$newPasswordInput,
-										$author$project$Widget$Material$passwordInput($author$project$Widget$Material$defaultPalette),
-										{label: 'Chips', onChange: $author$project$Page$PasswordInput$SetNewPasswordInput, placeholder: $elm$core$Maybe$Nothing, show: false, text: model.newInput})))
+								$author$project$Widget$newPasswordInput,
+								$author$project$Widget$Material$passwordInput(palette),
+								{label: 'Chips', onChange: $author$project$Page$PasswordInput$SetNewPasswordInput, placeholder: $elm$core$Maybe$Nothing, show: false, text: model.newInput})
 							])),
 						$mdgriffith$elm_ui$Element$text(
 						((model.newInput !== '') && _Utils_eq(model.newInput, model.passwordInput)) ? 'Yeay, the two passwords match!' : '')

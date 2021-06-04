@@ -23,12 +23,12 @@ type alias Story a =
     }
 
 
-optionListStory : String -> a -> List ( String, a ) -> Story a
-optionListStory label default options =
-    { info = OptionListStory label <| List.map Tuple.first options
+optionListStory : String -> ( String, a ) -> List ( String, a ) -> Story a
+optionListStory label first options =
+    { info = OptionListStory label <| List.map Tuple.first (first :: options)
     , toValue =
         \optLabel ->
-            options
+            (first :: options)
                 |> List.foldl
                     (\( key, optvalue ) res ->
                         case ( res, optLabel == key ) of
@@ -42,7 +42,7 @@ optionListStory label default options =
                                 Nothing
                     )
                     Nothing
-                |> Maybe.withDefault default
+                |> Maybe.withDefault (first |> Tuple.second)
     }
 
 
@@ -319,7 +319,7 @@ storyView : Context -> StoryModel -> Element StorySelectorMsg
 storyView context model =
     case model of
         RangeStoryModel label { unit, min, max, value } ->
-            Element.column [ Element.spacing 8 ]
+            Element.column [ Element.spacing 8, Element.width Element.fill ]
                 [ label
                     ++ " ("
                     ++ String.fromInt value
@@ -339,7 +339,7 @@ storyView context model =
                 ]
 
         TextStoryModel label value ->
-            Element.column [ Element.spacing 8 ]
+            Element.column [ Element.spacing 8, Element.width Element.fill ]
                 [ Element.text label |> Element.el Typography.caption
                 , Widget.textInput (Material.textInput context.palette)
                     { chips = []
@@ -351,7 +351,7 @@ storyView context model =
                 ]
 
         OptionListStoryModel label options ->
-            Element.column [ Element.spacing 8 ]
+            Element.column [ Element.spacing 8, Element.width Element.fill ]
                 [ Element.text label |> Element.el Typography.caption
                 , { selected =
                         Just <| SelectList.index options
@@ -421,7 +421,7 @@ storyTile title stories storiesToValue =
               , body =
                     model
                         |> List.map (storyView context)
-                        |> Element.column [ Element.spacing 8 ]
+                        |> Element.column [ Element.spacing 8, Element.width Element.fill ]
               }
             ]
     }
