@@ -29,6 +29,7 @@ textInput palette =
                         |> MaterialColor.fromColor
                         |> Border.color
                     ]
+               , Element.width <| Element.px <| 280
                , Element.mouseOver [ Border.shadow <| MaterialColor.shadow 2 ]
                ]
     , content =

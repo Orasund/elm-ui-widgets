@@ -8,10 +8,7 @@ import UIExplorer
 
 pages =
     UIExplorer.firstPage "Button" Page.Button.page
-
-
-
---|> UIExplorer.nextPage "Password Input" Page.PasswordInput.page
+        |> UIExplorer.nextPage "Password Input" Page.PasswordInput.page
 
 
 main =

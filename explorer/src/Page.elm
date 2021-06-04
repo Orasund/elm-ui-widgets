@@ -25,7 +25,7 @@ create { title, description, book, demo } =
     Tile.static []
         (\_ _ ->
             [ title |> Element.text |> Element.el Typography.h3
-            , description |> Element.text |> Element.el []
+            , description |> Element.text |> List.singleton |> Element.paragraph []
             ]
                 |> Element.column [ Element.spacing 32 ]
         )
