@@ -32,24 +32,24 @@ description =
 -}
 viewFunctions =
     let
-        viewCurrentPassword text placeholder label { palette } () =
+        viewCurrentPassword text placeholder label show { palette } () =
             Widget.currentPasswordInput (Material.passwordInput palette)
                 { text = text
                 , placeholder = placeholder
                 , label = label
                 , onChange = always ()
-                , show = False
+                , show = show
                 }
                 --Don't forget to change the title
                 |> Page.viewTile "Widget.currentPasswordInput"
 
-        viewNewPassword text placeholder label { palette } () =
+        viewNewPassword text placeholder label show { palette } () =
             Widget.newPasswordInput (Material.passwordInput palette)
                 { text = text
                 , placeholder = placeholder
                 , label = label
                 , onChange = always ()
-                , show = False
+                , show = show
                 }
                 --Don't forget to change the title
                 |> Page.viewTile "Widget.newPasswordInput"
@@ -79,6 +79,13 @@ book =
         |> Story.addStory
             (Story.textStory "Label"
                 "Password"
+            )
+        |> Story.addStory
+            (Story.boolStory "Show"
+                ( True
+                , False
+                )
+                True
             )
         |> Story.build
 
@@ -127,7 +134,7 @@ subscriptions _ =
 
 view : Context -> Model -> Element Msg
 view { palette } model =
-    [ "Try  fill out these fields using autofill" |> Element.text
+    [ "Try  filling out these fields using autofill" |> Element.text
     , [ "Current Password"
             |> Element.text
             |> Element.el [ Element.width <| Element.fill ]

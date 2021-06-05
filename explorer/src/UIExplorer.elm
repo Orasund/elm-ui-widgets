@@ -864,8 +864,6 @@ viewSidebar pages config model =
             |> Widget.itemList (Material.sideSheet palette)
 
 
-
-
 colorblindnessCss : Html msg
 colorblindnessCss =
     Html.node "style"
@@ -1116,8 +1114,6 @@ optionGroupView dark isExpanded selectedItem items itemToString onPress toggleEx
                 )
         , isExpanded = isExpanded
         }
-
-
 
 
 showSearchResults : String -> Bool
