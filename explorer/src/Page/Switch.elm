@@ -4,23 +4,12 @@ module Page.Switch exposing (page)
 -}
 
 import Element exposing (Element)
-import Element.Background as Background
-import Material.Icons as MaterialIcons
 import Material.Icons.Types exposing (Coloring(..))
 import Page
 import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
 import UIExplorer.Tile as Tile exposing (Context, Tile, TileMsg)
 import Widget
-import Widget.Customize as Customize
-import Widget.Icon as Icon
 import Widget.Material as Material
-    exposing
-        ( containedButton
-        , outlinedButton
-        , textButton
-        )
-import Widget.Material.Color as MaterialColor
-import Widget.Material.Typography as Typography
 
 
 {-| The title of this page

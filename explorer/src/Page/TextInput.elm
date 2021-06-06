@@ -9,12 +9,8 @@ import Set exposing (Set)
 import UIExplorer.Story as Story
 import UIExplorer.Tile exposing (Context, Tile)
 import Widget
-import Widget.Icon as Icon exposing (Icon)
+import Widget.Icon as Icon
 import Widget.Material as Material
-    exposing
-        ( darkPalette
-        , defaultPalette
-        )
 
 
 {-| The title of this page

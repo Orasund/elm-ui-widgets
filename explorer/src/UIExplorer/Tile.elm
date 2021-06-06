@@ -1,17 +1,13 @@
 module UIExplorer.Tile exposing (..)
 
-import Dict exposing (Dict)
 import Element exposing (Attribute, Element)
 import Element.Background as Background
 import Element.Font as Font
 import Markdown
-import SelectList exposing (SelectList)
 import UIExplorer exposing (Page, PageSize)
-import Widget exposing (Item)
-import Widget.Customize as Customize
+import Widget
 import Widget.Material as Material exposing (Palette)
 import Widget.Material.Color as MaterialColor
-import Widget.Material.Typography as Typography
 
 
 type Position

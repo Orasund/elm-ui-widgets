@@ -4,20 +4,14 @@ module Page.Select exposing (page)
 -}
 
 import Element exposing (Element)
-import Element.Background as Background
-import Element.Font
-import Material.Icons as MaterialIcons exposing (offline_bolt)
+import Material.Icons as MaterialIcons
 import Material.Icons.Types exposing (Coloring(..))
 import Page
-import UIExplorer
 import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
-import UIExplorer.Tile as Tile exposing (Context, Position, Tile, TileMsg)
-import Widget exposing (ButtonStyle)
-import Widget.Customize as Customize
-import Widget.Icon as Icon exposing (Icon)
-import Widget.Material as Material exposing (Palette)
-import Widget.Material.Color as MaterialColor
-import Widget.Material.Typography as Typography
+import UIExplorer.Tile as Tile exposing (Context, TileMsg)
+import Widget
+import Widget.Icon as Icon
+import Widget.Material as Material
 
 
 {-| The title of this page
@@ -51,7 +45,6 @@ viewFunctions =
                 --Don't forget to change the title
                 |> Page.viewTile "Widget.buttonRow "
 
-        
         viewTogggleRow style selected options onSelect { palette } () =
             Widget.select
                 { selected = selected
@@ -64,7 +57,7 @@ viewFunctions =
                     }
                 --Don't forget to change the title
                 |> Page.viewTile "Widget.toggleRow"
-        
+
         viewWrappedRow style selected options onSelect { palette } () =
             Widget.select
                 { selected = selected
@@ -110,7 +103,7 @@ book =
                 [ ( "Outlined", Material.outlinedButton )
                 , ( "Text", Material.textButton )
                 , ( "Chip", Material.chip )
-                , ( "IconButton", Material.iconButton)
+                , ( "IconButton", Material.iconButton )
                 , ( "Toggle", Material.toggleButton )
                 ]
             )

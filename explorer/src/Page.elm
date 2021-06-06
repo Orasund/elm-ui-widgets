@@ -2,9 +2,8 @@ module Page exposing (create, create2, demo, viewTile)
 
 import Element exposing (Element)
 import UIExplorer exposing (Page)
-import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
+import UIExplorer.Story exposing (StorySelectorModel, StorySelectorMsg)
 import UIExplorer.Tile as Tile exposing (Context, Group, Position, Tile, TileMsg)
-import Widget.Material as Material exposing (Palette)
 import Widget.Material.Typography as Typography
 
 

@@ -3,22 +3,15 @@ module Page.Snackbar exposing (page)
 {-| This is an example Page. If you want to add your own pages, simple copy and modify this one.
 -}
 
-import Browser
 import Element exposing (Element)
-import Element.Background as Background
-import Material.Icons as MaterialIcons
 import Material.Icons.Types exposing (Coloring(..))
 import Page
 import Time
 import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
 import UIExplorer.Tile as Tile exposing (Context, Tile, TileMsg)
-import Widget exposing (ButtonStyle, ColumnStyle)
-import Widget.Customize as Customize
-import Widget.Icon as Icon
+import Widget
 import Widget.Material as Material
-import Widget.Material.Color as MaterialColor
-import Widget.Material.Typography as Typography
-import Widget.Snackbar as Snackbar exposing (Snackbar, SnackbarStyle)
+import Widget.Snackbar as Snackbar exposing (Snackbar)
 
 
 {-| The title of this page
