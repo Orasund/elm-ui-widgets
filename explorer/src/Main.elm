@@ -10,12 +10,14 @@ import Page.SortTable
 import Page.Switch
 import Page.Tab
 import Page.TextInput
+import Page.MultiSelect
 import UIExplorer
 
 
 pages =
     UIExplorer.firstPage "Button" Page.Button.page
         |> UIExplorer.nextPage "Select" Page.Select.page
+        |> UIExplorer.nextPage "Multi Select" Page.MultiSelect.page
         |> UIExplorer.nextPage "Switch" Page.Switch.page
         |> UIExplorer.nextPage "Tab" Page.Tab.page
         |> UIExplorer.nextPage "Password Input" Page.PasswordInput.page
