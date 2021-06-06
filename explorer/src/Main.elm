@@ -4,6 +4,7 @@ import Element
 import Page.Button
 import Page.PasswordInput
 import Page.Select
+import Page.Sheet
 import Page.Snackbar
 import Page.SortTable
 import Page.Switch
@@ -21,6 +22,7 @@ pages =
         |> UIExplorer.nextPage "Text Input" Page.TextInput.page
         |> UIExplorer.nextPage "Sort Table" Page.SortTable.page
         |> UIExplorer.nextPage "Snackbar" Page.Snackbar.page
+        |> UIExplorer.nextPage "Sheet" Page.Sheet.page
 
 
 main =
