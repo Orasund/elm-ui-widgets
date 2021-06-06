@@ -1,4 +1,4 @@
-module Page.Sheet exposing (page)
+module Page.Item exposing (page)
 
 {-| This is an example Page. If you want to add your own pages, simple copy and modify this one.
 -}
@@ -23,14 +23,14 @@ import Widget.Material.Typography as Typography
 -}
 title : String
 title =
-    "Sheet"
+    "Item"
 
 
 {-| The description. I've taken this description directly from the [Material-UI-Specification](https://material.io/components/buttons)
 -}
 description : String
 description =
-    "Sheets are surfaces containing supplementary content."
+    "Items can be composed into lists."
 
 
 {-| List of view functions. Essentially, anything that takes a Button as input.
