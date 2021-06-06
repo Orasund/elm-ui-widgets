@@ -1,8 +1,7 @@
 module UIExplorer.Story exposing (..)
 
-import Dict exposing (Dict)
-import Element exposing (Attribute, Element)
-import Element.Input as Input exposing (Label, Option, labelAbove, option, radio)
+import Element exposing (Element)
+import Element.Input as Input
 import SelectList exposing (SelectList)
 import UIExplorer.Tile as Tile exposing (Context)
 import Widget
@@ -262,7 +261,7 @@ storySetValue value model =
                             | value = enforceRange state.min state.max intValue
                         }
 
-        TextStoryModel storyLabel oldValue ->
+        TextStoryModel storyLabel _ ->
             TextStoryModel storyLabel value
 
         OptionListStoryModel storyLabel select ->
@@ -369,7 +368,7 @@ storyView context model =
                             options
                                 |> SelectList.toList
                                 |> List.indexedMap (\i opt -> ( i, opt ))
-                                |> List.filter (\( i, opt ) -> selected == i)
+                                |> List.filter (\( i, _ ) -> selected == i)
                                 |> List.head
                                 |> Maybe.map (Tuple.second >> StorySelect label)
                   }
@@ -399,7 +398,7 @@ storyView context model =
 
 
 storyTile : Maybe String -> List StoryInfo -> (List String -> a) -> Tile.Group StorySelectorModel StorySelectorMsg flags
-storyTile title stories storiesToValue =
+storyTile title stories _ =
     { init =
         \_ ->
             ( stories
@@ -435,7 +434,7 @@ build builder =
         |> Tile.linkGroup
             { init = builder.tilelist.init
             , update =
-                \msg ( selectorModel, model ) ->
+                \msg ( _, model ) ->
                     builder.tilelist.update msg model
             , subscriptions = Tuple.second >> builder.tilelist.subscriptions
             , views =

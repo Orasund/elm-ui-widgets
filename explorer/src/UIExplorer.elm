@@ -36,14 +36,12 @@ import Browser.Events
 import Browser.Navigation
 import Element exposing (Element)
 import Element.Background
-import Element.Border
 import Element.Font
 import Element.Input
 import Element.Lazy
 import Element.Region
 import Html exposing (Html)
 import Html.Attributes
-import Html.Events
 import Json.Decode as Decode
 import Pixels exposing (Pixels)
 import Quantity exposing (Quantity)
@@ -356,7 +354,7 @@ pageSizeOptionWidth pageSizeOption =
 {-| -}
 type Model pageModel flags
     = FlagsParsed (SuccessModel pageModel flags)
-    | FlagsDidNotParse { errorMessage : String }
+    | FlagsDidNotParse String
 
 
 type alias SuccessModel pageModel flags =
@@ -469,7 +467,7 @@ init config (PageBuilder pages) flagsJson url key =
             )
 
         Err error ->
-            ( FlagsDidNotParse { errorMessage = Decode.errorToString error }, Cmd.none )
+            ( FlagsDidNotParse (Decode.errorToString error), Cmd.none )
 
 
 expandPage : List String -> Set String -> Set String
@@ -636,7 +634,7 @@ view config pages model =
         FlagsParsed successModel ->
             viewSuccess config pages successModel
 
-        FlagsDidNotParse { errorMessage } ->
+        FlagsDidNotParse errorMessage ->
             { title = "Error"
             , body =
                 [ Element.layoutWith { options = config.layoutOptions }
@@ -829,7 +827,7 @@ viewSidebar pages config model =
                 { text = "Dark Theme"
                 , onPress = Just <| ChangeDarkTheme <| not <| model.darkThemeEnabled
                 , icon =
-                    \{} ->
+                    \_ ->
                         Widget.switch (Material.switch palette)
                             { description = "Toggle Theme"
                             , onPress = Just <| ChangeDarkTheme <| not <| model.darkThemeEnabled
@@ -1078,7 +1076,7 @@ colorBlindOptionView dark isExpanded selectedColorBlindOption =
 optionGroupView : Bool -> Bool -> a -> List a -> (a -> String) -> (a -> msg) -> msg -> List (Item msg)
 optionGroupView dark isExpanded selectedItem items itemToString onPress toggleExpand =
     let
-        selectedColor =
+        _ =
             if dark then
                 darkerGray
 
@@ -1251,19 +1249,6 @@ contentSize model =
         }
 
 
-minimizeSidebarButton : Element (Msg pageMsg)
-minimizeSidebarButton =
-    Element.Input.button
-        [ Element.alignRight
-        , Element.paddingXY 20 0
-        , Element.height Element.fill
-        , Element.Font.size 20
-        ]
-        { onPress = Just PressedToggleSidebar
-        , label = Element.text "❮"
-        }
-
-
 lightBlue : Element.Color
 lightBlue =
     Element.rgb255 176 208 225
@@ -1279,16 +1264,6 @@ gray =
     Element.rgb255 206 215 225
 
 
-mediumDarkGray : Element.Color
-mediumDarkGray =
-    Element.rgb255 90 100 105
-
-
-darkGray : Element.Color
-darkGray =
-    Element.rgb255 60 70 80
-
-
 darkerGray : Element.Color
 darkerGray =
     Element.rgb255 20 30 40
@@ -1298,55 +1273,9 @@ black =
     Element.rgb 0 0 0
 
 
-mix : Float -> Element.Color -> Element.Color -> Element.Color
-mix mixRatio color0 color1 =
-    let
-        a =
-            Element.toRgb color0
-
-        b =
-            Element.toRgb color1
-
-        mix_ getter =
-            getter a * mixRatio + getter b * (1 - mixRatio)
-    in
-    Element.rgb (mix_ .red) (mix_ .green) (mix_ .blue)
-
-
-type ArrowKey
-    = ArrowUp
-    | ArrowDown
-
-
-onKey : (ArrowKey -> msg) -> Element.Attribute msg
-onKey msg =
-    Element.htmlAttribute
-        (Html.Events.custom "keyup"
-            (Decode.field "key" Decode.string
-                |> Decode.andThen
-                    (\key ->
-                        case key of
-                            "ArrowUp" ->
-                                Decode.succeed { message = msg ArrowUp, stopPropagation = True, preventDefault = True }
-
-                            "ArrowDown" ->
-                                Decode.succeed { message = msg ArrowDown, stopPropagation = True, preventDefault = True }
-
-                            _ ->
-                                Decode.fail "Not the up or down arrow key."
-                    )
-            )
-        )
-
-
 pageGroupToString : List String -> String
 pageGroupToString =
     uiUrl []
-
-
-isGroupExpanded : Set String -> List String -> Bool
-isGroupExpanded expandedGroups pageGroup =
-    Set.member (pageGroupToString pageGroup) expandedGroups
 
 
 type Either
@@ -1402,21 +1331,6 @@ buildTree items =
     helper items
 
 
-mouseOverButtonColor buttonDepth =
-    mix (0.92 ^ toFloat buttonDepth) gray black
-
-
-pageSelectedButtonColor dark buttonDepth =
-    mix (0.92 ^ toFloat buttonDepth)
-        (if dark then
-            mediumDarkGray
-
-         else
-            lightBlue
-        )
-        black
-
-
 viewSidebarLinksHelper :
     Bool
     -> { a | relativeUrlPath : List String }
@@ -1447,23 +1361,6 @@ viewSidebarLinksHelper dark config page expandedGroups path trees =
             )
 
 
-expanderArrow : Bool -> Element msg
-expanderArrow isExpanded =
-    (if isExpanded then
-        "▾"
-
-     else
-        "▸"
-    )
-        |> Element.text
-        |> Element.el
-            [ Element.width <| Element.px 10
-            , Element.Font.size 12
-            , Element.moveUp 1
-            , Element.moveLeft 1
-            ]
-
-
 {-| Group equal elements together using a custom equality function. Elements will be
 grouped in the same order as they appear in the original list. The same applies to
 elements within each group.
@@ -1491,66 +1388,6 @@ gatherWith testFn list =
                     helper remaining <| ( toGather, gathering ) :: gathered
     in
     helper list []
-
-
-pageButton :
-    Bool
-    -> { a | relativeUrlPath : List String }
-    -> List String
-    -> { b | previous : Maybe (List String), next : Maybe (List String), current : List String }
-    -> Element (Msg pageMsg)
-pageButton dark config selectedPage pageIds =
-    let
-        depth =
-            List.length pageIds.current - 1
-    in
-    Element.el
-        [ Element.width Element.fill ]
-        (Element.link
-            [ Element.paddingEach { left = 16, right = 8, top = 8, bottom = 8 }
-            , Element.width Element.fill
-            , onKey
-                (\arrowKey ->
-                    case ( arrowKey, pageIds.previous, pageIds.next ) of
-                        ( ArrowUp, Just previous, _ ) ->
-                            PressedChangePageHotkey previous
-
-                        ( ArrowDown, _, Just next ) ->
-                            PressedChangePageHotkey next
-
-                        _ ->
-                            NoOp
-                )
-            , Element.htmlAttribute <| Html.Attributes.id <| pageGroupToString pageIds.current
-            , if pageIds.current == selectedPage then
-                Element.Background.color (pageSelectedButtonColor dark depth)
-
-              else
-                Element.mouseOver [ mouseOverButtonColor depth |> Element.Background.color ]
-            , focusAttributes dark
-            ]
-            { url = uiUrl config.relativeUrlPath pageIds.current
-            , label =
-                pageIds.current
-                    |> List.reverse
-                    |> List.head
-                    |> Maybe.withDefault ""
-                    |> Element.text
-                    |> List.singleton
-                    |> Element.paragraph []
-            }
-        )
-
-
-focusAttributes dark =
-    Element.focused
-        [ Element.Background.color <|
-            if dark then
-                mediumDarkGray
-
-            else
-                lightBlue
-        ]
 
 
 viewSidebarLinks :

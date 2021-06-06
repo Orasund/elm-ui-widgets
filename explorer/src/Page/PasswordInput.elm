@@ -8,10 +8,6 @@ import UIExplorer.Story as Story
 import UIExplorer.Tile exposing (Context, Tile)
 import Widget
 import Widget.Material as Material
-    exposing
-        ( darkPalette
-        , defaultPalette
-        )
 
 
 {-| The title of this page
