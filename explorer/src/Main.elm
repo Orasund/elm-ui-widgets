@@ -14,6 +14,7 @@ import Page.SortTable
 import Page.Switch
 import Page.Tab
 import Page.TextInput
+import Page.Icon
 import UIExplorer
 
 
@@ -31,6 +32,7 @@ pages =
         |> UIExplorer.nextPage "ProgressIndicator" Page.ProgressIndicator.page
         |> UIExplorer.nextPage "Modal" Page.Modal.page
         |> UIExplorer.nextPage "Layout" Page.Layout.page
+        |> UIExplorer.nextPage "Icon" Page.Icon.page
 
 
 main =
