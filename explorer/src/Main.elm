@@ -12,6 +12,7 @@ import Page.Tab
 import Page.TextInput
 import Page.MultiSelect
 import Page.ProgressIndicator
+import Page.Modal
 import UIExplorer
 
 
@@ -27,6 +28,7 @@ pages =
         |> UIExplorer.nextPage "Snackbar" Page.Snackbar.page
         |> UIExplorer.nextPage "Item" Page.Item.page
         |> UIExplorer.nextPage "ProgressIndicator" Page.ProgressIndicator.page
+        |> UIExplorer.nextPage "Modal" Page.Modal.page
 
 
 main =
