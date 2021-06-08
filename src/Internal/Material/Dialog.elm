@@ -23,10 +23,25 @@ alertDialog palette =
         ]
     , content =
         { title =
-            { contentText = Typography.h6 ++ [ Element.paddingXY 24 20 ]
+            { contentText =
+                Typography.h6
+                    ++ [ Element.paddingEach
+                            { top = 20
+                            , right = 24
+                            , bottom = 0
+                            , left = 24
+                            }
+                       ]
             }
         , text =
-            { contentText = [ Element.paddingXY 24 0 ]
+            { contentText =
+                [ Element.paddingEach
+                    { top = 20
+                    , right = 24
+                    , bottom = 0
+                    , left = 24
+                    }
+                ]
             }
         , buttons =
             { elementRow =
