@@ -701,6 +701,7 @@ viewSuccess config ((PageBuilder pages) as pages_) model =
                 :: Element.inFront
                     (Element.el
                         [ Element.height <| Element.px (Pixels.inPixels model.windowSize.height)
+                        , Element.scrollbarY
                         , Element.Font.size 16
                         ]
                         (viewSidebar pages_ config model)

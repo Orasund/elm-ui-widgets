@@ -8,6 +8,8 @@
     "dependencies": {
         "direct": {
             "avh4/elm-color": "1.0.0",
+            "capitalist/elm-octicons": "2.3.0",
+            "danmarcab/material-icons": "1.0.0",
             "elm/browser": "1.0.2",
             "elm/core": "1.0.5",
             "elm/html": "1.0.0",
@@ -16,12 +18,18 @@
             "elm/time": "1.0.0",
             "elm/url": "1.0.0",
             "elm-explorations/markdown": "1.0.0",
+            "feathericons/elm-feather": "1.5.0",
             "ianmackenzie/elm-units": "2.9.0",
             "icidasset/elm-material-icons": "8.0.0",
             "insurello/elm-ui-explorer": "2.0.0",
+            "j-panasiuk/elm-ionicons": "2.0.0",
+            "jasonliang-dev/elm-heroicons": "1.0.3",
+            "lattyware/elm-fontawesome": "5.0.0",
+            "lemol/ant-design-icons-elm": "2.0.0",
             "mdgriffith/elm-ui": "1.1.7",
             "miyamoen/select-list": "4.1.0",
             "noahzgordon/elm-color-extra": "1.0.2",
+            "pehota/elm-zondicons": "1.0.1",
             "turboMaCk/queue": "1.1.0",
             "zwilias/elm-rosetree": "1.5.0"
         },
