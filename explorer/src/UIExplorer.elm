@@ -34,7 +34,7 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import Browser.Navigation
-import Element exposing (Element)
+import Element exposing (DeviceClass(..), Element)
 import Element.Background
 import Element.Font
 import Element.Input
@@ -303,33 +303,37 @@ type PageSizeOption
     | Native
 
 
-allPageSizeOptions : List PageSizeOption
-allPageSizeOptions =
-    [ Iphone5
-    , Iphone6
-    , IpadVertical
-    , IpadHorizontal
-    , Native
-    ]
+
+{- }
+   allPageSizeOptions : List PageSizeOption
+   allPageSizeOptions =
+       [ Iphone5
+       , Iphone6
+       , IpadVertical
+       , IpadHorizontal
+       , Native
+       ]
 
 
-pageSizeOptionToString : PageSizeOption -> String
-pageSizeOptionToString pageSizeOption =
-    case pageSizeOption of
-        Iphone5 ->
-            "iPhone 5/SE"
+   pageSizeOptionToString : PageSizeOption -> String
+   pageSizeOptionToString pageSizeOption =
+       case pageSizeOption of
+           Iphone5 ->
+               "iPhone 5/SE"
 
-        Iphone6 ->
-            "iPhone 6/7/8"
+           Iphone6 ->
+               "iPhone 6/7/8"
 
-        IpadVertical ->
-            "iPad (vertical)"
+           IpadVertical ->
+               "iPad (vertical)"
 
-        IpadHorizontal ->
-            "iPad (horizontal)"
+           IpadHorizontal ->
+               "iPad (horizontal)"
 
-        Native ->
-            "Native width"
+           Native ->
+               "Native width"
+   -
+-}
 
 
 pageSizeOptionWidth : PageSizeOption -> Maybe (Quantity Int Pixels)
@@ -449,7 +453,7 @@ init config (PageBuilder pages) flagsJson url key =
                 , pageSizeOption = Native
                 , expandColorBlindOptions = False
                 , colorBlindOption = Nothing
-                , darkThemeEnabled = True
+                , darkThemeEnabled = False
                 }
             , Cmd.batch
                 [ navigationCmd
@@ -687,38 +691,60 @@ viewSuccess :
     -> Browser.Document (Msg pageMsg)
 viewSuccess config ((PageBuilder pages) as pages_) model =
     let
-        actualSidebarWidth =
+        {--actualSidebarWidth =
             if model.minimizeSidebar then
                 sidebarMinimizedWidth
 
             else
-                sidebarWidth
+                sidebarWidth--}
+        palette =
+            if model.darkThemeEnabled then
+                Material.darkPalette
+
+            else
+                Material.defaultPalette
     in
     { title = "UI Explorer"
     , body =
         [ Element.layoutWith { options = config.layoutOptions }
             (Element.width Element.fill
-                :: Element.inFront
-                    (Element.el
-                        [ Element.height <| Element.px (Pixels.inPixels model.windowSize.height)
-                        , Element.scrollbarY
+                :: (Element.Background.color <|
+                        if model.darkThemeEnabled then
+                            black
+
+                        else
+                            gray
+                   )
+                :: config.layoutAttributes
+            )
+            (Element.column [ Element.width Element.fill, Element.height Element.fill ]
+                [ Widget.menuBar (Material.menuBar palette)
+                    { title =
+                        config.sidebarTitle
+                            |> Element.el Typography.h6
+                    , deviceClass = Desktop
+                    , openLeftSheet = Just PressedToggleSidebar
+                    , openRightSheet = Nothing
+                    , openTopSheet = Nothing
+                    , primaryActions = []
+                    , search = Nothing
+                    }
+                , Element.row
+                    [ Element.width Element.fill
+                    , Element.height Element.fill
+                    , Element.behindContent (Element.html colorblindnessSvg)
+                    , Element.behindContent (Element.html colorblindnessCss)
+                    , Element.Font.color (textColor model.darkThemeEnabled)
+                    ]
+                    [ -- Element.el [ Element.width (Element.px (Pixels.inPixels actualSidebarWidth)) ] Element.none
+                      Element.el
+                        [ Element.height <| Element.fill --Element.px (Pixels.inPixels model.windowSize.height)
                         , Element.Font.size 16
                         ]
                         (viewSidebar pages_ config model)
-                    )
-                :: Element.behindContent (Element.html colorblindnessSvg)
-                :: Element.behindContent (Element.html colorblindnessCss)
-                :: Element.Font.color (textColor model.darkThemeEnabled)
-                :: config.layoutAttributes
-            )
-            (Element.row
-                [ Element.width Element.fill
-                , Element.height Element.fill
-                ]
-                [ Element.el [ Element.width (Element.px (Pixels.inPixels actualSidebarWidth)) ] Element.none
-                , Element.el
-                    (Element.alignTop
-                        :: Element.width
+                    , Element.el
+                        ([ Element.alignTop
+                         , Element.width
                             (case pageSizeOptionWidth model.pageSizeOption of
                                 Just width ->
                                     Element.px (Pixels.inPixels width)
@@ -726,40 +752,31 @@ viewSuccess config ((PageBuilder pages) as pages_) model =
                                 Nothing ->
                                     Element.fillPortion 999999999
                             )
-                        :: Element.height Element.fill
-                        :: Element.Region.mainContent
-                        :: (if model.darkThemeEnabled then
-                                Element.Background.color <| Element.rgb255 30 30 30
+                         , Element.centerX
+                         , Element.paddingXY 0 56
+                         , Element.height Element.fill
+                         , Element.Region.mainContent
+                         , if model.darkThemeEnabled then
+                            Element.Background.color <| Element.rgb255 30 30 30
 
-                            else
-                                Element.Background.color <| Element.rgb255 225 225 225
-                           )
-                        :: (case model.colorBlindOption of
-                                Nothing ->
-                                    []
+                           else
+                            Element.Background.color <| Element.rgb255 225 225 225
+                         ]
+                            ++ (case model.colorBlindOption of
+                                    Nothing ->
+                                        []
 
-                                Just colorBlindOption ->
-                                    colorBlindOptionToCssClass colorBlindOption
-                                        |> Html.Attributes.class
-                                        |> Element.htmlAttribute
-                                        |> List.singleton
-                           )
-                    )
-                    (pages.view model.page (contentSize model) model.darkThemeEnabled model.pageModel
-                        |> Element.map PageMsg
-                    )
-                , Element.el
-                    [ Element.Background.color <|
-                        if model.darkThemeEnabled then
-                            black
-
-                        else
-                            gray
-                    , Element.alpha 0.9
-                    , Element.width Element.fill
-                    , Element.height Element.fill
+                                    Just colorBlindOption ->
+                                        colorBlindOptionToCssClass colorBlindOption
+                                            |> Html.Attributes.class
+                                            |> Element.htmlAttribute
+                                            |> List.singleton
+                               )
+                        )
+                        (pages.view model.page (contentSize model) model.darkThemeEnabled model.pageModel
+                            |> Element.map PageMsg
+                        )
                     ]
-                    Element.none
                 ]
             )
         ]
@@ -783,13 +800,12 @@ viewSidebar :
     -> Element (Msg pageMsg)
 viewSidebar pages config model =
     let
-        bgColor =
+        {--bgColor =
             if model.darkThemeEnabled then
                 darkerGray
 
             else
-                lightGray
-
+                lightGray--}
         palette =
             if model.darkThemeEnabled then
                 Material.darkPalette
@@ -798,7 +814,8 @@ viewSidebar pages config model =
                 Material.defaultPalette
     in
     if model.minimizeSidebar then
-        Element.el
+        Element.none
+        {--Element.el
             [ Element.height Element.fill ]
             (Element.Input.button
                 [ Element.width (Element.px (Pixels.inPixels sidebarMinimizedWidth))
@@ -808,33 +825,29 @@ viewSidebar pages config model =
                 { onPress = Just PressedToggleSidebar
                 , label = Element.el [ Element.moveRight 3 ] (Element.text "❯")
                 }
-            )
+            )--}
 
     else
-        [ [ Widget.insetItem (Material.insetItem palette)
-                { text = ""
-                , onPress = Just PressedToggleSidebar
-                , icon =
-                    \_ ->
-                        config.sidebarTitle
-                            |> Element.el Typography.h6
-                , content =
-                    \{ size } ->
-                        Element.text "❮"
-                            |> Element.el [ Element.Font.size size ]
-                }
-          , Widget.divider (Material.fullBleedDivider palette)
-          , Widget.fullBleedItem (Material.fullBleedItem palette)
+        [ [ Widget.headerItem (Material.fullBleedHeader palette) "Device Toolbar"
+          , Widget.insetItem (Material.insetItem palette)
                 { text = "Dark Theme"
                 , onPress = Just <| ChangeDarkTheme <| not <| model.darkThemeEnabled
-                , icon =
+                , content =
                     \_ ->
                         Widget.switch (Material.switch palette)
                             { description = "Toggle Theme"
                             , onPress = Just <| ChangeDarkTheme <| not <| model.darkThemeEnabled
                             , active = model.darkThemeEnabled
                             }
+                , icon = always Element.none
                 }
+          ]
+
+        --Having different screen sized is nice, but not very useful in the current implementation.
+        --, pageSizeOptionView model.darkThemeEnabled model.expandPageSizeOptions model.pageSizeOption
+        --, [ Widget.divider (Material.insetDivider palette) ]
+        , colorBlindOptionView model.darkThemeEnabled model.expandColorBlindOptions model.colorBlindOption
+        , [ Widget.headerItem (Material.fullBleedHeader palette) "Widgets"
           , Widget.textInput (Material.textInput palette)
                 { chips = []
                 , text = model.searchText
@@ -842,15 +855,9 @@ viewSidebar pages config model =
                 , label = "Search pages"
                 , onChange = TypingSearchText
                 }
-                |> Element.el [ Element.centerX, Element.centerY ]
+                |> Element.el [ Element.paddingXY 8 0 ]
                 |> Element.el [ Element.height <| Element.px 70, Element.width <| Element.fill ]
                 |> Widget.asItem
-          , Widget.headerItem (Material.fullBleedHeader palette) "Device Toolbar"
-          ]
-        , pageSizeOptionView model.darkThemeEnabled model.expandPageSizeOptions model.pageSizeOption
-        , [ Widget.divider (Material.insetDivider palette) ]
-        , colorBlindOptionView model.darkThemeEnabled model.expandColorBlindOptions model.colorBlindOption
-        , [ Widget.headerItem (Material.fullBleedHeader palette) "Widgets"
           , Widget.asItem <|
                 if showSearchResults model.searchText then
                     Element.Lazy.lazy5 viewSearchResults model.darkThemeEnabled pages config model.page model.searchText
@@ -861,6 +868,10 @@ viewSidebar pages config model =
         ]
             |> List.concat
             |> Widget.itemList (Material.sideSheet palette)
+
+
+
+--|> Element.el [ Element.scrollbarY ]
 
 
 colorblindnessCss : Html msg
@@ -1052,6 +1063,8 @@ colorblindnessSvg =
         ]
 
 
+
+{--
 pageSizeOptionView : Bool -> Bool -> PageSizeOption -> List (Item (Msg pageMsg))
 pageSizeOptionView dark isExpanded selectedPageSize =
     optionGroupView dark
@@ -1061,6 +1074,7 @@ pageSizeOptionView dark isExpanded selectedPageSize =
         pageSizeOptionToString
         PressedPageSizeOption
         ToggledPageSizeGroup
+--}
 
 
 colorBlindOptionView : Bool -> Bool -> Maybe ColorBlindOption -> List (Item (Msg pageMsg))
@@ -1255,9 +1269,12 @@ lightBlue =
     Element.rgb255 176 208 225
 
 
+
+{--
 lightGray : Element.Color
 lightGray =
     Element.rgb255 228 234 241
+--}
 
 
 gray : Element.Color

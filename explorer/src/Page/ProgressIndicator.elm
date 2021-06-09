@@ -2,23 +2,14 @@ module Page.ProgressIndicator exposing (page)
 
 {-| This is an example Page. If you want to add your own pages, simple copy and modify this one.
 -}
-import Browser
+
 import Element exposing (Element)
-import Widget exposing (ProgressIndicatorStyle)
-import Widget.Material as Material
-import Element exposing (Element)
-import Element.Background as Background
-import Material.Icons as MaterialIcons
 import Material.Icons.Types exposing (Coloring(..))
 import Page
 import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
 import UIExplorer.Tile as Tile exposing (Context, Tile, TileMsg)
 import Widget
-import Widget.Customize as Customize
-import Widget.Icon as Icon
 import Widget.Material as Material
-import Widget.Material.Color as MaterialColor
-import Widget.Material.Typography as Typography
 
 
 {-| The title of this page
@@ -41,10 +32,9 @@ viewFunctions =
     let
         viewIndicator style progress indeterminate { palette } () =
             Widget.circularProgressIndicator (style palette)
-                (indeterminate (toFloat progress/ 100 ))
+                (indeterminate (toFloat progress / 100))
                 --Don't forget to change the title
                 |> Page.viewTile "Widget.circularProgressIndicator"
-
     in
     [ viewIndicator ]
         |> List.foldl Story.addTile
@@ -62,13 +52,12 @@ book =
         |> Story.addStory
             (Story.optionListStory "Style"
                 ( "ProgressIndicator", Material.progressIndicator )
-                [ ]
+                []
             )
         --Changing the text of the label
         |> Story.addStory
             (Story.rangeStory "Progress"
                 { unit = "%", min = 0, max = 100, default = 50 }
-            
             )
         --Should an event be triggered when pressing the button?
         |> Story.addStory
@@ -118,9 +107,9 @@ subscriptions _ =
 {-| You can remove the msgMapper. But by doing so, make sure to also change `msg` to `Msg` in the line below.
 -}
 view : Context -> Model -> Element Msg
-view {palette} (MaybeProgress maybeProgress) =
-    Widget.circularProgressIndicator (Material.progressIndicator palette) 
-    maybeProgress
+view { palette } (MaybeProgress maybeProgress) =
+    Widget.circularProgressIndicator (Material.progressIndicator palette)
+        maybeProgress
 
 
 
@@ -145,5 +134,3 @@ page =
         , book = book
         , demo = demo
         }
-
-

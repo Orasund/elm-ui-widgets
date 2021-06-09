@@ -1,18 +1,16 @@
-module Page.Item exposing (page)
+module Page.Item exposing (page, update)
 
 {-| This is an example Page. If you want to add your own pages, simple copy and modify this one.
 -}
 
-import Browser
 import Element exposing (Element)
-import Element.Background as Background
+import Element.Font as Font
 import Material.Icons as MaterialIcons
 import Material.Icons.Types exposing (Coloring(..))
 import Page
 import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
 import UIExplorer.Tile as Tile exposing (Context, Tile, TileMsg)
-import Widget exposing (ButtonStyle, ColumnStyle, HeaderStyle, InsetItemStyle, ItemStyle)
-import Widget.Customize as Customize
+import Widget
 import Widget.Icon as Icon
 import Widget.Material as Material
 import Widget.Material.Color as MaterialColor
@@ -540,26 +538,36 @@ selectItemBook =
 --------------------------------------------------------------------------------
 
 
-type Model
-    = IsEnabled Bool
+type alias Model =
+    { isEnabled : Bool
+    , isExpanded : Bool
+    }
 
 
 type Msg
     = ToggleModal Bool
+    | ToogleExpand Bool
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( IsEnabled True
+    ( { isEnabled = True
+      , isExpanded = False
+      }
     , Cmd.none
     )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg _ =
+update msg model =
     case msg of
         ToggleModal bool ->
-            ( IsEnabled bool
+            ( { model | isEnabled = bool }
+            , Cmd.none
+            )
+
+        ToogleExpand bool ->
+            ( { model | isExpanded = bool }
             , Cmd.none
             )
 
@@ -572,43 +580,148 @@ subscriptions _ =
 {-| You can remove the msgMapper. But by doing so, make sure to also change `msg` to `Msg` in the line below.
 -}
 view : Context -> Model -> Element Msg
-view { palette } (IsEnabled isEnabled) =
+view { palette } model =
     Widget.button (Material.containedButton palette)
         { text = "Show Sheet"
         , icon = MaterialIcons.visibility |> Icon.elmMaterialIcons Color
         , onPress = ToggleModal True |> Just
         }
         |> Element.el
-            ([ Element.height <| Element.minimum 200 <| Element.fill
+            ([ Element.height <| Element.minimum 800 <| Element.fill
              , Element.width <| Element.minimum 400 <| Element.fill
              ]
-                ++ (if isEnabled then
+                ++ (if model.isEnabled then
                         { content =
-                            [ "Menu"
-                                |> Element.text
-                                |> Element.el Typography.h6
-                                |> Widget.asItem
-                            , Widget.insetItem (Material.insetItem palette)
-                                { onPress = Just <| ToggleModal False
-                                , icon =
-                                    MaterialIcons.change_history
-                                        |> Icon.elmMaterialIcons Color
-                                , text = "Home"
+                            [ [ "Section 1"
+                                    |> Widget.headerItem (Material.fullBleedHeader palette)
+                              , Widget.asItem <| Element.text <| "Custom Item"
+                              , Widget.divider (Material.middleDivider palette)
+                              , Widget.fullBleedItem (Material.fullBleedItem palette)
+                                    { onPress = Nothing
+                                    , icon =
+                                        \_ ->
+                                            Element.none
+                                    , text = "Full Bleed Item"
+                                    }
+                              , "Section 2"
+                                    |> Widget.headerItem (Material.fullBleedHeader palette)
+                              , Widget.insetItem (Material.insetItem palette)
+                                    { onPress = Nothing
+                                    , icon =
+                                        MaterialIcons.change_history
+                                            |> Icon.elmMaterialIcons Color
+                                    , text = "Item with Icon"
+                                    , content =
+                                        \_ ->
+                                            Element.none
+                                    }
+                              , Widget.imageItem (Material.imageItem palette)
+                                    { onPress = Nothing
+                                    , image =
+                                        Element.image [ Element.width <| Element.px <| 40, Element.height <| Element.px <| 40 ]
+                                            { src = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Elm_logo.svg/1024px-Elm_logo.svg.png"
+                                            , description = "Elm logo"
+                                            }
+                                    , text = "Item with Image"
+                                    , content =
+                                        \{ size, color } ->
+                                            "1."
+                                                |> Element.text
+                                                |> Element.el
+                                                    [ Font.color <| MaterialColor.fromColor color
+                                                    , Font.size size
+                                                    ]
+                                    }
+                              , Widget.divider (Material.insetDivider palette)
+                              , Widget.insetItem (Material.insetItem palette)
+                                    { onPress = not model.isExpanded |> ToogleExpand |> Just
+                                    , icon = always Element.none
+                                    , text = "Click Me"
+                                    , content =
+                                        \{ size, color } ->
+                                            "2."
+                                                |> Element.text
+                                                |> Element.el
+                                                    [ Font.color <| MaterialColor.fromColor color
+                                                    , Font.size size
+                                                    ]
+                                    }
+                              , Widget.multiLineItem (Material.multiLineItem palette)
+                                    { title = "Item"
+                                    , text = "Description. Description. Description. Description. Description. Description. Description. Description. Description. Description."
+                                    , onPress = Nothing
+                                    , icon = always Element.none
+                                    , content = always Element.none
+                                    }
+                              , Widget.imageItem (Material.imageItem palette)
+                                    { onPress = not model.isExpanded |> ToogleExpand |> Just
+                                    , image = Element.none
+                                    , text = "Clickable Item with Switch"
+                                    , content =
+                                        \_ ->
+                                            Widget.switch (Material.switch palette)
+                                                { description = "Click Me"
+                                                , active = model.isExpanded
+                                                , onPress =
+                                                    not model.isExpanded
+                                                        |> ToogleExpand
+                                                        |> Just
+                                                }
+                                    }
+                              , Widget.divider (Material.fullBleedDivider palette)
+                              ]
+                            , Widget.expansionItem (Material.expansionItem palette)
+                                { onToggle = ToogleExpand
+                                , isExpanded = model.isExpanded
+                                , icon = always Element.none
+                                , text = "Expandable Item"
                                 , content =
-                                    \_ ->
-                                        Element.none
+                                    [ "Section 3"
+                                        |> Widget.headerItem (Material.insetHeader palette)
+                                    , Widget.insetItem (Material.insetItem palette)
+                                        { onPress = Nothing
+                                        , icon = always Element.none
+                                        , text = "Item"
+                                        , content =
+                                            \{ size, color } ->
+                                                "3."
+                                                    |> Element.text
+                                                    |> Element.el
+                                                        [ Font.color <| MaterialColor.fromColor color
+                                                        , Font.size size
+                                                        ]
+                                        }
+                                    ]
                                 }
-                            , Widget.insetItem (Material.insetItem palette)
-                                { onPress = Just <| ToggleModal False
-                                , icon =
-                                    MaterialIcons.change_history
-                                        |> Icon.elmMaterialIcons Color
-                                , text = "About"
-                                , content =
-                                    \_ ->
-                                        Element.none
-                                }
+                            , [ "Menu" |> Widget.headerItem (Material.fullBleedHeader palette) ]
+                            , { selected =
+                                    if model.isExpanded then
+                                        Just 1
+
+                                    else
+                                        Just 0
+                              , options =
+                                    [ True, False ]
+                                        |> List.map
+                                            (\bool ->
+                                                { text =
+                                                    if bool then
+                                                        "Expanded"
+
+                                                    else
+                                                        "Collapsed"
+                                                , icon = always Element.none
+                                                }
+                                            )
+                              , onSelect =
+                                    \int ->
+                                        (int == 1)
+                                            |> ToogleExpand
+                                            |> Just
+                              }
+                                |> Widget.selectItem (Material.selectItem palette)
                             ]
+                                |> List.concat
                                 |> Widget.itemList (Material.sideSheet palette)
                         , onDismiss = Just <| ToggleModal False
                         }
@@ -645,6 +758,7 @@ page =
                 |> Element.column [ Element.spacing 32 ]
         )
         |> Tile.first
+        |> Tile.next demo
         |> Tile.nextGroup dividerBook
         |> Tile.nextGroup headerBook
         |> Tile.nextGroup fullBleedItemBook
@@ -652,5 +766,4 @@ page =
         |> Tile.nextGroup multiLineItemBook
         |> Tile.nextGroup expansionItemBook
         |> Tile.nextGroup selectItemBook
-        |> Tile.next demo
         |> Tile.page
