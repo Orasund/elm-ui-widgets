@@ -1522,7 +1522,7 @@ defaultConfig =
     { flagsDecoder = Decode.succeed ()
     , layoutOptions = []
     , layoutAttributes = []
-    , relativeUrlPath = []
+    , relativeUrlPath = [ "elm-ui-widgets" ]
     , sidebarTitle = Element.text "UI explorer"
     }
 
