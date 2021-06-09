@@ -7,7 +7,6 @@ module Internal.PasswordInput exposing
 
 import Element exposing (Attribute, Element)
 import Element.Input as Input exposing (Label, Placeholder)
-import Internal.Button as Button exposing (Button, ButtonStyle)
 
 
 {-| -}

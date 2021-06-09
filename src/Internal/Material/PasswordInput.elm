@@ -2,10 +2,8 @@ module Internal.Material.PasswordInput exposing (passwordInput, passwordInputBas
 
 import Element
 import Element.Border as Border
-import Internal.Material.Chip as Chip
 import Internal.Material.Palette exposing (Palette)
 import Internal.PasswordInput exposing (PasswordInputStyle)
-import Widget.Customize as Customize
 import Widget.Material.Color as MaterialColor
 
 

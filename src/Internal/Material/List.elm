@@ -7,7 +7,6 @@ module Internal.Material.List exposing
     , toggleRow
     )
 
-import Color
 import Element
 import Element.Background as Background
 import Element.Border as Border

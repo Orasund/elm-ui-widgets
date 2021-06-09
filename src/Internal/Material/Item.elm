@@ -12,7 +12,6 @@ module Internal.Material.Item exposing
     , selectItem
     )
 
-import Color
 import Element
 import Element.Background as Background
 import Element.Border as Border
