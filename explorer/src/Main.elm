@@ -1,9 +1,11 @@
 module Main exposing (main)
 
 import Element
+import Page.AppBar
 import Page.Button
+import Page.Dialog
+import Page.Icon
 import Page.Item
-import Page.Layout
 import Page.Modal
 import Page.MultiSelect
 import Page.PasswordInput
@@ -14,7 +16,6 @@ import Page.SortTable
 import Page.Switch
 import Page.Tab
 import Page.TextInput
-import Page.Icon
 import UIExplorer
 
 
@@ -31,8 +32,9 @@ pages =
         |> UIExplorer.nextPage "Item" Page.Item.page
         |> UIExplorer.nextPage "ProgressIndicator" Page.ProgressIndicator.page
         |> UIExplorer.nextPage "Modal" Page.Modal.page
-        |> UIExplorer.nextPage "Layout" Page.Layout.page
+        |> UIExplorer.nextPage "App Bar" Page.AppBar.page
         |> UIExplorer.nextPage "Icon" Page.Icon.page
+        |> UIExplorer.nextPage "Dialog" Page.Dialog.page
 
 
 main =

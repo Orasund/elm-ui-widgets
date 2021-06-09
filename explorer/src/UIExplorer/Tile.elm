@@ -282,6 +282,7 @@ layoutView palette _ view =
             , view.body |> Element.el [ Element.width Element.fill ] |> Widget.asItem
             ]
                 |> Widget.itemList (Material.cardColumn palette)
+                |> Element.el [ Element.height Element.shrink ]
 
         Nothing ->
             view.body
@@ -319,7 +320,8 @@ layoutRowView palette row =
                     ]
                   <|
                     List.map
-                        (layoutView palette [ Element.height Element.fill ])
+                        (layoutView palette [])
+                    --[ Element.height Element.fill ])
                     <|
                         List.reverse right
                 ]
@@ -350,6 +352,7 @@ page (Builder config) =
                 |> List.concatMap (layoutRowView palette)
                 |> Element.column
                     ([ Element.padding 16
+                     , Element.height Element.fill
                      , Element.spacing 32
                      , Element.px 800 |> Element.width
                      , Element.centerX

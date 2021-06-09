@@ -1,12 +1,10 @@
-module Page.Layout exposing (page)
+module Page.AppBar exposing (page)
 
 {-| This is an example Page. If you want to add your own pages, simple copy and modify this one.
 -}
 
-import Browser
 import Browser.Events as Events
-import Element exposing (Attribute, DeviceClass(..), Element)
-import Element.Background as Background
+import Element exposing (DeviceClass(..), Element)
 import Element.Border as Border
 import Element.Font as Font
 import Material.Icons as MaterialIcons
@@ -15,39 +13,27 @@ import Page
 import Time
 import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
 import UIExplorer.Tile as Tile exposing (Context, Tile, TileMsg)
-import Widget
-    exposing
-        ( AppBarStyle
-        , ButtonStyle
-        , ColumnStyle
-        , DialogStyle
-        , InsetItemStyle
-        , ItemStyle
-        , Modal
-        , TextInput
-        , TextInputStyle
-        )
-import Widget.Customize as Customize
-import Widget.Icon as Icon exposing (Icon)
+import Widget exposing (Modal, TextInput)
+import Widget.Icon as Icon
 import Widget.Layout as Layout
 import Widget.Material as Material
 import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
-import Widget.Snackbar as Snackbar exposing (Snackbar, SnackbarStyle)
+import Widget.Snackbar as Snackbar exposing (Snackbar)
 
 
 {-| The title of this page
 -}
 title : String
 title =
-    "Button"
+    "App Bar"
 
 
 {-| The description. I've taken this description directly from the [Material-UI-Specification](https://material.io/components/buttons)
 -}
 description : String
 description =
-    "Buttons allow users to take actions, and make choices, with a single tap."
+    "The top app bar displays information and actions relating to the current screen."
 
 
 {-| List of view functions. Essentially, anything that takes a Button as input.

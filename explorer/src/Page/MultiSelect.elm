@@ -2,24 +2,18 @@ module Page.MultiSelect exposing (page)
 
 {-| This is an example Page. If you want to add your own pages, simple copy and modify this one.
 -}
-import Browser
+
 import Element exposing (Element)
-import Set exposing (Set)
-import Widget exposing (ButtonStyle, RowStyle)
-import Widget.Material as Material
-import Element exposing (Element)
-import Element.Background as Background
 import Material.Icons as MaterialIcons
 import Material.Icons.Types exposing (Coloring(..))
 import Page
+import Set exposing (Set)
 import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
 import UIExplorer.Tile as Tile exposing (Context, Tile, TileMsg)
 import Widget
-import Widget.Customize as Customize
 import Widget.Icon as Icon
 import Widget.Material as Material
-import Widget.Material.Color as MaterialColor
-import Widget.Material.Typography as Typography
+
 
 {-| The title of this page
 -}
@@ -41,9 +35,10 @@ viewFunctions =
     let
         viewSelectRow style selected1 selected2 selected3 options onSelect { palette } () =
             Widget.multiSelect
-                { selected =  
-                    [ selected1, selected2, selected3] |> List.filterMap identity
-                    |> Set.fromList
+                { selected =
+                    [ selected1, selected2, selected3 ]
+                        |> List.filterMap identity
+                        |> Set.fromList
                 , options = options
                 , onSelect = onSelect
                 }
@@ -54,10 +49,12 @@ viewFunctions =
                 --Don't forget to change the title
                 |> Page.viewTile "Widget.buttonRow "
 
-        viewTogggleRow style selected1 selected2 selected3  options onSelect { palette } () =
+        viewTogggleRow style selected1 selected2 selected3 options onSelect { palette } () =
             Widget.multiSelect
-                { selected = [ selected1, selected2, selected3] |> List.filterMap identity
-                    |> Set.fromList
+                { selected =
+                    [ selected1, selected2, selected3 ]
+                        |> List.filterMap identity
+                        |> Set.fromList
                 , options = options
                 , onSelect = onSelect
                 }
@@ -68,10 +65,12 @@ viewFunctions =
                 --Don't forget to change the title
                 |> Page.viewTile "Widget.toggleRow"
 
-        viewWrappedRow style selected1 selected2 selected3  options onSelect { palette } () =
+        viewWrappedRow style selected1 selected2 selected3 options onSelect { palette } () =
             Widget.multiSelect
-                { selected = [ selected1, selected2, selected3] |> List.filterMap identity
-                    |> Set.fromList
+                { selected =
+                    [ selected1, selected2, selected3 ]
+                        |> List.filterMap identity
+                        |> Set.fromList
                 , options = options
                 , onSelect = onSelect
                 }
@@ -82,10 +81,12 @@ viewFunctions =
                 --Don't forget to change the title
                 |> Page.viewTile "Widget.wrappedButtonRow"
 
-        viewSelectColumn style selected1 selected2 selected3  options onSelect { palette } () =
+        viewSelectColumn style selected1 selected2 selected3 options onSelect { palette } () =
             Widget.multiSelect
-                { selected = [ selected1, selected2, selected3] |> List.filterMap identity
-                    |> Set.fromList
+                { selected =
+                    [ selected1, selected2, selected3 ]
+                        |> List.filterMap identity
+                        |> Set.fromList
                 , options = options
                 , onSelect = onSelect
                 }
@@ -122,17 +123,17 @@ book =
         --Changing the text of the label
         |> Story.addStory
             (Story.boolStory "Selected First"
-                (Just 0,Nothing)
+                ( Just 0, Nothing )
                 False
             )
         |> Story.addStory
             (Story.boolStory "Selected Second"
-                (Just 1,Nothing)
+                ( Just 1, Nothing )
                 True
             )
-            |> Story.addStory
+        |> Story.addStory
             (Story.boolStory "Selected Third"
-                (Just 2,Nothing)
+                ( Just 2, Nothing )
                 True
             )
         --Change the Icon
@@ -159,6 +160,7 @@ book =
                 True
             )
         |> Story.build
+
 
 
 {- This next section is essentially just a normal Elm program. -}
@@ -206,7 +208,7 @@ subscriptions _ =
 {-| You can remove the msgMapper. But by doing so, make sure to also change `msg` to `Msg` in the line below.
 -}
 view : Context -> Model -> Element Msg
-view {palette} (Selected selected) =
+view { palette } (Selected selected) =
     { selected = selected
     , options =
         [ 1, 2, 42 ]
@@ -223,6 +225,7 @@ view {palette} (Selected selected) =
             { elementRow = Material.toggleRow
             , content = Material.toggleButton palette
             }
+
 
 
 --------------------------------------------------------------------------------
@@ -246,4 +249,3 @@ page =
         , book = book
         , demo = demo
         }
-

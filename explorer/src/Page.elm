@@ -19,7 +19,7 @@ create :
     , book : Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) ()
     , demo : Tile model msg ()
     }
-    -> Page ( ( ( (), () ), ( StorySelectorModel, () ) ), model ) (TileMsg (TileMsg (TileMsg () msg1) (TileMsg StorySelectorMsg ())) msg) ()
+    -> Page ( ( ( (), () ), model ), ( StorySelectorModel, () ) ) (TileMsg (TileMsg (TileMsg () msg1) msg) (TileMsg StorySelectorMsg ())) ()
 create config =
     Tile.static []
         (\_ _ ->
@@ -29,8 +29,8 @@ create config =
                 |> Element.column [ Element.spacing 32 ]
         )
         |> Tile.first
-        |> Tile.nextGroup config.book
         |> Tile.next config.demo
+        |> Tile.nextGroup config.book
         |> Tile.page
 
 

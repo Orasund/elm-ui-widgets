@@ -4,9 +4,7 @@ module Page.Icon exposing (page)
 -}
 
 import Ant.Icons.Svg
-import Browser
 import Element exposing (Element)
-import Element.Background as Background
 import FeatherIcons
 import FontAwesome.Solid
 import FontAwesome.Svg
@@ -17,13 +15,10 @@ import Material.Icons.Action
 import Material.Icons.Types exposing (Coloring(..))
 import Octicons
 import Page
-import UIExplorer.Story as Story exposing (StorySelectorModel, StorySelectorMsg)
-import UIExplorer.Tile as Tile exposing (Context, Tile, TileMsg)
-import Widget exposing (ButtonStyle, RowStyle)
-import Widget.Customize as Customize
+import UIExplorer.Tile as Tile exposing (Context, Tile)
+import Widget
 import Widget.Icon
 import Widget.Material as Material
-import Widget.Material.Color as MaterialColor
 import Widget.Material.Typography as Typography
 import Zondicons
 
@@ -40,8 +35,6 @@ title =
 description : String
 description =
     "Every icon package on elm-packages is supported."
-
-
 
 
 
@@ -86,51 +79,51 @@ view : Context -> Model -> Element Msg
 view { palette } () =
     [ ( Material.Icons.done
             |> Widget.Icon.elmMaterialIcons Color
-        , "elm-material-icons"
-        )
-      , ( Material.Icons.Action.done
+      , "elm-material-icons"
+      )
+    , ( Material.Icons.Action.done
             |> Widget.Icon.materialIcons
-        , "material-icons"
-        )
-      , ( FeatherIcons.check
+      , "material-icons"
+      )
+    , ( FeatherIcons.check
             |> Widget.Icon.elmFeather FeatherIcons.toHtml
-        , "elm-feather"
-        )
-      , ( FontAwesome.Solid.check
+      , "elm-feather"
+      )
+    , ( FontAwesome.Solid.check
             |> Widget.Icon.elmFontawesome FontAwesome.Svg.viewIcon
-        , "elm-fontawesome"
-        )
-      , ( Ionicon.checkmark
+      , "elm-fontawesome"
+      )
+    , ( Ionicon.checkmark
             |> Widget.Icon.elmIonicons
-        , "elm-ionicons"
-        )
-      , ( Octicons.check
+      , "elm-ionicons"
+      )
+    , ( Octicons.check
             |> Widget.Icon.elmOcticons
                 { withSize = Octicons.size
                 , withColor = Octicons.color
                 , defaultOptions = Octicons.defaultOptions
                 }
-        , "elm-octicons"
-        )
-      , ( Heroicons.Solid.check
+      , "elm-octicons"
+      )
+    , ( Heroicons.Solid.check
             |> Widget.Icon.elmHeroicons
-        , "elm-heroicons"
-        )
-      , ( Ant.Icons.Svg.checkOutlined
+      , "elm-heroicons"
+      )
+    , ( Ant.Icons.Svg.checkOutlined
             |> Widget.Icon.antDesignIconsElm
-        , "ant-design-icons-elm"
-        )
-      , ( Zondicons.checkmark
+      , "ant-design-icons-elm"
+      )
+    , ( Zondicons.checkmark
             |> Widget.Icon.elmZondicons
-        , "elm-zondicons"
-        )
-      ]
+      , "elm-zondicons"
+      )
+    ]
         |> List.map
             (\( icon, text ) ->
                 Widget.button (Material.containedButton palette)
                     { text = text
                     , icon = icon
-                    , onPress = Just  ()
+                    , onPress = Just ()
                     }
             )
         |> Element.wrappedRow [ Element.spacing 10 ]
