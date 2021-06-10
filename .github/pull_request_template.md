@@ -23,4 +23,4 @@ _Please only open Pull Requests for existing issues._
   * [ ] run `elm-verify-examples && elm-test` to test the example
 
 **Optional:**
-* [ ] Added an Example in `example/src/Example/[Your Widget].elm`
+* [ ] Added a Page in `explorer/src/Page/[Your Widget].elm` and added it to `explorer/src/Main.elm`
