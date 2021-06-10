@@ -282,7 +282,7 @@ layoutView palette _ view =
             , view.body |> Element.el [ Element.width Element.fill ] |> Widget.asItem
             ]
                 |> Widget.itemList (Material.cardColumn palette)
-                |> Element.el [ Element.height Element.shrink ]
+                |> Element.el [ Element.height Element.shrink, Element.width Element.fill ]
 
         Nothing ->
             view.body
