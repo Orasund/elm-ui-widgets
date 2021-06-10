@@ -850,11 +850,15 @@ type alias PasswordInput msg =
     }
 
 
+{-| An input field that supports autofilling the current password
+-}
 currentPasswordInput : PasswordInputStyle msg -> PasswordInput msg -> Element msg
 currentPasswordInput =
     PasswordInput.currentPasswordInput
 
 
+{-| An input field that supports autofilling the new password
+-}
 newPasswordInput : PasswordInputStyle msg -> PasswordInput msg -> Element msg
 newPasswordInput =
     PasswordInput.newPasswordInput

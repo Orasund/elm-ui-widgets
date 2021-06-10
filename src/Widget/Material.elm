@@ -1,5 +1,5 @@
 module Widget.Material exposing
-    ( Palette, defaultPalette, darkPalette, gray
+    ( Palette, defaultPalette, darkPalette, gray, lightGray, textGray
     , containedButton, outlinedButton, textButton
     , iconButton, toggleButton, toggleRow
     , switch
@@ -17,7 +17,6 @@ module Widget.Material exposing
     , snackbar
     , tab, tabButton
     , buttonRow
-    , textGray
     )
 
 {-| This module implements a Material design theme for all widgets.
@@ -35,7 +34,7 @@ If you have any suggestions or improvements, be sure to leave a [PR or a Issue](
 
 # Palette
 
-@docs Palette, defaultPalette, darkPalette, gray
+@docs Palette, defaultPalette, darkPalette, gray, lightGray, textGray
 
 
 # Button
@@ -684,6 +683,8 @@ textInput =
     TextInput.textInput
 
 
+{-| A text input style for the password Input.
+-}
 passwordInput : Palette -> PasswordInputStyle msg
 passwordInput =
     PasswordInput.passwordInput
