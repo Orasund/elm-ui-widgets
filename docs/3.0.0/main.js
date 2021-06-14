@@ -17032,28 +17032,40 @@ var $author$project$UIExplorer$Settings = function (dark) {
 };
 var $elm$json$Json$Decode$bool = _Json_decodeBool;
 var $elm$json$Json$Decode$decodeString = _Json_runOnString;
-var $author$project$UIExplorer$decodeSettings = A2(
-	$elm$json$Json$Decode$field,
-	'settings',
-	A2(
-		$elm$json$Json$Decode$andThen,
-		function (s) {
-			var _v0 = A2(
-				$elm$json$Json$Decode$decodeString,
-				A2(
-					$elm$json$Json$Decode$map,
-					$author$project$UIExplorer$Settings,
-					A2($elm$json$Json$Decode$field, 'dark', $elm$json$Json$Decode$bool)),
-				s);
-			if (!_v0.$) {
-				var settings = _v0.a;
-				return $elm$json$Json$Decode$succeed(settings);
-			} else {
-				return $elm$json$Json$Decode$succeed(
-					{a1: false});
-			}
-		},
-		$elm$json$Json$Decode$string));
+var $author$project$UIExplorer$decodeSettings = $elm$json$Json$Decode$oneOf(
+	_List_fromArray(
+		[
+			A2(
+			$elm$json$Json$Decode$field,
+			'settings',
+			A2(
+				$elm$json$Json$Decode$andThen,
+				function (s) {
+					var _v0 = A2(
+						$elm$json$Json$Decode$decodeString,
+						A2(
+							$elm$json$Json$Decode$map,
+							$author$project$UIExplorer$Settings,
+							$elm$json$Json$Decode$oneOf(
+								_List_fromArray(
+									[
+										A2($elm$json$Json$Decode$field, 'dark', $elm$json$Json$Decode$bool),
+										$elm$json$Json$Decode$succeed(true)
+									]))),
+						s);
+					if (!_v0.$) {
+						var settings = _v0.a;
+						return $elm$json$Json$Decode$succeed(settings);
+					} else {
+						var err = _v0.a;
+						return $elm$json$Json$Decode$fail(
+							$elm$json$Json$Decode$errorToString(err));
+					}
+				},
+				$elm$json$Json$Decode$string)),
+			$elm$json$Json$Decode$succeed(
+			{a1: false})
+		]));
 var $author$project$Main$decodeFlags = A3(
 	$elm$json$Json$Decode$map2,
 	$author$project$Main$Flags,
