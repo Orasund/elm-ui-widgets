@@ -1,7 +1,7 @@
 module UIExplorer exposing
     ( application, defaultConfig, ApplicationConfig, Model, Msg, PageMsg
     , firstPage, nextPage, groupPages, static, Page, PageSize, PageBuilder
-    , Settings, decodeSettings
+    , Config, Settings, decodeConfig, decodeSettings
     )
 
 {-|
@@ -85,6 +85,7 @@ decodeSettings =
                     Err _ ->
                         Decode.succeed { dark = False }
             )
+        |> Decode.field "settings"
 
 
 saveSettings : Settings -> Cmd msg
@@ -94,6 +95,31 @@ saveSettings settings =
         ]
         |> Encode.encode 0
         |> Ports.saveSettings
+
+
+type alias Config =
+    { relativeUrlPath : List String }
+
+
+decodeConfig : Config -> Decode.Decoder Config
+decodeConfig defaults =
+    Decode.oneOf
+        [ Decode.field "config" <|
+            Decode.map Config
+                (Decode.oneOf
+                    [ Decode.field "relativeUrlPath" <| Decode.list Decode.string
+                    , Decode.succeed defaults.relativeUrlPath
+                    ]
+                )
+        , Decode.succeed defaults
+        ]
+
+
+type alias Flags flags =
+    { flags
+        | settings : Settings
+        , config : Config
+    }
 
 
 {-| The first page in your UI explorer. This is the default page if the user doesn't specify a url path.
@@ -459,20 +485,19 @@ uiUrl path pageId =
 
 
 init :
-    ApplicationConfig (Msg pageMsg) { flags | settings : Settings }
-    -> PageBuilder pageModel pageMsg { flags | settings : Settings }
+    ApplicationConfig (Msg pageMsg) (Flags flags)
+    -> PageBuilder pageModel pageMsg (Flags flags)
     -> Decode.Value
     -> Url
     -> Browser.Navigation.Key
-    -> ( Model pageModel { flags | settings : Settings }, Cmd (Msg pageMsg) )
+    -> ( Model pageModel (Flags flags), Cmd (Msg pageMsg) )
 init config (PageBuilder pages) flagsJson url key =
-    let
-        ( page, navigationCmd ) =
-            pageFromUrl (PageBuilder pages) config.relativeUrlPath key url
-    in
     case Decode.decodeValue config.flagsDecoder flagsJson of
         Ok flags ->
             let
+                ( page, navigationCmd ) =
+                    pageFromUrl (PageBuilder pages) flags.config.relativeUrlPath key url
+
                 ( pageModels, pageCmds ) =
                     pages.init flags
             in
@@ -525,11 +550,11 @@ expandPage page expandedGroups =
 
 
 update :
-    PageBuilder pageModel pageMsg flags
-    -> ApplicationConfig (Msg pageMsg) flags
+    PageBuilder pageModel pageMsg (Flags flags)
+    -> ApplicationConfig (Msg pageMsg) (Flags flags)
     -> Msg pageMsg
-    -> Model pageModel flags
-    -> ( Model pageModel flags, Cmd (Msg pageMsg) )
+    -> Model pageModel (Flags flags)
+    -> ( Model pageModel (Flags flags), Cmd (Msg pageMsg) )
 update pages config msg model =
     case model of
         FlagsParsed successModel ->
@@ -540,17 +565,17 @@ update pages config msg model =
 
 
 updateSuccess :
-    PageBuilder pageModel pageMsg flags
-    -> ApplicationConfig (Msg pageMsg) flags
+    PageBuilder pageModel pageMsg (Flags flags)
+    -> ApplicationConfig (Msg pageMsg) (Flags flags)
     -> Msg pageMsg
-    -> SuccessModel pageModel flags
-    -> ( SuccessModel pageModel flags, Cmd (Msg pageMsg) )
+    -> SuccessModel pageModel (Flags flags)
+    -> ( SuccessModel pageModel (Flags flags), Cmd (Msg pageMsg) )
 updateSuccess (PageBuilder pages) config msg model =
     case msg of
         UrlChanged url ->
             let
                 ( page, pageCmd ) =
-                    pageFromUrl (PageBuilder pages) config.relativeUrlPath model.key url
+                    pageFromUrl (PageBuilder pages) model.flags.config.relativeUrlPath model.key url
             in
             ( { model | page = page }, pageCmd )
 
@@ -585,7 +610,7 @@ updateSuccess (PageBuilder pages) config msg model =
         PressedChangePageHotkey pageId ->
             ( model
             , Cmd.batch
-                [ Browser.Navigation.pushUrl model.key (uiUrl config.relativeUrlPath pageId)
+                [ Browser.Navigation.pushUrl model.key (uiUrl model.flags.config.relativeUrlPath pageId)
                 , Browser.Dom.focus (pageGroupToString pageId) |> Task.attempt (always NoOp)
                 ]
             )
@@ -667,9 +692,9 @@ updateSuccess (PageBuilder pages) config msg model =
 
 
 view :
-    ApplicationConfig (Msg pageMsg) flags
-    -> PageBuilder pageModel pageMsg flags
-    -> Model pageModel flags
+    ApplicationConfig (Msg pageMsg) (Flags flags)
+    -> PageBuilder pageModel pageMsg (Flags flags)
+    -> Model pageModel (Flags flags)
     -> { title : String, body : List (Html (Msg pageMsg)) }
 view config pages model =
     case model of
@@ -723,9 +748,9 @@ errorView dark errorMessage =
 
 
 viewSuccess :
-    ApplicationConfig (Msg pageMsg) flags
-    -> PageBuilder pageModel pageMsg flags
-    -> SuccessModel pageModel flags
+    ApplicationConfig (Msg pageMsg) (Flags flags)
+    -> PageBuilder pageModel pageMsg (Flags flags)
+    -> SuccessModel pageModel (Flags flags)
     -> Browser.Document (Msg pageMsg)
 viewSuccess config ((PageBuilder pages) as pages_) model =
     let
@@ -832,9 +857,9 @@ sidebarMinimizedWidth =
 
 
 viewSidebar :
-    PageBuilder pageModel pageMsg flags
-    -> ApplicationConfig (Msg pageMsg) flags
-    -> SuccessModel pageModel flags
+    PageBuilder pageModel pageMsg (Flags flags)
+    -> ApplicationConfig (Msg pageMsg) (Flags flags)
+    -> SuccessModel pageModel (Flags flags)
     -> Element (Msg pageMsg)
 viewSidebar pages config model =
     let
@@ -898,10 +923,20 @@ viewSidebar pages config model =
                 |> Widget.asItem
           , Widget.asItem <|
                 if showSearchResults model.searchText then
-                    Element.Lazy.lazy5 viewSearchResults model.darkThemeEnabled pages config model.page model.searchText
+                    Element.Lazy.lazy5 viewSearchResults
+                        model.darkThemeEnabled
+                        pages
+                        model.flags.config.relativeUrlPath
+                        model.page
+                        model.searchText
 
                 else
-                    Element.Lazy.lazy5 viewSidebarLinks model.darkThemeEnabled pages config model.page model.expandedGroups
+                    Element.Lazy.lazy5 viewSidebarLinks
+                        model.darkThemeEnabled
+                        pages
+                        model.flags.config.relativeUrlPath
+                        model.page
+                        model.expandedGroups
           ]
         ]
             |> List.concat
@@ -1175,11 +1210,11 @@ showSearchResults searchText =
 viewSearchResults :
     Bool
     -> PageBuilder pageModel pageMsg flags
-    -> ApplicationConfig (Msg pageMsg) flags
+    -> List String
     -> List String
     -> String
     -> Element (Msg pageMsg)
-viewSearchResults dark (PageBuilder pages) config currentPage searchText =
+viewSearchResults dark (PageBuilder pages) relativeUrlPath currentPage searchText =
     let
         options : Array { previous : Maybe (List String), current : List String, next : Maybe (List String) }
         options =
@@ -1236,7 +1271,7 @@ viewSearchResults dark (PageBuilder pages) config currentPage searchText =
                     |> Array.get int
                     |> Maybe.map .current
                     |> Maybe.withDefault []
-                    |> uiUrl config.relativeUrlPath
+                    |> uiUrl relativeUrlPath
                     |> Load
                     |> Just
         }
@@ -1389,13 +1424,13 @@ buildTree items =
 
 viewSidebarLinksHelper :
     Bool
-    -> { a | relativeUrlPath : List String }
+    -> List String
     -> List String
     -> Set String
     -> List String
     -> List (Tree String)
     -> List (List String)
-viewSidebarLinksHelper dark config page expandedGroups path trees =
+viewSidebarLinksHelper dark relativeUrlPath page expandedGroups path trees =
     trees
         |> List.sortBy Tree.label
         |> List.concatMap
@@ -1413,7 +1448,7 @@ viewSidebarLinksHelper dark config page expandedGroups path trees =
                         [ newPath ]
 
                     children ->
-                        viewSidebarLinksHelper dark config page expandedGroups newPath children
+                        viewSidebarLinksHelper dark relativeUrlPath page expandedGroups newPath children
             )
 
 
@@ -1449,17 +1484,17 @@ gatherWith testFn list =
 viewSidebarLinks :
     Bool
     -> PageBuilder pageModel pageMsg flags
-    -> ApplicationConfig (Msg pageMsg) flags
+    -> List String
     -> List String
     -> Set String
     -> Element (Msg pageMsg)
-viewSidebarLinks dark (PageBuilder pages) config page expandedGroups =
+viewSidebarLinks dark (PageBuilder pages) relativeUrlPath page expandedGroups =
     let
         options : Array (List String)
         options =
             pages.ids
                 |> buildTree
-                |> viewSidebarLinksHelper dark config page expandedGroups []
+                |> viewSidebarLinksHelper dark relativeUrlPath page expandedGroups []
                 |> Array.fromList
 
         palette =
@@ -1494,7 +1529,7 @@ viewSidebarLinks dark (PageBuilder pages) config page expandedGroups =
                 options
                     |> Array.get int
                     |> Maybe.withDefault []
-                    |> uiUrl config.relativeUrlPath
+                    |> uiUrl relativeUrlPath
                     |> Load
                     |> Just
         }
@@ -1540,7 +1575,6 @@ type alias ApplicationConfig msg flags =
     { flagsDecoder : Decode.Decoder flags
     , layoutOptions : List Element.Option
     , layoutAttributes : List (Element.Attribute msg)
-    , relativeUrlPath : List String
     , sidebarTitle : Element msg
     }
 
@@ -1560,7 +1594,6 @@ defaultConfig =
     { flagsDecoder = Decode.succeed ()
     , layoutOptions = []
     , layoutAttributes = []
-    , relativeUrlPath = [ "elm-ui-widgets" ]
     , sidebarTitle = Element.text "UI explorer"
     }
 
@@ -1598,9 +1631,9 @@ Instead it's best to just let the compiler infer it automatically.
 
 -}
 application :
-    ApplicationConfig (Msg pageMsg) { flags | settings : Settings }
-    -> PageBuilder pageModel pageMsg { flags | settings : Settings }
-    -> Platform.Program Decode.Value (Model pageModel { flags | settings : Settings }) (Msg pageMsg)
+    ApplicationConfig (Msg pageMsg) (Flags flags)
+    -> PageBuilder pageModel pageMsg (Flags flags)
+    -> Platform.Program Decode.Value (Model pageModel (Flags flags)) (Msg pageMsg)
 application config pages =
     Browser.application
         { init = init config pages

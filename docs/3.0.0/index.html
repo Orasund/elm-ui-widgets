@@ -10,7 +10,12 @@
   <script>
     (function(){
       var settings = localStorage.getItem("settings");
-      const app = Elm.Main.init({flags: { relativePath : "elm-ui-widgets/3.0.0", settings: settings } });
+      const app = Elm.Main.init({
+        flags: {
+          settings: settings,
+          config: { relativeUrlPath: ["elm-ui-widgets", "3.0.0"] }
+        }
+      });
       app.ports.saveSettings.subscribe(function(settings){
         localStorage.setItem("settings", settings);
       });

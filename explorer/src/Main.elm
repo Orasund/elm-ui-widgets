@@ -40,13 +40,18 @@ pages =
 
 type alias Flags =
     { settings : UIExplorer.Settings
+    , config : UIExplorer.Config
     }
 
 
 decodeFlags : Decoder Flags
 decodeFlags =
-    Decode.map Flags
-        (Decode.field "settings" UIExplorer.decodeSettings)
+    Decode.map2 Flags
+        UIExplorer.decodeSettings
+        (UIExplorer.decodeConfig
+            { relativeUrlPath = []
+            }
+        )
 
 
 config : UIExplorer.ApplicationConfig msg Flags
@@ -54,7 +59,6 @@ config =
     { flagsDecoder = decodeFlags
     , layoutOptions = []
     , layoutAttributes = []
-    , relativeUrlPath = [ "elm-ui-widgets" ]
     , sidebarTitle = Element.text "Elm UI Widgets"
     }
 

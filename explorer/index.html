@@ -11,7 +11,11 @@
   <script>
     (function(){
       var settings = localStorage.getItem("settings");
-      const app = Elm.Main.init({flags: { settings: settings } });
+      const app = Elm.Main.init({
+        flags: {
+          settings: settings
+        }
+      });
       app.ports.saveSettings.subscribe(function(settings){
         localStorage.setItem("settings", settings);
       });
