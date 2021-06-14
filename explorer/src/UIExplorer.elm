@@ -1,6 +1,7 @@
 module UIExplorer exposing
     ( application, defaultConfig, ApplicationConfig, Model, Msg, PageMsg
     , firstPage, nextPage, groupPages, static, Page, PageSize, PageBuilder
+    , Settings, decodeSettings
     )
 
 {-|
@@ -43,7 +44,9 @@ import Element.Region
 import Html exposing (Html)
 import Html.Attributes
 import Json.Decode as Decode
+import Json.Encode as Encode
 import Pixels exposing (Pixels)
+import Ports
 import Quantity exposing (Quantity)
 import Set exposing (Set)
 import Svg
@@ -56,6 +59,41 @@ import Url.Parser exposing ((</>))
 import Widget exposing (Item)
 import Widget.Material as Material
 import Widget.Material.Typography as Typography
+
+
+{-| The Settings. Must be the type of the 'settings' attribute of the flags
+-}
+type alias Settings =
+    { dark : Bool }
+
+
+decodeSettings : Decode.Decoder Settings
+decodeSettings =
+    Decode.string
+        |> Decode.andThen
+            (\s ->
+                case
+                    Decode.decodeString
+                        (Decode.map Settings
+                            (Decode.field "dark" Decode.bool)
+                        )
+                        s
+                of
+                    Ok settings ->
+                        Decode.succeed settings
+
+                    Err _ ->
+                        Decode.succeed { dark = False }
+            )
+
+
+saveSettings : Settings -> Cmd msg
+saveSettings settings =
+    Encode.object
+        [ ( "dark", Encode.bool settings.dark )
+        ]
+        |> Encode.encode 0
+        |> Ports.saveSettings
 
 
 {-| The first page in your UI explorer. This is the default page if the user doesn't specify a url path.
@@ -421,12 +459,12 @@ uiUrl path pageId =
 
 
 init :
-    ApplicationConfig (Msg pageMsg) flags
-    -> PageBuilder pageModel pageMsg flags
+    ApplicationConfig (Msg pageMsg) { flags | settings : Settings }
+    -> PageBuilder pageModel pageMsg { flags | settings : Settings }
     -> Decode.Value
     -> Url
     -> Browser.Navigation.Key
-    -> ( Model pageModel flags, Cmd (Msg pageMsg) )
+    -> ( Model pageModel { flags | settings : Settings }, Cmd (Msg pageMsg) )
 init config (PageBuilder pages) flagsJson url key =
     let
         ( page, navigationCmd ) =
@@ -453,7 +491,7 @@ init config (PageBuilder pages) flagsJson url key =
                 , pageSizeOption = Native
                 , expandColorBlindOptions = False
                 , colorBlindOption = Nothing
-                , darkThemeEnabled = False
+                , darkThemeEnabled = flags.settings.dark
                 }
             , Cmd.batch
                 [ navigationCmd
@@ -622,7 +660,7 @@ updateSuccess (PageBuilder pages) config msg model =
             )
 
         ChangeDarkTheme enabled ->
-            ( { model | darkThemeEnabled = enabled }, Cmd.none )
+            ( { model | darkThemeEnabled = enabled }, saveSettings { dark = enabled } )
 
         Load string ->
             ( model, Browser.Navigation.pushUrl model.key string )
@@ -1560,9 +1598,9 @@ Instead it's best to just let the compiler infer it automatically.
 
 -}
 application :
-    ApplicationConfig (Msg pageMsg) flags
-    -> PageBuilder pageModel pageMsg flags
-    -> Platform.Program Decode.Value (Model pageModel flags) (Msg pageMsg)
+    ApplicationConfig (Msg pageMsg) { flags | settings : Settings }
+    -> PageBuilder pageModel pageMsg { flags | settings : Settings }
+    -> Platform.Program Decode.Value (Model pageModel { flags | settings : Settings }) (Msg pageMsg)
 application config pages =
     Browser.application
         { init = init config pages

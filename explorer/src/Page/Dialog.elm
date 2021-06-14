@@ -59,7 +59,7 @@ viewFunctions =
 {-| Let's you play around with the options.
 Note that the order of these stories must follow the order of the arguments from the view functions.
 -}
-book : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) ()
+book : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) flags
 book =
     Story.book (Just "Options")
         viewFunctions
@@ -190,7 +190,7 @@ view { palette } (IsOpen isOpen) =
 --------------------------------------------------------------------------------
 
 
-demo : Tile Model Msg ()
+demo : Tile Model Msg flags
 demo =
     { init = always init
     , update = update

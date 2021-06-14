@@ -16,10 +16,10 @@ import Widget.Material.Typography as Typography
 create :
     { title : String
     , description : String
-    , book : Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) ()
-    , demo : Tile model msg ()
+    , book : Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) flags
+    , demo : Tile model msg flags
     }
-    -> Page ( ( ( (), () ), model ), ( StorySelectorModel, () ) ) (TileMsg (TileMsg (TileMsg () msg1) msg) (TileMsg StorySelectorMsg ())) ()
+    -> Page ( ( ( (), () ), model ), ( StorySelectorModel, () ) ) (TileMsg (TileMsg (TileMsg () msg1) msg) (TileMsg StorySelectorMsg ())) flags
 create config =
     Tile.static []
         (\_ _ ->

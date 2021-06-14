@@ -175,7 +175,7 @@ addTile view tilelist =
     }
 
 
-initStaticTiles : Group view () () ()
+initStaticTiles : Group view () () flags
 initStaticTiles =
     { init = always ( (), Cmd.none )
     , update = \_ _ -> ( (), Cmd.none )

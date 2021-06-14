@@ -371,7 +371,7 @@ page (Builder config) =
 
 {-| render a markdown text into a simple panel
 -}
-markdown : List (Attribute ()) -> String -> Tile () () ()
+markdown : List (Attribute msg) -> String -> Tile () msg flags
 markdown attributes text =
     static attributes
         (\_ _ ->
@@ -380,14 +380,14 @@ markdown attributes text =
         )
 
 
-static : List (Attribute msg) -> (Context -> flags -> Element msg) -> Tile flags msg flags
+static : List (Attribute msg) -> (Context -> () -> Element msg) -> Tile () msg flags
 static attributes tileView =
-    { init = \flags -> ( flags, Cmd.none )
+    { init = \flags -> ( (), Cmd.none )
     , update = \_ m -> ( m, Cmd.none )
     , view =
-        \pagesize flags ->
+        \pagesize () ->
             { title = Nothing
-            , body = tileView pagesize flags
+            , body = tileView pagesize ()
             , position = FullWidthTile
             , attributes = attributes
             }
