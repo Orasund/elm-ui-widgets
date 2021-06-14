@@ -62,7 +62,7 @@ viewDividerFunctions =
 {-| Let's you play around with the options.
 Note that the order of these stories must follow the order of the arguments from the view functions.
 -}
-dividerBook : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) ()
+dividerBook : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) flags
 dividerBook =
     Story.book (Just "Options")
         viewDividerFunctions
@@ -116,7 +116,7 @@ viewHeaderFunctions =
 {-| Let's you play around with the options.
 Note that the order of these stories must follow the order of the arguments from the view functions.
 -}
-headerBook : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) ()
+headerBook : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) flags
 headerBook =
     Story.book (Just "Options")
         viewHeaderFunctions
@@ -170,7 +170,7 @@ viewFullBleedItemFunctions =
             Story.initStaticTiles
 
 
-fullBleedItemBook : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) ()
+fullBleedItemBook : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) flags
 fullBleedItemBook =
     Story.book (Just "Options")
         viewFullBleedItemFunctions
@@ -239,7 +239,7 @@ viewInsetItemFunctions =
             Story.initStaticTiles
 
 
-insetItemBook : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) ()
+insetItemBook : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) flags
 insetItemBook =
     Story.book (Just "Options")
         viewInsetItemFunctions
@@ -319,7 +319,7 @@ viewMultiLineItemFunctions =
             Story.initStaticTiles
 
 
-multiLineItemBook : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) ()
+multiLineItemBook : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) flags
 multiLineItemBook =
     Story.book (Just "Options")
         viewMultiLineItemFunctions
@@ -422,7 +422,7 @@ viewMExpansionItemFunctions =
             Story.initStaticTiles
 
 
-expansionItemBook : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) ()
+expansionItemBook : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) flags
 expansionItemBook =
     Story.book (Just "Options")
         viewMExpansionItemFunctions
@@ -479,7 +479,7 @@ viewSelectItemFunctions =
             Story.initStaticTiles
 
 
-selectItemBook : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) ()
+selectItemBook : Tile.Group ( StorySelectorModel, () ) (TileMsg StorySelectorMsg ()) flags
 selectItemBook =
     Story.book (Just "Options")
         viewSelectItemFunctions
@@ -740,7 +740,7 @@ view { palette } model =
 --------------------------------------------------------------------------------
 
 
-demo : Tile Model Msg ()
+demo : Tile Model Msg flags
 demo =
     { init = always init
     , update = update

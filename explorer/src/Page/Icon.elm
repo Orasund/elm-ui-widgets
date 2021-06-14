@@ -135,7 +135,7 @@ view { palette } () =
 --------------------------------------------------------------------------------
 
 
-demo : Tile Model Msg ()
+demo : Tile Model Msg flags
 demo =
     { init = always init
     , update = update

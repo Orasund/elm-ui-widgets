@@ -1,9 +1,10 @@
+<!DOCTYPE HTML>
 <html>
 <head>
   <meta charset="UTF-8">
   <title>Main</title>
   <style>body { padding: 0; margin: 0; }</style>
-  <script src="/3.0.0/main.js"></script>
+  <script src="/main.js"></script>
 </head>
 
 <body>
@@ -12,8 +13,7 @@
       var settings = localStorage.getItem("settings");
       const app = Elm.Main.init({
         flags: {
-          settings: settings,
-          config: { relativeUrlPath: ["elm-ui-widgets", "3.0.0"] }
+          settings: settings
         }
       });
       app.ports.saveSettings.subscribe(function(settings){

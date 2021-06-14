@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Element
+import Json.Decode as Decode exposing (Decoder)
 import Page.AppBar
 import Page.Button
 import Page.Dialog
@@ -37,13 +38,30 @@ pages =
         |> UIExplorer.nextPage "Dialog" Page.Dialog.page
 
 
+type alias Flags =
+    { settings : UIExplorer.Settings
+    , config : UIExplorer.Config
+    }
+
+
+decodeFlags : Decoder Flags
+decodeFlags =
+    Decode.map2 Flags
+        UIExplorer.decodeSettings
+        (UIExplorer.decodeConfig
+            { relativeUrlPath = []
+            }
+        )
+
+
+config : UIExplorer.ApplicationConfig msg Flags
+config =
+    { flagsDecoder = decodeFlags
+    , layoutOptions = []
+    , layoutAttributes = []
+    , sidebarTitle = Element.text "Elm UI Widgets"
+    }
+
+
 main =
-    let
-        config =
-            UIExplorer.defaultConfig
-    in
-    UIExplorer.application
-        { config
-            | sidebarTitle = Element.text "Elm UI Widgets"
-        }
-        pages
+    UIExplorer.application config pages
