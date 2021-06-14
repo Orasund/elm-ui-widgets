@@ -69,23 +69,30 @@ type alias Settings =
 
 decodeSettings : Decode.Decoder Settings
 decodeSettings =
-    Decode.string
-        |> Decode.andThen
-            (\s ->
-                case
-                    Decode.decodeString
-                        (Decode.map Settings
-                            (Decode.field "dark" Decode.bool)
-                        )
-                        s
-                of
-                    Ok settings ->
-                        Decode.succeed settings
+    Decode.oneOf
+        [ Decode.string
+            |> Decode.andThen
+                (\s ->
+                    case
+                        Decode.decodeString
+                            (Decode.map Settings
+                                (Decode.oneOf
+                                    [ Decode.field "dark" Decode.bool
+                                    , Decode.succeed True
+                                    ]
+                                )
+                            )
+                            s
+                    of
+                        Ok settings ->
+                            Decode.succeed settings
 
-                    Err _ ->
-                        Decode.succeed { dark = False }
-            )
-        |> Decode.field "settings"
+                        Err err ->
+                            Decode.fail <| Decode.errorToString err
+                )
+            |> Decode.field "settings"
+        , Decode.succeed { dark = False }
+        ]
 
 
 saveSettings : Settings -> Cmd msg
