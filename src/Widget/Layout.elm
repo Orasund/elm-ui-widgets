@@ -111,7 +111,7 @@ leftSheet style { title, onDismiss, menu } =
     }
 
 
-{-| Right sheet containg a simple list of buttons
+{-| Right sheet containing a simple list of buttons
 -}
 rightSheet :
     { sheet : ColumnStyle msg
@@ -143,7 +143,7 @@ rightSheet style { onDismiss, moreActions } =
     }
 
 
-{-| Top sheet containg a searchbar spaning the full witdh
+{-| Top sheet containing a searchbar spanning the full width
 -}
 searchSheet :
     TextInputStyle msg

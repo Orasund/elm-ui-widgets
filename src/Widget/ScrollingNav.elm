@@ -36,7 +36,7 @@ type alias ScrollingNav section =
     }
 
 
-{-| The intial state include the labels and the arrangement of the sections
+{-| The initial state include the labels and the arrangement of the sections
 -}
 init :
     { toString : section -> String

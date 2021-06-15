@@ -1,4 +1,4 @@
-module Internal.Material.Palette exposing (Palette, darkPalette, defaultPalette, gray, lightGray, textGray)
+module Internal.Material.Palette exposing (Palette, darkPalette, defaultPalette, gray, lightGray, swapColor, textGray)
 
 import Color exposing (Color)
 import Widget.Material.Color as MaterialColor
@@ -51,6 +51,23 @@ darkPalette =
         , surface = Color.rgb255 0xFF 0xFF 0xFF
         , error = Color.rgb255 0x00 0x00 0x00
         }
+    }
+
+
+swapColor : Palette -> Palette
+swapColor palette =
+    let
+        on =
+            palette.on
+    in
+    { palette
+        | primary = palette.secondary
+        , secondary = palette.primary
+        , on =
+            { on
+                | primary = palette.on.secondary
+                , secondary = palette.on.primary
+            }
     }
 
 

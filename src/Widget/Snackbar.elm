@@ -52,7 +52,7 @@ type alias Snackbar a =
     }
 
 
-{-| Inital state
+{-| Initial state
 -}
 init : Snackbar a
 init =
@@ -68,7 +68,7 @@ insert =
     insertFor 10000
 
 
-{-| Insert a message for a specific amount of milli seconds.
+{-| Insert a message for a specific amount of milliseconds.
 -}
 insertFor : Int -> a -> Snackbar a -> Snackbar a
 insertFor removeIn a model =
@@ -88,7 +88,7 @@ dismiss model =
 
 
 {-| Updates the model. This functions should be called regularly.
-The first argument is the milli seconds that passed since the last time the function was called.
+The first argument is the milliseconds that passed since the last time the function was called.
 -}
 timePassed : Int -> Snackbar a -> Snackbar a
 timePassed ms model =

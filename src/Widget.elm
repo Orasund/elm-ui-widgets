@@ -236,7 +236,7 @@ type alias TextButton msg =
     }
 
 
-{-| A button containing only an icon, the text is used for screenreaders.
+{-| A button containing only an icon, the text is used for screen readers.
 
     import Widget.Material as Material
     import Material.Icons as MaterialIcons
@@ -557,7 +557,7 @@ select =
     Select.select
 
 
-{-| Selects multible options. This can be used for checkboxes.
+{-| Selects multiple options. This can be used for checkboxes.
 
     import Widget.Material as Material
     import Set
@@ -850,14 +850,14 @@ type alias PasswordInput msg =
     }
 
 
-{-| An input field that supports autofilling the current password
+{-| An input field that supports auto filling the current password
 -}
 currentPasswordInput : PasswordInputStyle msg -> PasswordInput msg -> Element msg
 currentPasswordInput =
     PasswordInput.currentPasswordInput
 
 
-{-| An input field that supports autofilling the new password
+{-| An input field that supports auto filling the new password
 -}
 newPasswordInput : PasswordInputStyle msg -> PasswordInput msg -> Element msg
 newPasswordInput =
@@ -1198,7 +1198,7 @@ insetItem =
     fun
 
 
-{-| A item contining a text running over multiple lines.
+{-| A item containing a text running over multiple lines.
 
     import Element
     import Widget.Material as Material
@@ -1234,7 +1234,7 @@ multiLineItem =
     fun
 
 
-{-| A clickable item that contains a image , a line of text and some additonal information
+{-| A clickable item that contains a image , a line of text and some additional information
 
     import Element
     import Widget.Material as Material
@@ -1957,7 +1957,7 @@ type alias Tab msg =
     }
 
 
-{-| Displayes a list of contents in a tab
+{-| Displays a list of contents in a tab
 
     import Element
     import Widget.Material as Material
@@ -1996,7 +1996,7 @@ type alias Tab msg =
                     Just 1 ->
                         "This is the second tab" |> Element.text
                     Just 2 ->
-                        "The thrid and last tab" |> Element.text
+                        "The third and last tab" |> Element.text
                     _ ->
                         "Please select a tab" |> Element.text
             )

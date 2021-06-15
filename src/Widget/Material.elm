@@ -24,7 +24,7 @@ module Widget.Material exposing
 The stylings are following [the official Material Design guidelines](https://material.io/components) as close as possible.
 Please use these widgets in combination with the official guidelines.
 
-The typograpahy is taken from [the Material Design guidelines](https://material.io/design/typography/the-type-system.html#type-scale).
+The typography is taken from [the Material Design guidelines](https://material.io/design/typography/the-type-system.html#type-scale).
 Its recommended to use a font size of 16px width and the [Roboto Font](https://fonts.google.com/specimen/Roboto?query=Ro).
 
 The style are not opaque, so you can change every styling to your needs.
@@ -176,7 +176,7 @@ import Widget.Snackbar exposing (SnackbarStyle)
 
 Check out [the official documentation about the color system](https://material.io/design/color/the-color-system.html#color-theme-creation) to see how these colors are used.
 
-For the `-on` colors you can use white, for transitions into white, or black,for transitions into black. Other colors are also possible, but i've not seen any website acutally using a different color.
+For the `-on` colors you can use white, for transitions into white, or black,for transitions into black. Other colors are also possible, but i've not seen any website actually using a different color.
 
 -}
 type alias Palette =
@@ -207,7 +207,7 @@ defaultPalette =
     Palette.defaultPalette
 
 
-{-| The offical dark theme of google.
+{-| The official dark theme of google.
 
 ![The dark theme](https://lh3.googleusercontent.com/tv7J2o4ZiSmLYwyBslBs_PLzKyzI8QUV5qdvHGfoAQn9r7pY4Hj5SmW27m3zUWeDtRSE8Cb5_5PQmkbavDfw7XbIL8EodIKZhilRdg=w1064-v0)
 
@@ -217,6 +217,15 @@ _Image take from [material.io](https://material.io/design/color/dark-theme.html#
 darkPalette : Palette
 darkPalette =
     Palette.darkPalette
+
+
+
+Why is this needed? See the [material design specification](https://material.io/design/color/applying-color-to-ui.html) for details.
+
+-}
+swapColor : Palette -> Palette
+swapColor =
+    Palette.swapColor
 
 
 {-| generates a "grayish 50%" color that matches the on-surface color.
@@ -320,7 +329,7 @@ iconButton =
 
 Technical Remark:
 
-  - The specification states that the disabled switch should have a color dependend on its activness. This is not implemented.
+  - The specification states that the disabled switch should have a color dependent on its activeness. This is not implemented.
 
 -}
 switch : Palette -> SwitchStyle msg
@@ -334,12 +343,12 @@ switch =
 -------------------------------------------------------------------------------}
 
 
-{-| Chips have the same behaviour as buttons but are visually less important.
+{-| Chips have the same behavior as buttons but are visually less important.
 
 In the [official documentation](https://material.io/components/chips#types) chips have different names depending on where they are used:
 
   - **Input Chips** are used inside a text field. Use `textInput` for this feature.
-  - **Choice Chips** are used for selcting an option.
+  - **Choice Chips** are used for selecting an option.
     The material design guidelines recommend using `toggleButton` for icons with no text and chips for text with no icons.
   - **Filter Chips** are used for selecting multiple options. They typically have a done-icon when selected.
   - **Action chips** are like button. Make sure to include an icon when using action chips.
@@ -348,7 +357,7 @@ In the [official documentation](https://material.io/components/chips#types) chip
 
 Technical Remark:
 
-  - Desided against the implementation of an outlined chip.
+  - Decided against the implementation of an outlined chip.
     Please open a new issue or a PR if you want to have it implemented.
 
 -}
@@ -542,7 +551,7 @@ cardColumn =
     List.cardColumn
 
 
-{-| A basic item containg some text, a button. Spans the full width.
+{-| A basic item containing some text, a button. Spans the full width.
 
 ![fullBleedItem](https://orasund.github.io/elm-ui-widgets/assets/material/fullBleedItem.png)
 
@@ -552,7 +561,7 @@ fullBleedItem =
     Item.fullBleedItem
 
 
-{-| A basic item containg some text, a button and some additional information.
+{-| A basic item containing some text, a button and some additional information.
 
 ![insetItem](https://orasund.github.io/elm-ui-widgets/assets/material/insetItem.png)
 
@@ -655,7 +664,7 @@ sortTable =
 Technical Remark:
 
   - The text color of the button was not given in the specification. This implementation
-    adujsts the luminance of the color to fit the [w3 accessability standard](https://www.w3.org/TR/WCAG20/#Contrast)
+    adjusts the luminance of the color to fit the [w3 accessability standard](https://www.w3.org/TR/WCAG20/#Contrast)
 
 -}
 snackbar : Palette -> SnackbarStyle msg
@@ -703,7 +712,7 @@ passwordInput =
 Technical Remark:
 
   - The official specification states that the background color should be the surface color,
-    but the pictures and actuall implementations all have no background color.
+    but the pictures and actual implementations all have no background color.
     So here the background color is also not set.
 
 -}

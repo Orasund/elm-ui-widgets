@@ -16,7 +16,7 @@ module Widget.Customize exposing
     , ifLast, mapIfLast
     )
 
-{-| Each and every widget can be customized by modifing the Style Type.
+{-| Each and every widget can be customized by modifying the Style Type.
 
     {- Make a button fill the full width -}
     Widget.textButton
@@ -98,7 +98,7 @@ If the content is just a text (or paragraph), then we use `contentText` instead:
 
 @docs contentText, mapContentText
 
-If some content is infront, we use `contentInFront`:
+If some content is in front, we use `contentInFront`:
 
     type alias MyStyle =
         { element : List (Attribute msg)

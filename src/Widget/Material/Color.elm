@@ -275,7 +275,7 @@ shadow float =
     }
 
 
-{-| Utillity function to convert from Color to Element.Color
+{-| Utility function to convert from Color to Element.Color
 -}
 fromColor : Color -> Element.Color
 fromColor =
