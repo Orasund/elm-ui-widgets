@@ -1,5 +1,5 @@
 module Widget.Material exposing
-    ( Palette, defaultPalette, darkPalette, gray, lightGray, textGray
+    ( Palette, defaultPalette, darkPalette, swapColor, gray, lightGray, textGray
     , containedButton, outlinedButton, textButton
     , iconButton, toggleButton, toggleRow
     , switch
@@ -34,7 +34,7 @@ If you have any suggestions or improvements, be sure to leave a [PR or a Issue](
 
 # Palette
 
-@docs Palette, defaultPalette, darkPalette, gray, lightGray, textGray
+@docs Palette, defaultPalette, darkPalette, swapColor, gray, lightGray, textGray
 
 
 # Button
@@ -219,6 +219,7 @@ darkPalette =
     Palette.darkPalette
 
 
+{-| Swaps the primary and secondary color.
 
 Why is this needed? See the [material design specification](https://material.io/design/color/applying-color-to-ui.html) for details.
 
