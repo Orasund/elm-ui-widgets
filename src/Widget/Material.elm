@@ -17,6 +17,7 @@ module Widget.Material exposing
     , snackbar
     , tab, tabButton
     , buttonRow
+    ,cardAttributes, textInputAttributes
     )
 
 {-| This module implements a Material design theme for all widgets.
@@ -57,16 +58,12 @@ Different styles for buttons have different meanings.
 
 # Card
 
-In the material design specification the card is not really specified at all.
-Im practice the List seams more useful then a own card widget.
-Thus for now we only provide a card containing a list.
-
-@docs cardColumn
+@docs cardColumn, cardAttributes
 
 
 # Chip
 
-@docs chip, textInput, passwordInput
+@docs chip,textInputAttributes, textInput, passwordInput
 
 
 # Dialog
@@ -164,7 +161,7 @@ import Internal.Tab exposing (TabStyle)
 import Internal.TextInput exposing (TextInputStyle)
 import Widget.Icon exposing (Icon)
 import Widget.Snackbar exposing (SnackbarStyle)
-
+import Element exposing (Attribute)
 
 
 --------------------------------------------------------------------------------
@@ -552,6 +549,14 @@ cardColumn =
     List.cardColumn
 
 
+{-| A variant of cardColumn designed for a single item.
+
+Use this with a normal `Element.column`, `Element.row` or even a `Element.el`.
+-}
+cardAttributes :  Palette -> List (Attribute msg)
+cardAttributes  =
+    List.cardAttributes
+
 {-| A basic item containing some text, a button. Spans the full width.
 
 ![fullBleedItem](https://orasund.github.io/elm-ui-widgets/assets/material/fullBleedItem.png)
@@ -678,6 +683,11 @@ snackbar =
 -- T E X T   I N P U T
 -------------------------------------------------------------------------------}
 
+{-| A variant of textInput designed for `Input.text`.
+-}
+textInputAttributes : Palette -> List (Attribute msg)
+textInputAttributes =
+    TextInput.textInputAttributes
 
 {-| A text input style that is included only to support input chips.
 

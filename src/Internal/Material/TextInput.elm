@@ -1,4 +1,4 @@
-module Internal.Material.TextInput exposing (searchInput, textInput, textInputBase)
+module Internal.Material.TextInput exposing (textInputAttributes,searchInput, textInput, textInputBase)
 
 import Element
 import Element.Border as Border
@@ -8,6 +8,9 @@ import Internal.TextInput exposing (TextInputStyle)
 import Widget.Customize as Customize
 import Widget.Material.Color as MaterialColor
 
+textInputAttributes : Palette ->  List (Attribute msg)
+textInputAttributes palette =
+    (textInput palette).content.text
 
 textInput : Palette -> TextInputStyle msg
 textInput palette =

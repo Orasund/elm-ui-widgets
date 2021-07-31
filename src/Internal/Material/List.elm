@@ -5,9 +5,10 @@ module Internal.Material.List exposing
     , row
     , sideSheet
     , toggleRow
+    , cardAttributes
     )
 
-import Element
+import Element exposing (Attribute)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
@@ -77,6 +78,13 @@ toggleRow =
             ]
         }
     }
+
+cardAttributes : Palette -> List (Attribute mag)
+cardAttributes palette =
+    let
+        style = cardColumn palette
+    in
+    style.elementColumn ++ style.content.element
 
 
 cardColumn : Palette -> ColumnStyle msg

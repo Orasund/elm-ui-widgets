@@ -23,6 +23,8 @@ module Widget exposing
     , PasswordInputStyle, PasswordInput, newPasswordInput, currentPasswordInput
     , TabStyle, Tab, tab
     , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
+    , usernameInput
+    , emailInput,searchInput,spellCheckedInput
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -134,8 +136,8 @@ You can create you own widgets by sticking widgets types together.
 
 ![textInput](https://orasund.github.io/elm-ui-widgets/assets/textInput.png)
 
-@docs TextInputStyle, TextInput, textInput
-@docs PasswordInputStyle, PasswordInput, newPasswordInput, currentPasswordInput
+@docs TextInputStyle, TextInput, textInput, usernameInput, emailInput,searchInput,spellCheckedInput
+@docs PasswordInputStyle, PasswordInput, newPasswordInputV2, currentPasswordInputV2
 
 
 # Tab
@@ -150,6 +152,10 @@ You can create you own widgets by sticking widgets types together.
 ![progress Indicator](https://orasund.github.io/elm-ui-widgets/assets/progressIndicator.png)
 
 @docs ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
+
+# DEPRECATED
+
+@docs newPasswordInput, currentPasswordInput
 
 -}
 
@@ -852,17 +858,80 @@ type alias PasswordInput msg =
 
 {-| An input field that supports auto filling the current password
 -}
-currentPasswordInput : PasswordInputStyle msg -> PasswordInput msg -> Element msg
-currentPasswordInput =
-    PasswordInput.currentPasswordInput
+currentPasswordInputV2 : PasswordInputStyle msg -> { text : String
+    , placeholder : Maybe (Placeholder msg)
+    , label : String
+    , onChange : String -> msg
+    , show : Bool
+    } -> Element msg
+currentPasswordInputV2 =
+    let
+        fun : PasswordInputStyle msg -> PasswordInput msg -> Element msg
+        fun =
+            PasswordInput.currentPasswordInput
+    in
+    fun
 
 
 {-| An input field that supports auto filling the new password
 -}
-newPasswordInput : PasswordInputStyle msg -> PasswordInput msg -> Element msg
-newPasswordInput =
-    PasswordInput.newPasswordInput
+newPasswordInputV2 : PasswordInputStyle msg -> { text : String
+    , placeholder : Maybe (Placeholder msg)
+    , label : String
+    , onChange : String -> msg
+    , show : Bool
+    } -> Element msg
+newPasswordInputV2 =
+    let
+        fun : PasswordInputStyle msg -> PasswordInput msg -> Element msg
+        fun =
+            PasswordInput.newPasswordInput
+    in
+    fun
 
+{-| An input field that supports auto filling the username
+-}
+usernameInput : Palette -> TextInputStyle msg
+usernameInput =
+    let
+        fun : TextInputStyle msg -> TextInput msg -> Element msg
+        fun =
+            TextInput.usernameInput
+    in
+    fun
+    
+{-| An input field that supports auto filling the email
+-}
+emailInput : Palette -> TextInputStyle msg
+emailInput =
+    let
+        fun : TextInputStyle msg -> TextInput msg -> Element msg
+        fun =
+            TextInput.usernameInput
+    in
+    fun
+
+{-| An input field that supports searching
+-}
+searchInput : Palette -> TextInputStyle msg
+searchInput =
+    let
+        fun : TextInputStyle msg -> TextInput msg -> Element msg
+        fun =
+            TextInput.usernameInput
+    in
+    fun
+
+{-| An input field that supports spell checking
+-}
+spellCheckedInput : Palette -> TextInputStyle msg
+spellCheckedInput =
+    let
+        fun : TextInputStyle msg -> TextInput msg -> Element msg
+        fun =
+            TextInput.usernameInput
+    in
+    fun
 
 
 {----------------------------------------------------------
@@ -2057,3 +2126,26 @@ circularProgressIndicator :
     -> Element msg
 circularProgressIndicator =
     ProgressIndicator.circularProgressIndicator
+
+
+
+{----------------------------------------------------------
+- DEPRECATED
+----------------------------------------------------------}
+
+
+
+
+{-| An input field that supports auto filling the current password
+-}
+currentPasswordInput : PasswordInputStyle msg -> PasswordInput msg -> Element msg
+currentPasswordInput =
+    PasswordInput.currentPasswordInput
+
+
+{-| An input field that supports auto filling the new password
+-}
+newPasswordInput : PasswordInputStyle msg -> PasswordInput msg -> Element msg
+newPasswordInput =
+    PasswordInput.newPasswordInput
+
