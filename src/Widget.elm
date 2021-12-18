@@ -1901,15 +1901,15 @@ type alias SortTableStyle msg =
 
 {-| Column for the Sort Table widget type
 -}
-type alias Column a =
-    SortTable.Column a
+type alias Column a msg =
+    SortTable.Column a msg
 
 
 {-| Sort Table widget type
 -}
 type alias SortTable a msg =
     { content : List a
-    , columns : List (Column a)
+    , columns : List (Column a msg)
     , sortBy : String
     , asc : Bool
     , onChange : String -> msg
@@ -1923,7 +1923,7 @@ unsortableColumn :
     , toString : a -> String
     , width : Length
     }
-    -> Column a
+    -> Column a msg
 unsortableColumn =
     SortTable.unsortableColumn
 
@@ -1936,7 +1936,7 @@ intColumn :
     , toString : Int -> String
     , width : Length
     }
-    -> Column a
+    -> Column a msg
 intColumn =
     SortTable.intColumn
 
@@ -1949,7 +1949,7 @@ floatColumn :
     , toString : Float -> String
     , width : Length
     }
-    -> Column a
+    -> Column a msg
 floatColumn =
     SortTable.floatColumn
 
@@ -1969,7 +1969,7 @@ stringColumn :
     , toString : String -> String
     , width : Length
     }
-    -> Column a
+    -> Column a msg
 stringColumn =
     SortTable.stringColumn
 
@@ -2033,7 +2033,7 @@ sortTable :
     SortTableStyle msg
     ->
         { content : List a
-        , columns : List (Column a)
+        , columns : List (Column a msg)
         , sortBy : String
         , asc : Bool
         , onChange : String -> msg

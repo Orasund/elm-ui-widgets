@@ -34,10 +34,11 @@ type alias SortTableStyle msg =
 
 {-| A Sortable list allows you to sort coulmn.
 -}
-type ColumnType a
+type ColumnType a msg
     = StringColumn { value : a -> String, toString : String -> String }
     | IntColumn { value : a -> Int, toString : Int -> String }
     | FloatColumn { value : a -> Float, toString : Float -> String }
+    | ElementColumn { value : a -> Element msg }
     | UnsortableColumn (a -> String)
 
 
@@ -45,22 +46,22 @@ type ColumnType a
 -}
 type alias SortTable a msg =
     { content : List a
-    , columns : List (Column a)
+    , columns : List (Column a msg)
     , sortBy : String
     , asc : Bool
     , onChange : String -> msg
     }
 
 
-type Column a
+type Column a msg
     = Column
         { title : String
-        , content : ColumnType a
+        , content : ColumnType a msg
         , width : Length
         }
 
 
-unsortableColumn : { title : String, toString : a -> String, width : Length } -> Column a
+unsortableColumn : { title : String, toString : a -> String, width : Length } -> Column a msg
 unsortableColumn { title, toString, width } =
     Column
         { title = title
@@ -71,7 +72,7 @@ unsortableColumn { title, toString, width } =
 
 {-| A Column containing a Int
 -}
-intColumn : { title : String, value : a -> Int, toString : Int -> String, width : Length } -> Column a
+intColumn : { title : String, value : a -> Int, toString : Int -> String, width : Length } -> Column a msg
 intColumn { title, value, toString, width } =
     Column
         { title = title
@@ -82,7 +83,7 @@ intColumn { title, value, toString, width } =
 
 {-| A Column containing a Float
 -}
-floatColumn : { title : String, value : a -> Float, toString : Float -> String, width : Length } -> Column a
+floatColumn : { title : String, value : a -> Float, toString : Float -> String, width : Length } -> Column a msg
 floatColumn { title, value, toString, width } =
     Column
         { title = title
@@ -93,7 +94,7 @@ floatColumn { title, value, toString, width } =
 
 {-| A Column containing a String
 -}
-stringColumn : { title : String, value : a -> String, toString : String -> String, width : Length } -> Column a
+stringColumn : { title : String, value : a -> String, toString : String -> String, width : Length } -> Column a msg
 stringColumn { title, value, toString, width } =
     Column
         { title = title
@@ -110,7 +111,7 @@ sortTable :
     -> Element msg
 sortTable style model =
     let
-        findTitle : List (Column a) -> Maybe (ColumnType a)
+        findTitle : List (Column a msg) -> Maybe (ColumnType a msg)
         findTitle list =
             case list of
                 [] ->
@@ -139,6 +140,9 @@ sortTable style model =
 
                                     FloatColumn { value } ->
                                         Just <| List.sortBy value
+
+                                    ElementColumn _ ->
+                                        Nothing
 
                                     UnsortableColumn _ ->
                                         Nothing
@@ -180,18 +184,20 @@ sortTable style model =
                         , view =
                             (case column.content of
                                 IntColumn { value, toString } ->
-                                    value >> toString
+                                    value >> toString >> Element.text
 
                                 FloatColumn { value, toString } ->
-                                    value >> toString
+                                    value >> toString >> Element.text
 
                                 StringColumn { value, toString } ->
-                                    value >> toString
+                                    value >> toString >> Element.text
+
+                                ElementColumn { value } ->
+                                    value
 
                                 UnsortableColumn toString ->
-                                    toString
+                                    toString >> Element.text
                             )
-                                >> Element.text
                                 >> List.singleton
                                 >> Element.paragraph []
                         }
