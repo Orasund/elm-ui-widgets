@@ -20,7 +20,7 @@ module Widget exposing
     , AppBarStyle, menuBar, tabBar
     , SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
     , TextInputStyle, TextInput, textInput, usernameInput, emailInput, searchInput, spellCheckedInput
-    , PasswordInputStyle, PasswordInput
+    , PasswordInputStyle, PasswordInput, newPasswordInputV2, currentPasswordInputV2
     , TabStyle, Tab, tab
     , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
     , newPasswordInput, currentPasswordInput
