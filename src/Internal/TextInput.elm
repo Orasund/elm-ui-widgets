@@ -1,8 +1,15 @@
-module Internal.TextInput exposing (TextInput, TextInputStyle, usernameInput,textInput
-    , emailInput,searchInput,spellCheckedInput)
+module Internal.TextInput exposing
+    ( TextInput
+    , TextInputStyle
+    , emailInput
+    , searchInput
+    , spellCheckedInput
+    , textInput
+    , usernameInput
+    )
 
 import Element exposing (Attribute, Element)
-import Element.Input as Input exposing (Placeholder)
+import Element.Input as Input exposing (Label, Placeholder)
 import Internal.Button as Button exposing (Button, ButtonStyle)
 
 
@@ -29,33 +36,45 @@ type alias TextInput msg =
     , onChange : String -> msg
     }
 
+
 spellCheckedInput : TextInputStyle msg -> TextInput msg -> Element msg
 spellCheckedInput =
     internal Input.spellChecked
+
 
 searchInput : TextInputStyle msg -> TextInput msg -> Element msg
 searchInput =
     internal Input.search
 
+
 emailInput : TextInputStyle msg -> TextInput msg -> Element msg
 emailInput =
     internal Input.email
+
 
 usernameInput : TextInputStyle msg -> TextInput msg -> Element msg
 usernameInput =
     internal Input.username
 
+
 textInput : TextInputStyle msg -> TextInput msg -> Element msg
 textInput =
     internal Input.text
 
-internal : (List (Attribute msg)
-    -> { onChange : String -> msg
-       , text : String
-       , placeholder : Maybe (Placeholder msg)
-       , label : Label msg
-       }
-    -> Element msg) -> TextInputStyle msg -> TextInput msg -> Element msg
+
+internal :
+    (List (Attribute msg)
+     ->
+        { onChange : String -> msg
+        , text : String
+        , placeholder : Maybe (Placeholder msg)
+        , label : Label msg
+        }
+     -> Element msg
+    )
+    -> TextInputStyle msg
+    -> TextInput msg
+    -> Element msg
 internal fun style { chips, placeholder, label, text, onChange } =
     Element.row style.elementRow
         [ if chips |> List.isEmpty then

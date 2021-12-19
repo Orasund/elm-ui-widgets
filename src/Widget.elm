@@ -19,12 +19,11 @@ module Widget exposing
     , itemList
     , AppBarStyle, menuBar, tabBar
     , SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
-    , TextInputStyle, TextInput, textInput
-    , PasswordInputStyle, PasswordInput, newPasswordInput, currentPasswordInput
+    , TextInputStyle, TextInput, textInput, usernameInput, emailInput, searchInput, spellCheckedInput
+    , PasswordInputStyle, PasswordInput
     , TabStyle, Tab, tab
     , ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
-    , usernameInput
-    , emailInput,searchInput,spellCheckedInput
+    , newPasswordInput, currentPasswordInput
     )
 
 {-| This module contains different stateless view functions. No wiring required.
@@ -136,7 +135,7 @@ You can create you own widgets by sticking widgets types together.
 
 ![textInput](https://orasund.github.io/elm-ui-widgets/assets/textInput.png)
 
-@docs TextInputStyle, TextInput, textInput, usernameInput, emailInput,searchInput,spellCheckedInput
+@docs TextInputStyle, TextInput, textInput, usernameInput, emailInput, searchInput, spellCheckedInput
 @docs PasswordInputStyle, PasswordInput, newPasswordInputV2, currentPasswordInputV2
 
 
@@ -152,6 +151,7 @@ You can create you own widgets by sticking widgets types together.
 ![progress Indicator](https://orasund.github.io/elm-ui-widgets/assets/progressIndicator.png)
 
 @docs ProgressIndicatorStyle, ProgressIndicator, circularProgressIndicator
+
 
 # DEPRECATED
 
@@ -858,12 +858,16 @@ type alias PasswordInput msg =
 
 {-| An input field that supports auto filling the current password
 -}
-currentPasswordInputV2 : PasswordInputStyle msg -> { text : String
-    , placeholder : Maybe (Placeholder msg)
-    , label : String
-    , onChange : String -> msg
-    , show : Bool
-    } -> Element msg
+currentPasswordInputV2 :
+    PasswordInputStyle msg
+    ->
+        { text : String
+        , placeholder : Maybe (Placeholder msg)
+        , label : String
+        , onChange : String -> msg
+        , show : Bool
+        }
+    -> Element msg
 currentPasswordInputV2 =
     let
         fun : PasswordInputStyle msg -> PasswordInput msg -> Element msg
@@ -875,12 +879,16 @@ currentPasswordInputV2 =
 
 {-| An input field that supports auto filling the new password
 -}
-newPasswordInputV2 : PasswordInputStyle msg -> { text : String
-    , placeholder : Maybe (Placeholder msg)
-    , label : String
-    , onChange : String -> msg
-    , show : Bool
-    } -> Element msg
+newPasswordInputV2 :
+    PasswordInputStyle msg
+    ->
+        { text : String
+        , placeholder : Maybe (Placeholder msg)
+        , label : String
+        , onChange : String -> msg
+        , show : Bool
+        }
+    -> Element msg
 newPasswordInputV2 =
     let
         fun : PasswordInputStyle msg -> PasswordInput msg -> Element msg
@@ -889,9 +897,19 @@ newPasswordInputV2 =
     in
     fun
 
+
 {-| An input field that supports auto filling the username
 -}
-usernameInput : Palette -> TextInputStyle msg
+usernameInput :
+    TextInputStyle msg
+    ->
+        { chips : List (Button msg)
+        , text : String
+        , placeholder : Maybe (Placeholder msg)
+        , label : String
+        , onChange : String -> msg
+        }
+    -> Element msg
 usernameInput =
     let
         fun : TextInputStyle msg -> TextInput msg -> Element msg
@@ -899,10 +917,20 @@ usernameInput =
             TextInput.usernameInput
     in
     fun
-    
+
+
 {-| An input field that supports auto filling the email
 -}
-emailInput : Palette -> TextInputStyle msg
+emailInput :
+    TextInputStyle msg
+    ->
+        { chips : List (Button msg)
+        , text : String
+        , placeholder : Maybe (Placeholder msg)
+        , label : String
+        , onChange : String -> msg
+        }
+    -> Element msg
 emailInput =
     let
         fun : TextInputStyle msg -> TextInput msg -> Element msg
@@ -911,9 +939,19 @@ emailInput =
     in
     fun
 
+
 {-| An input field that supports searching
 -}
-searchInput : Palette -> TextInputStyle msg
+searchInput :
+    TextInputStyle msg
+    ->
+        { chips : List (Button msg)
+        , text : String
+        , placeholder : Maybe (Placeholder msg)
+        , label : String
+        , onChange : String -> msg
+        }
+    -> Element msg
 searchInput =
     let
         fun : TextInputStyle msg -> TextInput msg -> Element msg
@@ -922,9 +960,19 @@ searchInput =
     in
     fun
 
+
 {-| An input field that supports spell checking
 -}
-spellCheckedInput : Palette -> TextInputStyle msg
+spellCheckedInput :
+    TextInputStyle msg
+    ->
+        { chips : List (Button msg)
+        , text : String
+        , placeholder : Maybe (Placeholder msg)
+        , label : String
+        , onChange : String -> msg
+        }
+    -> Element msg
 spellCheckedInput =
     let
         fun : TextInputStyle msg -> TextInput msg -> Element msg
@@ -932,6 +980,7 @@ spellCheckedInput =
             TextInput.usernameInput
     in
     fun
+
 
 
 {----------------------------------------------------------
@@ -2134,8 +2183,6 @@ circularProgressIndicator =
 ----------------------------------------------------------}
 
 
-
-
 {-| An input field that supports auto filling the current password
 -}
 currentPasswordInput : PasswordInputStyle msg -> PasswordInput msg -> Element msg
@@ -2148,4 +2195,3 @@ currentPasswordInput =
 newPasswordInput : PasswordInputStyle msg -> PasswordInput msg -> Element msg
 newPasswordInput =
     PasswordInput.newPasswordInput
-
