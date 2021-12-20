@@ -1,67 +1,52 @@
-module Internal.SortTable exposing
-    ( Column
-    , ColumnType
-    , SortTable
-    , SortTableStyle
-    , floatColumn
-    , intColumn
-    , sortTable
-    , stringColumn
-    , unsortableColumn
+module Internal.SortTableV2 exposing
+    ( ColumnV2
+    , ColumnTypeV2
+    , SortTableV2
+    , floatColumnV2
+    , intColumnV2
+    , sortTableV2
+    , stringColumnV2
+    , unsortableColumnV2
+    , customColumnV2
     )
 
 import Element exposing (Attribute, Element, Length)
 import Internal.Button as Button exposing (ButtonStyle)
 import Widget.Icon exposing (Icon)
+import Internal.SortTable as SortTable
 
 
-{-| Technical Remark:
-
-  - If icons are defined in Svg, they might not display correctly.
-    To avoid that, make sure to wrap them in `Element.html >> Element.el []`
-
+{-| A Sortable list allows you to sort column.
 -}
-type alias SortTableStyle msg =
-    { elementTable : List (Attribute msg)
-    , content :
-        { header : ButtonStyle msg
-        , ascIcon : Icon msg
-        , descIcon : Icon msg
-        , defaultIcon : Icon msg
-        }
-    }
-
-
-{-| A Sortable list allows you to sort coulmn.
--}
-type ColumnType a
+type ColumnTypeV2 a msg
     = StringColumn { value : a -> String, toString : String -> String }
     | IntColumn { value : a -> Int, toString : Int -> String }
     | FloatColumn { value : a -> Float, toString : Float -> String }
+    | CustomColumn { value : a -> Element msg }
     | UnsortableColumn (a -> String)
 
 
 {-| The Model contains the sorting column name and if ascending or descending.
 -}
-type alias SortTable a msg =
+type alias SortTableV2 a msg =
     { content : List a
-    , columns : List (Column a)
+    , columns : List (ColumnV2 a msg)
     , sortBy : String
     , asc : Bool
     , onChange : String -> msg
     }
 
 
-type Column a
+type ColumnV2 a msg
     = Column
         { title : String
-        , content : ColumnType a
+        , content : ColumnTypeV2 a msg
         , width : Length
         }
 
 
-unsortableColumn : { title : String, toString : a -> String, width : Length } -> Column a
-unsortableColumn { title, toString, width } =
+unsortableColumnV2 : { title : String, toString : a -> String, width : Length } -> ColumnV2 a msg
+unsortableColumnV2 { title, toString, width } =
     Column
         { title = title
         , content = UnsortableColumn toString
@@ -71,8 +56,8 @@ unsortableColumn { title, toString, width } =
 
 {-| A Column containing a Int
 -}
-intColumn : { title : String, value : a -> Int, toString : Int -> String, width : Length } -> Column a
-intColumn { title, value, toString, width } =
+intColumnV2 : { title : String, value : a -> Int, toString : Int -> String, width : Length } -> ColumnV2 a msg
+intColumnV2 { title, value, toString, width } =
     Column
         { title = title
         , content = IntColumn { value = value, toString = toString }
@@ -82,8 +67,8 @@ intColumn { title, value, toString, width } =
 
 {-| A Column containing a Float
 -}
-floatColumn : { title : String, value : a -> Float, toString : Float -> String, width : Length } -> Column a
-floatColumn { title, value, toString, width } =
+floatColumnV2 : { title : String, value : a -> Float, toString : Float -> String, width : Length } -> ColumnV2 a msg
+floatColumnV2 { title, value, toString, width } =
     Column
         { title = title
         , content = FloatColumn { value = value, toString = toString }
@@ -93,24 +78,34 @@ floatColumn { title, value, toString, width } =
 
 {-| A Column containing a String
 -}
-stringColumn : { title : String, value : a -> String, toString : String -> String, width : Length } -> Column a
-stringColumn { title, value, toString, width } =
+stringColumnV2 : { title : String, value : a -> String, toString : String -> String, width : Length } -> ColumnV2 a msg
+stringColumnV2 { title, value, toString, width } =
     Column
         { title = title
         , content = StringColumn { value = value, toString = toString }
         , width = width
         }
 
+{-| A Column containing an Element
+-}
+customColumnV2 : { title : String, value : a -> Element msg, width : Length } -> ColumnV2 a msg
+customColumnV2 { title, value, width } =
+    Column
+        { title = title
+        , content = CustomColumn { value = value }
+        , width = width
+        }
+
 
 {-| The View
 -}
-sortTable :
-    SortTableStyle msg
-    -> SortTable a msg
+sortTableV2 :
+    SortTable.SortTableStyle msg
+    -> SortTableV2 a msg
     -> Element msg
-sortTable style model =
+sortTableV2 style model =
     let
-        findTitle : List (Column a) -> Maybe (ColumnType a)
+        findTitle : List (ColumnV2 a msg) -> Maybe (ColumnTypeV2 a msg)
         findTitle list =
             case list of
                 [] ->
@@ -139,6 +134,9 @@ sortTable style model =
 
                                     FloatColumn { value } ->
                                         Just <| List.sortBy value
+
+                                    CustomColumn _ ->
+                                        Nothing
 
                                     UnsortableColumn _ ->
                                         Nothing
@@ -173,6 +171,9 @@ sortTable style model =
                                         UnsortableColumn _ ->
                                             Nothing
 
+                                        CustomColumn _ ->
+                                            Nothing
+
                                         _ ->
                                             Just <| model.onChange <| column.title
                                 }
@@ -180,20 +181,32 @@ sortTable style model =
                         , view =
                             (case column.content of
                                 IntColumn { value, toString } ->
-                                    value >> toString
+                                    value
+                                        >> toString
+                                        >> Element.text
+                                        >> List.singleton
+                                        >> Element.paragraph []
 
                                 FloatColumn { value, toString } ->
-                                    value >> toString
+                                    value
+                                        >> toString
+                                        >> Element.text
+                                        >> List.singleton
+                                        >> Element.paragraph []
 
                                 StringColumn { value, toString } ->
-                                    value >> toString
+                                    value
+                                        >> toString
+                                        >> Element.text
+                                        >> List.singleton
+                                        >> Element.paragraph []
+
+                                CustomColumn { value } ->
+                                    value >> Element.el []
 
                                 UnsortableColumn toString ->
-                                    toString
+                                    toString >> Element.text
                             )
-                                >> Element.text
-                                >> List.singleton
-                                >> Element.paragraph []
                         }
                     )
         }
