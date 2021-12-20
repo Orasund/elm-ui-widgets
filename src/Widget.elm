@@ -136,6 +136,8 @@ You can create you own widgets by sticking widgets types together.
 
 ![Sort Table V2](https://orasund.github.io/elm-ui-widgets/assets/sortTableV2.png)
 
+Like [Sort Table](# Sort Table) but has supports custom elements in columns.
+
 @docs SortTableV2, ColumnV2, sortTableV2, floatColumnV2, intColumnV2, stringColumnV2, customColumnV2, unsortableColumnV2
 
 
