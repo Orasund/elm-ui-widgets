@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "name": "elm-ui-widget",
+  "scripts": {
+    "postinstall": "elm-tooling install"
+  },
+  "devDependencies": {
+    "elm-tooling": "^1.6.0"
+  },
+  "postinstall": "elm-tooling install"
+}

@@ -4,3 +4,4 @@ elm-stuff
 repl-temp-*
 # elm-live && build generated file
 explorer/main.js
+node_modules
