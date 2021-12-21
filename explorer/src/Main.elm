@@ -14,6 +14,7 @@ import Page.ProgressIndicator
 import Page.Select
 import Page.Snackbar
 import Page.SortTable
+import Page.SortTableV2
 import Page.Switch
 import Page.Tab
 import Page.TextInput
@@ -29,6 +30,7 @@ pages =
         |> UIExplorer.nextPage "Password Input" Page.PasswordInput.page
         |> UIExplorer.nextPage "Text Input" Page.TextInput.page
         |> UIExplorer.nextPage "Sort Table" Page.SortTable.page
+        |> UIExplorer.nextPage "Sort Table V2" Page.SortTableV2.page
         |> UIExplorer.nextPage "Snackbar" Page.Snackbar.page
         |> UIExplorer.nextPage "Item" Page.Item.page
         |> UIExplorer.nextPage "ProgressIndicator" Page.ProgressIndicator.page

@@ -19,6 +19,7 @@ module Widget exposing
     , itemList
     , AppBarStyle, menuBar, tabBar
     , SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
+    , SortTableV2, ColumnV2, sortTableV2, floatColumnV2, intColumnV2, stringColumnV2, unsortableColumnV2, customColumnV2
     , TextInputStyle, TextInput, textInput, usernameInput, emailInput, searchInput, spellCheckedInput
     , PasswordInputStyle, PasswordInput, newPasswordInputV2, currentPasswordInputV2
     , TabStyle, Tab, tab
@@ -131,6 +132,15 @@ You can create you own widgets by sticking widgets types together.
 @docs SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
 
 
+# Sort Table V2
+
+![Sort Table V2](https://orasund.github.io/elm-ui-widgets/assets/sortTableV2.png)
+
+Like [Sort Table](# Sort Table) but has supports custom elements in columns.
+
+@docs SortTableV2, ColumnV2, sortTableV2, floatColumnV2, intColumnV2, stringColumnV2, customColumnV2, unsortableColumnV2
+
+
 # Text Input
 
 ![textInput](https://orasund.github.io/elm-ui-widgets/assets/textInput.png)
@@ -172,6 +182,7 @@ import Internal.PasswordInput as PasswordInput
 import Internal.ProgressIndicator as ProgressIndicator
 import Internal.Select as Select
 import Internal.SortTable as SortTable
+import Internal.SortTableV2 as SortTableV2
 import Internal.Switch as Switch
 import Internal.Tab as Tab
 import Internal.TextInput as TextInput
@@ -2044,6 +2055,189 @@ sortTable =
         fun : SortTableStyle msg -> SortTable a msg -> Element msg
         fun =
             SortTable.sortTable
+    in
+    fun
+
+
+
+{----------------------------------------------------------
+- SORT TABLE V2
+----------------------------------------------------------}
+
+
+{-| Column for the Sort Table V2 widget type
+-}
+type alias ColumnV2 a msg =
+    SortTableV2.ColumnV2 a msg
+
+
+{-| Sort Table V2 widget type
+-}
+type alias SortTableV2 a msg =
+    { content : List a
+    , columns : List (ColumnV2 a msg)
+    , sortBy : String
+    , asc : Bool
+    , onChange : String -> msg
+    }
+
+
+{-| An unsortable ColumnV2, when trying to sort by this column, nothing will change.
+-}
+unsortableColumnV2 :
+    { title : String
+    , toString : a -> String
+    , width : Length
+    }
+    -> ColumnV2 a msg
+unsortableColumnV2 =
+    SortTableV2.unsortableColumnV2
+
+
+{-| A ColumnV2 containing a Int
+-}
+intColumnV2 :
+    { title : String
+    , value : a -> Int
+    , toString : Int -> String
+    , width : Length
+    }
+    -> ColumnV2 a msg
+intColumnV2 =
+    SortTableV2.intColumnV2
+
+
+{-| A ColumnV2 containing a Float
+-}
+floatColumnV2 :
+    { title : String
+    , value : a -> Float
+    , toString : Float -> String
+    , width : Length
+    }
+    -> ColumnV2 a msg
+floatColumnV2 =
+    SortTableV2.floatColumnV2
+
+
+{-| A ColumnV2 containing an Element
+
+`value` will be used for displaying content.
+
+This column is not sortable.
+-}
+customColumnV2 :
+    { title : String
+    , value : a -> Element msg
+    , width : Length
+    }
+    -> ColumnV2 a msg
+customColumnV2 =
+    SortTableV2.customColumnV2
+
+
+{-| A ColumnV2 containing a String
+
+`value >> toString` field will be used for displaying the content.
+
+`value` will be used for comparing the content
+
+For example `value = String.toLower` will make the sorting case-insensitive.
+
+-}
+stringColumnV2 :
+    { title : String
+    , value : a -> String
+    , toString : String -> String
+    , width : Length
+    }
+    -> ColumnV2 a msg
+stringColumnV2 =
+    SortTableV2.stringColumnV2
+
+
+{-| A table where the rows can be sorted by columns
+
+    import Widget.Material as Material
+    import Element
+
+    type Msg
+        = ChangedSorting String
+        | PressedButton String
+
+    sortBy : String
+    sortBy =
+        "Id"
+
+    asc : Bool
+    asc =
+        True
+
+    Widget.sortTableV2 (Material.sortTable Material.defaultPalette)
+        { content =
+            [ { id = 1, name = "Antonio", rating = 2.456, hash = Nothing }
+            , { id = 2, name = "Ana", rating = 1.34, hash = Just "45jf" }
+            , { id = 3, name = "Alfred", rating = 4.22, hash = Just "6fs1" }
+            , { id = 4, name = "Thomas", rating = 3, hash = Just "k52f" }
+            ]
+        , columns =
+            [ Widget.intColumnV2
+                { title = "Id"
+                , value = .id
+                , toString = \int -> "#" ++ String.fromInt int
+                , width = Element.fill
+                }
+            , Widget.stringColumnV2
+                { title = "Name"
+                , value = .name
+                , toString = identity
+                , width = Element.fill
+                }
+            , Widget.floatColumnV2
+                { title = "Rating"
+                , value = .rating
+                , toString = String.fromFloat
+                , width = Element.fill
+                }
+            , Widget.customColumnV2
+                { title = "Action"
+                , value =
+                    \{name} ->
+                        Widget.textButton
+                            (Material.textButton Material.defaultPalette)
+                            { text = name
+                            , onPress = Just <| PressedButton name
+                            }
+                , width = Element.fill
+                }
+            , Widget.unsortableColumnV2
+                { title = "Hash"
+                , toString = (\{hash} -> hash |> Maybe.withDefault "None")
+                , width = Element.fill
+                }
+            ]
+        , asc = asc
+        , sortBy = sortBy
+        , onChange = ChangedSorting
+        }
+        |> always "Ignore this line" --> "Ignore this line"
+
+-}
+sortTableV2 :
+    SortTableStyle msg
+    ->
+        { content : List a
+        , columns : List (ColumnV2 a msg)
+        , sortBy : String
+        , asc : Bool
+        , onChange : String -> msg
+        }
+    -> Element msg
+sortTableV2 =
+    let
+        fun : SortTableStyle msg -> SortTableV2 a msg -> Element msg
+        fun =
+            SortTableV2.sortTableV2
     in
     fun
 
