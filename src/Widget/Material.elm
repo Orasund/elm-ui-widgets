@@ -330,7 +330,7 @@ iconButton =
 
 {-| A radio button
 
-![switch](https://orasund.github.io/elm-ui-widgets/assets/material/radio.png)
+![radio](https://orasund.github.io/elm-ui-widgets/assets/material/radio.png)
 
 -}
 radio : Palette -> RadioStyle msg

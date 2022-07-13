@@ -372,8 +372,31 @@ button =
 ----------------------------------------------------------}
 
 
+{-| Radio style type
+-}
 type alias RadioStyle msg =
-    Radio.RadioStyle msg
+    { elementButton : List (Attribute msg)
+    , ifDisabled : List (Attribute msg)
+    , ifSelected : List (Attribute msg)
+    , ifDisabledSelected : List (Attribute msg)
+    , otherwise : List (Attribute msg)
+    , content :
+        { element : List (Attribute msg)
+        , ifDisabled : List (Attribute msg)
+        , ifSelected : List (Attribute msg)
+        , ifDisabledSelected : List (Attribute msg)
+        , otherwise : List (Attribute msg)
+        }
+    }
+
+
+{-| Radio widget type
+-}
+type alias Radio msg =
+    { description : String
+    , onPress : Maybe msg
+    , selected : Bool
+    }
 
 
 {-| A radio button
@@ -386,7 +409,7 @@ type alias RadioStyle msg =
     radio (Material.radio Material.defaultPalette)
         { description = "Dark Mode"
         , onPress = Just Activate
-        , active = False
+        , selected = False
         }
         |> always "Ignore this line" --> "Ignore this line"
 
