@@ -3,8 +3,9 @@ module Widget.Material exposing
     , containedButton, outlinedButton, textButton
     , iconButton, toggleButton, toggleRow
     , switch
-    , cardColumn
-    , chip, textInput, passwordInput
+    , radio
+    , cardColumn, cardAttributes
+    , chip, textInputAttributes, textInput, passwordInput
     , alertDialog
     , row, column
     , menuBar, tabBar
@@ -17,7 +18,6 @@ module Widget.Material exposing
     , snackbar
     , tab, tabButton
     , buttonRow
-    ,cardAttributes, textInputAttributes
     )
 
 {-| This module implements a Material design theme for all widgets.
@@ -56,6 +56,11 @@ Different styles for buttons have different meanings.
 @docs switch
 
 
+# Radio
+
+@docs radio
+
+
 # Card
 
 @docs cardColumn, cardAttributes
@@ -63,7 +68,7 @@ Different styles for buttons have different meanings.
 
 # Chip
 
-@docs chip,textInputAttributes, textInput, passwordInput
+@docs chip, textInputAttributes, textInput, passwordInput
 
 
 # Dialog
@@ -148,6 +153,7 @@ import Internal.Material.List as List
 import Internal.Material.Palette as Palette
 import Internal.Material.PasswordInput as PasswordInput
 import Internal.Material.ProgressIndicator as ProgressIndicator
+import Internal.Material.Radio as Radio
 import Internal.Material.Snackbar as Snackbar
 import Internal.Material.SortTable as SortTable
 import Internal.Material.Switch as Switch
@@ -159,9 +165,10 @@ import Internal.SortTable exposing (SortTableStyle)
 import Internal.Switch exposing (SwitchStyle)
 import Internal.Tab exposing (TabStyle)
 import Internal.TextInput exposing (TextInputStyle)
+import Widget exposing (RadioStyle)
 import Widget.Icon exposing (Icon)
 import Widget.Snackbar exposing (SnackbarStyle)
-import Element exposing (Attribute)
+
 
 
 --------------------------------------------------------------------------------
@@ -313,6 +320,22 @@ Technical Remark:
 iconButton : Palette -> ButtonStyle msg
 iconButton =
     Button.iconButton
+
+
+
+--------------------------------------------------------------------------------
+-- Radio
+--------------------------------------------------------------------------------
+
+
+{-| A radio button
+
+![radio](https://orasund.github.io/elm-ui-widgets/assets/material/radio.png)
+
+-}
+radio : Palette -> RadioStyle msg
+radio =
+    Radio.radio
 
 
 
@@ -552,10 +575,12 @@ cardColumn =
 {-| A variant of cardColumn designed for a single item.
 
 Use this with a normal `Element.column`, `Element.row` or even a `Element.el`.
+
 -}
-cardAttributes :  Palette -> List (Attribute msg)
-cardAttributes  =
+cardAttributes : Palette -> List (Attribute msg)
+cardAttributes =
     List.cardAttributes
+
 
 {-| A basic item containing some text, a button. Spans the full width.
 
@@ -683,11 +708,13 @@ snackbar =
 -- T E X T   I N P U T
 -------------------------------------------------------------------------------}
 
+
 {-| A variant of textInput designed for `Input.text`.
 -}
 textInputAttributes : Palette -> List (Attribute msg)
 textInputAttributes =
     TextInput.textInputAttributes
+
 
 {-| A text input style that is included only to support input chips.
 

@@ -11,6 +11,7 @@ import Page.Modal
 import Page.MultiSelect
 import Page.PasswordInput
 import Page.ProgressIndicator
+import Page.Radio
 import Page.Select
 import Page.Snackbar
 import Page.SortTable
@@ -26,6 +27,7 @@ pages =
         |> UIExplorer.nextPage "Select" Page.Select.page
         |> UIExplorer.nextPage "Multi Select" Page.MultiSelect.page
         |> UIExplorer.nextPage "Switch" Page.Switch.page
+        |> UIExplorer.nextPage "Radio" Page.Radio.page
         |> UIExplorer.nextPage "Tab" Page.Tab.page
         |> UIExplorer.nextPage "Password Input" Page.PasswordInput.page
         |> UIExplorer.nextPage "Text Input" Page.TextInput.page

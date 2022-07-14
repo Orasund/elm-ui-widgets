@@ -1,5 +1,6 @@
 module Widget exposing
     ( ButtonStyle, Button, TextButton, iconButton, textButton, button
+    , RadioStyle, radio
     , SwitchStyle, Switch, switch
     , Select, selectButton, select, toggleButton
     , MultiSelect, multiSelect
@@ -19,7 +20,7 @@ module Widget exposing
     , itemList
     , AppBarStyle, menuBar, tabBar
     , SortTableStyle, SortTable, Column, sortTable, floatColumn, intColumn, stringColumn, unsortableColumn
-    , SortTableV2, ColumnV2, sortTableV2, floatColumnV2, intColumnV2, stringColumnV2, unsortableColumnV2, customColumnV2
+    , SortTableV2, ColumnV2, sortTableV2, floatColumnV2, intColumnV2, stringColumnV2, customColumnV2, unsortableColumnV2
     , TextInputStyle, TextInput, textInput, usernameInput, emailInput, searchInput, spellCheckedInput
     , PasswordInputStyle, PasswordInput, newPasswordInputV2, currentPasswordInputV2
     , TabStyle, Tab, tab
@@ -55,6 +56,13 @@ You can create you own widgets by sticking widgets types together.
 ![Button](https://orasund.github.io/elm-ui-widgets/assets/button.png)
 
 @docs ButtonStyle, Button, TextButton, iconButton, textButton, button
+
+
+# Radio
+
+![Radio](https://orasund.github.io/elm-ui-widgets/assets/switch.png)
+
+@docs RadioStyle, Radio, radio
 
 
 # Switch
@@ -180,6 +188,7 @@ import Internal.List as List
 import Internal.Modal as Modal
 import Internal.PasswordInput as PasswordInput
 import Internal.ProgressIndicator as ProgressIndicator
+import Internal.Radio as Radio
 import Internal.Select as Select
 import Internal.SortTable as SortTable
 import Internal.SortTableV2 as SortTableV2
@@ -353,6 +362,71 @@ button =
         fun : ButtonStyle msg -> Button msg -> Element msg
         fun =
             Button.button
+    in
+    fun
+
+
+
+{----------------------------------------------------------
+- RADIO
+----------------------------------------------------------}
+
+
+{-| Radio style type
+-}
+type alias RadioStyle msg =
+    { elementButton : List (Attribute msg)
+    , ifDisabled : List (Attribute msg)
+    , ifSelected : List (Attribute msg)
+    , ifDisabledSelected : List (Attribute msg)
+    , otherwise : List (Attribute msg)
+    , content :
+        { element : List (Attribute msg)
+        , ifDisabled : List (Attribute msg)
+        , ifSelected : List (Attribute msg)
+        , ifDisabledSelected : List (Attribute msg)
+        , otherwise : List (Attribute msg)
+        }
+    }
+
+
+{-| Radio widget type
+-}
+type alias Radio msg =
+    { description : String
+    , onPress : Maybe msg
+    , selected : Bool
+    }
+
+
+{-| A radio button
+
+    import Widget.Material as Material
+
+    type Msg
+        = Activate
+
+    radio (Material.radio Material.defaultPalette)
+        { description = "Dark Mode"
+        , onPress = Just Activate
+        , selected = False
+        }
+        |> always "Ignore this line" --> "Ignore this line"
+
+-}
+radio :
+    RadioStyle msg
+    ->
+        { description : String
+        , onPress : Maybe msg
+        , selected : Bool
+        }
+    -> Element msg
+radio =
+    let
+        fun : Radio.RadioStyle msg -> Radio.Radio msg -> Element msg
+        fun =
+            Radio.radio
     in
     fun
 
@@ -2125,6 +2199,7 @@ floatColumnV2 =
 `value` will be used for displaying content.
 
 This column is not sortable.
+
 -}
 customColumnV2 :
     { title : String
