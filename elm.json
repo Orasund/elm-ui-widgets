@@ -3,7 +3,7 @@
     "name": "Orasund/elm-ui-widgets",
     "summary": "Collection of reusable views for elm-ui.",
     "license": "BSD-3-Clause",
-    "version": "3.3.0",
+    "version": "3.3.1",
     "exposed-modules": [
         "Widget",
         "Widget.Material",
