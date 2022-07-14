@@ -60,7 +60,7 @@ You can create you own widgets by sticking widgets types together.
 
 # Radio
 
-![Radio](https://orasund.github.io/elm-ui-widgets/assets/switch.png)
+![Radio](https://orasund.github.io/elm-ui-widgets/assets/radio.png)
 
 @docs RadioStyle, Radio, radio
 
