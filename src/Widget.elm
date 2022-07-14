@@ -1,6 +1,6 @@
 module Widget exposing
     ( ButtonStyle, Button, TextButton, iconButton, textButton, button
-    , RadioStyle, radio
+    , RadioStyle, Radio, radio
     , SwitchStyle, Switch, switch
     , Select, selectButton, select, toggleButton
     , MultiSelect, multiSelect
