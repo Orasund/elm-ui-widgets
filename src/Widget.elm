@@ -381,6 +381,7 @@ button =
 ----------------------------------------------------------}
 
 
+{-| -}
 type alias CheckboxStyle msg =
     { elementButton : List (Attribute msg)
     , ifDisabled : List (Attribute msg)
@@ -390,6 +391,8 @@ type alias CheckboxStyle msg =
     }
 
 
+{-| A checkbox
+-}
 type alias Checkbox msg =
     { description : String
     , onChange : Maybe (Bool -> msg)
