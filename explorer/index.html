@@ -21534,6 +21534,289 @@ var $author$project$Page$Button$description = 'Buttons allow users to take actio
 var $author$project$Page$Button$title = 'Button';
 var $author$project$Page$Button$page = $author$project$Page$create(
 	{book: $author$project$Page$Button$book, demo: $author$project$Page$Button$demo, description: $author$project$Page$Button$description, title: $author$project$Page$Button$title});
+var $elm$core$Basics$pi = _Basics_pi;
+var $elm$core$Basics$degrees = function (angleInDegrees) {
+	return (angleInDegrees * $elm$core$Basics$pi) / 180;
+};
+var $mdgriffith$elm_ui$Internal$Model$Rotate = F2(
+	function (a, b) {
+		return {$: 'Rotate', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$rotate = $mdgriffith$elm_ui$Internal$Flag$flag(24);
+var $mdgriffith$elm_ui$Element$rotate = function (angle) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$TransformComponent,
+		$mdgriffith$elm_ui$Internal$Flag$rotate,
+		A2(
+			$mdgriffith$elm_ui$Internal$Model$Rotate,
+			_Utils_Tuple3(0, 0, 1),
+			angle));
+};
+var $mdgriffith$elm_ui$Element$transparent = function (on) {
+	return on ? A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$transparency,
+		A2($mdgriffith$elm_ui$Internal$Model$Transparency, 'transparent', 1.0)) : A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$transparency,
+		A2($mdgriffith$elm_ui$Internal$Model$Transparency, 'visible', 0.0));
+};
+var $author$project$Internal$Material$Checkbox$checkbox = function (palette) {
+	var rounded = F3(
+		function (bg, opacity, color) {
+			var scaledColor = $author$project$Widget$Material$Color$fromColor(
+				A2($author$project$Widget$Material$Color$scaleOpacity, opacity, color));
+			return A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$Border$shadow(
+					{
+						blur: 0,
+						color: scaledColor,
+						offset: _Utils_Tuple2(0, 0),
+						size: 10
+					}),
+				bg ? _List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$Background$color(scaledColor)
+					]) : _List_Nil);
+		});
+	var check = function (visible) {
+		return $mdgriffith$elm_ui$Element$inFront(
+			A2(
+				$mdgriffith$elm_ui$Element$el,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$Border$color(
+						$author$project$Widget$Material$Color$fromColor(palette.on.primary)),
+						$mdgriffith$elm_ui$Element$transparent(!visible),
+						$mdgriffith$elm_ui$Element$height(
+						$mdgriffith$elm_ui$Element$px(7)),
+						$mdgriffith$elm_ui$Element$width(
+						$mdgriffith$elm_ui$Element$px(11)),
+						$mdgriffith$elm_ui$Element$rotate(
+						$elm$core$Basics$degrees(-45)),
+						$mdgriffith$elm_ui$Element$centerX,
+						$mdgriffith$elm_ui$Element$centerY,
+						$mdgriffith$elm_ui$Element$moveUp(2),
+						$mdgriffith$elm_ui$Element$Border$widthEach(
+						{bottom: 2, left: 2, right: 0, top: 0})
+					]),
+				$mdgriffith$elm_ui$Element$none));
+	};
+	return {
+		elementButton: _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$width(
+				$mdgriffith$elm_ui$Element$px(16)),
+				$mdgriffith$elm_ui$Element$height(
+				$mdgriffith$elm_ui$Element$px(16)),
+				$mdgriffith$elm_ui$Element$Border$rounded(2),
+				$mdgriffith$elm_ui$Element$Border$width(2),
+				$mdgriffith$elm_ui$Element$focused(
+				A3(rounded, true, $author$project$Widget$Material$Color$buttonHoverOpacity, palette.on.surface))
+			]),
+		ifDisabled: _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Border$color(
+				$author$project$Widget$Material$Color$fromColor(
+					A2($author$project$Widget$Material$Color$scaleOpacity, $author$project$Widget$Material$Color$buttonDisabledOpacity, palette.on.surface))),
+				check(false)
+			]),
+		ifDisabledSelected: _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Border$color(
+				$author$project$Widget$Material$Color$fromColor(
+					A2($author$project$Widget$Material$Color$scaleOpacity, $author$project$Widget$Material$Color$buttonDisabledOpacity, palette.on.surface))),
+				$mdgriffith$elm_ui$Element$Background$color(
+				$author$project$Widget$Material$Color$fromColor(
+					A2($author$project$Widget$Material$Color$scaleOpacity, $author$project$Widget$Material$Color$buttonDisabledOpacity, palette.on.surface))),
+				$mdgriffith$elm_ui$Element$mouseDown(
+				A3(rounded, false, $author$project$Widget$Material$Color$buttonPressedOpacity, palette.on.surface)),
+				$mdgriffith$elm_ui$Element$focused(
+				A3(rounded, false, $author$project$Widget$Material$Color$buttonFocusOpacity, palette.on.surface)),
+				$mdgriffith$elm_ui$Element$mouseOver(
+				A3(rounded, false, $author$project$Widget$Material$Color$buttonHoverOpacity, palette.on.surface)),
+				check(true)
+			]),
+		ifSelected: _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Border$color(
+				$author$project$Widget$Material$Color$fromColor(palette.primary)),
+				$mdgriffith$elm_ui$Element$Background$color(
+				$author$project$Widget$Material$Color$fromColor(palette.primary)),
+				$mdgriffith$elm_ui$Element$mouseDown(
+				A3(rounded, false, $author$project$Widget$Material$Color$buttonPressedOpacity, palette.primary)),
+				$mdgriffith$elm_ui$Element$focused(
+				A3(rounded, false, $author$project$Widget$Material$Color$buttonFocusOpacity, palette.primary)),
+				$mdgriffith$elm_ui$Element$mouseOver(
+				A3(rounded, false, $author$project$Widget$Material$Color$buttonHoverOpacity, palette.primary)),
+				check(true)
+			]),
+		otherwise: _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Border$color(
+				$author$project$Widget$Material$Color$fromColor(
+					$author$project$Internal$Material$Palette$gray(palette))),
+				$mdgriffith$elm_ui$Element$mouseDown(
+				A3(rounded, true, $author$project$Widget$Material$Color$buttonPressedOpacity, palette.on.surface)),
+				$mdgriffith$elm_ui$Element$focused(
+				A3(rounded, true, $author$project$Widget$Material$Color$buttonFocusOpacity, palette.on.surface)),
+				$mdgriffith$elm_ui$Element$mouseOver(
+				A3(rounded, true, $author$project$Widget$Material$Color$buttonHoverOpacity, palette.on.surface)),
+				check(false)
+			])
+	};
+};
+var $author$project$Widget$Material$checkbox = $author$project$Internal$Material$Checkbox$checkbox;
+var $author$project$Internal$Checkbox$checkbox = F2(
+	function (style, _v0) {
+		var onChange = _v0.onChange;
+		var description = _v0.description;
+		var checked = _v0.checked;
+		return A2(
+			$mdgriffith$elm_ui$Element$Input$button,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$htmlAttribute(
+					A2(
+						$elm$html$Html$Attributes$attribute,
+						'aria-checked',
+						checked ? 'true' : 'false')),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$htmlAttribute(
+						A2($elm$html$Html$Attributes$attribute, 'role', 'checkbox')),
+					_Utils_ap(
+						style.elementButton,
+						_Utils_ap(
+							function () {
+								var _v1 = _Utils_Tuple2(
+									_Utils_eq(onChange, $elm$core$Maybe$Nothing),
+									checked);
+								if (_v1.a) {
+									if (_v1.b) {
+										return style.ifDisabledSelected;
+									} else {
+										return style.ifDisabled;
+									}
+								} else {
+									if (_v1.b) {
+										return style.ifSelected;
+									} else {
+										return style.otherwise;
+									}
+								}
+							}(),
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$Region$description(description)
+								]))))),
+			{
+				label: $mdgriffith$elm_ui$Element$none,
+				onPress: A2(
+					$elm$core$Maybe$map,
+					function (tomsg) {
+						return tomsg(!checked);
+					},
+					onChange)
+			});
+	});
+var $author$project$Widget$checkbox = function () {
+	var fun = $author$project$Internal$Checkbox$checkbox;
+	return fun;
+}();
+var $author$project$Page$Checkbox$viewFunctions = function () {
+	var viewCheckbox = F6(
+		function (style, desc, selected, onPress, _v0, _v1) {
+			var palette = _v0.palette;
+			return A2(
+				$author$project$Page$viewTile,
+				'Widget.checkbox',
+				A2(
+					$author$project$Widget$checkbox,
+					style(palette),
+					{checked: selected, description: desc, onChange: onPress}));
+		});
+	return A3(
+		$elm$core$List$foldl,
+		$author$project$UIExplorer$Story$addTile,
+		$author$project$UIExplorer$Story$initStaticTiles,
+		_List_fromArray(
+			[viewCheckbox]));
+}();
+var $author$project$Page$Checkbox$book = $author$project$UIExplorer$Story$build(
+	A2(
+		$author$project$UIExplorer$Story$addStory,
+		A3(
+			$author$project$UIExplorer$Story$boolStory,
+			'with event handler',
+			_Utils_Tuple2(
+				$elm$core$Maybe$Just(
+					$elm$core$Basics$always(_Utils_Tuple0)),
+				$elm$core$Maybe$Nothing),
+			true),
+		A2(
+			$author$project$UIExplorer$Story$addStory,
+			A3(
+				$author$project$UIExplorer$Story$boolStory,
+				'Selected',
+				_Utils_Tuple2(true, false),
+				true),
+			A2(
+				$author$project$UIExplorer$Story$addStory,
+				A2($author$project$UIExplorer$Story$textStory, 'Description', 'Be Awesome'),
+				A2(
+					$author$project$UIExplorer$Story$addStory,
+					A3(
+						$author$project$UIExplorer$Story$optionListStory,
+						'Style',
+						_Utils_Tuple2('Checkbox', $author$project$Widget$Material$checkbox),
+						_List_Nil),
+					A2(
+						$author$project$UIExplorer$Story$book,
+						$elm$core$Maybe$Just('Options'),
+						$author$project$Page$Checkbox$viewFunctions))))));
+var $author$project$Page$Checkbox$IsButtonEnabled = function (a) {
+	return {$: 'IsButtonEnabled', a: a};
+};
+var $author$project$Page$Checkbox$init = _Utils_Tuple2(
+	$author$project$Page$Checkbox$IsButtonEnabled(false),
+	$elm$core$Platform$Cmd$none);
+var $author$project$Page$Checkbox$subscriptions = function (_v0) {
+	return $elm$core$Platform$Sub$none;
+};
+var $author$project$Page$Checkbox$update = F2(
+	function (msg, _v0) {
+		var buttonEnabled = _v0.a;
+		return _Utils_Tuple2(
+			$author$project$Page$Checkbox$IsButtonEnabled(!buttonEnabled),
+			$elm$core$Platform$Cmd$none);
+	});
+var $author$project$Page$Checkbox$ToggledButtonStatus = {$: 'ToggledButtonStatus'};
+var $author$project$Page$Checkbox$view = F2(
+	function (_v0, _v1) {
+		var palette = _v0.palette;
+		var isButtonEnabled = _v1.a;
+		return A2(
+			$author$project$Widget$checkbox,
+			$author$project$Widget$Material$checkbox(palette),
+			{
+				checked: isButtonEnabled,
+				description: 'click me',
+				onChange: $elm$core$Maybe$Just(
+					$elm$core$Basics$always($author$project$Page$Checkbox$ToggledButtonStatus))
+			});
+	});
+var $author$project$Page$Checkbox$demo = {
+	init: $elm$core$Basics$always($author$project$Page$Checkbox$init),
+	subscriptions: $author$project$Page$Checkbox$subscriptions,
+	update: $author$project$Page$Checkbox$update,
+	view: $author$project$Page$demo($author$project$Page$Checkbox$view)
+};
+var $author$project$Page$Checkbox$description = 'Checkboxes toggle the state of a single item on or off.';
+var $author$project$Page$Checkbox$title = 'Checkbox';
+var $author$project$Page$Checkbox$page = $author$project$Page$create(
+	{book: $author$project$Page$Checkbox$book, demo: $author$project$Page$Checkbox$demo, description: $author$project$Page$Checkbox$description, title: $author$project$Page$Checkbox$title});
 var $author$project$Page$Dialog$viewFunctions = function () {
 	var viewDialog = F7(
 		function (style, text, titleString, accept, dismiss, _v0, _v1) {
@@ -27786,13 +28069,17 @@ var $author$project$Main$pages = A3(
 														$author$project$Page$Switch$page,
 														A3(
 															$author$project$UIExplorer$nextPage,
-															'Multi Select',
-															$author$project$Page$MultiSelect$page,
+															'Checkbox',
+															$author$project$Page$Checkbox$page,
 															A3(
 																$author$project$UIExplorer$nextPage,
-																'Select',
-																$author$project$Page$Select$page,
-																A2($author$project$UIExplorer$firstPage, 'Button', $author$project$Page$Button$page)))))))))))))))));
+																'Multi Select',
+																$author$project$Page$MultiSelect$page,
+																A3(
+																	$author$project$UIExplorer$nextPage,
+																	'Select',
+																	$author$project$Page$Select$page,
+																	A2($author$project$UIExplorer$firstPage, 'Button', $author$project$Page$Button$page))))))))))))))))));
 var $elm$json$Json$Decode$value = _Json_decodeValue;
 var $author$project$Main$main = A2($author$project$UIExplorer$application, $author$project$Main$config, $author$project$Main$pages);
 _Platform_export({'Main':{'init':$author$project$Main$main($elm$json$Json$Decode$value)(0)}});}(this));
