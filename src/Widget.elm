@@ -1,5 +1,6 @@
 module Widget exposing
     ( ButtonStyle, Button, TextButton, iconButton, textButton, button
+    , CheckboxStyle, Checkbox, checkbox
     , RadioStyle, Radio, radio
     , SwitchStyle, Switch, switch
     , Select, selectButton, select, toggleButton
@@ -56,6 +57,13 @@ You can create you own widgets by sticking widgets types together.
 ![Button](https://orasund.github.io/elm-ui-widgets/assets/button.png)
 
 @docs ButtonStyle, Button, TextButton, iconButton, textButton, button
+
+
+# Checkbox
+
+![Checkbox](https://orasund.github.io/elm-ui-widgets/assets/checkbox.png)
+
+@docs CheckboxStyle, Checkbox, checkbox
 
 
 # Radio
@@ -182,6 +190,7 @@ import Element exposing (Attribute, DeviceClass, Element, Length)
 import Element.Input exposing (Placeholder)
 import Internal.AppBar as AppBar
 import Internal.Button as Button
+import Internal.Checkbox as Checkbox
 import Internal.Dialog as Dialog
 import Internal.Item as Item
 import Internal.List as List
@@ -362,6 +371,60 @@ button =
         fun : ButtonStyle msg -> Button msg -> Element msg
         fun =
             Button.button
+    in
+    fun
+
+
+
+{----------------------------------------------------------
+- CHECKBOX
+----------------------------------------------------------}
+
+
+type alias CheckboxStyle msg =
+    { elementButton : List (Attribute msg)
+    , ifDisabled : List (Attribute msg)
+    , ifSelected : List (Attribute msg)
+    , ifDisabledSelected : List (Attribute msg)
+    , otherwise : List (Attribute msg)
+    }
+
+
+type alias Checkbox msg =
+    { description : String
+    , onChange : Maybe (Bool -> msg)
+    , checked : Bool
+    }
+
+
+{-| A checkbox button
+
+    import Widget.Material as Material
+
+    type Msg
+        = Check Bool
+
+    checkbox (Material.checkbox Material.defaultPalette)
+        { description = "Dark Mode"
+        , onChange = Just Check
+        , checked = False
+        }
+        |> always "Ignore this line" --> "Ignore this line"
+
+-}
+checkbox :
+    CheckboxStyle msg
+    ->
+        { description : String
+        , onChange : Maybe (Bool -> msg)
+        , checked : Bool
+        }
+    -> Element msg
+checkbox =
+    let
+        fun : Checkbox.CheckboxStyle msg -> Checkbox.Checkbox msg -> Element msg
+        fun =
+            Checkbox.checkbox
     in
     fun
 

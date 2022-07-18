@@ -4,6 +4,7 @@ import Element
 import Json.Decode as Decode exposing (Decoder)
 import Page.AppBar
 import Page.Button
+import Page.Checkbox
 import Page.Dialog
 import Page.Icon
 import Page.Item
@@ -26,6 +27,7 @@ pages =
     UIExplorer.firstPage "Button" Page.Button.page
         |> UIExplorer.nextPage "Select" Page.Select.page
         |> UIExplorer.nextPage "Multi Select" Page.MultiSelect.page
+        |> UIExplorer.nextPage "Checkbox" Page.Checkbox.page
         |> UIExplorer.nextPage "Switch" Page.Switch.page
         |> UIExplorer.nextPage "Radio" Page.Radio.page
         |> UIExplorer.nextPage "Tab" Page.Tab.page

@@ -2,6 +2,7 @@ module Widget.Material exposing
     ( Palette, defaultPalette, darkPalette, swapColor, gray, lightGray, textGray
     , containedButton, outlinedButton, textButton
     , iconButton, toggleButton, toggleRow
+    , checkbox
     , switch
     , radio
     , cardColumn, cardAttributes
@@ -49,6 +50,11 @@ Different styles for buttons have different meanings.
 
 @docs containedButton, outlinedButton, textButton
 @docs iconButton, toggleButton, toggleRow
+
+
+# Checkbox
+
+@docs checkbox
 
 
 # Switch
@@ -131,6 +137,7 @@ import Color exposing (Color)
 import Element exposing (Attribute)
 import Internal.AppBar exposing (AppBarStyle)
 import Internal.Button exposing (ButtonStyle)
+import Internal.Checkbox exposing (CheckboxStyle)
 import Internal.Dialog exposing (DialogStyle)
 import Internal.Item
     exposing
@@ -146,6 +153,7 @@ import Internal.Item
 import Internal.List exposing (ColumnStyle, RowStyle)
 import Internal.Material.AppBar as AppBar
 import Internal.Material.Button as Button
+import Internal.Material.Checkbox as Checkbox
 import Internal.Material.Chip as Chip
 import Internal.Material.Dialog as Dialog
 import Internal.Material.Item as Item
@@ -320,6 +328,22 @@ Technical Remark:
 iconButton : Palette -> ButtonStyle msg
 iconButton =
     Button.iconButton
+
+
+
+--------------------------------------------------------------------------------
+-- Checkbox
+--------------------------------------------------------------------------------
+
+
+{-| A checkbox button
+
+![checkbox](https://orasund.github.io/elm-ui-widgets/assets/material/checkbox.png)
+
+-}
+checkbox : Palette -> CheckboxStyle msg
+checkbox =
+    Checkbox.checkbox
 
 
 
