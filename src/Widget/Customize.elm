@@ -20,8 +20,8 @@ module Widget.Customize exposing
 
     {- Make a button fill the full width -}
     Widget.textButton
-      ( Material.containedButton
-        |> Customize.element [Element.width Element.fill]
+      (Material.containedButton Material.defaultPalette
+          |> Customize.elementButton [ Element.width Element.fill ]
       )
       { onPress = Just PressedButton
       , text = "Press Button"
